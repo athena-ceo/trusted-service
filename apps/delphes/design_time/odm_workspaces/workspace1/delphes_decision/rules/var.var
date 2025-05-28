@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:VariableSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>var</name>
+  <uuid>884ace8f-e1ca-4cbf-8130-a2d1a5a8ccbb</uuid>
+  <variables name="case_" type="delphes.Case" initialValue="" verbalization="le cas"/>
+  <variables name="intention" type="java.lang.String" initialValue="" verbalization="intention"/>
+  <variables name="decision" type="trusted_services.CaseHandlingDecision" initialValue="new trusted_services.CaseHandlingDecision()" verbalization="la décision"/>
+</ilog.rules.studio.model.base:VariableSet>

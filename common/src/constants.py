@@ -1,0 +1,3 @@
+KEY_ANALYSIS_RESULT = "analysis_result"
+KEY_MARKDOWN_TABLE="markdown_table"
+KEY_HIGHLIGHTED_TEXT_AND_FEATURES = "highlighted_text_and_features"

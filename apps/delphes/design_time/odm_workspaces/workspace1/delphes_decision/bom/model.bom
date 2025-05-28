@@ -1,0 +1,54 @@
+
+#loadGetterSetterAsProperties
+property origin "xom:/delphes_decision//delphes_xom"
+property uuid "14323eb8-53ca-4204-9625-b305b3444c81"
+package delphes;
+
+
+class Case
+{
+    string date_demande;
+    string date_expiration_api;
+    string departement;
+    boolean mention_de_risque_sur_l_emploi;
+    Case();
+}
+
+package trusted_services;
+
+
+class CaseHandlingDecision
+{
+    string acknowledgement_to_requester;
+    java.util.List notes domain 0,* class string;
+    trusted_services.Priority priority;
+    string response_template_id;
+    trusted_services.Treatment treatment;
+    string work_basket;
+    CaseHandlingDecision();
+}
+
+final class Priority
+        extends java.lang.Enum
+{
+    domain {static VERY_LOW, static LOW, static MEDIUM, static HIGH, static VERY_HIGH}
+    static final readonly trusted_services.Priority HIGH;
+    static final readonly trusted_services.Priority LOW;
+    static final readonly trusted_services.Priority MEDIUM;
+    static final readonly trusted_services.Priority VERY_HIGH;
+    static final readonly trusted_services.Priority VERY_LOW;
+    static trusted_services.Priority valueOf(string arg);
+    static trusted_services.Priority[] values();
+}
+
+final class Treatment
+        extends java.lang.Enum
+{
+    domain {static AUTOMATED, static AGENT, static DEFLECTION}
+    static final readonly trusted_services.Treatment AGENT;
+    static final readonly trusted_services.Treatment AUTOMATED;
+    static final readonly trusted_services.Treatment DEFLECTION;
+    static trusted_services.Treatment valueOf(string arg);
+    static trusted_services.Treatment[] values();
+}
+

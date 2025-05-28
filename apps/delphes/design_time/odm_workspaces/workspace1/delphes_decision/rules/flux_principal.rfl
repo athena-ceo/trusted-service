@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.ruleflow:RuleFlow xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.ruleflow="http://ilog.rules.studio/model/ruleflow.ecore">
+  <name>flux_principal</name>
+  <uuid>1bbcfcce-21ee-4f32-bb5e-d1eaca08ac26</uuid>
+  <locale>fr_FR</locale>
+  <categories>any</categories>
+  <rfModel>
+<Ruleflow xmlns="http://schemas.ilog.com/Rules/7.0/Ruleflow">
+  <Body>
+    <TaskList>
+      <StartTask Identifier="task_0">
+        <Actions Language="irl"><![CDATA[context.insert(case_);
+
+context.insert(decision);]]></Actions>
+      </StartTask>
+      <RuleTask ExecutionMode="Fastpath" ExitCriteria="None" Identifier="initialisations" Ordering="Default">
+        <RuleList>
+          <Package Name="initialisations"/>
+        </RuleList>
+      </RuleTask>
+      <StopTask Identifier="task_1"/>
+    </TaskList>
+    <NodeList>
+      <TaskNode Identifier="node2" Task="task_0"/>
+      <TaskNode Identifier="node3" Task="task_1"/>
+      <TaskNode Identifier="node_0" Task="initialisations"/>
+    </NodeList>
+    <TransitionList>
+      <Transition Identifier="link5" Source="node_0" Target="node3"/>
+      <Transition Identifier="link4" Source="node2" Target="node_0"/>
+    </TransitionList>
+  </Body>
+  <Resources>
+    <ResourceSet Locale="fr_FR">
+      <Data Name="node3#y">165.0</Data>
+      <Data Name="node2#y">15.0</Data>
+      <Data Name="node3#x">58.989</Data>
+      <Data Name="node2#x">58.989</Data>
+      <Data Name="node_0#label">initialisations</Data>
+      <Data Name="node_0#x">58.989</Data>
+      <Data Name="node_0#y">90.0</Data>
+    </ResourceSet>
+  </Resources>
+  <Properties/>
+</Ruleflow>
+</rfModel>
+</ilog.rules.studio.model.ruleflow:RuleFlow>
