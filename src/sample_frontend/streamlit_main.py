@@ -58,7 +58,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
 def submit_for_text_analysis():
     context: Context = st.session_state.context
-    analysis_result_and_rendering = context.api_client.analyze_and_render(context.case.field_values, st.session_state.texte_demande)
+    analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.texte_demande)
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
     # Copy the extracted field values to the case

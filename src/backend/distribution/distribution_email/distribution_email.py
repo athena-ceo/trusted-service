@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.backend.decision.decision import CaseHandlingDecision
+from src.backend.decision.decision import CaseHandlingDecisionOutput
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
 from src.backend.distribution.distribution_email.distribution_email_configuration import ResponseTemplate
 from src.backend.rendering.html import render_email, hilite_blue
@@ -96,7 +96,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     @staticmethod
     def _build_email_body(case_model: CaseModel,
                           request: CaseHandlingRequest,
-                          case_handling_decision: CaseHandlingDecision) -> str:
+                          case_handling_decision_output: CaseHandlingDecisionOutput) -> str:
 
         body = "<br>" + hilite_blue("1 - Données du cas")
         body += "<b>Intention</b>: " + request.intention_id + "<br>"
@@ -116,7 +116,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         # Show the notes
 
-        if notes := case_handling_decision.notes:
+        if notes := case_handling_decision_output.notes:
             body += "<br>" + hilite_blue("3 - Notes")
             for note in notes:
                 body += f"- {note}<br>"
@@ -126,19 +126,19 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     def distribute(self,
                    case_model: CaseModel,
                    request: CaseHandlingRequest,
-                   case_handling_decision: CaseHandlingDecision) -> CaseHandlingResponse:
+                   case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
 
-        template_body: str = self._build_email_body(case_model, request, case_handling_decision, )
+        template_body: str = self._build_email_body(case_model, request, case_handling_decision_output, )
 
         print("BODY", template_body)
 
         email_to_send: Email = Email(
             from_email_address=self.email_configuration.hub_email_address,
             to_email_address=self.email_configuration.agent_email_address,
-            subject=f"{case_handling_decision.work_basket} - {case_handling_decision.priority}",
+            subject=f"{case_handling_decision_output.work_basket} - {case_handling_decision_output.priority}",
             body=template_body)
 
-        if case_handling_decision.treatment == "DEFLECTION":
+        if case_handling_decision_output.treatment == "DEFLECTION":
             processing_report = "<h3>Réorientation du demandeur</h3><br>"
         else:
             processing_report = "<h3>Envoi d'un mail pour traitement par un agent</h3><br>"
@@ -148,17 +148,17 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         email_mail_to: Optional[Email] = None
 
-        if case_handling_decision.response_template_id:
+        if case_handling_decision_output.response_template_id:
 
             template: Optional[ResponseTemplate] = None
             for template2 in self.email_configuration.email_templates:
                 template2: ResponseTemplate
-                if template2.id == case_handling_decision.response_template_id:
+                if template2.id == case_handling_decision_output.response_template_id:
                     template = template2
                     break
 
             if template is None:
-                raise Exception(f"Email template {case_handling_decision.response_template_id} not found")
+                raise Exception(f"Email template {case_handling_decision_output.response_template_id} not found")
 
             template_body = template.body
 
@@ -179,7 +179,5 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         send_mail(email_configuration=self.email_configuration, email_to_send=email_to_send, email_mail_to=email_mail_to)
 
-        print("b")
-
-        return CaseHandlingResponse(acknowledgement_to_requester=case_handling_decision.acknowledgement_to_requester,
+        return CaseHandlingResponse(acknowledgement_to_requester=case_handling_decision_output.acknowledgement_to_requester,
                                     case_handling_report=processing_report)

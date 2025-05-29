@@ -20,12 +20,12 @@ class Api(ABC):
     def get_case_model(self) -> CaseModel:
         pass
 
-    @abstractmethod
-    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        pass
+    # @abstractmethod
+    # def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    #     pass
 
     @abstractmethod
-    def analyze_and_render(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
         pass
 
     @abstractmethod

@@ -35,14 +35,14 @@ async def get_case_model() -> CaseModel:
     return api.get_case_model()
 
 
+# @app.post("/analyze")
+# async def analyze(field_values: dict[str, Any], text: str):
+#     return api.analyze(field_values, text)
+
+
 @app.post("/analyze")
 async def analyze(field_values: dict[str, Any], text: str):
     return api.analyze(field_values, text)
-
-
-@app.post("/analyze_and_render")
-async def analyze_and_render(field_values: dict[str, Any], text: str):
-    return api.analyze_and_render(field_values, text)
 
 @app.post("/process_request")
 async def process_request(request: CaseHandlingRequest) -> CaseHandlingResponse:

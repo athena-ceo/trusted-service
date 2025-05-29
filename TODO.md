@@ -1,22 +1,24 @@
 # Priority 1
 
 - Test with Fastapi and Openai
-
+- Complete exception handling on send email, call odl call OpenAI
+- Complete comments
+- Complete README.md
+- Complete localization
+- use constants instead of string everywhere
+- Show details:
+  - prompt
+  - rule input and output
 - mandatory fields
-- hallucinations sur les intentions
-- check exception on send email, call odl call OpenAI
+- hallucinations on intentions
 
 # Priority 2
-- list of values (eg True / False) for fields
-- use constants instead of string everywhere
 - review logic of text_area: if changed manually and click send, will be overriden - Also issue with mode detailed
 
 # Priority 3
-- Manage port numbers for all the demos
+- Manage port numbers for all the demos - including cors
 - pick scenarios in list
 - configure/parameterize client
-- parameterize ports in this demo (including cors)
-- README
 - localize UI
 - Analyze several texts at once
 - Parameterize choice between clients

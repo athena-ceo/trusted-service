@@ -131,7 +131,7 @@ class TextAnalyzer:
         self.templated_system_prompt: str = build_system_prompt(self.config2, self.features, self.analysis_response_model)
         self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOpenAI()
 
-    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
+    def _analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
 
         system_prompt = self.templated_system_prompt
 
@@ -177,9 +177,9 @@ class TextAnalyzer:
 
         return analysis_result
 
-    def analyze_and_render(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
+    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
 
-        analysis_result = self.analyze(field_values, text)
+        analysis_result = self._analyze(field_values, text)
 
         analysis_result_and_rendering = {
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),

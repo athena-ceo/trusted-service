@@ -20,11 +20,11 @@ class ApiClientDirect(ApiClient):
         # print("***")
         return self.api.get_case_model()
 
+    # def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    #     return self.api.analyze(field_values, text)
+
     def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
         return self.api.analyze(field_values, text)
-
-    def analyze_and_render(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        return self.api.analyze_and_render(field_values, text)
 
     def handle_case(self, request: CaseHandlingRequest) -> CaseHandlingResponse:
         return self.api.handle_case(request)
@@ -47,16 +47,16 @@ class ApiClientHttp(ApiClient):
         else:
             print(f"Request failed with status code: {response.status_code}")
 
+    # def analyze(self, text: str) -> dict[str, Any]:
+    #     url = f"{self.base_url}/analyze"
+    #     response = requests.post(url, params={"text": text})
+    #     if response.status_code == 200:
+    #         return response.json()
+    #     else:
+    #         print(f"Request failed with status code: {response.status_code}")
+
     def analyze(self, text: str) -> dict[str, Any]:
         url = f"{self.base_url}/analyze"
-        response = requests.post(url, params={"text": text})
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Request failed with status code: {response.status_code}")
-
-    def analyze_and_render(self, text: str) -> dict[str, Any]:
-        url = f"{self.base_url}/analyze_and_render"
         response = requests.post(url, params={"text": text})
         if response.status_code == 200:
             return response.json()

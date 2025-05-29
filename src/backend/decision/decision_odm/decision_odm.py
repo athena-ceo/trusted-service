@@ -1,11 +1,9 @@
 import json
-from typing import Literal, Any
 
 import requests
 
-from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecision
+from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 from src.backend.decision.decision_odm.decision_odm_configuration import DecisionODMConfiguration
-from src.common.api import CaseHandlingRequest
 from src.common.case_model import CaseModel
 
 
@@ -14,17 +12,17 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
         self.case_model: CaseModel = case_model
         self.decision_service_url: str = decision_odm_configuration.decision_service_url
 
-    def decide(self, request: CaseHandlingRequest) -> CaseHandlingDecision:
+    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
 
-        field_values: dict[str, Any] = {}
-
-        for case_field in self.case_model.case_fields:
-            if case_field.send_to_decision_engine:
-                field_values[case_field.id] = request.field_values[case_field.id]
+        # field_values: dict[str, Any] = {}
+        #
+        # for case_field in self.case_model.case_fields:
+        #     if case_field.send_to_decision_engine:
+        #         field_values[case_field.id] = case_handling_decision_input.field_values[case_field.id]
 
         payload = {
-            "intention": request.intention_id,
-            "case_": field_values,
+            "intention": case_handling_decision_input.intention_id,
+            "case_": case_handling_decision_input.field_values,
             # "__TraceFilter__": {
             #     "infoRulesFired": True
             # }
@@ -48,4 +46,4 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
         response_dict: dict = response.json()
         print(json.dumps(response_dict, indent=4))
 
-        return CaseHandlingDecision(**response_dict["decision"])
+        return CaseHandlingDecisionOutput(**response_dict["decision"])

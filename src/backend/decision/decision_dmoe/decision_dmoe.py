@@ -1,6 +1,5 @@
-from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecision
+from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 from src.backend.decision.decision_dmoe.decision_dmoe_configuration import DecisionDMOEConfiguration
-from src.common.api import CaseHandlingRequest
 from src.common.case_model import CaseModel
 
 
@@ -9,5 +8,6 @@ class CaseHandlingDecisionEngineDMOE(CaseHandlingDecisionEngine):
         self.case_model: CaseModel = case_model
         self.dmoe_param: str = decision_dmoe_configuration.dmoe_param
 
-    def decide(self, request: CaseHandlingRequest) -> CaseHandlingDecision:
+
+    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
         pass

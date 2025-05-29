@@ -1,12 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Literal
+from typing import Literal, Any
 
 from pydantic import BaseModel
 
 from src.common.api import CaseHandlingRequest
 
 
-class CaseHandlingDecision(BaseModel):
+class CaseHandlingDecisionInput(BaseModel):
+    intention_id: str
+    field_values: dict[str, Any]  # rename case field values
+
+
+class CaseHandlingDecisionOutput(BaseModel):
     treatment: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
 
     # Decisions related to the communication with the requester
@@ -21,5 +26,5 @@ class CaseHandlingDecision(BaseModel):
 
 class CaseHandlingDecisionEngine(ABC):
     @abstractmethod
-    def decide(self, request: CaseHandlingRequest) -> CaseHandlingDecision:
+    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
         pass

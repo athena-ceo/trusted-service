@@ -1,13 +1,12 @@
 from datetime import datetime
 from typing import Literal
 
-from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecision
-from src.common.api import CaseHandlingRequest
+from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 from src.backend.backend.application import App
 
 
 class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
-    def decide(self, request: CaseHandlingRequest) -> CaseHandlingDecision:
+    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
 
         treatment: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
 
@@ -20,15 +19,15 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         priority: Literal["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
         notes: list[str] = []
 
-        if request.intention_id == "expiration_d_une_api":
+        if case_handling_decision_input.intention_id == "expiration_d_une_api":
             treatment = "AGENT"
             acknowledgement_to_requester = "Nous vous répondrons dans les meilleurs délais à propos de l'expiration de votre API"
             response_template = "expiration_d_une_api"
             work_basket = "api_a_renouveler"
-            priority = "VERY_HIGH" if request.field_values["mention_de_risque_sur_l_emploi"] else "HIGH"
+            priority = "VERY_HIGH" if case_handling_decision_input.field_values["mention_de_risque_sur_l_emploi"] else "HIGH"
 
-            date_demande = request.field_values["date_demande"]
-            date_expiration_api = request.field_values["date_expiration_api"]
+            date_demande = case_handling_decision_input.field_values["date_demande"]
+            date_expiration_api = case_handling_decision_input.field_values["date_expiration_api"]
             date_format = "%d/%m/%Y"
             date_demande = datetime.strptime(date_demande, date_format)
             date_expiration_api = datetime.strptime(date_expiration_api, date_format)
@@ -38,7 +37,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
             else:
                 notes.append(f"L'API expire dans {difference_in_days} jours")
 
-            if request.field_values["mention_de_risque_sur_l_emploi"]:
+            if case_handling_decision_input.field_values["mention_de_risque_sur_l_emploi"]:
                 notes.append("Risque sur l'emploi")
 
         else:
@@ -50,7 +49,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
 
         # subject = f"AGDREF - {work_basket} - {priority}"
 
-        return CaseHandlingDecision(
+        return CaseHandlingDecisionOutput(
             treatment=treatment,
             acknowledgement_to_requester=acknowledgement_to_requester,
             response_template_id=response_template,
