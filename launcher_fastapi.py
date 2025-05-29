@@ -3,9 +3,9 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.src.backend.api_implementation import ApiImplementation
-from common.src.case_model import CaseModel
-from common.src.api import Api, CaseHandlingRequest, CaseHandlingResponse
+from src.backend.backend.api_implementation import ApiImplementation
+from src.common.api import Api, CaseHandlingRequest, CaseHandlingResponse
+from src.common.case_model import CaseModel
 
 app = FastAPI()
 

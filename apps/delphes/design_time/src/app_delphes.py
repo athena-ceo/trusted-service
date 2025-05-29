@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Literal
 
-from backend.src.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecision
-from common.src.api import CaseHandlingRequest
-from backend.src.backend.application import App
+from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecision
+from src.common.api import CaseHandlingRequest
+from src.backend.backend.application import App
 
 
 class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):

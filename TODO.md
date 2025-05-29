@@ -1,12 +1,9 @@
 # Priority 1
 
 - Test with Fastapi and Openai
-- send email
-- Parameterize envoishibou78@gmail.com
 
 - mandatory fields
 - hallucinations sur les intentions
-- pass app to distribute
 - check exception on send email, call odl call OpenAI
 
 # Priority 2
@@ -22,10 +19,7 @@
 - README
 - localize UI
 - Analyze several texts at once
-- launcher backend et frontend (cf démo fraud)
-- new git repo
-- Parameterize load vs dump analysis in file
 - Parameterize choice between clients
 - integer and float field
 - show the prompt as a result of analyzis
-- Review ResponseTemplate
+- Show the odm payloads
