@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.backend.backend.api_implementation import ApiImplementation
+from src.backend.decision.decision import CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingResponse
 from src.common.case_model import CaseModel
 
@@ -35,16 +36,11 @@ async def get_case_model() -> CaseModel:
     return api.get_case_model()
 
 
-# @app.post("/analyze")
-# async def analyze(field_values: dict[str, Any], text: str):
-#     return api.analyze(field_values, text)
-
-
 @app.post("/analyze")
 async def analyze(field_values: dict[str, Any], text: str):
     return api.analyze(field_values, text)
 
+
 @app.post("/process_request")
-async def process_request(request: CaseHandlingRequest) -> CaseHandlingResponse:
-    print("3) process_request", request)
+async def handle_case(request: CaseHandlingRequest) -> tuple[CaseHandlingDecisionInput, CaseHandlingDecisionOutput, CaseHandlingResponse]:
     return api.handle_case(request)

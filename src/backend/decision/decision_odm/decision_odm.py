@@ -23,9 +23,7 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
         payload = {
             "intention": case_handling_decision_input.intention_id,
             "case_": case_handling_decision_input.field_values,
-            # "__TraceFilter__": {
-            #     "infoRulesFired": True
-            # }
+            "__TraceFilter__": {"infoRulesFired": True}
         }
 
         print("*********************")

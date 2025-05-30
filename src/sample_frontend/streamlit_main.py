@@ -2,9 +2,10 @@ import json
 from typing import Any, Optional
 
 import streamlit as st
+from pydantic import BaseModel
 from streamlit.delta_generator import DeltaGenerator
 
-from src.common.api import CaseHandlingRequest, CaseHandlingResponse
+from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient
@@ -23,7 +24,7 @@ class Context:
         self.case_model: CaseModel = self.api_client.get_case_model()
         self.case: Case = Case.create_default_instance(self.case_model)
         self.analysis_result_and_rendering: dict[str, Any] = {}
-        self.processing_response: Optional[CaseHandlingResponse] = None
+        self.processing_response: Optional[CaseHandlingDetailedResponse] = None
 
 
 def add_case_field_input_widget(case: Case, case_field: CaseField):
@@ -79,7 +80,7 @@ def submit_request():
     context.stage = 3
 
 
-text1 = """Attestation de prolongation expirée depuis le 11 octobre. 
+text3 = """Attestation de prolongation expirée depuis le 11 octobre. 
     Bonjour, 
     Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
     
@@ -101,7 +102,6 @@ Mais jusqu'à ce jour je n'ai pas reçu une nouvelle API sachant que l’état d
 Mon contrat de travail et suspendu et dans l'impossibilité de fournir ce document dans les plus brefs délais, je verrai malheureusement mon contrat de travail résilié.
 """
 
-
 text1 = """Attestation de prolongation expirée depuis le 11 octobre. 
     Bonjour, 
     Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
@@ -118,6 +118,11 @@ text1 = """Attestation de prolongation expirée depuis le 11 octobre.
     
     Bien à vous.
 """
+
+
+class DecisionPayload(BaseModel):
+    decision_input: CaseHandlingDecisionInput
+    decision_output: CaseHandlingDecisionOutput
 
 
 def streamlit_main():
@@ -239,8 +244,15 @@ def streamlit_main():
 
     processing_response = context.processing_response
 
-    st.write(processing_response.acknowledgement_to_requester)
+    if st.session_state.show_details:
+        with expander2("Appel au moteur de règles", expanded=False):
+            st.write("Input:")
+            st.write(processing_response.case_handling_decision_input)
+            st.write("Output:")
+            st.write(processing_response.case_handling_decision_output)
+
+    st.write(processing_response.case_handling_response.acknowledgement_to_requester)
 
     if st.session_state.show_details:
         with expander2("Traitement de la demande", expanded=False):
-            st.html(processing_response.case_handling_report)
+            st.html(processing_response.case_handling_response.case_handling_report)

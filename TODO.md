@@ -1,3 +1,10 @@
+1) Ecrire decision_payloads
+2) Réparer Fast API
+3) TextArea requête
+4) show the prompt
+
+
+
 # Priority 1
 
 - Test with Fastapi and Openai
