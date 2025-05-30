@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel
 
@@ -28,6 +28,10 @@ class CaseHandlingDecisionOutput(BaseModel):
     work_basket: str
     priority: Literal["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
     notes: list[str]
+
+    # Free-format traces, anything that can be displayed
+    # For instance, with ODM, it will contain __DecisionID__ and optionally __decisionTrace__
+    details: Any = None
 
 
 class CaseHandlingResponse(BaseModel):
