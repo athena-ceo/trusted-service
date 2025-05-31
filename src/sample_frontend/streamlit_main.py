@@ -82,7 +82,14 @@ def submit_request():
 
 text1 = """Attestation de prolongation expirée depuis le 11 octobre. 
     Bonjour, 
-    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, qui bénéficie du statut de protection subsidiaire, et dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
+    
+    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont la situation est assez complexe, et dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003.
+    
+    Il bénéficie actuellement du statut de protection subsidiaire et aimerait se rendre aux obsèques de son père à l'étranger;
+    
+    Il aimerait déposer une demande de droit d'asile.
+    
+    Par ailleurs, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
     
     Sans action dans les prochains jours, il risquera de perdre son travail.
     
