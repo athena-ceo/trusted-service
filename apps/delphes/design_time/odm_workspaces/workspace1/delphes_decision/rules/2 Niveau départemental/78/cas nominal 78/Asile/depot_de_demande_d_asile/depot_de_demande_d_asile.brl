@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
+  <name>depot_de_demande_d_asile</name>
+  <uuid>915ea439-d8e6-4c85-99f4-65fdb9a3dd5d</uuid>
+  <locale>fr_FR</locale>
+  <definition><![CDATA[définitions
+    soit texte étant "**Je demande l'asile en France** de la Préfecture des Yvelines" ;
+    soit url étant "https://www.yvelines.gouv.fr/Demarches/Accueil-des-etrangers-dans-les-Yvelines/Asile/Je-demande-l-asile-en-France" ;
+    soit page_demande_asile_yvelines étant "[" + texte + "]" + "(" + url + ")" ;
+
+    
+si
+    intention est depot_de_demande_d_asile
+
+alors
+    assigner le handling de 'la décision' à DEFLECTION ;
+    assigner l'acknowledgement to requester de 'la décision' à "Veuillez consulter la page " + page_demande_asile_yvelines ;
+    assigner le response template id de 'la décision' à "" ;
+    assigner le work basket de 'la décision' à "réorientation" ;
+    assigner le priority de 'la décision' à MEDIUM ;]]></definition>
+</ilog.rules.studio.model.brl:ActionRule>

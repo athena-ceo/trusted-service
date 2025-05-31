@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>expiration_d_une_api</name>
+  <uuid>23a9a98e-8d58-4377-bb73-48343bbbf792</uuid>
+</ilog.rules.studio.model.base:RulePackage>

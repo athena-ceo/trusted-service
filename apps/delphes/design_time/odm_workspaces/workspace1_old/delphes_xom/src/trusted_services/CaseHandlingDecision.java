@@ -4,22 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CaseHandlingDecision {
-
-	Handling handling;
-
-	String acknowledgement_to_requester;
-	String response_template_id;
-
-	String work_basket;
-	Priority priority;
-	List<String> notes = new ArrayList<>();
-	
-	public Handling getHandling() {
-		return handling;
+	public Treatment getTreatment() {
+		return treatment;
 	}
 
-	public void setHandling(Handling handling) {
-		this.handling = handling;
+	public void setTreatment(Treatment treatment) {
+		this.treatment = treatment;
 	}
 
 	public String getAcknowledgement_to_requester() {
@@ -61,8 +51,13 @@ public class CaseHandlingDecision {
 	public void setNotes(List<String> notes) {
 		this.notes = notes;
 	}
-	
-	public void addNote(String note) {
-		this.notes.add(note);
-	}
+
+	Treatment treatment;
+
+	String acknowledgement_to_requester;
+	String response_template_id;
+
+	String work_basket;
+	Priority priority;
+	List<String> notes = new ArrayList<>();
 }

@@ -8,7 +8,7 @@ from src.backend.backend.application import App
 class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
     def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
 
-        treatment: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
+        handling: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
 
         # Decisions related to the communication with the requester
         acknowledgement_to_requester: str
@@ -20,7 +20,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         notes: list[str] = []
 
         if case_handling_decision_input.intention_id == "expiration_d_une_api":
-            treatment = "AGENT"
+            handling = "AGENT"
             acknowledgement_to_requester = "Nous vous répondrons dans les meilleurs délais à propos de l'expiration de votre API"
             response_template = "expiration_d_une_api"
             work_basket = "api_a_renouveler"
@@ -41,7 +41,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
                 notes.append("Risque sur l'emploi")
 
         else:
-            treatment = "DEFLECTION"
+            handling = "DEFLECTION"
             acknowledgement_to_requester = "Veuillez aller sur le site de l'OFPRA"
             response_template = ""
             work_basket = "réorientation"
@@ -50,7 +50,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         # subject = f"AGDREF - {work_basket} - {priority}"
 
         return CaseHandlingDecisionOutput(
-            treatment=treatment,
+            handling=handling,
             acknowledgement_to_requester=acknowledgement_to_requester,
             response_template_id=response_template,
             work_basket=work_basket,

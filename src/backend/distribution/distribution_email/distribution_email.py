@@ -138,7 +138,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             subject=f"{case_handling_decision_output.work_basket} - {case_handling_decision_output.priority}",
             body=template_body)
 
-        if case_handling_decision_output.treatment == "DEFLECTION":
+        if case_handling_decision_output.handling == "DEFLECTION":
             processing_report = "<h3>Réorientation du demandeur</h3><br>"
         else:
             processing_report = "<h3>Envoi d'un mail pour traitement par un agent</h3><br>"

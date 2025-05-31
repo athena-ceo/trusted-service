@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>ou_en_est_ma_demande_d_asile_en_cours</name>
+  <uuid>7967490e-9a42-4065-9336-7a585c4a5cc1</uuid>
+</ilog.rules.studio.model.base:RulePackage>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
+  <name>1 traitement</name>
+  <uuid>9e301e18-564c-4e64-89ed-e52d1743e9e5</uuid>
+  <locale>fr_FR</locale>
+  <definition><![CDATA[si
+    intention est expiration_d_une_api
+alors
+    assigner le handling de 'la décision' à AGENT ;
+    assigner l'acknowledgement to requester de 'la décision' à "Votre demande a été prise en compte. Un agent la traitera dans les plus brefs délais." ;
+    assigner le response template id de 'la décision' à "api-a-renouveler" ;
+    assigner le work basket de 'la décision' à "api-a-renouveler" ;
+    assigner le priority de 'la décision' à MEDIUM ;]]></definition>
+</ilog.rules.studio.model.brl:ActionRule>

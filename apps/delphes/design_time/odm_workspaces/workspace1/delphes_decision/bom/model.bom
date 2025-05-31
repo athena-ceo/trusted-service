@@ -1,7 +1,7 @@
 
 #loadGetterSetterAsProperties
 property origin "xom:/delphes_decision//delphes_xom"
-property uuid "14323eb8-53ca-4204-9625-b305b3444c81"
+property uuid "aa5df987-ad9e-4216-a387-c2dbcaa3132d"
 package delphes;
 
 
@@ -11,7 +11,58 @@ class Case
     string date_expiration_api;
     string departement;
     boolean mention_de_risque_sur_l_emploi;
+    boolean refugie_ou_protege_subsidiaire;
     Case();
+}
+
+final class Intention
+        extends java.lang.Enum
+{
+    domain 
+    {
+        static expiration_d_une_api,
+        static depot_de_demande_d_asile,
+        static ou_en_est_ma_demande_d_asile_en_cours,
+        static expiration_d_une_atda,
+        static mise_a_jour_infos_atda,
+        static demande_en_rapport_avec_procedure_dublin_en_cours,
+        static ressortissant_ukrainien_demande_un_nouveau_titre,
+        static ressortissant_ukrainien_demande_renouvellement_de_son_titre,
+        static ressortissant_ukrainien_autre_demande,
+        static demande_d_un_etudiant_en_programme_de_mobilite,
+        static demande_d_un_stagiaire_associe_en_profession_medicale,
+        static difficultes_avec_le_site_de_l_anef,
+        static changement_statut_etudiant_a_salarie,
+        static changement_statut_etudiant_a_recherche_d_emploi,
+        static sollicitation_titre_vie_privee_et_familiale_hors_anef,
+        static depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,
+        static depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,
+        static depot_d_une_demande_de_titre_et_autre_probleme_anef,
+        static je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,
+        static autres
+    }
+    static final readonly delphes.Intention autres;
+    static final readonly delphes.Intention changement_statut_etudiant_a_recherche_d_emploi;
+    static final readonly delphes.Intention changement_statut_etudiant_a_salarie;
+    static final readonly delphes.Intention demande_d_un_etudiant_en_programme_de_mobilite;
+    static final readonly delphes.Intention demande_d_un_stagiaire_associe_en_profession_medicale;
+    static final readonly delphes.Intention demande_en_rapport_avec_procedure_dublin_en_cours;
+    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef;
+    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_autre_probleme_anef;
+    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef;
+    static final readonly delphes.Intention depot_de_demande_d_asile;
+    static final readonly delphes.Intention difficultes_avec_le_site_de_l_anef;
+    static final readonly delphes.Intention expiration_d_une_api;
+    static final readonly delphes.Intention expiration_d_une_atda;
+    static final readonly delphes.Intention je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel;
+    static final readonly delphes.Intention mise_a_jour_infos_atda;
+    static final readonly delphes.Intention ou_en_est_ma_demande_d_asile_en_cours;
+    static final readonly delphes.Intention ressortissant_ukrainien_autre_demande;
+    static final readonly delphes.Intention ressortissant_ukrainien_demande_renouvellement_de_son_titre;
+    static final readonly delphes.Intention ressortissant_ukrainien_demande_un_nouveau_titre;
+    static final readonly delphes.Intention sollicitation_titre_vie_privee_et_familiale_hors_anef;
+    static delphes.Intention valueOf(string arg);
+    static delphes.Intention[] values();
 }
 
 package trusted_services;
@@ -20,12 +71,24 @@ package trusted_services;
 class CaseHandlingDecision
 {
     string acknowledgement_to_requester;
+    trusted_services.Handling handling;
     java.util.List notes domain 0,* class string;
     trusted_services.Priority priority;
     string response_template_id;
-    trusted_services.Treatment treatment;
     string work_basket;
     CaseHandlingDecision();
+    void addNote(string arg);
+}
+
+final class Handling
+        extends java.lang.Enum
+{
+    domain {static AUTOMATED, static AGENT, static DEFLECTION}
+    static final readonly trusted_services.Handling AGENT;
+    static final readonly trusted_services.Handling AUTOMATED;
+    static final readonly trusted_services.Handling DEFLECTION;
+    static trusted_services.Handling valueOf(string arg);
+    static trusted_services.Handling[] values();
 }
 
 final class Priority
@@ -41,14 +104,10 @@ final class Priority
     static trusted_services.Priority[] values();
 }
 
-final class Treatment
-        extends java.lang.Enum
+package virt;
+
+
+class Virt
 {
-    domain {static AUTOMATED, static AGENT, static DEFLECTION}
-    static final readonly trusted_services.Treatment AGENT;
-    static final readonly trusted_services.Treatment AUTOMATED;
-    static final readonly trusted_services.Treatment DEFLECTION;
-    static trusted_services.Treatment valueOf(string arg);
-    static trusted_services.Treatment[] values();
 }
 

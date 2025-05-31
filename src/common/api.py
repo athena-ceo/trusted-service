@@ -18,7 +18,7 @@ class CaseHandlingDecisionInput(BaseModel):
 
 
 class CaseHandlingDecisionOutput(BaseModel):
-    treatment: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
+    handling: Literal["AUTOMATED", "AGENT", "DEFLECTION"]
 
     # Decisions related to the communication with the requester
     acknowledgement_to_requester: str

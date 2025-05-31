@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>depot_de_demande_d_asile</name>
+  <uuid>20bb033b-7ba4-4f7b-8e3f-6c5b19db41b5</uuid>
+</ilog.rules.studio.model.base:RulePackage>

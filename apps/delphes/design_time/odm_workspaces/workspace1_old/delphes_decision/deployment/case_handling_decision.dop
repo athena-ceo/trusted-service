@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.rules.studio.model.decisionservice:Operation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.ibm.rules.studio.model.decisionservice="http://com.ibm.rules.studio/model/decisionservice.ecore" xmlns:ilog.rules.studio.model.query.extractor="http://ilog.rules.studio/model/query/extractor.ecore" rulesetName="case_handling_decision" usingRuleflow="true" ruleflowName="flux_principal" targetRuleProjectName="delphes_decision">
+  <name>case_handling_decision</name>
+  <uuid>3b95fc07-6efa-4903-aa00-13084f633212</uuid>
+  <referencedVariables variableName="intention" variableSetName="var">
+    <variableSet href="../rules/var.var#884ace8f-e1ca-4cbf-8130-a2d1a5a8ccbb"/>
+  </referencedVariables>
+  <referencedVariables variableName="decision" variableSetName="var" direction="OUT">
+    <variableSet href="../rules/var.var#884ace8f-e1ca-4cbf-8130-a2d1a5a8ccbb"/>
+  </referencedVariables>
+  <referencedVariables variableName="case_" variableSetName="var">
+    <variableSet href="../rules/var.var#884ace8f-e1ca-4cbf-8130-a2d1a5a8ccbb"/>
+  </referencedVariables>
+  <ruleflow href="../rules/flux_principal.rfl#1bbcfcce-21ee-4f32-bb5e-d1eaca08ac26"/>
+  <extractor xsi:type="ilog.rules.studio.model.query.extractor:QueryExtractor" name="case_handling_decision_extractor" validator="Default Validator"/>
+  <targetRuleProject href="../../delphes_decision#72192058-84db-4c15-846a-e2cdad72b649"/>
+</com.ibm.rules.studio.model.decisionservice:Operation>

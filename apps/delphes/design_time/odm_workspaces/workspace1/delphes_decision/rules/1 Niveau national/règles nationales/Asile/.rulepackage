@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>Asile</name>
+  <uuid>2de511a3-09ea-49d4-9de8-bb8d6bd770db</uuid>
+</ilog.rules.studio.model.base:RulePackage>

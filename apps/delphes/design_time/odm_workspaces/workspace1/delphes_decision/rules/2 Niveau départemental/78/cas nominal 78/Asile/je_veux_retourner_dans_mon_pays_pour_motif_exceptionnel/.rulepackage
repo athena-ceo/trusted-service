@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel</name>
+  <uuid>3d48afce-8ec7-4ed7-b049-75eb6650a294</uuid>
+</ilog.rules.studio.model.base:RulePackage>

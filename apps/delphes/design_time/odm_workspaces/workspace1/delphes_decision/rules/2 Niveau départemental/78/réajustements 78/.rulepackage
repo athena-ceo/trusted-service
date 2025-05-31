@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>réajustements 78</name>
+  <uuid>7fa730d6-681c-4ed3-9420-d7242bd645d6</uuid>
+</ilog.rules.studio.model.base:RulePackage>

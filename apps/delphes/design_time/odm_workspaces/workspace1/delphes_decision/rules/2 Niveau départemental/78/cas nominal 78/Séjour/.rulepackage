@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:RulePackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>Séjour</name>
+  <uuid>e2700928-0aec-483a-98d8-ff61d31e4aff</uuid>
+</ilog.rules.studio.model.base:RulePackage>

@@ -80,31 +80,9 @@ def submit_request():
     context.stage = 3
 
 
-text3 = """Attestation de prolongation expirée depuis le 11 octobre. 
-    Bonjour, 
-    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
-    
-    Sans action dans les prochains jours, il risquera de perdre son travail.
-    
-    Je vous remercie par avance et vous prie de noter l'urgence. Il risque son emploi, c'est donc très important.
-    
-    
-    Ses coordonnées: 
-    Monsieur C C 78500 Sartrouville 07 00 00 00 00 CC@yahoo.com 
-    
-    Bien à vous.
-"""
-
-text2 = """Bonjour,
-
-J'ai effectué la démarche en ligne sur ANEF pour le renouvellement de mon titre séjour - passeport talent le 09-08-2023. j'ai reçu l'attestation de prolongation directement après l'expiration de mon titre de séjour. cette dernière à été renouvelée le 29-02-2024 et expirée le 28/05/2024.
-Mais jusqu'à ce jour je n'ai pas reçu une nouvelle API sachant que l’état d'avancement est toujours en instruction.alors que selon l'article R431-15-1 du code de l'entrée et du séjour des étrangers et du droit d'asile : "... Lorsque l'instruction se prolonge, en raison de circonstances particulières, au-delà de la date d'expiration de l'attestation, celle-ci est renouvelée aussi longtemps que le préfet n'a pas statué sur la demande." par conséquent, j'ai envoyé plusieurs courriel de relance à la préfecture mais sans réponse.
-Mon contrat de travail et suspendu et dans l'impossibilité de fournir ce document dans les plus brefs délais, je verrai malheureusement mon contrat de travail résilié.
-"""
-
 text1 = """Attestation de prolongation expirée depuis le 11 octobre. 
     Bonjour, 
-    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
+    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, qui bénéficie du statut de protection subsidiaire, et dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003. En effet, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
     
     Sans action dans les prochains jours, il risquera de perdre son travail.
     

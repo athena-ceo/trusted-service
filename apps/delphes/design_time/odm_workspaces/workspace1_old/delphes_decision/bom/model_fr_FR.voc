@@ -1,0 +1,42 @@
+# Vocabulary Properties
+uuid = 43e64639-1025-47b2-a3d0-7b29e7d83aec
+
+# delphes.Case
+delphes.Case#concept.label = case
+delphes.Case.date_demande#phrase.action = assigner le date demande {this,PARTITIVE_ARTICLE} à {date demande}
+delphes.Case.date_demande#phrase.navigation = {date demande} {this,PARTITIVE_ARTICLE}
+delphes.Case.date_expiration_api#phrase.action = assigner le date expiration api {this,PARTITIVE_ARTICLE} à {date expiration api}
+delphes.Case.date_expiration_api#phrase.navigation = {date expiration api} {this,PARTITIVE_ARTICLE}
+delphes.Case.departement#phrase.action = assigner le departement {this,PARTITIVE_ARTICLE} à {departement}
+delphes.Case.departement#phrase.navigation = {departement} {this,PARTITIVE_ARTICLE}
+delphes.Case.mention_de_risque_sur_l_emploi#phrase.action = mettre à {mention de risque sur l emploi} que {this} est mention de risque sur l emploi
+delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = {this} est mention de risque sur l emploi
+
+# trusted_services.CaseHandlingDecision
+trusted_services.CaseHandlingDecision#concept.label = case handling decision
+trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.action = assigner l'acknowledgement to requester {this,PARTITIVE_ARTICLE} à {acknowledgement to requester}
+trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.navigation = {acknowledgement to requester} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.notes#phrase.action = assigner les notes {this,PARTITIVE_ARTICLE} à {note}
+trusted_services.CaseHandlingDecision.notes#phrase.navigation = {note} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.priority#phrase.action = assigner le priority {this,PARTITIVE_ARTICLE} à {priority}
+trusted_services.CaseHandlingDecision.priority#phrase.navigation = {priority} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.response_template_id#phrase.action = assigner le response template id {this,PARTITIVE_ARTICLE} à {response template id}
+trusted_services.CaseHandlingDecision.response_template_id#phrase.navigation = {response template id} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.treatment#phrase.action = assigner le treatment {this,PARTITIVE_ARTICLE} à {treatment}
+trusted_services.CaseHandlingDecision.treatment#phrase.navigation = {treatment} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.work_basket#phrase.action = assigner le work basket {this,PARTITIVE_ARTICLE} à {work basket}
+trusted_services.CaseHandlingDecision.work_basket#phrase.navigation = {work basket} {this,PARTITIVE_ARTICLE}
+
+# trusted_services.Priority
+trusted_services.Priority#concept.label = priority
+trusted_services.Priority.HIGH#instance.label = HIGH
+trusted_services.Priority.LOW#instance.label = LOW
+trusted_services.Priority.MEDIUM#instance.label = MEDIUM
+trusted_services.Priority.VERY_HIGH#instance.label = VERY_HIGH
+trusted_services.Priority.VERY_LOW#instance.label = VERY_LOW
+
+# trusted_services.Treatment
+trusted_services.Treatment#concept.label = treatment
+trusted_services.Treatment.AGENT#instance.label = AGENT
+trusted_services.Treatment.AUTOMATED#instance.label = AUTOMATED
+trusted_services.Treatment.DEFLECTION#instance.label = DEFLECTION

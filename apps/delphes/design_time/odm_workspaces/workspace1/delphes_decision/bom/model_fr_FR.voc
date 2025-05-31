@@ -1,31 +1,63 @@
 # Vocabulary Properties
-uuid = 43e64639-1025-47b2-a3d0-7b29e7d83aec
+uuid = 720e98dd-3575-475a-b47c-d7d4f403e97d
 
 # delphes.Case
 delphes.Case#concept.label = case
-delphes.Case.date_demande#phrase.action = assigner le date demande {this,PARTITIVE_ARTICLE} à {date demande}
-delphes.Case.date_demande#phrase.navigation = {date demande} {this,PARTITIVE_ARTICLE}
-delphes.Case.date_expiration_api#phrase.action = assigner le date expiration api {this,PARTITIVE_ARTICLE} à {date expiration api}
-delphes.Case.date_expiration_api#phrase.navigation = {date expiration api} {this,PARTITIVE_ARTICLE}
-delphes.Case.departement#phrase.action = assigner le departement {this,PARTITIVE_ARTICLE} à {departement}
-delphes.Case.departement#phrase.navigation = {departement} {this,PARTITIVE_ARTICLE}
+delphes.Case.date_demande#phrase.action = assigner le date demande {this, PARTITIVE_ARTICLE} à {date demande}
+delphes.Case.date_demande#phrase.navigation = {date demande} {this, PARTITIVE_ARTICLE}
+delphes.Case.date_expiration_api#phrase.action = assigner le date expiration api {this, PARTITIVE_ARTICLE} à {date expiration api}
+delphes.Case.date_expiration_api#phrase.navigation = {date expiration api} {this, PARTITIVE_ARTICLE}
+delphes.Case.departement#phrase.action = assigner le departement {this, PARTITIVE_ARTICLE} à {departement}
+delphes.Case.departement#phrase.navigation = {departement} {this, PARTITIVE_ARTICLE}
 delphes.Case.mention_de_risque_sur_l_emploi#phrase.action = mettre à {mention de risque sur l emploi} que {this} est mention de risque sur l emploi
 delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = {this} est mention de risque sur l emploi
+delphes.Case.refugie_ou_protege_subsidiaire#phrase.action = mettre à {refugie ou protege subsidiaire} que {this} est refugie ou protege subsidiaire
+delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = {this} est refugie ou protege subsidiaire
+
+# delphes.Intention
+delphes.Intention#concept.label = intention
+delphes.Intention.autres#instance.label = autres
+delphes.Intention.changement_statut_etudiant_a_recherche_d_emploi#instance.label = changement_statut_etudiant_a_recherche_d_emploi
+delphes.Intention.changement_statut_etudiant_a_salarie#instance.label = changement_statut_etudiant_a_salarie
+delphes.Intention.demande_d_un_etudiant_en_programme_de_mobilite#instance.label = demande_d_un_etudiant_en_programme_de_mobilite
+delphes.Intention.demande_d_un_stagiaire_associe_en_profession_medicale#instance.label = demande_d_un_stagiaire_associe_en_profession_medicale
+delphes.Intention.demande_en_rapport_avec_procedure_dublin_en_cours#instance.label = demande_en_rapport_avec_procedure_dublin_en_cours
+delphes.Intention.depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef#instance.label = depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef
+delphes.Intention.depot_d_une_demande_de_titre_et_autre_probleme_anef#instance.label = depot_d_une_demande_de_titre_et_autre_probleme_anef
+delphes.Intention.depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef#instance.label = depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef
+delphes.Intention.depot_de_demande_d_asile#instance.label = depot_de_demande_d_asile
+delphes.Intention.difficultes_avec_le_site_de_l_anef#instance.label = difficultes_avec_le_site_de_l_anef
+delphes.Intention.expiration_d_une_api#instance.label = expiration_d_une_api
+delphes.Intention.expiration_d_une_atda#instance.label = expiration_d_une_atda
+delphes.Intention.je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel#instance.label = je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel
+delphes.Intention.mise_a_jour_infos_atda#instance.label = mise_a_jour_infos_atda
+delphes.Intention.ou_en_est_ma_demande_d_asile_en_cours#instance.label = ou_en_est_ma_demande_d_asile_en_cours
+delphes.Intention.ressortissant_ukrainien_autre_demande#instance.label = ressortissant_ukrainien_autre_demande
+delphes.Intention.ressortissant_ukrainien_demande_renouvellement_de_son_titre#instance.label = ressortissant_ukrainien_demande_renouvellement_de_son_titre
+delphes.Intention.ressortissant_ukrainien_demande_un_nouveau_titre#instance.label = ressortissant_ukrainien_demande_un_nouveau_titre
+delphes.Intention.sollicitation_titre_vie_privee_et_familiale_hors_anef#instance.label = sollicitation_titre_vie_privee_et_familiale_hors_anef
 
 # trusted_services.CaseHandlingDecision
 trusted_services.CaseHandlingDecision#concept.label = case handling decision
-trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.action = assigner l'acknowledgement to requester {this,PARTITIVE_ARTICLE} à {acknowledgement to requester}
-trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.navigation = {acknowledgement to requester} {this,PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.notes#phrase.action = assigner les notes {this,PARTITIVE_ARTICLE} à {note}
-trusted_services.CaseHandlingDecision.notes#phrase.navigation = {note} {this,PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.priority#phrase.action = assigner le priority {this,PARTITIVE_ARTICLE} à {priority}
-trusted_services.CaseHandlingDecision.priority#phrase.navigation = {priority} {this,PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.response_template_id#phrase.action = assigner le response template id {this,PARTITIVE_ARTICLE} à {response template id}
-trusted_services.CaseHandlingDecision.response_template_id#phrase.navigation = {response template id} {this,PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.treatment#phrase.action = assigner le treatment {this,PARTITIVE_ARTICLE} à {treatment}
-trusted_services.CaseHandlingDecision.treatment#phrase.navigation = {treatment} {this,PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.work_basket#phrase.action = assigner le work basket {this,PARTITIVE_ARTICLE} à {work basket}
-trusted_services.CaseHandlingDecision.work_basket#phrase.navigation = {work basket} {this,PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.action = assigner l'acknowledgement to requester {this, PARTITIVE_ARTICLE} à {acknowledgement to requester}
+trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.navigation = {acknowledgement to requester} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.addNote(java.lang.String)#phrase.action = ajouter {0} à la liste des notes de {this}
+trusted_services.CaseHandlingDecision.handling#phrase.action = assigner le handling {this, PARTITIVE_ARTICLE} à {handling}
+trusted_services.CaseHandlingDecision.handling#phrase.navigation = {handling} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.notes#phrase.action = assigner les notes {this, PARTITIVE_ARTICLE} à {note}
+trusted_services.CaseHandlingDecision.notes#phrase.navigation = {note} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.priority#phrase.action = assigner le priority {this, PARTITIVE_ARTICLE} à {priority}
+trusted_services.CaseHandlingDecision.priority#phrase.navigation = {priority} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.response_template_id#phrase.action = assigner le response template id {this, PARTITIVE_ARTICLE} à {response template id}
+trusted_services.CaseHandlingDecision.response_template_id#phrase.navigation = {response template id} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.work_basket#phrase.action = assigner le work basket {this, PARTITIVE_ARTICLE} à {work basket}
+trusted_services.CaseHandlingDecision.work_basket#phrase.navigation = {work basket} {this, PARTITIVE_ARTICLE}
+
+# trusted_services.Handling
+trusted_services.Handling#concept.label = handling
+trusted_services.Handling.AGENT#instance.label = AGENT
+trusted_services.Handling.AUTOMATED#instance.label = AUTOMATED
+trusted_services.Handling.DEFLECTION#instance.label = DEFLECTION
 
 # trusted_services.Priority
 trusted_services.Priority#concept.label = priority
@@ -34,9 +66,3 @@ trusted_services.Priority.LOW#instance.label = LOW
 trusted_services.Priority.MEDIUM#instance.label = MEDIUM
 trusted_services.Priority.VERY_HIGH#instance.label = VERY_HIGH
 trusted_services.Priority.VERY_LOW#instance.label = VERY_LOW
-
-# trusted_services.Treatment
-trusted_services.Treatment#concept.label = treatment
-trusted_services.Treatment.AGENT#instance.label = AGENT
-trusted_services.Treatment.AUTOMATED#instance.label = AUTOMATED
-trusted_services.Treatment.DEFLECTION#instance.label = DEFLECTION

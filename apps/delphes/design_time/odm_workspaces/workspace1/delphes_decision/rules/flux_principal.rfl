@@ -15,7 +15,22 @@ context.insert(decision);]]></Actions>
       </StartTask>
       <RuleTask ExecutionMode="Fastpath" ExitCriteria="None" Identifier="initialisations" Ordering="Default">
         <RuleList>
-          <Package Name="initialisations"/>
+          <Package Name="1 Niveau national.initialisations"/>
+        </RuleList>
+      </RuleTask>
+      <RuleTask ExecutionMode="Fastpath" ExitCriteria="None" Identifier="règles nationales" Ordering="Default">
+        <RuleList>
+          <Package Name="1 Niveau national.règles nationales"/>
+        </RuleList>
+      </RuleTask>
+      <RuleTask ExecutionMode="Fastpath" ExitCriteria="None" Identifier="réajustements 78" Ordering="Default">
+        <RuleList>
+          <Package Name="2 Niveau départemental.78.réajustements 78"/>
+        </RuleList>
+      </RuleTask>
+      <RuleTask ExecutionMode="Fastpath" ExitCriteria="None" Identifier="cas nominal 78" Ordering="Default">
+        <RuleList>
+          <Package Name="2 Niveau départemental.78.cas nominal 78"/>
         </RuleList>
       </RuleTask>
       <StopTask Identifier="task_1"/>
@@ -24,21 +39,40 @@ context.insert(decision);]]></Actions>
       <TaskNode Identifier="node2" Task="task_0"/>
       <TaskNode Identifier="node3" Task="task_1"/>
       <TaskNode Identifier="node_0" Task="initialisations"/>
+      <TaskNode Identifier="node_1" Task="règles nationales"/>
+      <TaskNode Identifier="node_2" Task="réajustements 78"/>
+      <TaskNode Identifier="node_3" Task="cas nominal 78"/>
     </NodeList>
     <TransitionList>
-      <Transition Identifier="link5" Source="node_0" Target="node3"/>
-      <Transition Identifier="link4" Source="node2" Target="node_0"/>
+      <Transition Identifier="link2" Source="node2" Target="node_0"/>
+      <Transition Identifier="link3" Source="node_0" Target="node_1"/>
+      <Transition Identifier="link4" Source="node_1" Target="node_3">
+        <Conditions Language="bal"><![CDATA[le departement de 'le cas' est "78"]]></Conditions>
+      </Transition>
+      <Transition Identifier="link5" Source="node_3" Target="node_2"/>
+      <Transition Identifier="link6" Source="node_2" Target="node3"/>
+      <Transition Identifier="link7" Source="node_1" Target="node3"/>
     </TransitionList>
   </Body>
   <Resources>
     <ResourceSet Locale="fr_FR">
-      <Data Name="node3#y">165.0</Data>
+      <Data Name="node3#y">405.0</Data>
       <Data Name="node2#y">15.0</Data>
-      <Data Name="node3#x">58.989</Data>
-      <Data Name="node2#x">58.989</Data>
+      <Data Name="node3#x">71.598</Data>
+      <Data Name="node2#x">71.598</Data>
       <Data Name="node_0#label">initialisations</Data>
-      <Data Name="node_0#x">58.989</Data>
+      <Data Name="node_2#label">réajustements 78</Data>
+      <Data Name="node_1#label">règles nationales</Data>
+      <Data Name="node_3#label">cas nominal 78</Data>
+      <Data Name="link4#label">78</Data>
+      <Data Name="node_3#y">250.0</Data>
+      <Data Name="node_0#x">71.598</Data>
       <Data Name="node_0#y">90.0</Data>
+      <Data Name="node_1#x">71.598</Data>
+      <Data Name="node_1#y">170.0</Data>
+      <Data Name="node_2#x">119.764</Data>
+      <Data Name="node_2#y">330.0</Data>
+      <Data Name="node_3#x">119.764</Data>
     </ResourceSet>
   </Resources>
   <Properties/>
