@@ -113,10 +113,10 @@ def build_system_prompt(config: TextAnalysisConfiguration, features: list[Featur
 
 
 class TextAnalyzer:
-    def __init__(self, case_model: CaseModel, config: TextAnalysisConfiguration, ):
+    def __init__(self, case_model: CaseModel, runtime_directory: str, config: TextAnalysisConfiguration, ):
 
         features: list[Feature] = []
-        for case_field in case_model.case_fields: ## TODO: Do that in the constructor of TextAnalyzer
+        for case_field in case_model.case_fields:  ## TODO: Do that in the constructor of TextAnalyzer
             if case_field.extraction != "DO NOT EXTRACT":
                 feature = Feature(id=case_field.id,
                                   label=case_field.label,
@@ -124,9 +124,10 @@ class TextAnalyzer:
                                   description=case_field.description,
                                   highlight_fragments=case_field.extraction == "EXTRACT AND HIGHLIGHT")
                 features.append(feature)
-
-        self.config2: TextAnalysisConfiguration = config
         self.features: list[Feature] = features
+
+        self.runtime_directory: str = runtime_directory
+        self.config2: TextAnalysisConfiguration = config
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(config, features)
         self.templated_system_prompt: str = build_system_prompt(self.config2, self.features, self.analysis_response_model)
         self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOpenAI()
@@ -146,8 +147,10 @@ class TextAnalyzer:
 
         # read_from_cache = True
 
+        cache_filename = self.runtime_directory + "/cache.json"
+
         if self.config2.read_from_cache:
-            with open(file="cache.json", mode="r", encoding="utf-8") as f:
+            with open(file=cache_filename, mode="r", encoding="utf-8") as f:
                 analysis_result = json.load(f)
         else:
             if self.config2.response_format_type == "json_object":
@@ -162,7 +165,7 @@ class TextAnalyzer:
 
             # save_to_cache = True
             if self.config2.save_to_cache:
-                with open(file="cache.json", mode="w", encoding="utf-8") as f:
+                with open(file=cache_filename, mode="w", encoding="utf-8") as f:
                     json.dump(analysis_result, f, ensure_ascii=False)
 
         # Joining with collection of intentions

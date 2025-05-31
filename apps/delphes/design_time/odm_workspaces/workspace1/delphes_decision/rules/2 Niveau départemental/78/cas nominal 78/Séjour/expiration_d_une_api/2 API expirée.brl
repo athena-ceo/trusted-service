@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
+  <name>2 API expirée</name>
+  <uuid>1dd94802-6549-4607-a782-1314326e3793</uuid>
+  <locale>fr_FR</locale>
+  <definition><![CDATA[définitions
+    soit 'nb_jours' étant le nombre de jours depuis le date expiration api de 'le cas' jusqu'à le date demande de 'le cas' ;
+
+si
+    intention est expiration_d_une_api
+    et nb_jours est au moins 0
+
+alors
+    priorité = VERY_HIGH ;
+    ajouter la note: "API expirée depuis " + nb_jours + " jour(s)" ;]]></definition>
+</ilog.rules.studio.model.brl:ActionRule>

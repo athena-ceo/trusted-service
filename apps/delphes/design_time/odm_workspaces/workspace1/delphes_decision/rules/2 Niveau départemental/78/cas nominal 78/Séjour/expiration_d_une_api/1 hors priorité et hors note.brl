@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
-  <name>réfugié ou protégé subsidiaire</name>
-  <uuid>e9d40388-a2f7-49e3-9037-f7ad29314687</uuid>
+  <name>1 hors priorité et hors note</name>
+  <uuid>9e301e18-564c-4e64-89ed-e52d1743e9e5</uuid>
   <locale>fr_FR</locale>
-  <definition><![CDATA[
-
-    
-si
-    intention est je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel 
-    et 'le cas' est refugie ou protege subsidiaire
-    
+  <definition><![CDATA[si
+    intention est expiration_d_une_api
 alors
     traitement = AGENT ;
     notification au demandeur = "Votre demande a été prise en compte. Un agent la traitera dans les plus brefs délais." ;
-    template de réponse = "sauf-conduits" ;
-    bannette = "sauf-conduits" ;
-    priorité = HIGH  ;]]></definition>
+    template de réponse = "api-a-renouveler" ;
+    bannette = "api-a-renouveler" ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

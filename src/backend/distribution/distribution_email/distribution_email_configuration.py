@@ -4,10 +4,12 @@ from pydantic import BaseModel
 
 from src.common.configuration import Configuration, load_configuration_from_workbook
 
-class ResponseTemplate(BaseModel):
+
+class EmailTemplate(BaseModel):
     id: str
     subject: str
     body: str
+
 
 class DistributionEmailConfiguration(Configuration):
     hub_email_address: str
@@ -17,13 +19,16 @@ class DistributionEmailConfiguration(Configuration):
     password: str
     smtp_port: int
 
-    email_templates: list[ResponseTemplate]
+    email_templates: list[EmailTemplate]
 
 
 def load_email_configuration_from_workbook(filename: str) -> DistributionEmailConfiguration:
     conf: Configuration = load_configuration_from_workbook(filename=filename,
                                                            main_tab="email_configuration",
-                                                           collections=[("email_templates", ResponseTemplate)],
+                                                           collections=[("email_templates", EmailTemplate)],
                                                            configuration_type=DistributionEmailConfiguration)
-    # print(conf)
-    return cast(DistributionEmailConfiguration, conf)
+    email_configuration: DistributionEmailConfiguration = cast(DistributionEmailConfiguration, conf)
+    for email_template in email_configuration.email_templates:
+        email_template.body = email_template.body.replace("\n", "<br>")
+
+    return email_configuration

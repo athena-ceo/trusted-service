@@ -9,8 +9,7 @@ delphes.Case.date_expiration_api#phrase.action = assigner le date expiration api
 delphes.Case.date_expiration_api#phrase.navigation = {date expiration api} {this, PARTITIVE_ARTICLE}
 delphes.Case.departement#phrase.action = assigner le departement {this, PARTITIVE_ARTICLE} à {departement}
 delphes.Case.departement#phrase.navigation = {departement} {this, PARTITIVE_ARTICLE}
-delphes.Case.mention_de_risque_sur_l_emploi#phrase.action = mettre à {mention de risque sur l emploi} que {this} est mention de risque sur l emploi
-delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = {this} est mention de risque sur l emploi
+delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = il est fait mention de risque sur l emploi
 delphes.Case.refugie_ou_protege_subsidiaire#phrase.action = mettre à {refugie ou protege subsidiaire} que {this} est refugie ou protege subsidiaire
 delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = {this} est refugie ou protege subsidiaire
 
@@ -39,19 +38,20 @@ delphes.Intention.sollicitation_titre_vie_privee_et_familiale_hors_anef#instance
 
 # trusted_services.CaseHandlingDecision
 trusted_services.CaseHandlingDecision#concept.label = case handling decision
-trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.action = assigner l'acknowledgement to requester {this, PARTITIVE_ARTICLE} à {acknowledgement to requester}
-trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.navigation = {acknowledgement to requester} {this, PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.addNote(java.lang.String)#phrase.action = ajouter {0} à la liste des notes de {this}
-trusted_services.CaseHandlingDecision.handling#phrase.action = assigner le handling {this, PARTITIVE_ARTICLE} à {handling}
-trusted_services.CaseHandlingDecision.handling#phrase.navigation = {handling} {this, PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.notes#phrase.action = assigner les notes {this, PARTITIVE_ARTICLE} à {note}
-trusted_services.CaseHandlingDecision.notes#phrase.navigation = {note} {this, PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.priority#phrase.action = assigner le priority {this, PARTITIVE_ARTICLE} à {priority}
-trusted_services.CaseHandlingDecision.priority#phrase.navigation = {priority} {this, PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.response_template_id#phrase.action = assigner le response template id {this, PARTITIVE_ARTICLE} à {response template id}
-trusted_services.CaseHandlingDecision.response_template_id#phrase.navigation = {response template id} {this, PARTITIVE_ARTICLE}
-trusted_services.CaseHandlingDecision.work_basket#phrase.action = assigner le work basket {this, PARTITIVE_ARTICLE} à {work basket}
-trusted_services.CaseHandlingDecision.work_basket#phrase.navigation = {work basket} {this, PARTITIVE_ARTICLE}
+trusted_services.CaseHandlingDecision.acknowledgement_to_requester#phrase.action = notification au demandeur = {acknowledgement to requester}
+trusted_services.CaseHandlingDecision.addNote(java.lang.String)#phrase.action = ajouter la note: {0}
+trusted_services.CaseHandlingDecision.handling#phrase.action = traitement = {handling}
+trusted_services.CaseHandlingDecision.increasePriorityLevel()#phrase.action = augmenter le niveau de priorité
+trusted_services.CaseHandlingDecision.priority#phrase.action = priorité = {priority}
+trusted_services.CaseHandlingDecision.response_template_id#phrase.action = template de réponse = {response template id}
+trusted_services.CaseHandlingDecision.work_basket#phrase.action = bannette = {work basket}
+
+# trusted_services.DateManagement
+trusted_services.DateManagement#concept.label = date management
+trusted_services.DateManagement.coincident(java.lang.String,java.lang.String)#phrase.navigation = {0} et {1} coincident
+trusted_services.DateManagement.estApres(java.lang.String,java.lang.String)#phrase.navigation = {0} est après {1}
+trusted_services.DateManagement.estAvant(java.lang.String,java.lang.String)#phrase.navigation = {0} est avant {1}
+trusted_services.DateManagement.nbDeJoursDeDate1aDate2(java.lang.String,java.lang.String)#phrase.navigation = le nombre de jours depuis {0} jusqu'à {1}
 
 # trusted_services.Handling
 trusted_services.Handling#concept.label = handling

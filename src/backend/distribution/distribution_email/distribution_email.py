@@ -2,7 +2,7 @@ from typing import Optional
 
 from src.backend.decision.decision import CaseHandlingDecisionOutput
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
-from src.backend.distribution.distribution_email.distribution_email_configuration import ResponseTemplate
+from src.backend.distribution.distribution_email.distribution_email_configuration import EmailTemplate
 from src.backend.rendering.html import render_email, hilite_blue
 from src.common.api import CaseHandlingRequest, CaseHandlingResponse
 from src.common.case_model import CaseModel
@@ -150,9 +150,9 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         if case_handling_decision_output.response_template_id:
 
-            template: Optional[ResponseTemplate] = None
+            template: Optional[EmailTemplate] = None
             for template2 in self.email_configuration.email_templates:
-                template2: ResponseTemplate
+                template2: EmailTemplate
                 if template2.id == case_handling_decision_output.response_template_id:
                     template = template2
                     break

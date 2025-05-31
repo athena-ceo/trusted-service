@@ -13,7 +13,19 @@ public class CaseHandlingDecision {
 	String work_basket;
 	Priority priority;
 	List<String> notes = new ArrayList<>();
-	
+
+	public void increasePriorityLevel() {
+		if (priority == Priority.VERY_LOW) {
+			priority = Priority.LOW;
+		} else if (priority == Priority.LOW) {
+			priority = Priority.MEDIUM;
+		} else if (priority == Priority.MEDIUM) {
+			priority = Priority.HIGH;
+		} else if (priority == Priority.HIGH) {
+			priority = Priority.VERY_HIGH;
+		}
+	}
+
 	public Handling getHandling() {
 		return handling;
 	}
@@ -61,7 +73,7 @@ public class CaseHandlingDecision {
 	public void setNotes(List<String> notes) {
 		this.notes = notes;
 	}
-	
+
 	public void addNote(String note) {
 		this.notes.add(note);
 	}

@@ -78,6 +78,16 @@ class CaseHandlingDecision
     string work_basket;
     CaseHandlingDecision();
     void addNote(string arg);
+    void increasePriorityLevel();
+}
+
+class DateManagement
+{
+    DateManagement();
+    static boolean coincident(string arg1, string arg2);
+    static boolean estApres(string arg1, string arg2);
+    static boolean estAvant(string arg1, string arg2);
+    static long nbDeJoursDeDate1aDate2(string arg1, string arg2);
 }
 
 final class Handling
@@ -102,12 +112,5 @@ final class Priority
     static final readonly trusted_services.Priority VERY_LOW;
     static trusted_services.Priority valueOf(string arg);
     static trusted_services.Priority[] values();
-}
-
-package virt;
-
-
-class Virt
-{
 }
 

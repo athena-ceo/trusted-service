@@ -23,7 +23,7 @@ class App:
         case_model: CaseModel = CaseModel(case_fields=case_model_configuration.case_fields)
 
         text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(configuration_filename)
-        text_analyzer = TextAnalyzer(case_model,  text_analysis_configuration)
+        text_analyzer = TextAnalyzer(case_model, backend_configuration.runtime_directory, text_analysis_configuration)
 
         if backend_configuration.decision_engine == "dmoe":
             pass

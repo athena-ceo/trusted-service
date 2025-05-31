@@ -4,17 +4,17 @@
   <uuid>9197765e-9d19-4386-b21d-e199930240b4</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[définitions
-    soit texte étant "**Demande d'asile** du site officiel de l'administration française" ;
-    soit url étant "https://www.service-public.fr/particuliers/vosdroits/F2232#:~:text=Si%20vous%20souhaitez%20entrer%20en,de%20votre%20lieu%20d'arriv%C3%A9e." ;
-    soit page_demande_asile_france étant "[" + texte + "]" + "(" + url + ")" ;
+    soit 'texte' étant "**Demande d'asile** du site officiel de l'administration française" ;
+    soit 'url' étant "https://www.service-public.fr/particuliers/vosdroits/F2232#:~:text=Si%20vous%20souhaitez%20entrer%20en,de%20votre%20lieu%20d'arriv%C3%A9e." ;
+    soit 'page_demande_asile_france' étant "[" + texte + "]" + "(" + url + ")" ;
 
 si
     intention est depot_de_demande_d_asile
 
 alors
-    assigner le handling de 'la décision' à DEFLECTION  ;
-    assigner l'acknowledgement to requester de 'la décision' à "Veuillez consulter la page " + page_demande_asile_france ;
-    assigner le response template id de 'la décision' à "" ;
-    assigner le work basket de 'la décision' à "réorientation" ;
-    assigner le priority de 'la décision' à MEDIUM ;]]></definition>
+    traitement = DEFLECTION  ;
+    notification au demandeur = "Veuillez consulter la page " + page_demande_asile_france ;
+    template de réponse = "" ;
+    bannette = "réorientation" ;
+    priorité = MEDIUM ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>
