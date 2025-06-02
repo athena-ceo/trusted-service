@@ -27,8 +27,10 @@ def load_email_configuration_from_workbook(filename: str) -> DistributionEmailCo
                                                            main_tab="email_configuration",
                                                            collections=[("email_templates", EmailTemplate)],
                                                            configuration_type=DistributionEmailConfiguration)
+
     email_configuration: DistributionEmailConfiguration = cast(DistributionEmailConfiguration, conf)
-    for email_template in email_configuration.email_templates:
-        email_template.body = email_template.body.replace("\n", "<br>")
+
+    # for email_template in email_configuration.email_templates:
+    #     email_template.body = email_template.body.replace("\n", "<br>")
 
     return email_configuration

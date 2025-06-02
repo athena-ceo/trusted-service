@@ -101,8 +101,8 @@ def hilite_blue(text: str) -> str:
 
 
 def render_email(email: Email) -> str:
-    return hilite("From:&nbsp;") + email.from_email_address + "<br>" + hilite(
-        "To:&nbsp;") + email.to_email_address + "<br>" + hilite("Subject:&nbsp;") + email.subject + "<br>" + "<br>" + hilite(
-        "Body du mail") + "<br>" + email.body
-
-
+    s = hilite("From:&nbsp;") + email.from_email_address + "<br>"
+    s += hilite("To:&nbsp;") + email.to_email_address + "<br>"
+    s += hilite("Subject:&nbsp;") + email.subject + "<br><br>"
+    s += hilite("Body du mail") + "<br>" + email.body.replace("\n", "<br>")
+    return s

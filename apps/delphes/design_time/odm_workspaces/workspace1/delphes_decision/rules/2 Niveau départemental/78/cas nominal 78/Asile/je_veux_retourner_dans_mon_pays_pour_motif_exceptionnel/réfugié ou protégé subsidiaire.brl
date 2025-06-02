@@ -3,17 +3,14 @@
   <name>réfugié ou protégé subsidiaire</name>
   <uuid>e9d40388-a2f7-49e3-9037-f7ad29314687</uuid>
   <locale>fr_FR</locale>
-  <definition><![CDATA[
+  <definition><![CDATA[si
+    intention est je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel
+    et le demandeur est réfugié ou protégé subsidiaire
 
-    
-si
-    intention est je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel 
-    et 'le cas' est refugie ou protege subsidiaire
-    
 alors
     traitement = AGENT ;
     notification au demandeur = "Votre demande a été prise en compte. Un agent la traitera dans les plus brefs délais." ;
     template de réponse = "sauf-conduits" ;
     bannette = "sauf-conduits" ;
-    priorité = HIGH  ;]]></definition>
+    priorité = HIGH ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

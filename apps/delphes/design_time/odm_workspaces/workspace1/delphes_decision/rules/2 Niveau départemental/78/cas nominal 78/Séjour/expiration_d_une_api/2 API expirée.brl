@@ -4,7 +4,7 @@
   <uuid>1dd94802-6549-4607-a782-1314326e3793</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[définitions
-    soit 'nb_jours' étant le nombre de jours depuis le date expiration api de 'le cas' jusqu'à le date demande de 'le cas' ;
+    soit 'nb_jours' étant le nombre de jours depuis la date d'expiration de l'API jusqu'à la date de la demande ;
 
 si
     intention est expiration_d_une_api

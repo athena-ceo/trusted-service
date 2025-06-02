@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional
+from typing import Any, Optional, Literal
 
 import streamlit as st
 from pydantic import BaseModel
@@ -8,23 +8,37 @@ from streamlit.delta_generator import DeltaGenerator
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT
-from src.sample_frontend.api_client import ApiClientDirect, ApiClient
+from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
+from src.sample_frontend.frontend_configuration import load_frontend_configuration_from_workbook, FrontendConfiguration
 
 
-def expander2(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
+def expander_user(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
+    if icon is None:
+        icon = "📋"
     return st.expander(label=f":orange[**{label}**]", expanded=expanded, icon=icon)
 
 
+def expander_detail(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
+    if icon is None:
+        icon = "🔎"
+    return st.expander(label=f":blue[{label}]", expanded=expanded, icon=icon)
+
+
 class Context:
-    def __init__(self):
-        self.stage = 1
-        # self.api_client: ApiClient = ApiClientHttp()
-        self.api_client: ApiClient = ApiClientDirect()
+    def __init__(self, config_filename: str):
+
+        front_end_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename)
+
+        if front_end_configuration.connection_to_api == "http":
+            self.api_client: ApiClient = ApiClientHttp(front_end_configuration.http_connection_url)
+        else:
+            self.api_client: ApiClient = ApiClientDirect(config_filename)
 
         self.case_model: CaseModel = self.api_client.get_case_model()
         self.case: Case = Case.create_default_instance(self.case_model)
         self.analysis_result_and_rendering: dict[str, Any] = {}
         self.processing_response: Optional[CaseHandlingDetailedResponse] = None
+        self.stage = 1
 
 
 def add_case_field_input_widget(case: Case, case_field: CaseField):
@@ -110,9 +124,9 @@ class DecisionPayload(BaseModel):
     decision_output: CaseHandlingDecisionOutput
 
 
-def streamlit_main():
+def streamlit_main(config_filename: str):
     if not hasattr(st.session_state, "context"):
-        st.session_state.context = Context()
+        st.session_state.context = Context(config_filename)
     context = st.session_state.context
 
     st.write("""
@@ -127,13 +141,13 @@ def streamlit_main():
 
     st.toggle("Montrer les détails", value=False, key="show_details")
 
-    with expander2("Contexte de la demande", expanded=True):
+    with expander_user("Contexte de la demande", expanded=True):
 
         for case_field in case_model.case_fields:
             if case_field.scope == "CONTEXT":
                 add_case_field_input_widget(context.case, case_field)
 
-    with expander2("Demande", expanded=True):
+    with expander_user("Demande", expanded=True):
 
         for case_field in case_model.case_fields:
             if case_field.scope == "CONTEXT":
@@ -158,19 +172,19 @@ def streamlit_main():
         return
 
     if st.session_state.show_details:
-        with expander2("Scoring des intentionspar l'IA", expanded=False, icon="✨"):
+        with expander_detail("Scoring des intentionspar l'IA", expanded=False, icon="✨"):
             analysis_result_and_rendering = context.analysis_result_and_rendering
             markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
 
             st.write(markdown_table)
 
-        with expander2("Extraction d'information par l'IA", expanded=False, icon="✨"):
+        with expander_detail("Extraction d'information par l'IA", expanded=False, icon="✨"):
             analysis_result_and_rendering = context.analysis_result_and_rendering
             highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
 
             st.html(highlighted_text)
 
-    with expander2("Informations complémentaires", expanded=True):
+    with expander_user("Informations complémentaires", expanded=True):
         analysis_result_and_rendering = context.analysis_result_and_rendering
         analysis_result = analysis_result_and_rendering[KEY_ANALYSIS_RESULT]
         scorings = analysis_result["scorings"]
@@ -188,7 +202,7 @@ def streamlit_main():
                     if case_field.show_in_ui:
                         add_case_field_input_widget(context.case, case_field)
 
-    with expander2("Requête"):
+    with expander_detail("Requête"):
 
         case_field_values_to_send_to_decision_engine: dict[str, Any] = {}
 
@@ -205,7 +219,7 @@ def streamlit_main():
         json_string = json.dumps(payload, indent=4)
 
         pixels_per_line = 34
-        st.text_area("JSON Payload",
+        st.text_area(label="JSON string", label_visibility="hidden",
                      value=json_string,
                      height=len(json_string.splitlines()) * pixels_per_line,
                      max_chars=None,
@@ -230,7 +244,7 @@ def streamlit_main():
     processing_response = context.processing_response
 
     if st.session_state.show_details:
-        with expander2("Appel au moteur de règles", expanded=False):
+        with expander_detail("Appel au moteur de règles", expanded=False):
             st.write("Input:")
             st.write(processing_response.case_handling_decision_input)
             st.write("Output:")
@@ -239,5 +253,5 @@ def streamlit_main():
     st.write(processing_response.case_handling_response.acknowledgement_to_requester)
 
     if st.session_state.show_details:
-        with expander2("Traitement de la demande", expanded=False):
+        with expander_detail("Traitement de la demande", expanded=False):
             st.html(processing_response.case_handling_response.case_handling_report)

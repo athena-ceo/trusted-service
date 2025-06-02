@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
-from src.backend.backend.application import App
+from src.backend.backend.application import Application
 
 
 class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
@@ -59,6 +59,6 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         )
 
 
-class AppDelphes(App):
-    def __init__(self):
-        super().__init__(configuration_filename="apps/delphes/runtime/configuration_delphes.xlsx")
+# class AppDelphes(App):
+#     def __init__(self):
+#         super().__init__(configuration_filename="apps/delphes/runtime/configuration_delphes.xlsx")

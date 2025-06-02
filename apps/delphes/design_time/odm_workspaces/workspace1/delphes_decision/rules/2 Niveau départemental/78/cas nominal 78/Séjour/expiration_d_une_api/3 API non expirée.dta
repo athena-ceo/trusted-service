@@ -12,7 +12,7 @@
     </Properties>
     <Preconditions>
       <Text><![CDATA[définitions
-    soit nb_jours étant le nombre de jours depuis le date demande de 'le cas' jusqu'à le date expiration api de 'le cas' ;
+    soit 'nb_jours' étant le nombre de jours depuis la date de la demande jusqu'à la date d'expiration de l'API ;
 
 si
     intention est expiration_d_une_api

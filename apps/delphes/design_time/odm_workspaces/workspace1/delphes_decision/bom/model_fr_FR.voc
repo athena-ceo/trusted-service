@@ -3,15 +3,11 @@ uuid = 720e98dd-3575-475a-b47c-d7d4f403e97d
 
 # delphes.Case
 delphes.Case#concept.label = case
-delphes.Case.date_demande#phrase.action = assigner le date demande {this, PARTITIVE_ARTICLE} à {date demande}
-delphes.Case.date_demande#phrase.navigation = {date demande} {this, PARTITIVE_ARTICLE}
-delphes.Case.date_expiration_api#phrase.action = assigner le date expiration api {this, PARTITIVE_ARTICLE} à {date expiration api}
-delphes.Case.date_expiration_api#phrase.navigation = {date expiration api} {this, PARTITIVE_ARTICLE}
-delphes.Case.departement#phrase.action = assigner le departement {this, PARTITIVE_ARTICLE} à {departement}
-delphes.Case.departement#phrase.navigation = {departement} {this, PARTITIVE_ARTICLE}
-delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = il est fait mention de risque sur l emploi
-delphes.Case.refugie_ou_protege_subsidiaire#phrase.action = mettre à {refugie ou protege subsidiaire} que {this} est refugie ou protege subsidiaire
-delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = {this} est refugie ou protege subsidiaire
+delphes.Case.date_demande#phrase.navigation = la date de la demande
+delphes.Case.date_expiration_api#phrase.navigation = la date d'expiration de l'API
+delphes.Case.departement#phrase.navigation = {departement} {this,PARTITIVE_ARTICLE}
+delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = il y a risque sur l emploi
+delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = le demandeur est réfugié ou protégé subsidiaire
 
 # delphes.Intention
 delphes.Intention#concept.label = intention

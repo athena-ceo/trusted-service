@@ -1,34 +1,30 @@
-1) Ecrire decision_payloads
-2) Réparer Fast API
-3) TextArea requête
-4) show the prompt
-
-
+*********
+* TODO.md
+*********
 
 # Priority 1
-
-- Test with Fastapi and Openai
-- Complete exception handling on send email, call odl call OpenAI
-- Complete comments
-- Complete README.md
-- Complete localization
-- use constants instead of string everywhere
-- Show details:
-  - prompt
-  - rule input and output
-- mandatory fields
+## Framework
+- Solve issue with value returned by process_request in http mode
+- Test with read_from_cache=False
+- Polish
+  - Complete exception handling on send email, call decision service, call OpenAI
+  - Complete comments
+  - Complete README.md
+  - Complete parameterization, Manage port numbers for all the demos - including cors
+  - Complete localization
+  - use constants instead of string everywhere
 - hallucinations on intentions
+## Delphes
+- Fix hardcoded decision service
 
 # Priority 2
+## Framework
 - review logic of text_area: if changed manually and click send, will be overriden - Also issue with mode detailed
 
 # Priority 3
-- Manage port numbers for all the demos - including cors
+## Framework
 - pick scenarios in list
-- configure/parameterize client
-- localize UI
 - Analyze several texts at once
-- Parameterize choice between clients
-- integer and float field
-- show the prompt as a result of analyzis
-- Show the odm payloads
+- integer and float fields
+- mandatory fields
+- Show prompt
