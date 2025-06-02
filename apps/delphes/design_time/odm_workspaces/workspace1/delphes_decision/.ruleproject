@@ -10,6 +10,7 @@
   </paths>
   <paths xsi:type="ilog.rules.studio.model.bom:BOMPath" pathID="BOM">
     <entries xsi:type="ilog.rules.studio.model.bom:BOMEntry" name="model" url="platform:/delphes_decision/bom/model.bom" origin="xom:/delphes_decision//delphes_xom"/>
+    <entries xsi:type="ilog.rules.studio.model.bom:BOMEntry" name="virtuel" url="platform:/delphes_decision/bom/virtuel.bom"/>
   </paths>
   <modelFolders xsi:type="ilog.rules.studio.model.base:SourceFolder">
     <name>rules</name>

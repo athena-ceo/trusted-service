@@ -6,7 +6,7 @@ import requests
 
 from src.backend.backend.application import Application
 from src.common.case_model import CaseModel
-from src.common.api import Api, CaseHandlingRequest, CaseHandlingResponse, CaseHandlingDetailedResponse
+from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 
 
 class ApiClient(Api, ABC):
@@ -58,8 +58,7 @@ class ApiClientHttp(ApiClient):
 
         if response.status_code == 200:
             response_data = response.json()
-            from launcher_fastapi import CaseHandlingResponse2
-            response2 = CaseHandlingResponse2.model_validate(response_data)
+            response2 = CaseHandlingDetailedResponse.model_validate(response_data)
             return response2
         else:
             print(f"Request failed with status code: {response.status_code}")

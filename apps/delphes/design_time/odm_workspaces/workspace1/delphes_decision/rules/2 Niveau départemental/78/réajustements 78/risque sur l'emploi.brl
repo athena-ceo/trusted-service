@@ -4,7 +4,7 @@
   <uuid>961f0e7b-592a-4cf9-acc0-d991450ae799</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[si
-    il y a risque sur l emploi
+    il y a risque sur l'emploi
 alors
     ajouter la note: "Risque sur l'emploi" ;
     augmenter le niveau de priorité ;]]></definition>

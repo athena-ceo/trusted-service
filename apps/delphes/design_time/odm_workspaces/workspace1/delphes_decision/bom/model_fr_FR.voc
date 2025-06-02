@@ -5,8 +5,8 @@ uuid = 720e98dd-3575-475a-b47c-d7d4f403e97d
 delphes.Case#concept.label = case
 delphes.Case.date_demande#phrase.navigation = la date de la demande
 delphes.Case.date_expiration_api#phrase.navigation = la date d'expiration de l'API
-delphes.Case.departement#phrase.navigation = {departement} {this,PARTITIVE_ARTICLE}
-delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = il y a risque sur l emploi
+delphes.Case.departement#phrase.navigation = {departement} {this, PARTITIVE_ARTICLE}
+delphes.Case.mention_de_risque_sur_l_emploi#phrase.navigation = il y a risque sur l'emploi
 delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = le demandeur est réfugié ou protégé subsidiaire
 
 # delphes.Intention

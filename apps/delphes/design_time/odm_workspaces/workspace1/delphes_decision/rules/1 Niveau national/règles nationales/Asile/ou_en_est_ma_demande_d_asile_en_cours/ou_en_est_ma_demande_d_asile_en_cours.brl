@@ -10,6 +10,6 @@ alors
     traitement = DEFLECTION ;
     notification au demandeur = "Veuillez vous adresser à votre contact OFPRA" ;
     template de réponse = "" ;
-    bannette = "réorientation" ;
+    bannette = reorientation ;
     priorité = MEDIUM ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

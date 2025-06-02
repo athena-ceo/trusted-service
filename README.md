@@ -1,21 +1,64 @@
 # Trusted Services README
 
-Trusted Services is a framework to support and streamline the build of self service applicatioins. More details can be found in the pptx in docs.
+Trusted Services is a framework to streamline the build of localized, accountable, self service applications.
 
-Creating an app merely consists in parameterizing the framework with a pptx.
+You can create a new application either by using a Python API or by parameterizing in a low code fashion the framework through a xlsx.
+
+This README shows the second approach on an example: The Delphes project (Projet de la Préfecture des Yvelines) that streamlines the experience of foreign requesters and improves the efficiency of back-office agents, while making the entire chain far more trustable than the legacy email-based approach.
+
+Applications built with the framework implement an **accountable AI pattern** with 4 major components:
+- The requester
+- A LLM service
+- A rule-based decision service
+- The back-office agent
+
+Both the requester and the agent are "humans in the loop", as they validate AI-generated findings.
+
+More details can be found in the pptx in subdirectory `docs` of the current git repository. Also, to understand the architecture and design of the Trusted Services framework, you should check the UML diagram in `docs/trusted_services_uml.drawio`
 
 This git repository comes with:
 - The source codee for the Python library
 - A generic Streamlit client
 - The configuration file for the Delphes app
 
-To understand the architecture and design of the Trusted Services framework, check the UML diagram in docs/trusted_services_uml.drawio
+## Warning
+If you migrate from the legacy Delphes POC, make sure you create the Thunderbird folders and update the matching filters according to the names below. Allow accentuated characters have been removed from the tags, folders and filters. 
 
-## 1. INSTALL THE FRANEWORK AND THE SAMPLE DELPHES APP
+## 1. INSTALLATION
+
+### Install the framework and the sample application (Delphes)
 Type `git clone https://github.com/athena-ceo/trusted-service.git`
 Type `pip install -r requirements.txt`
 
-## 2. CONFIGURE THE DELPHES APP (Projet des préfectures)
+### Specifically for the Delphes application, download, install and preconfigure Thunderbird
+- Visit https://www.thunderbird.net/en-US/download/
+- Crate folder `Bannettes` (right-click `pocagent78@gmail.com`) and the corresponding subfolders:
+  - api-a-renouveler
+  - generique
+  - pref-etrangers-aes-salarie
+  - reorientation
+  - sauf-conduits
+  - ukraine
+- Create the corresponding filters, for instance, for `réorientation`
+  - On the top-right: ☰  > Tools > Message Filters > New... 
+  - Filter name: réorientation
+  - Subject contains reorientation
+  - Move Message to: reorientation
+- Créer les étiquettes (Paramètres / Général / Etiquettes)
+  - BASSE - Bleue
+  - NORMALE - Verte
+  - HAUTE - Orange
+  - TRES_HAUTE - Rouge
+- Créer les filtres correspondants, par exemple pour BASSE (menu Outils) :
+  - Nom du filtre: BASSE
+  - Sujet contient BASSE
+  - Etiqueter le message BASSE
+- **Attention** Pour le filtre HAUTE, ajouter la condition "ne contient pas TRES_HAUTE"
+
+
+
+## 2. CONFIGURATION
+E THE DELPHES APP (Projet des préfectures)
 All configuration is done in `apps\delphes\runtime\configuration_delphes.xlsx`
 Fields ar either self-explanatory or explained.
 

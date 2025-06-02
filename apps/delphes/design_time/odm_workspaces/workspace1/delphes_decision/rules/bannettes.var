@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.base:VariableSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.base="http://ilog.rules.studio/model/base.ecore">
+  <name>bannettes</name>
+  <uuid>1aad0c6d-b264-405c-931c-c795faa28900</uuid>
+  <variables name="api_a_renouveler" type="java.lang.String" initialValue="&quot;api-a-renouveler&quot;" verbalization="api-a-renouveler"/>
+  <variables name="generique" type="java.lang.String" initialValue="&quot;generique&quot;" verbalization="generique"/>
+  <variables name="pref_etrangers_aes_salarie" type="java.lang.String" initialValue="&quot;pref-etrangers-aes-salarie&quot;" verbalization="pref-etrangers-aes-salarie"/>
+  <variables name="reorientation" type="java.lang.String" initialValue="&quot;reorientation&quot;" verbalization="reorientation"/>
+  <variables name="sauf_conduits" type="java.lang.String" initialValue="&quot;sauf-conduits&quot;" verbalization="sauf-conduits"/>
+  <variables name="ukraine" type="java.lang.String" initialValue="&quot;ukraine&quot;" verbalization="ukraine"/>
+</ilog.rules.studio.model.base:VariableSet>

@@ -7,6 +7,6 @@
     traitement = AGENT ;
     notification au demandeur = "Votre demande a été prise en compte. Un agent la traitera dans les plus brefs délais." ;
     template de réponse = "" ;
-    bannette = "generique" ;
+    bannette = generique ;
     priorité = MEDIUM ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

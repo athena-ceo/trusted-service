@@ -15,6 +15,6 @@ alors
     traitement = DEFLECTION  ;
     notification au demandeur = "Veuillez consulter la page " + page_demande_asile_france ;
     template de réponse = "" ;
-    bannette = "réorientation" ;
+    bannette = reorientation ;
     priorité = MEDIUM ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>
