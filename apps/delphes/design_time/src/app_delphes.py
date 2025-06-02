@@ -22,10 +22,11 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         if case_handling_decision_input.intention_id == "expiration_d_une_api":
             handling = "AGENT"
             acknowledgement_to_requester = "Nous vous répondrons dans les meilleurs délais à propos de l'expiration de votre API"
-            response_template = "expiration_d_une_api"
-            work_basket = "api_a_renouveler"
+            response_template = "api-a-renouveler"
+            work_basket = "api-a-renouveler"
             priority = "VERY_HIGH" if case_handling_decision_input.field_values["mention_de_risque_sur_l_emploi"] else "HIGH"
 
+            # notes
             date_demande = case_handling_decision_input.field_values["date_demande"]
             date_expiration_api = case_handling_decision_input.field_values["date_expiration_api"]
             date_format = "%d/%m/%Y"
@@ -44,7 +45,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
             handling = "DEFLECTION"
             acknowledgement_to_requester = "Veuillez aller sur le site de l'OFPRA"
             response_template = ""
-            work_basket = "réorientation"
+            work_basket = "reorientation"
             priority = "VERY_LOW"
 
         # subject = f"AGDREF - {work_basket} - {priority}"
@@ -56,6 +57,7 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
             work_basket=work_basket,
             priority=priority,
             notes=notes,
+            details="The hardcoded implementation does not provide traceability information yet"
         )
 
 

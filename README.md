@@ -68,7 +68,6 @@ Fields ar either self-explanatory or explained.
   - `direct`: Direct access through Python function
   - `http`: http access to Uvicorn server.
     - In that case, you will need to launch the uvicorn server (see below) and to configure `http_connection_url` 
-- *Warning* Currently `http` has an issue, so use `direct`.
 
 ### Configure what Decision Engine the API connects to
 - The API either connects to ODM, Drools or a hardcoded engine (in the case of Delphes: `apps.delphes.src.app_delphes.CaseHandlingDecisionEngineDelphesPython`)
@@ -77,7 +76,6 @@ Fields ar either self-explanatory or explained.
     - In that case, you will need to launch the ODM Docker image (see below) and to configure the `odm` tab 
   - `drools`: Connect to a Drools Decision Service
   - `apps.delphes.src.app_delphes.CaseHandlingDecisionEngineDelphesPython`: Connect to a hardcoded Decision Service
-- *Warning* Currently, only ODM works.
 
 ## 3. RUN THE APP
 
