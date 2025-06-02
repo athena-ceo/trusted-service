@@ -7,6 +7,7 @@ from streamlit.delta_generator import DeltaGenerator
 
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
+from src.common.common_configuration import CommonConfiguration, load_common_configuration_from_workbook
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
 from src.sample_frontend.frontend_configuration import load_frontend_configuration_from_workbook, FrontendConfiguration
@@ -27,10 +28,12 @@ def expander_detail(label: str, expanded: bool = False, *, icon: str | None = No
 class Context:
     def __init__(self, config_filename: str):
 
-        front_end_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename)
+        frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename)
 
-        if front_end_configuration.connection_to_api == "http":
-            self.api_client: ApiClient = ApiClientHttp(front_end_configuration.http_connection_url)
+        if frontend_configuration.connection_to_api == "rest":
+            common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
+            url = f"http://{common_configuration.rest_api_host}:{common_configuration.rest_api_port}"
+            self.api_client: ApiClient = ApiClientHttp(url)
         else:
             self.api_client: ApiClient = ApiClientDirect(config_filename)
 

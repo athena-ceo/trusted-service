@@ -20,6 +20,7 @@
 # Priority 2
 ## Framework
 - review logic of text_area: if changed manually and click send, will be overriden - Also issue with mode detailed
+- Hallucinations in fragment : case insensitive search, remove "." at the and, Levenshtein distance.
 
 # Priority 3
 ## Framework

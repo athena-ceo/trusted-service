@@ -1,21 +1,11 @@
 import json
-import sys
-from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
-from src.backend.backend.api_implementation import ApiImplementation
 from src.backend.backend.application import Application
-from src.backend.decision.decision import CaseHandlingDecisionInput, CaseHandlingDecisionOutput
-from src.common.api import Api, CaseHandlingRequest, CaseHandlingResponse, CaseHandlingDetailedResponse
+from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
-
-if len(sys.argv) == 1:
-    print("You must provide a configuration file as a command-line argument")
-    print("For instance:", f"streamlit run {sys.argv[0]} apps/delphes/runtime/configuration_delphes.xlsx")
-    exit()
 
 app = FastAPI()
 
@@ -31,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-application = Application("apps/delphes/runtime/configuration_delphes.xlsx")
+application = Application("apps/delphes/runtime/configuration_delphes_ff.xlsx")
 api: Api = application.api_implementation
 
 

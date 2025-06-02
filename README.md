@@ -41,14 +41,14 @@ Type `pip install -r requirements.txt`
   - ukraine
 - Create the corresponding filters, for instance, for `réorientation`
   - On the top-right: ☰  > Tools > Message Filters > New... 
-  - Filter name: réorientation
+  - Filter name: reorientation
   - Subject contains reorientation
   - Move Message to: reorientation
 - Créer les étiquettes (Paramètres / Général / Etiquettes)
-  - BASSE - Bleue
-  - NORMALE - Verte
+  - BASSE - Blue
+  - NORMALE - Green
   - HAUTE - Orange
-  - TRES_HAUTE - Rouge
+  - TRES_HAUTE - Red
 - Créer les filtres correspondants, par exemple pour BASSE (menu Outils) :
   - Nom du filtre: BASSE
   - Sujet contient BASSE
@@ -90,6 +90,10 @@ docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9060:9060 -p
 In the `trusted-service` top directory, type:
 ```
 fastapi dev launcher_fastapi.py --port 8002 
+```
+or
+```
+uvicorn launcher_fastapi:app --port 8002
 ```
 *Important* The port specified with option `--port` should match the `http_connection_url` option in tab `frontend`
 
