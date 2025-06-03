@@ -86,7 +86,7 @@ Trusted Services apps are configured in an Excel file. For Delphes check `apps\d
   `decision_engine` has three possible values
     - `odm`: Connect to an ODM Decision Service. In that case, you will need to launch the ODM Docker image (see below) and to configure the `odm` tab
     - `drools`: Connect to a Drools Decision Service
-    - `apps.delphes.src.app_delphes.CaseHandlingDecisionEngineDelphesPython`: Connect to a hardcoded Decision Service
+    - `apps.delphes.design_time.src.app_delphes.CaseHandlingDecisionEngineDelphesPython`: Connect to a hardcoded Decision Service
 
 ## 3. RUN THE APP
 Proceed in the following order:
