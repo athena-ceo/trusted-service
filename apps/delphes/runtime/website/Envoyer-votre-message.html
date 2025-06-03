@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de votre demande</title>
+    <link rel="apple-touch-icon" href="/extension/ide/design/ide_dsfr_design/images/favicon/apple-touch-icon.png">
+    <link rel="icon" href="/extension/ide/design/ide_dsfr_design/images/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/extension/ide/design/ide_dsfr_design/images/favicon/favicon.ico"
+        type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.min.css">
+    <style>
+        .fr-spinner {
+            display: block;
+            /* Assurez-vous que le spinner est visible */
+            margin: auto;
+            /* Centrez le spinner */
+        }
+
+        /* Spinner de base */
+        .fr-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            /* Bordure légère */
+            border-top: 4px solid #000091;
+            /* Couleur principale */
+            border-radius: 50%;
+            /* Cercle */
+            width: 40px;
+            /* Taille par défaut */
+            height: 40px;
+            animation: spin 1s linear infinite;
+            /* Animation de rotation */
+        }
+
+        /* Spinner de grande taille */
+        .fr-spinner--lg {
+            width: 60px;
+            /* Taille plus grande */
+            height: 60px;
+            border-width: 6px;
+            /* Bordure plus épaisse */
+        }
+
+        /* Animation de rotation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="fr-m-3w">
+    <div class="fr-container">
+        <h1 id="votre-demande">Votre demande</h1>
+        <div id="form-data"></div>
+    </div>
+
+    <script>
+        const departement = '78';
+        let resultatAnalyse;
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {};
+            for (const [key, value] of params) {
+                data[key] = value;
+            }
+            return data;
+        }
+
+        const formData = getQueryParams();
+        // Affichage du message
+        const formDataDiv = document.getElementById('form-data');
+        formDataDiv.innerHTML = `<div class="fr-list fr-mb-3v">
+            <p style="font-style: italic;">${formData.Message.replace(/\n/g, '<br>')}</p>
+            </div>`;
+    </script>
+
+    <!-- Conteneur pour le spinner -->
+    <div class="fr-container">
+        <div id="analyse" fr-col-12 fr-col-lg-8></div>
+    </div>
+    <div id="spinner-container">
+    </div>
+    <div class="fr-container">
+        <div id="acknowledgement" fr-col-12 fr-col-lg-8></div>
+    </div>
+
+    <script>
+        // Fonction pour convertir une date de jj/MM/aaaa à yyyy/MM/dd
+        function convertDateToISO(dateStr) {
+            if (!dateStr) return '';
+            const [day, month, year] = dateStr.split('/');
+            return `${year}-${month}-${day}`;
+        }
+
+        const analyseContainer = document.getElementById('analyse');
+        analyseContainer.innerHTML = `
+            <h3>Nous analysons votre demande</h3>
+            <p>Votre message est prétraité par une IA avant d'être transmis à un agent.
+            <br />
+            Veuillez patienter quelques instants...</p>`;
+        const spinnerContainer = document.getElementById('spinner-container');
+        spinnerContainer.innerHTML = '<div class="fr-spinner fr-spinner--lg fr-mt-3w"></div>';
+
+        // Fonction pour valider l'intention sélectionnée
+        function validerIntention() {
+            const radio = document.getElementsByName('intention');
+            let intentionValue = '';
+            for (const intention of radio) {
+                if (intention.checked) {
+                    intentionValue = intention.value;
+                    break;
+                }
+            }
+            if (intentionValue) {
+                spinnerContainer.innerHTML = '<div class="fr-spinner fr-spinner--lg fr-mt-3w"></div>';
+
+                const acknowledgement = document.getElementById('acknowledgement');
+                acknowledgement.innerHTML = `
+                    <h3>Nous analysons votre demande</h3>
+                    <p>Votre message est prétraité par une IA avant d'être transmis à un agent.
+                    <br />
+                    Veuillez patienter quelques instants...</p>`;
+
+                let demandeur = {
+                    nom: formData.Nom,
+                    prenom: formData.Prenom,
+                    email: formData.Email,
+                    agdref: formData.Agdref,
+                };
+
+                // Récupérer les champs associés à l'intention sélectionnée
+                intention = resultatAnalyse.matched_intentions.find(item => item.nom === intentionValue);
+
+                // Index de l'intention sélectionnée
+                const index = resultatAnalyse.matched_intentions.findIndex(item => item.nom === intentionValue);
+
+                // Mise à jour des infos du demandeur
+                intention.champs_ui.forEach(champ => {
+                    switch (champ.nom) {
+                        case 'date_expiration_atda':
+                            const valeurDateAtda = document.getElementById(`intention-${index}-${champ.nom}`).value;
+                            if (valeurDateAtda) {
+                                const datePartsAtda = valeurDateAtda.split('-');
+                                if (datePartsAtda.length === 3) {
+                                    const formattedDateAtda = `${datePartsAtda[2]}/${datePartsAtda[1]}/${datePartsAtda[0]}`;
+                                    demandeur.date_expiration_atda = formattedDateAtda;
+                                }
+                            }
+                            break;
+                        case 'residence_dans_le_78':
+                            const radio78 = document.getElementsByName(`intention-${index}-${champ.nom}`);
+                            let residence_dans_le_78 = false;
+                            for (const radio of radio78) {
+                                if (radio.checked && radio.id === `intention-${index}-${champ.nom}-oui`) {
+                                    residence_dans_le_78 = true;
+                                    break;
+                                }
+                            }
+                            demandeur.residence_dans_le_78 = residence_dans_le_78;
+                            break;
+                        case 'demanagement_autre_dept':
+                            const radioAutreDept = document.getElementsByName(`intention-${index}-${champ.nom}`);
+                            let demanagement_autre_dept = false;
+                            for (const radio of radioAutreDept) {
+                                if (radio.checked && radio.id === `intention-${index}-${champ.nom}-oui`) {
+                                    demanagement_autre_dept = true;
+                                    break;
+                                }
+                            }
+                            demandeur.demanagement_autre_dept = demanagement_autre_dept;
+                            break;
+                        case 'date_expiration_api':
+                            const valeurDateApi = document.getElementById(`intention-${index}-${champ.nom}`).value;
+                            if (valeurDateApi) {
+                                const datePartsApi = valeurDateApi.split('-');
+                                if (datePartsApi.length === 3) {
+                                    const formattedDateApi = `${datePartsApi[2]}/${datePartsApi[1]}/${datePartsApi[0]}`;
+                                    demandeur.date_expiration_api = formattedDateApi;
+                                }
+                            }
+                            break;
+                    }
+                });
+
+                // Appeler le Web Service de décision
+                fetch('http://localhost:8001/api/v1/decider_traitement_demande', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        departement: departement,
+                        demandeur: demandeur,
+                        message: formData.Message,
+                        analyse: resultatAnalyse,
+                        intention: intention,
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok for Web Service decider_traitement_demande');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Traiter la réponse du Web Service
+                        console.log('Réponse du Web Service decider_traitement_demande :', data);
+                        // Retirer le spinner après la réponse
+                        spinnerContainer.innerHTML = '';
+                        acknowledgement.innerHTML = '';
+
+                        if (data) {
+                            analyseContainer.innerHTML = '';
+                            acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
+                                <p>${data}</p>`;
+                        } else {
+                            acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
+                                <p>Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de l\'appel au Web Service decider_traitement_demande :', error);
+                        // Retirer le spinner en cas d'erreur
+                        spinnerContainer.innerHTML = '';
+                        acknowledgement.innerHTML = '<p>Une erreur est survenue lors de l\'envoi de votre demande. Veuillez réessayer.</p>';
+                    });
+            }
+        }
+
+        // Appeler le Web Service d'analyse de la demande
+        fetch('http://localhost:8002/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                field_values: JSON.stringify({
+                    date_demande: "12/12/2024",
+                    departement: departement,
+                    nom: formData.Nom,
+                    prenom: formData.Prenom,
+                    adresse_mail: formData.Email,
+                    numero_AGDREF: formData.Agdref,
+                    mention_de_risque_sur_l_emploi: false,
+                    refugie_ou_protege_subsidiaire: false,
+                }),
+                text: formData.Message
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok for Web Service analyser_demande');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Sauver le résultat pour l'appel au Web Service de décision
+                resultatAnalyse = data;
+
+                // Traiter la réponse du Web Service
+                console.log('Réponse du Web Service analyser_demande :', data);
+
+                // Retirer le spinner après la réponse
+                spinnerContainer.innerHTML = '';
+                analyseContainer.innerHTML = '';
+
+                if (data.date_de_la_demande) {
+                    const votreDemande = document.getElementById('votre-demande');
+                    // votreDemande.innerHTML = `Votre demande du ${data.date_de_la_demande}`;
+                }
+
+                // Créer le radio button pour chaque intention
+                let radioIntentions = `<fieldset class="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
+                    <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-intentions-legend">
+                        L'IA a identifié ${data.matched_intentions.length} cas qui correspondent à votre demande.<br />Votre sélection : *
+                    </legend>`
+                for (const [index, intention] of data.matched_intentions.entries()) {
+                    radioIntentions += `<div class="fr-fieldset__element">
+                            <div class="fr-radio-group">
+                                <input type="radio" id="intention-${index}" name="intention" value="${intention.nom}" required>
+                                <label class="fr-label" for="intention-${index}">
+                                    ${intention.nom}
+                                </label>
+                            </div>
+                        </div>`;
+                }
+                radioIntentions += `<div class="fr-messages-group" id="radio-intentions-messages" aria-live="assertive" />
+                    </fieldset>`
+
+                // Créer les champs associés à chaque intention
+                let champsIntentions = '';
+                for (const [index, intention] of data.matched_intentions.entries()) {
+                    if (intention.champs_ui.length > 0) {
+                        champsIntentions += `
+                            <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
+                                ${intention.champs_ui.map(champ => `
+                                    ${champ.type_name === 'bool' ? `
+                                    <fieldset class="fr-fieldset" id="intention-${index}-${champ.nom}" aria-labelledby="intention-${index}-${champ.nom}-legend intention-${index}-${champ.nom}-messages">
+                                        <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="intention-${index}-${champ.nom}-legend">
+                                            ${champ.libelle} *
+                                        </legend>
+                                        <div class="fr-fieldset__element fr-fieldset__element--inline">
+                                            <div class="fr-radio-group">
+                                                <input type="radio" id="intention-${index}-${champ.nom}-oui" name="intention-${index}-${champ.nom}">
+                                                <label class="fr-label" for="intention-${index}-${champ.nom}-oui">
+                                                    Oui
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="fr-fieldset__element fr-fieldset__element--inline">
+                                            <div class="fr-radio-group">
+                                                <input type="radio" id="intention-${index}-${champ.nom}-non" name="intention-${index}-${champ.nom}">
+                                                <label class="fr-label" for="intention-${index}-${champ.nom}-non">
+                                                    Non
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="fr-messages-group" id="intention-${index}-${champ.nom}-messages" aria-live="assertive" />
+                                    </fieldset>
+                                    ` : `
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="intention-${index}-${champ.nom}">
+                                            ${champ.libelle} *
+                                            ${champ.type_name === 'date' ? '<span class="fr-hint-text">Format attendu : JJ/MM/AAAA</span>' : ''}
+                                        </label>
+                                        <input class="fr-input" aria-describedby="intention-${index}-${champ.nom}-messages" id="intention-${index}-${champ.nom}" name="intention-${index}-${champ.nom}" type="${champ.type_name === 'date' ? 'date' : 'text'}" value="${convertDateToISO(champ.valeur_par_defaut)}">
+                                        <div class="fr-messages-group" id="intention-${index}-${champ.nom}-messages" aria-live="assertive"> </div>
+                                    </div>
+                                    `}
+                                `).join('')}
+                            </div>`;
+                    }
+                }
+
+                // Code du bouton Valider
+                const buttonValider = `<button type="submit" id="bouton-valider" class="fr-btn fr-mt-3w">Valider</button>`
+
+                analyseContainer.innerHTML += `<h3>Merci de sélectionner le cas qui s'applique à votre situation.</h3>
+                    <div class="fr-text--lead">
+                        <p><b>Les données personnelles recueillies par le formulaire de prise de contact ne
+                                sont pas conservées par la préfecture des Yvelines.</b></p>
+                        <p class="fr-text--heavy">* Champs obligatoires</p>
+                    </div>
+                    <form id="intentions-form" onsubmit="event.preventDefault(); validerIntention();">
+                        ${radioIntentions}
+                        ${champsIntentions}
+                        ${buttonValider}
+                    </form>
+                    <p>&nbsp;</p>`;
+
+                // Ajouter les gestionnaires d'événements après l'insertion des boutons radio
+                data.matched_intentions.forEach((_, index) => {
+                    const radioButton = document.getElementById(`intention-${index}`);
+
+                    const associatedDiv = document.getElementById(`champs-intention-${index}`);
+                    if (radioButton) {
+                        radioButton.addEventListener('change', function () {
+                            document.querySelectorAll('[id^="champs-intention-"]').forEach(div => div.style.display = 'none');
+                            // Rendre tous les champs de formulaire associés non obligatoires
+                            document.querySelectorAll('input, select, textarea').forEach(field => {
+                                field.required = false;
+                            });
+                            if (this.checked && associatedDiv) {
+                                associatedDiv.style.display = 'block';
+                                // Rendre tous les champs de formulaire associés obligatoires
+                                associatedDiv.querySelectorAll('input, select, textarea').forEach(field => {
+                                    field.required = true;
+                                });
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'appel au Web Service analyser_demande :', error);
+                // Retirer le spinner en cas d'erreur
+                spinnerContainer.innerHTML = '';
+                analyseContainer.innerHTML = '<p>Une erreur est survenue lors de l\'analyse de votre demande. Veuillez réessayer.</p>';
+            });
+    </script>
+
+    <div class="fr-container">
+        <p>&nbsp;</p>
+        <a href="nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.module.min.js"></script>
+</body>
+
+</html>
