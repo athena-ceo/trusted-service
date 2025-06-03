@@ -25,3 +25,4 @@
 - integer and float fields
 - mandatory fields
 - Show prompt
+- Streamlit test client launcher
