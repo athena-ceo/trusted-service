@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from src.common.configuration import SupportedLocale
 from src.common.localization import Localization
 
 
@@ -66,3 +67,7 @@ class TextAnalysisLocalizationFr(TextAnalysisLocalization):
 
     def description_of_fragments_feature(self, description_of_feature: str) -> str:
         return f"si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne"
+
+
+def get_text_analysis_localization(locale: SupportedLocale) -> TextAnalysisLocalization:
+    return TextAnalysisLocalizationEn() if locale == "en" else TextAnalysisLocalizationFr()

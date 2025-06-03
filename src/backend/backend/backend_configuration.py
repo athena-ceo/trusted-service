@@ -1,6 +1,6 @@
 from typing import cast
 
-from src.common.configuration import Configuration, load_configuration_from_workbook
+from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
 
 
 class BackendConfiguration(Configuration):
@@ -10,9 +10,10 @@ class BackendConfiguration(Configuration):
     distribution_engine: str
 
 
-def load_backend_configuration_from_workbook(filename: str) -> BackendConfiguration:
+def load_backend_configuration_from_workbook(filename: str, locale: SupportedLocale) -> BackendConfiguration:
     conf: Configuration = load_configuration_from_workbook(filename=filename,
                                                            main_tab="backend",
                                                            collections=[],
-                                                           configuration_type=BackendConfiguration)
+                                                           configuration_type=BackendConfiguration,
+                                                           locale=locale)
     return cast(BackendConfiguration, conf)

@@ -27,12 +27,12 @@ def expander_detail(label: str, expanded: bool = False, *, icon: str | None = No
 
 class Context:
     def __init__(self, config_filename: str):
-
-        frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename)
+        common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
+        frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename, common_configuration.locale)
 
         if frontend_configuration.connection_to_api == "rest":
-            common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
             url = f"http://{common_configuration.rest_api_host}:{common_configuration.rest_api_port}"
+            print("URL", url)
             self.api_client: ApiClient = ApiClientHttp(url)
         else:
             self.api_client: ApiClient = ApiClientDirect(config_filename)

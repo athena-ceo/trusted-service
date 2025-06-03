@@ -7,11 +7,13 @@ from openpyxl.workbook import Workbook
 from pydantic import BaseModel, field_validator
 
 
+SupportedLocale = Literal["en", "fr"]
+
 class Configuration(BaseModel):
-    locale: Literal["en", "fr"]
+    pass
 
 
-def load_dicts_from_worksheet(worksheet, model_type: type[BaseModel], locale: str) -> list[dict[str, Any]]:
+def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[str, Any]]:
     dicts: list[dict[str, Any]] = []
 
     title_row_hit = False
@@ -35,19 +37,16 @@ def load_dicts_from_worksheet(worksheet, model_type: type[BaseModel], locale: st
         data: dict[str, Any] = {}
         for label, number in column_labels_and_numbers.items():
             data[label] = row[number - 1].value
-        # print("data", data)
-        # obj = model_type.model_validate(data)
         dicts.append(data)
     return dicts
 
 
-def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: str) -> list[BaseModel]:
-    list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, model_type, locale)
-    # print("LIST1", json.dumps(list1, indent=2, ensure_ascii=False))
+def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
+    list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
     return [model_type.model_validate(data) for data in list1]
 
 
-def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel], locale: str) -> list[BaseModel]:
+def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
     objects = []
 
     title_row_hit = False
@@ -80,21 +79,22 @@ def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel]
 def load_configuration_from_workbook(filename: str,
                                      main_tab: str,
                                      collections: list[tuple[str, type[BaseModel]]],
-                                     configuration_type: Type[Configuration]) -> Configuration:
+                                     configuration_type: Type[Configuration],
+                                     locale: SupportedLocale) -> Configuration:
     config_workbook: Workbook = load_workbook(filename)
     config_values: dict[str, Any] = {}
 
     # Locale
 
-    locale = "en"  # Locale by default
-
-    worksheet = config_workbook["locale"]
-    for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row):
-        if row[0].value is None:
-            continue
-        locale = row[0].value
-
-    config_values["locale"] = locale
+    # locale = "en"  # Locale by default
+    #
+    # worksheet = config_workbook["locale"]
+    # for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row):
+    #     if row[0].value is None:
+    #         continue
+    #     locale = row[0].value
+    #
+    # config_values["locale"] = locale
 
 
     # main_tab
@@ -109,8 +109,6 @@ def load_configuration_from_workbook(filename: str,
                 title_row_hit = True
                 continue
             key = row[0].value
-            # if key == "locale":
-                # locale = row[1].value
             if key.endswith(f"_{locale}"):
                 key = key[:len(key) - len(locale) - 1]
             config_values[key] = row[1].value

@@ -24,14 +24,14 @@ architecture and design of the Trusted Services framework, you should check the 
 
 This git repository comes with:
 
-- The source code for the Python library
-- A generic Streamlit client
-- The configuration file for the Delphes app
+- The source code of the Python library
+- A generic Streamlit test client
+- The configuration file for the Delphes app provided as a sample
 
 ## Warning
 
 If you migrate from the legacy Delphes POC, make sure you create the Thunderbird folders and update the matching filters
-according to the names below. Accentuated characters have been removed from the tags, folders and filters.
+according to the instructions below. Accentuated characters have been removed from the tags, folders and filters.
 
 ## 1. INSTALLATION
 ### Install the framework and the sample application (Delphes)
@@ -41,20 +41,17 @@ git clone https://github.com/athena-ceo/trusted-service.git
 pip install -r requirements.txt
 ```
 
+### Download and install Docker Desktop and the Official IBM Operational Decision Manager for Developers image if you need to use the ODM Decision Engine
+Please follow the instructions in https://hub.docker.com/r/ibmcom/odm
+
 ### Specifically for the Delphes application, download and install Thunderbird
 Visit https://www.thunderbird.net/en-US/download/
 
 ## 2. CONFIGURATION
-All configuration is in `apps\delphes\runtime\configuration_delphes.xlsx` where fields are either self-explanatory or explained in a comment cell.
+Trusted Services apps are configured in an Excel file. For Delphes check `apps\delphes\runtime\configuration_delphes.xlsx` where fields are either self-explanatory or explained in a comment cell.
 
 ### Specifically for the Delphes application, configure Thunderbird
-- Crate folder `Bannettes` (right-click `pocagent78@gmail.com`) and the corresponding subfolders:
-    - `api-a-renouveler`
-    - `generique`
-    - `pref-etrangers-aes-salarie`
-    - `reorientation`
-    - `sauf-conduits`
-    - `ukraine`
+- Crate folder `Bannettes` (right-click `pocagent78@gmail.com`) and the corresponding subfolders: `api-a-renouveler`, `generique`, `pref-etrangers-aes-salarie`, `reorientation`, `sauf-conduits`, `ukraine`
 - Create the corresponding filters, for instance, for `réorientation`:
     - Menu on the top-right: `☰  > Tools > Message Filters > New...`
     - `Filter name`: `reorientation`
@@ -107,7 +104,7 @@ In the `trusted-service` top directory, type:
 python launcher_uvicorn.py .\apps\delphes\runtime\configuration_delphes.xlsx
 ```
 
-### Launch the Delphes application
+### Launch the test client
 In the `trusted-service` top directory, type:
 ```
 streamlit run launcher_streamlit.py apps/delphes/runtime/configuration_delphes.xlsx
@@ -115,8 +112,10 @@ streamlit run launcher_streamlit.py apps/delphes/runtime/configuration_delphes.x
 
 You should see a message such as:
 > You can now view your Streamlit app in your browser.
->
 >  Local URL: http://localhost:8501
+
 Click the link to launch the app in your default browser.
+
+**Warning** If you need to run the Streamlit test client (or any other http client) on another port than 8501, update cell `common > client_url` in the configuration xlsxx file. 
 
 

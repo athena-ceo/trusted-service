@@ -2,7 +2,7 @@ from typing import cast
 
 from pydantic import BaseModel
 
-from src.common.configuration import Configuration, load_configuration_from_workbook
+from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
 
 
 class EmailTemplate(BaseModel):
@@ -22,11 +22,12 @@ class DistributionEmailConfiguration(Configuration):
     email_templates: list[EmailTemplate]
 
 
-def load_email_configuration_from_workbook(filename: str) -> DistributionEmailConfiguration:
+def load_email_configuration_from_workbook(filename: str, locale: SupportedLocale) -> DistributionEmailConfiguration:
     conf: Configuration = load_configuration_from_workbook(filename=filename,
                                                            main_tab="email_configuration",
                                                            collections=[("email_templates", EmailTemplate)],
-                                                           configuration_type=DistributionEmailConfiguration)
+                                                           configuration_type=DistributionEmailConfiguration,
+                                                           locale=locale)
 
     email_configuration: DistributionEmailConfiguration = cast(DistributionEmailConfiguration, conf)
 

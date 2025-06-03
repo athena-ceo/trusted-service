@@ -2,7 +2,7 @@ from typing import Literal, cast, Self, Any
 
 from pydantic import BaseModel, field_validator
 
-from src.common.configuration import Configuration, load_configuration_from_workbook
+from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
 
 
 class CaseField(BaseModel):
@@ -65,11 +65,12 @@ class Case(BaseModel):
         return Case(field_values=field_values)
 
 
-def load_case_model_configuration_from_workbook(filename: str) -> CaseModelConfiguration:
+def load_case_model_configuration_from_workbook(filename: str, locale: SupportedLocale) -> CaseModelConfiguration:
     configuration: Configuration = load_configuration_from_workbook(filename=filename,
                                                                     main_tab=None,
                                                                     collections=[("case_fields", CaseField)],
-                                                                    configuration_type=CaseModelConfiguration)
+                                                                    configuration_type=CaseModelConfiguration,
+                                                                    locale=locale)
     case_model_configuration: CaseModelConfiguration = cast(CaseModelConfiguration, configuration)
 
     return case_model_configuration

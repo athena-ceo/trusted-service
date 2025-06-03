@@ -19,8 +19,10 @@ from src.backend.rendering.md import build_markdown_table_intentions
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS
 from src.backend.text_analysis.llm import Llm
 from src.backend.text_analysis.llm_openai import LlmOpenAI
-from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration, get_localization
+from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
+from src.backend.text_analysis.text_analysis_localization import get_text_analysis_localization, TextAnalysisLocalization
 from src.common.case_model import CaseModel
+from src.common.configuration import SupportedLocale
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE
 
 
@@ -28,8 +30,9 @@ class ListOfTextFragments(BaseModel):
     list: List[str]
 
 
-def create_analysis_models(config: TextAnalysisConfiguration, features: list[Feature]):
-    localization = get_localization(config)
+def create_analysis_models(locale: SupportedLocale,
+                           features: list[Feature]):
+    localization: TextAnalysisLocalization = get_text_analysis_localization(locale)
 
     # class ScoringForOneIntention
 
@@ -71,9 +74,12 @@ def create_analysis_models(config: TextAnalysisConfiguration, features: list[Fea
         **field_definitions)
 
 
-def build_system_prompt(config: TextAnalysisConfiguration, features: list[Feature],
+def build_system_prompt(config: TextAnalysisConfiguration,
+                        locale: SupportedLocale,
+                        features: list[Feature],
                         analysis_response_model: Type[BaseModel]) -> str:
-    localization = get_localization(config)
+    # localization = get_localization(config)
+    localization: TextAnalysisLocalization = get_text_analysis_localization(locale)
 
     lines = []
 
@@ -113,7 +119,11 @@ def build_system_prompt(config: TextAnalysisConfiguration, features: list[Featur
 
 
 class TextAnalyzer:
-    def __init__(self, case_model: CaseModel, runtime_directory: str, config: TextAnalysisConfiguration, ):
+    def __init__(self,
+                 case_model: CaseModel,
+                 runtime_directory: str,
+                 config: TextAnalysisConfiguration,
+                 locale: SupportedLocale):
 
         features: list[Feature] = []
         for case_field in case_model.case_fields:  ## TODO: Do that in the constructor of TextAnalyzer
@@ -128,8 +138,8 @@ class TextAnalyzer:
 
         self.runtime_directory: str = runtime_directory
         self.config2: TextAnalysisConfiguration = config
-        self.analysis_response_model: Type[BaseModel] = create_analysis_models(config, features)
-        self.templated_system_prompt: str = build_system_prompt(self.config2, self.features, self.analysis_response_model)
+        self.analysis_response_model: Type[BaseModel] = create_analysis_models(locale, features)
+        self.templated_system_prompt: str = build_system_prompt(self.config2, locale, self.features, self.analysis_response_model)
         self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOpenAI()
 
     def _analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
