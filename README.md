@@ -109,7 +109,7 @@ Proceed in the following order:
 This leads to the following command for Delphes!
 ```
 cd apps/delphes/runtime/odm_databases/9.0
-docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9061:9061 -p 9444:9444 -v .:/config/dbdata/ -e SAMPLE=false icr.io/cpopen/odm-k8s/odm:9.0
+docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9060:9060 -p 9443:9443 -v .:/config/dbdata/ -e SAMPLE=false icr.io/cpopen/odm-k8s/odm:9.0
 ```
 
 ### Unless you only want to launch the test client, and you configured that client to access the API directly, launch the uvicorn server

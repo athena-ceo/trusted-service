@@ -40,8 +40,12 @@ class Context:
         self.case_model: CaseModel = self.api_client.get_case_model()
         self.case: Case = Case.create_default_instance(self.case_model)
         self.analysis_result_and_rendering: dict[str, Any] = {}
-        self.processing_response: Optional[CaseHandlingDetailedResponse] = None
+        self.payload_to_process: str | None = None
+        self.case_handling_detailed_response: Optional[CaseHandlingDetailedResponse] = None
         self.stage = 1
+
+    def update_payload_to_process(self):
+        pass
 
 
 def add_case_field_input_widget(case: Case, case_field: CaseField):
@@ -74,7 +78,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
                  on_change=update_case_field_bool)
 
 
-def submit_for_text_analysis():
+def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
     analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.texte_demande)
     context.analysis_result_and_rendering = analysis_result_and_rendering
@@ -86,13 +90,13 @@ def submit_for_text_analysis():
     st.session_state.context.stage = 2
 
 
-def submit_request():
+def submit_case_for_handling():
     context: Context = st.session_state.context
 
     payload_str = st.session_state.payload
     payload_dict = json.loads(payload_str)
-    processing_request = CaseHandlingRequest.model_validate(payload_dict)
-    context.processing_response = context.api_client.handle_case(processing_request)
+    case_handling_request = CaseHandlingRequest.model_validate(payload_dict)
+    context.case_handling_detailed_response = context.api_client.handle_case(case_handling_request)
 
     context.stage = 3
 
@@ -168,7 +172,7 @@ def streamlit_main(config_filename: str):
 
     st.button(
         label=f"Etape suivante",
-        on_click=submit_for_text_analysis,
+        on_click=submit_text_for_ia_analysis,
     )
 
     if context.stage == 1:
@@ -191,15 +195,20 @@ def streamlit_main(config_filename: str):
         analysis_result_and_rendering = context.analysis_result_and_rendering
         analysis_result = analysis_result_and_rendering[KEY_ANALYSIS_RESULT]
         scorings = analysis_result["scorings"]
+
+        # Labels of the intentions to show: Either score >= 1 or "OTHER" which exists anyway
         labels = [scoring["intention_label"] for scoring in scorings if
                   scoring["score"] != 0 or scoring["intention_label"] == "AUTRES"]
+
         label_of_selected_intention = st.radio(label="Confirmer votre demande", options=labels, index=0)
         matching_ids = [scoring["intention_id"] for scoring in scorings if
                         scoring["intention_label"] == label_of_selected_intention]
         if matching_ids:
             id_of_selected_intention = matching_ids[0]
+
+            # Show matching fields
             for case_field in case_model.case_fields:
-                case_field: CaseField = case_field
+                # case_field: CaseField = case_field
                 # Show fields specific to the selected intention!
                 if id_of_selected_intention in case_field.intention_ids:
                     if case_field.show_in_ui:
@@ -207,15 +216,9 @@ def streamlit_main(config_filename: str):
 
     with expander_detail("Requête"):
 
-        case_field_values_to_send_to_decision_engine: dict[str, Any] = {}
-
-        for case_field in case_model.case_fields:
-            # if case_field.send_to_decision_engine:
-            case_field_values_to_send_to_decision_engine[case_field.id] = case.field_values[case_field.id]
-
         payload = {
             "intention_id": id_of_selected_intention,
-            "field_values": case_field_values_to_send_to_decision_engine,
+            "field_values": case.field_values,
             "highlighted_text_and_features": context.analysis_result_and_rendering["highlighted_text_and_features"],
         }
 
@@ -237,24 +240,24 @@ def streamlit_main(config_filename: str):
 
     st.button(
         label=f"Soumettre votre demande",
-        on_click=submit_request,
+        on_click=submit_case_for_handling,
         disabled=False,
     )
 
     if context.stage == 2:
         return
 
-    processing_response = context.processing_response
+    case_handling_detailed_response = context.case_handling_detailed_response
 
     if st.session_state.show_details:
         with expander_detail("Appel au moteur de règles", expanded=False):
             st.write("Input:")
-            st.write(processing_response.case_handling_decision_input)
+            st.write(case_handling_detailed_response.case_handling_decision_input)
             st.write("Output:")
-            st.write(processing_response.case_handling_decision_output)
+            st.write(case_handling_detailed_response.case_handling_decision_output)
 
-    st.write(processing_response.case_handling_response.acknowledgement_to_requester)
+    st.write(case_handling_detailed_response.case_handling_response.acknowledgement_to_requester)
 
     if st.session_state.show_details:
         with expander_detail("Traitement de la demande", expanded=False):
-            st.html(processing_response.case_handling_response.case_handling_report)
+            st.html(case_handling_detailed_response.case_handling_response.case_handling_report)

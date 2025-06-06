@@ -4,7 +4,7 @@
 
 # Priority 1
 ## Framework
-- Polish
+- Improve
   - Complete exception handling on send email, call decision service, call OpenAI
   - Complete comments
   - Complete parameterization, Manage port numbers for all the demos - including cors
