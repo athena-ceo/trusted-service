@@ -25,7 +25,7 @@ When using native image compilation, you will also need:
 ### Compile and Run in Local Dev Mode
 
 ```
-mvn clean quarkus:dev
+mvn clean quarkus:dev -Dquarkus.http.port=7070
 ```
 
 ### Package and Run in JVM mode

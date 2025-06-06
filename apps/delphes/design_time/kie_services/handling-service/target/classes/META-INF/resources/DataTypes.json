@@ -1,1 +1,0 @@
-{"definitions":{"InputSet":{"type":"object","x-dmn-type":"DMNType{ https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656 : InputSet }","x-dmn-descriptions":{}},"OutputSet":{"type":"object","x-dmn-type":"DMNType{ https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656 : OutputSet }","x-dmn-descriptions":{}}}}
