@@ -1,6 +1,6 @@
 # Trusted Services README
 
-Trusted Services is a framework that streamlines the build of localizable, accountable, self service applications.
+Trusted Services is a framework that streamlines the build of localizable, accountable, self-service applications.
 
 You can create a new application either by using a Python API or by parameterizing in a low code fashion the framework
 through a xlsx.
@@ -92,11 +92,25 @@ Trusted Services apps are configured in an Excel file. For Delphes check `apps\d
 Proceed in the following order:
 
 ### If you configured the Decision Engine to be ODM, launch the ODM Docker image
+**Important notes**:
+> **1. ODM Decision Center database persistence locale**
+> 
+> A given instance of the ODM Decision Center database has a native locale and cannot host rules with a different persitence locale.
+> 
+> To set the locale (en_US by default):
+>> - launch the ODM Docker image
+>> - remove all rules
+>> - run `odm_dc_localization.py` in `src/backend/decision/decision_odm/admin`
+>
+> 3. ODM Version
+> The `-v` option in the docker command ensure the Decision Center and RES databases are backed by a file.
+> Nothing will ensure that the format of the files doesn't change. Therefore it is advised to have a directory per ODM version. 
+
+This leads to the following command for Delphes!
 ```
 cd apps/delphes/runtime/odm_databases/9.0
-docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9060:9060 -p 9443:9443 -v .:/config/dbdata/ -e SAMPLE=false icr.io/cpopen/odm-k8s/odm:9.0
+docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9061:9061 -p 9444:9444 -v .:/config/dbdata/ -e SAMPLE=false icr.io/cpopen/odm-k8s/odm:9.0
 ```
-**Important** The port specified with option `-p` should match the `decision_service_url` option in tab `odm`
 
 ### Unless you only want to launch the test client, and you configured that client to access the API directly, launch the uvicorn server
 In the `trusted-service` top directory, type:
