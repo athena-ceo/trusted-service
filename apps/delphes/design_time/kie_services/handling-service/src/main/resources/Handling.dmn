@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_BF64F3D2-3DA8-427B-8C26-7C5C5CE62617" id="_C4F9257E-9368-4CBB-87E1-4F11140C9B46" name="Handling" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656">
+  <import id="_2F455FE8-6EA6-4A05-8DAF-FBC591773DBA" name="DataTypes" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" />
+  <inputData name="request" id="_F8AAA542-ED89-41CA-BB90-96C8562EEF32">
+    <variable name="request" id="_8C4C007F-F0CD-424D-972B-684457B45548" typeRef="DataTypes.MigrationRequest" />
+  </inputData>
+  <decision name="Handling" id="_CFC7BFCB-D999-493F-97E3-56CE2A9970DC">
+    <variable id="_B7AB7BE6-A7F0-4DD3-A3BE-0066300AC923" typeRef="DataTypes.CaseHandlingDecision" name="Handling" />
+    <informationRequirement id="_A5740971-0EEF-40E6-A414-F792180DAE82">
+      <requiredInput href="#_F8AAA542-ED89-41CA-BB90-96C8562EEF32" />
+    </informationRequirement>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_9DC97CE6-72D8-4B56-A0F7-8C3490B3BB92" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths />
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_B6F5ADF5-4FA5-440D-A567-2397C7642E48" dmnElementRef="_F8AAA542-ED89-41CA-BB90-96C8562EEF32" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="100" y="300" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_9BA3A284-6319-4373-A51E-37FE5B16C6BF" dmnElementRef="_CFC7BFCB-D999-493F-97E3-56CE2A9970DC" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="100" y="100" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_539F7A36-2ECD-4828-B782-945E51DBA929-AUTO-TARGET" dmnElementRef="_A5740971-0EEF-40E6-A414-F792180DAE82" sourceElement="_B6F5ADF5-4FA5-440D-A567-2397C7642E48" targetElement="_9BA3A284-6319-4373-A51E-37FE5B16C6BF">
+        <di:waypoint x="180" y="340" />
+        <di:waypoint x="180" y="140" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" id="_80B3EB9E-8DE8-4ABD-A3A3-8A86256219EF" name="SharedDataTypes">
+  <itemDefinition id="_CC41CA0F-3DC9-4BF8-81BD-8315AD906C5C" name="IntentionEnum" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_011D7C9D-2193-4E15-AA6B-C8842C053B27" kie:constraintType="enumeration">
+      <text>&quot;expiration_d_une_api&quot;, &quot;depot_de_demande_d_asile&quot;, &quot;ou_en_est_ma_demande_d_asile_en_cours&quot;, &quot;expiration_d_une_atda&quot;, &quot;mise_a_jour_infos_atda&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
+  <itemDefinition id="_35E4CAA9-5192-4176-B74A-48716796DD9E" name="WorkBasketEnum" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_606B052F-94FD-4D69-B04A-58DFB7DC2DB1" kie:constraintType="enumeration">
+      <text>&quot;reorientation&quot;, &quot;generique&quot;, &quot;api_a_renouveler&quot;, &quot;pref_etrangers_aes_salarie&quot;, &quot;sauf_conduits&quot;, &quot;ukraine&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
   <itemDefinition id="_7A5C054D-C422-48F8-98C8-DF7209CF7A9E" name="MigrationRequest" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
     <itemComponent id="_0DF9A765-0DEA-4226-8942-8DE5F8BAB855" name="intention" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
@@ -9,11 +21,8 @@
     </itemComponent>
   </itemDefinition>
   <itemDefinition id="_CBD7AE34-E717-4989-8F38-5B28D4CB136A" name="CaseHandlingDecision" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-    <itemComponent id="_9C6F8FC7-C6FF-4880-8A60-AE43F8592B7D" name="notes" isCollection="true" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-      <typeRef>string</typeRef>
-    </itemComponent>
     <itemComponent id="_B8FDC513-9364-4622-BAFC-6CB803676D00" name="priority" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-      <typeRef>PriorityEnum</typeRef>
+      <typeRef>string</typeRef>
     </itemComponent>
     <itemComponent id="_3935E101-27BE-4AD6-B873-A609A9EB5FA1" name="work_basket" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
@@ -21,14 +30,14 @@
     <itemComponent id="_EF9BDD60-4B8A-4273-8132-1A29449D004A" name="response_template_id" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_DEBF9643-AED1-41DB-9880-8BAFD4A259A0" name="acknowledgement_to_requester" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_DEBF9643-AED1-41DB-9880-8BAFD4A259A0" name="acknowledgement_message" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_ADDABF47-312E-44E2-878B-F5FAEDA56885" name="treatment" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-      <typeRef>TreatmentEnum</typeRef>
+    <itemComponent id="_ADDABF47-312E-44E2-878B-F5FAEDA56885" name="handling" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>string</typeRef>
     </itemComponent>
   </itemDefinition>
-  <itemDefinition id="_C6555E68-1A1D-4866-B382-C9402566FB3F" name="TreatmentEnum" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+  <itemDefinition id="_C6555E68-1A1D-4866-B382-C9402566FB3F" name="HandlingEnum" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
     <typeRef>string</typeRef>
     <typeConstraint id="_9AA092A7-0615-46AF-9188-CF960254EC9D" kie:constraintType="enumeration">
       <text>&quot;AUTOMATED&quot;, &quot;AGENT&quot;, &quot;DEFLECTION&quot;</text>
@@ -41,6 +50,9 @@
     </typeConstraint>
   </itemDefinition>
   <itemDefinition id="_857848F3-3858-45A7-8616-B1FBB0017C34" name="Case" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_F8E49E02-E658-4615-997C-47096A93CB48" name="refugie_ou_protege_subsidiaire" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>boolean</typeRef>
+    </itemComponent>
     <itemComponent id="_B590D39E-2FE8-4E16-8D68-CFDAC5EF9970" name="date_demande" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>date</typeRef>
     </itemComponent>

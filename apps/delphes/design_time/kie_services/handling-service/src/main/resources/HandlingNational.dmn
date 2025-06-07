@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.apache.org/dmn/_31A4AC64-3D40-4C48-828C-53B6D6736625" id="_B095D8FD-606F-4D33-8974-557E78A7E992" name="HandlingNatlDecision">
+  <import id="_BA1017AF-C095-4525-89E2-16036DEFDCE2" name="DataTypes" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" />
+  <inputData name="the request" id="_2029D04B-BE3C-41E8-8287-02FBD328E3DE">
+    <variable name="the request" id="_10C01B54-8F5A-4075-A319-F36AA5EDD7E2" typeRef="DataTypes.MigrationRequest" />
+  </inputData>
+  <decision name="Priority" id="_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702">
+    <variable id="_82A875CB-7E3F-4460-97E4-53221659FB2C" typeRef="string" name="Priority" />
+    <informationRequirement id="_7033E76F-25BA-4647-9C5C-EAA1EA0E775C">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <decisionTable id="_742E20F4-E822-4243-BC29-B835837C339B" typeRef="string" hitPolicy="UNIQUE" label="Priority">
+      <input id="_B43A71A8-72E9-4F82-919C-C39FDA423B5F">
+        <inputExpression id="_0679C48A-99FF-466E-B2DD-C14ABCA8466C" typeRef="boolean">
+          <text>the request.case.mention_de_risque_sur_l_emploi</text>
+        </inputExpression>
+      </input>
+      <output id="_577E25B8-BB5B-4B90-A39D-8C378DD6E307" />
+      <annotation name="Annotations" />
+      <rule id="_099BA56C-56E3-4A2B-8E3C-46DCF157662B">
+        <inputEntry id="_30924F11-2292-465E-AA34-D6148F1804B3">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_7DFA9D13-A100-45C7-AF43-1457970BD73C">
+          <text>&quot;HIGH&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>// Your annotations here</text>
+        </annotationEntry>
+      </rule>
+      <rule id="_79E0A3BB-2EA3-4DD3-B20E-4044DEB19BBB">
+        <inputEntry id="_2D8CE2FC-7402-45AC-A553-9888EC6C413B">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_6BA480E1-8F43-4E08-A216-91BCB3A0B23D">
+          <text>&quot;MEDIUM&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision name="HandlingNatlDecision" id="_B9A11787-37A8-4483-ACB5-41CD25B98DF6">
+    <variable id="_5E0B67B7-B5A8-4D77-AEDF-4BE2720B704F" typeRef="DataTypes.CaseHandlingDecision" name="HandlingNatlDecision" />
+    <informationRequirement id="_DF0D8F18-9A0E-4BCB-AE1B-5A2BA16D6E08">
+      <requiredDecision href="#_4DE253C6-0AED-4D3F-AB93-02F7994079C6" />
+    </informationRequirement>
+    <informationRequirement id="_852B7F99-7BD2-4343-8688-BD715CD2330B">
+      <requiredDecision href="#_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" />
+    </informationRequirement>
+    <informationRequirement id="_5B3CA3C1-A6E7-4536-850C-B2DEF286F265">
+      <requiredDecision href="#_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702" />
+    </informationRequirement>
+    <informationRequirement id="_DD3EDC24-0CF2-4D64-9A4B-A03C70D3D7AB">
+      <requiredDecision href="#_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA" />
+    </informationRequirement>
+    <informationRequirement id="_353D63F7-36C5-47E0-91A5-DCCF076014C7">
+      <requiredDecision href="#_57D94780-679F-4493-AFC6-9B142F556345" />
+    </informationRequirement>
+    <relation id="_93D727BD-8527-4CE7-81F3-42BFB234CE5E" typeRef="DataTypes.CaseHandlingDecision" label="HandlingNatlDecision">
+      <column id="_ECD73B0B-E5CA-4C1F-89E2-40524A09FB2E" name="priority" typeRef="string" />
+      <column id="_5ED87609-AA46-46F9-B598-8CB4CE01475F" name="work_basket" typeRef="string" />
+      <column id="_7B553D80-D76F-4FCE-AE0A-0B20DCDF1057" name="response_template_id" typeRef="string" />
+      <column id="_1A8DF6E0-518C-45D1-B2F2-CDDF27AA6F4D" name="acknowledgement_message" typeRef="string" />
+      <column id="_E9625880-C85F-4BE6-908A-ADAA69B8A358" name="handling" typeRef="string" />
+      <row id="_01B9A462-551F-4EAF-8F39-52D26BCCC1B3">
+        <literalExpression id="_668296D1-01D6-4527-AD8A-73E1DDB4D724">
+          <text>Priority</text>
+        </literalExpression>
+        <literalExpression id="_37B41690-4B52-4F9D-9471-896578ED9FF4">
+          <text>WorkBasket</text>
+        </literalExpression>
+        <literalExpression id="_51E930A1-4159-41AA-955F-1F2C45C7D16D">
+          <text>EmailTemplate</text>
+        </literalExpression>
+        <literalExpression id="_8E5F643F-61E5-4744-AF8C-4EFAAD23F0B9">
+          <text>AckMessage</text>
+        </literalExpression>
+        <literalExpression id="_18220590-2029-4303-AA9C-A096688BF3A2">
+          <text>Handling</text>
+        </literalExpression>
+      </row>
+    </relation>
+  </decision>
+  <decision name="Handling" id="_1325C96D-7403-4A6E-A221-2E0BDBB36EF6">
+    <variable name="Handling" id="_B9758B47-415F-4568-9AAF-7F3739CDD331" typeRef="string" />
+    <informationRequirement id="_B620030F-16F8-4423-AD65-655BA779A292">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <decisionTable id="_B8DA3FD0-6060-478B-B205-5FBFB437F410" typeRef="string" hitPolicy="UNIQUE" label="Handling">
+      <input id="_22511371-D11F-416E-ACA1-36E9823F9829">
+        <inputExpression id="_34A556D7-E1C8-40F0-A462-3AE2D2D2A7E0" typeRef="string">
+          <text>the request.intention</text>
+        </inputExpression>
+      </input>
+      <output id="_DFEFF3E3-2C79-452C-A8DB-D2E73D724E36" typeRef="DataTypes.HandlingEnum" />
+      <annotation name="Annotations" />
+      <rule id="_0B4B0B3F-6439-42F5-8272-7D17081666BD">
+        <inputEntry id="_1CBC3EA5-D3D2-45FC-877D-A60C6E73E0D4">
+          <text>&quot;expiration_d_une_api&quot;</text>
+        </inputEntry>
+        <outputEntry id="_B0DB17C4-9BB5-43F4-8437-2CB9E60908EC">
+          <text>&quot;AGENT&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>// Your annotations here</text>
+        </annotationEntry>
+      </rule>
+      <rule id="_6D4B0894-7A22-42BD-BA7A-21541175B638">
+        <inputEntry id="_468595D4-01C1-47D8-96D0-4D483C00876A">
+          <text>not(&quot;expiration_d_une_api&quot;)</text>
+        </inputEntry>
+        <outputEntry id="_617D061D-5C1F-44A6-A47D-113F79788316">
+          <text>&quot;AUTOMATED&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision name="WorkBasket" id="_4DE253C6-0AED-4D3F-AB93-02F7994079C6">
+    <variable name="WorkBasket" id="_FC78F7AE-F694-4288-9CDC-A62C804F7BAC" typeRef="string" />
+    <informationRequirement id="_479D4C9D-B910-4740-812C-4D37F14AC30E">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <literalExpression id="_A2EFBAE9-14B2-4DC1-A30F-E0305F36DB94" typeRef="string" label="WorkBasket">
+      <text>&quot;generique&quot;</text>
+    </literalExpression>
+  </decision>
+  <decision name="EmailTemplate" id="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA">
+    <variable name="EmailTemplate" id="_784BF48F-5924-4DF9-9120-B4A38F339A03" typeRef="string" />
+    <informationRequirement id="_1DA1B50C-A195-446B-B1E8-DEB2865E5F4E">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <literalExpression id="_F8FF4F10-221B-4C7D-92B4-39192108533F" typeRef="string" label="EmailTemplate">
+      <text>&quot;TemplateABC&quot;</text>
+    </literalExpression>
+  </decision>
+  <decision name="AckMessage" id="_57D94780-679F-4493-AFC6-9B142F556345">
+    <variable name="AckMessage" id="_211B2FB6-3368-4091-9EB3-8A0E599C457B" typeRef="string" />
+    <informationRequirement id="_D4EF0700-4BEC-437B-909B-8790E95DF519">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <literalExpression id="_55B38109-FEA9-4F08-A515-2CC78013FD6F" typeRef="string" label="AckMessage">
+      <text>&quot;Welcome to the kingdom&quot;</text>
+    </literalExpression>
+  </decision>
+  <decisionService name="HandlingNational" id="_A1A4B18F-BDD9-4361-9223-DD09599CF546">
+    <variable name="HandlingNational" id="_6415ABA6-511F-4FCC-8FC6-6192CABF6DB8" />
+    <outputDecision href="#_B9A11787-37A8-4483-ACB5-41CD25B98DF6" />
+    <encapsulatedDecision href="#_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA" />
+    <encapsulatedDecision href="#_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702" />
+    <encapsulatedDecision href="#_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" />
+    <encapsulatedDecision href="#_4DE253C6-0AED-4D3F-AB93-02F7994079C6" />
+    <encapsulatedDecision href="#_57D94780-679F-4493-AFC6-9B142F556345" />
+    <inputData href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+  </decisionService>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_31F80F7D-F70E-491C-A977-845B5915A2E2" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_742E20F4-E822-4243-BC29-B835837C339B">
+            <kie:width>60</kie:width>
+            <kie:width>429</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_B8DA3FD0-6060-478B-B205-5FBFB437F410">
+            <kie:width>60</kie:width>
+            <kie:width>160</kie:width>
+            <kie:width>243</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_93D727BD-8527-4CE7-81F3-42BFB234CE5E">
+            <kie:width>60</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>125</kie:width>
+            <kie:width>153</kie:width>
+            <kie:width>174</kie:width>
+            <kie:width>118</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_A2EFBAE9-14B2-4DC1-A30F-E0305F36DB94">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_F8FF4F10-221B-4C7D-92B4-39192108533F">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_55B38109-FEA9-4F08-A515-2CC78013FD6F">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_38E78031-1C82-412A-816A-7662BC665A26" dmnElementRef="_2029D04B-BE3C-41E8-8287-02FBD328E3DE" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1280" y="540" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_330EB84F-8910-4939-96CD-0D4171394688" dmnElementRef="_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="980" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6" dmnElementRef="_B9A11787-37A8-4483-ACB5-41CD25B98DF6" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1340" y="-200" width="240" height="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" dmnElementRef="_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1180" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_F439E7DF-2A01-4E88-9A18-3E68509D7499" dmnElementRef="_B620030F-16F8-4423-AD65-655BA779A292" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9">
+        <di:waypoint x="1360" y="580" />
+        <di:waypoint x="1260" y="260" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_3D876CE1-5428-4139-AA22-D514AE727B2B" dmnElementRef="_4DE253C6-0AED-4D3F-AB93-02F7994079C6" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1380" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_31D97B0F-C1C7-4758-B582-123F6C528EAB" dmnElementRef="_479D4C9D-B910-4740-812C-4D37F14AC30E" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_3D876CE1-5428-4139-AA22-D514AE727B2B">
+        <di:waypoint x="1360" y="580" />
+        <di:waypoint x="1460" y="260" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_617E3563-8B3C-481B-89DA-BD0C7EBCA9D3" dmnElementRef="_DF0D8F18-9A0E-4BCB-AE1B-5A2BA16D6E08" sourceElement="_3D876CE1-5428-4139-AA22-D514AE727B2B" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1460" y="220" />
+        <di:waypoint x="1460" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_EFDE4FE4-A004-4EDF-BEEA-1DDD88916108" dmnElementRef="_852B7F99-7BD2-4343-8688-BD715CD2330B" sourceElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1260" y="220" />
+        <di:waypoint x="1460" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_E73EA17A-E50E-43F8-9444-39CA12C91D6E" dmnElementRef="_5B3CA3C1-A6E7-4536-850C-B2DEF286F265" sourceElement="_330EB84F-8910-4939-96CD-0D4171394688" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1060" y="220" />
+        <di:waypoint x="1460" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_542DD9ED-539C-472A-9132-5CD3765ED70D" dmnElementRef="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1560" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_E427EAA2-E99B-4D68-B526-DAFE7AE17DA4" dmnElementRef="_1DA1B50C-A195-446B-B1E8-DEB2865E5F4E" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_542DD9ED-539C-472A-9132-5CD3765ED70D">
+        <di:waypoint x="1360" y="580" />
+        <di:waypoint x="1640" y="260" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_3F147EA7-023D-4360-9E61-A4DF35ABC4BC" dmnElementRef="_DD3EDC24-0CF2-4D64-9A4B-A03C70D3D7AB" sourceElement="_542DD9ED-539C-472A-9132-5CD3765ED70D" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1640" y="220" />
+        <di:waypoint x="1460" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_82652066-4FEE-4674-AE60-BDC66180425C" dmnElementRef="_57D94780-679F-4493-AFC6-9B142F556345" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1740" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_BFA5AAFF-B034-4485-B5BF-441DCE9E4406" dmnElementRef="_D4EF0700-4BEC-437B-909B-8790E95DF519" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_82652066-4FEE-4674-AE60-BDC66180425C">
+        <di:waypoint x="1360" y="580" />
+        <di:waypoint x="1820" y="260" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_52918FF5-D8A2-4D19-8933-71424DCC8A40" dmnElementRef="_353D63F7-36C5-47E0-91A5-DCCF076014C7" sourceElement="_82652066-4FEE-4674-AE60-BDC66180425C" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1820" y="220" />
+        <di:waypoint x="1460" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_AB627681-5238-44C8-8A3D-574E334A1B9E" dmnElementRef="_7033E76F-25BA-4647-9C5C-EAA1EA0E775C" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_330EB84F-8910-4939-96CD-0D4171394688">
+        <di:waypoint x="1360" y="580" />
+        <di:waypoint x="1060" y="260" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_C8295F25-2221-4C84-A426-0E9F603CB876" dmnElementRef="_A1A4B18F-BDD9-4361-9223-DD09599CF546" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="960" y="-260" width="1020" height="660" />
+        <dmndi:DMNDecisionServiceDividerLine id="_2303F247-770D-42E3-8013-24342AE4964E">
+          <di:waypoint x="960" y="80" />
+          <di:waypoint x="1280" y="80" />
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
