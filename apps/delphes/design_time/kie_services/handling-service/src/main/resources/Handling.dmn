@@ -13,8 +13,11 @@
     <informationRequirement id="_208504C1-7518-4146-AF97-DD190EC7F214">
       <requiredDecision href="#_16CCF9FA-50B8-44A1-B2A6-DE7DDEF8AC4E" />
     </informationRequirement>
+    <knowledgeRequirement id="_A8AC21D5-FD4A-4FA3-B5F3-7765C0A4C385">
+      <requiredKnowledge href="#_806B1FF9-6FF3-4735-935D-C2E28EFC06E2" />
+    </knowledgeRequirement>
     <literalExpression id="_D419DEF6-9864-4202-B408-E82795FC4594" typeRef="DataTypes.CaseHandlingDecisionOutput" label="HandlingUnified">
-      <text>NationalLevel</text>
+      <text>CombineSpecificAndDefault(NationalLevel, NationalLevel)</text>
     </literalExpression>
   </decision>
   <decision name="NationalLevel" id="_16CCF9FA-50B8-44A1-B2A6-DE7DDEF8AC4E">
@@ -29,6 +32,37 @@
       <text>HandlingNational.HandlingNational(request)</text>
     </literalExpression>
   </decision>
+  <businessKnowledgeModel name="CombineSpecificAndDefault" id="_806B1FF9-6FF3-4735-935D-C2E28EFC06E2">
+    <variable name="CombineSpecificAndDefault" id="_3A67F0A5-D349-40B8-A1D1-E32916404D5F" typeRef="DataTypes.CaseHandlingDecisionOutput" />
+    <encapsulatedLogic label="CombineSpecificAndDefault" typeRef="DataTypes.CaseHandlingDecisionOutput" id="_8C3CE2BF-56B4-4184-9A46-4E3734B0929C" kind="FEEL">
+      <formalParameter id="_F78198BC-38EF-4F41-AF60-16DE26889DB8" name="specific" typeRef="DataTypes.CaseHandlingDecisionOutput" />
+      <formalParameter id="_82026066-CE7A-49B1-B6A1-54C8A3BF20B3" name="default" typeRef="DataTypes.CaseHandlingDecisionOutput" />
+      <relation id="_02E89B46-08F9-45BE-84DA-087DAC4377F5" typeRef="DataTypes.CaseHandlingDecisionOutput" label="Return">
+        <column id="_07945F01-F285-40ED-AA50-EE9D3BBBF9C8" name="priority" typeRef="string" />
+        <column id="_660B6FBB-DE2F-478C-844D-FB50E8ACE2EB" name="work_basket" typeRef="string" />
+        <column id="_B5BD0EA2-681F-47C0-80A5-294886B5DE3D" name="response_template_id" typeRef="string" />
+        <column id="_0E1F2F6E-83C7-4102-9A68-66222A91D2C8" name="acknowledgement_message" typeRef="string" />
+        <column id="_8CE381AC-ED55-4E1E-9A09-3C291DA82309" name="handling" typeRef="string" />
+        <row id="_0A7BFB03-D039-498E-943E-F8AF11AAEBF9">
+          <literalExpression id="_2B09F70D-BE13-4AA1-9B60-E647F0931A00">
+            <text>if (specific.priority = null) then default.priority else specific.priority</text>
+          </literalExpression>
+          <literalExpression>
+            <text>if (specific.work_basket = null) then &quot;default basket&quot; else specific.work_basket</text>
+          </literalExpression>
+          <literalExpression>
+            <text>&quot;&quot;</text>
+          </literalExpression>
+          <literalExpression>
+            <text>&quot;&quot;</text>
+          </literalExpression>
+          <literalExpression>
+            <text>&quot;&quot;</text>
+          </literalExpression>
+        </row>
+      </relation>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_9DC97CE6-72D8-4B56-A0F7-8C3490B3BB92" name="Default DRD" useAlternativeInputDataShape="false">
       <di:extension>
@@ -38,6 +72,14 @@
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D419DEF6-9864-4202-B408-E82795FC4594">
             <kie:width>616</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_02E89B46-08F9-45BE-84DA-087DAC4377F5">
+            <kie:width>60</kie:width>
+            <kie:width>211</kie:width>
+            <kie:width>209</kie:width>
+            <kie:width>153</kie:width>
+            <kie:width>174</kie:width>
+            <kie:width>378</kie:width>
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
@@ -90,6 +132,13 @@
       <dmndi:DMNEdge id="_F4F297F1-9130-4005-85FC-68CBC348275E" dmnElementRef="_C181B0AD-A6FC-4803-B03B-C335FEBB00B3" sourceElement="_D7898C65-8020-4E3D-8423-04788C4A26D8" targetElement="_094DCD7F-A190-4CCC-8009-F56D673EAA19">
         <di:waypoint x="1450" y="650" />
         <di:waypoint x="620" y="320" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_4C173F78-03ED-48AD-BBC1-9CD5825C16D9" dmnElementRef="_806B1FF9-6FF3-4735-935D-C2E28EFC06E2" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="-80" y="200" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_F382C072-EE65-4B20-8401-F46E34569D86" dmnElementRef="_A8AC21D5-FD4A-4FA3-B5F3-7765C0A4C385" sourceElement="_4C173F78-03ED-48AD-BBC1-9CD5825C16D9" targetElement="_9BA3A284-6319-4373-A51E-37FE5B16C6BF">
+        <di:waypoint x="0" y="240" />
+        <di:waypoint x="100" y="140" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

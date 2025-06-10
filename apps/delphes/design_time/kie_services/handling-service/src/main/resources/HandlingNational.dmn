@@ -126,7 +126,7 @@
       <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
     </informationRequirement>
     <literalExpression id="_A2EFBAE9-14B2-4DC1-A30F-E0305F36DB94" typeRef="string" label="WorkBasket">
-      <text>&quot;generique&quot;</text>
+      <text>null</text>
     </literalExpression>
   </decision>
   <decision name="EmailTemplate" id="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA">

@@ -1,0 +1,6 @@
+{
+    "java.project.sourcePaths": [
+        "apps/delphes/design_time/kie_services/handling-service/src/main/java"
+    ],
+    "java.project.referencedLibraries": []
+}
