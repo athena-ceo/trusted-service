@@ -12,7 +12,7 @@
       <text>&quot;reorientation&quot;, &quot;generique&quot;, &quot;api_a_renouveler&quot;, &quot;pref_etrangers_aes_salarie&quot;, &quot;sauf_conduits&quot;, &quot;ukraine&quot;</text>
     </typeConstraint>
   </itemDefinition>
-  <itemDefinition id="_7A5C054D-C422-48F8-98C8-DF7209CF7A9E" name="MigrationRequest" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+  <itemDefinition id="_7A5C054D-C422-48F8-98C8-DF7209CF7A9E" name="CaseHandlingDecisionInput" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
     <itemComponent id="_0DF9A765-0DEA-4226-8942-8DE5F8BAB855" name="intention" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
@@ -20,7 +20,7 @@
       <typeRef>Case</typeRef>
     </itemComponent>
   </itemDefinition>
-  <itemDefinition id="_CBD7AE34-E717-4989-8F38-5B28D4CB136A" name="CaseHandlingDecision" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+  <itemDefinition id="_CBD7AE34-E717-4989-8F38-5B28D4CB136A" name="CaseHandlingDecisionOutput" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
     <itemComponent id="_B8FDC513-9364-4622-BAFC-6CB803676D00" name="priority" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
