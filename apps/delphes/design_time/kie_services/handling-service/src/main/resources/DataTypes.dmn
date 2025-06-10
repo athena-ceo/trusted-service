@@ -13,11 +13,11 @@
     </typeConstraint>
   </itemDefinition>
   <itemDefinition id="_7A5C054D-C422-48F8-98C8-DF7209CF7A9E" name="CaseHandlingDecisionInput" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_8A80413D-C6A3-4F90-A237-776F7BCA2C3F" name="customer_data" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>CustomerCase</typeRef>
+    </itemComponent>
     <itemComponent id="_0DF9A765-0DEA-4226-8942-8DE5F8BAB855" name="intention" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
-    </itemComponent>
-    <itemComponent id="_10950C8E-AB40-4331-B106-3694F7B85B85" name="case" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-      <typeRef>Case</typeRef>
     </itemComponent>
   </itemDefinition>
   <itemDefinition id="_CBD7AE34-E717-4989-8F38-5B28D4CB136A" name="CaseHandlingDecisionOutput" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
@@ -49,7 +49,7 @@
       <text>&quot;VERY_LOW&quot;, &quot;LOW&quot;, &quot;MEDIUM&quot;, &quot;HIGH&quot;, &quot;VERY_HIGH&quot;</text>
     </typeConstraint>
   </itemDefinition>
-  <itemDefinition id="_857848F3-3858-45A7-8616-B1FBB0017C34" name="Case" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+  <itemDefinition id="_857848F3-3858-45A7-8616-B1FBB0017C34" name="CustomerCase" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
     <itemComponent id="_F8E49E02-E658-4615-997C-47096A93CB48" name="refugie_ou_protege_subsidiaire" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>boolean</typeRef>
     </itemComponent>
@@ -62,7 +62,7 @@
     <itemComponent id="_09056161-CEDC-47CA-9BF2-55CBA2654EF9" name="date_expiration_api" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>date</typeRef>
     </itemComponent>
-    <itemComponent id="_6F6D41BF-2A25-4AF0-8CDC-E8636D1197D3" name="mention_de_risque_sur_l_emploi" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_6F6D41BF-2A25-4AF0-8CDC-E8636D1197D3" name="risque_sur_l_emploi" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>boolean</typeRef>
     </itemComponent>
   </itemDefinition>

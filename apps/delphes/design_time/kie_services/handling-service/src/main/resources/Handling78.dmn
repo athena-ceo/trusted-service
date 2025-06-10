@@ -1,46 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0" id="_0CDBB51E-5965-4836-8C06-755D560BB31D" name="Handling78">
-  <import id="_BA1017AF-C095-4525-89E2-16036DEFDCE2" name="DataTypes" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" />
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0" id="_0CDBB51E-5965-4836-8C06-755D560BB31D" name="Handling78">
+  <import id="_74033A08-3A6C-4603-90EE-6273EA53E30D" name="DataTypes" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" />
   <inputData name="the request" id="_2029D04B-BE3C-41E8-8287-02FBD328E3DE">
     <variable name="the request" id="_10C01B54-8F5A-4075-A319-F36AA5EDD7E2" typeRef="DataTypes.CaseHandlingDecisionInput" />
   </inputData>
-  <decision name="Priority" id="_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702">
-    <variable id="_82A875CB-7E3F-4460-97E4-53221659FB2C" typeRef="string" name="Priority" />
-    <informationRequirement id="_7033E76F-25BA-4647-9C5C-EAA1EA0E775C">
-      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
-    </informationRequirement>
-    <decisionTable id="_742E20F4-E822-4243-BC29-B835837C339B" typeRef="string" hitPolicy="UNIQUE" label="Priority">
-      <input id="_B43A71A8-72E9-4F82-919C-C39FDA423B5F">
-        <inputExpression id="_0679C48A-99FF-466E-B2DD-C14ABCA8466C" typeRef="boolean">
-          <text>the request.case.mention_de_risque_sur_l_emploi</text>
-        </inputExpression>
-      </input>
-      <output id="_577E25B8-BB5B-4B90-A39D-8C378DD6E307" />
-      <annotation name="Annotations" />
-      <rule id="_099BA56C-56E3-4A2B-8E3C-46DCF157662B">
-        <inputEntry id="_30924F11-2292-465E-AA34-D6148F1804B3">
-          <text>true</text>
-        </inputEntry>
-        <outputEntry id="_7DFA9D13-A100-45C7-AF43-1457970BD73C">
-          <text>&quot;VERY_HIGH&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text>// Your annotations here</text>
-        </annotationEntry>
-      </rule>
-      <rule id="_79E0A3BB-2EA3-4DD3-B20E-4044DEB19BBB">
-        <inputEntry id="_2D8CE2FC-7402-45AC-A553-9888EC6C413B">
-          <text>false</text>
-        </inputEntry>
-        <outputEntry id="_6BA480E1-8F43-4E08-A216-91BCB3A0B23D">
-          <text>&quot;MEDIUM&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text></text>
-        </annotationEntry>
-      </rule>
-    </decisionTable>
-  </decision>
   <decision name="HandlingDecision" id="_B9A11787-37A8-4483-ACB5-41CD25B98DF6">
     <variable id="_5E0B67B7-B5A8-4D77-AEDF-4BE2720B704F" typeRef="DataTypes.CaseHandlingDecisionOutput" name="HandlingDecision" />
     <informationRequirement id="_DF0D8F18-9A0E-4BCB-AE1B-5A2BA16D6E08">
@@ -52,11 +15,11 @@
     <informationRequirement id="_852B7F99-7BD2-4343-8688-BD715CD2330B">
       <requiredDecision href="#_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" />
     </informationRequirement>
-    <informationRequirement id="_5B3CA3C1-A6E7-4536-850C-B2DEF286F265">
-      <requiredDecision href="#_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702" />
-    </informationRequirement>
     <informationRequirement id="_353D63F7-36C5-47E0-91A5-DCCF076014C7">
       <requiredDecision href="#_57D94780-679F-4493-AFC6-9B142F556345" />
+    </informationRequirement>
+    <informationRequirement id="_E99EC59E-7EBC-43AC-B6CD-60764D91F47D">
+      <requiredDecision href="#_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0" />
     </informationRequirement>
     <relation id="_93D727BD-8527-4CE7-81F3-42BFB234CE5E" typeRef="DataTypes.CaseHandlingDecisionOutput" label="HandlingDecision">
       <column id="_ECD73B0B-E5CA-4C1F-89E2-40524A09FB2E" name="priority" typeRef="string" />
@@ -66,7 +29,7 @@
       <column id="_E9625880-C85F-4BE6-908A-ADAA69B8A358" name="handling" typeRef="string" />
       <row id="_01B9A462-551F-4EAF-8F39-52D26BCCC1B3">
         <literalExpression id="_668296D1-01D6-4527-AD8A-73E1DDB4D724">
-          <text>Priority</text>
+          <text>null</text>
         </literalExpression>
         <literalExpression id="_37B41690-4B52-4F9D-9471-896578ED9FF4">
           <text>WorkBasket</text>
@@ -98,7 +61,7 @@
       <annotation name="Annotations" />
       <rule id="_0B4B0B3F-6439-42F5-8272-7D17081666BD">
         <inputEntry id="_1CBC3EA5-D3D2-45FC-877D-A60C6E73E0D4">
-          <text>&quot;expiration_d_une_api&quot;</text>
+          <text>&quot;expiration api&quot;</text>
         </inputEntry>
         <outputEntry id="_B0DB17C4-9BB5-43F4-8437-2CB9E60908EC">
           <text>&quot;AGENT&quot;</text>
@@ -109,7 +72,7 @@
       </rule>
       <rule id="_6D4B0894-7A22-42BD-BA7A-21541175B638">
         <inputEntry id="_468595D4-01C1-47D8-96D0-4D483C00876A">
-          <text>not(&quot;expiration_d_une_api&quot;)</text>
+          <text>not(&quot;expiration api&quot;)</text>
         </inputEntry>
         <outputEntry id="_617D061D-5C1F-44A6-A47D-113F79788316">
           <text>&quot;AUTOMATED&quot;</text>
@@ -147,16 +110,137 @@
       <text>&quot;Welcome to the kingdom&quot;</text>
     </literalExpression>
   </decision>
+  <decision name="Priority" id="_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0">
+    <variable name="Priority" id="_5DE79614-B638-45B6-A455-3FC3248B3ABB" typeRef="string" />
+    <informationRequirement id="_6CED6C4D-167F-4163-826D-F07EB90D8F16">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
+    </informationRequirement>
+    <decisionTable id="_771AB8BC-0C0B-4DCA-8831-FA5B90DC584F" typeRef="string" hitPolicy="UNIQUE" label="Priority">
+      <input id="_698E3F06-D712-4B34-BC18-DE47778765BD">
+        <inputExpression id="_B15B5358-A1AF-42ED-99DC-5E2DC9706C34" typeRef="string">
+          <text>the request.intention</text>
+        </inputExpression>
+      </input>
+      <input id="_95B7B95E-49FC-4DBF-B26F-E9304D914220">
+        <inputExpression id="_115D3352-FE66-470F-B107-C5C202F87B6D" typeRef="days and time duration">
+          <text>the request.customer_data.date_expiration_api - the request.customer_data.date_demande</text>
+        </inputExpression>
+      </input>
+      <input id="_906376EF-E6CB-4281-8E5A-6E3C4E415FF6">
+        <inputExpression id="_8922BB8C-8935-499C-8AD4-84F2E861E193" typeRef="boolean">
+          <text>the request.customer_data.risque_sur_l_emploi</text>
+        </inputExpression>
+      </input>
+      <output id="_6E4458A6-C861-4F83-AD88-E261F7F329E8" />
+      <annotation name="Annotations" />
+      <rule id="_3CB8AE9C-934E-46D1-86E0-6DD8DD50B896">
+        <inputEntry id="_D504D925-0E73-48F4-9CCF-86284FF5623D">
+          <text>&quot;expiration api&quot;</text>
+        </inputEntry>
+        <inputEntry id="_8D867138-8F78-4313-A253-17F5E4E2C224">
+          <text>&lt; duration(&quot;P15D&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_F1867ECC-EFF7-44BD-A456-C2F7CA42E58B">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_61C8EE40-3510-433D-9956-EABAB8AABEA0">
+          <text>&quot;VERY HIGH&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>// Your annotations here</text>
+        </annotationEntry>
+      </rule>
+      <rule id="_BB0E90A2-115D-4CDF-BB95-ADD15BFE53F3">
+        <inputEntry id="_ABAADB34-7988-4B36-9B51-E985C044D953">
+          <text>&quot;expiration api&quot;</text>
+        </inputEntry>
+        <inputEntry id="_7DB00DAA-72A3-415A-B127-73CF7E66C38E">
+          <text>&lt; duration(&quot;P15D&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_644F9EEE-F697-4C83-A2AB-9BE864A8FB63">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_C19D1369-6590-46A4-A901-7DFC9623C1EB">
+          <text>&quot;HIGH&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+      <rule id="_663C7EF0-5CA7-49D7-9A0F-63D7739098BC">
+        <inputEntry id="_750AB72B-5D20-4054-8400-14745196B5BE">
+          <text>&quot;expiration api&quot;</text>
+        </inputEntry>
+        <inputEntry id="_ED8FC8C4-E4E9-4B74-B6A8-FEC04FFFD6B7">
+          <text>&gt;= duration(&quot;P15D&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_78748138-38A2-4675-810E-5E293E9B1A3C">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_5B22487B-F33E-4F76-B5E7-8399242509CE">
+          <text>&quot;MEDIUM&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+      <rule id="_E963284A-EC50-466C-A4C1-6B6DA74B0FC6">
+        <inputEntry id="_0C253056-86A2-46D4-B3C9-DFE551ECE3E3">
+          <text>&quot;expiration api&quot;</text>
+        </inputEntry>
+        <inputEntry id="_0A933146-6EAC-48B4-BEAC-2C382261DF8C">
+          <text>&gt;= duration(&quot;P15D&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_AED6B90F-54EB-46B8-ADDF-847307EE2056">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_2FA809EC-03CA-4A1D-AFD9-BBD75412B642">
+          <text>&quot;LOW&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+      <rule id="_DBE6DA3C-2E8E-4BC3-B313-DC4B9EC808C7">
+        <inputEntry id="_36DCA7AF-6AA2-425C-9A5C-3F2A42C5C496">
+          <text>not(&quot;expiration api&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_814AD5D4-0484-4B83-8DFF-E0E8FB098411">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="_37240D9B-90FA-4598-BBEC-A71FC39AD276">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_5B023CE8-8C1F-414C-8A91-501E4F402F16">
+          <text>&quot;MEDIUM&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+      <rule id="_78955F81-B97C-4A25-AE9A-8E9117A101F6">
+        <inputEntry id="_16B74A2F-D75C-44F7-B083-3AFFA7567521">
+          <text>not(&quot;expiration api&quot;)</text>
+        </inputEntry>
+        <inputEntry id="_56638215-F6D5-4F69-9FB5-54195075E016">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="_0E0D9A1B-06F7-4D3A-8374-6457FE666347">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_FC892CD7-3E0C-470F-ACD6-523E1337C684">
+          <text>&quot;LOW&quot;</text>
+        </outputEntry>
+        <annotationEntry>
+          <text></text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_31F80F7D-F70E-491C-A977-845B5915A2E2" name="Default DRD" useAlternativeInputDataShape="false">
       <di:extension>
         <kie:ComponentsWidthsExtension>
-          <kie:ComponentWidths dmnElementRef="_742E20F4-E822-4243-BC29-B835837C339B">
-            <kie:width>60</kie:width>
-            <kie:width>407</kie:width>
-            <kie:width>350</kie:width>
-            <kie:width>474</kie:width>
-          </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_B8DA3FD0-6060-478B-B205-5FBFB437F410">
             <kie:width>60</kie:width>
             <kie:width>160</kie:width>
@@ -180,23 +264,28 @@
           <kie:ComponentWidths dmnElementRef="_55B38109-FEA9-4F08-A515-2CC78013FD6F">
             <kie:width>190</kie:width>
           </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_771AB8BC-0C0B-4DCA-8831-FA5B90DC584F">
+            <kie:width>60</kie:width>
+            <kie:width>209</kie:width>
+            <kie:width>344</kie:width>
+            <kie:width>456</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
       <dmndi:DMNShape id="_38E78031-1C82-412A-816A-7662BC665A26" dmnElementRef="_2029D04B-BE3C-41E8-8287-02FBD328E3DE" isCollapsed="false" isListedInputData="false">
         <dc:Bounds x="640" y="500" width="160" height="80" />
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="_330EB84F-8910-4939-96CD-0D4171394688" dmnElementRef="_69CA793F-52F0-47C8-BFA1-1AFF3C8C9702" isCollapsed="false" isListedInputData="false">
-        <dc:Bounds x="140" y="200" width="160" height="80" />
-      </dmndi:DMNShape>
       <dmndi:DMNShape id="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6" dmnElementRef="_B9A11787-37A8-4483-ACB5-41CD25B98DF6" isCollapsed="false" isListedInputData="false">
         <dc:Bounds x="640" y="0" width="160" height="80" />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" dmnElementRef="_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" isCollapsed="false" isListedInputData="false">
-        <dc:Bounds x="380" y="200" width="160" height="80" />
+        <dc:Bounds x="420" y="200" width="160" height="80" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="_F439E7DF-2A01-4E88-9A18-3E68509D7499" dmnElementRef="_B620030F-16F8-4423-AD65-655BA779A292" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9">
         <di:waypoint x="720" y="540" />
-        <di:waypoint x="460" y="280" />
+        <di:waypoint x="500" y="280" />
       </dmndi:DMNEdge>
       <dmndi:DMNShape id="_3D876CE1-5428-4139-AA22-D514AE727B2B" dmnElementRef="_4DE253C6-0AED-4D3F-AB93-02F7994079C6" isCollapsed="false" isListedInputData="false">
         <dc:Bounds x="640" y="200" width="160" height="80" />
@@ -223,25 +312,28 @@
         <di:waypoint x="720" y="540" />
         <di:waypoint x="1180" y="280" />
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="_AB627681-5238-44C8-8A3D-574E334A1B9E" dmnElementRef="_7033E76F-25BA-4647-9C5C-EAA1EA0E775C" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_330EB84F-8910-4939-96CD-0D4171394688">
-        <di:waypoint x="720" y="540" />
-        <di:waypoint x="220" y="280" />
-      </dmndi:DMNEdge>
       <dmndi:DMNEdge id="_3F147EA7-023D-4360-9E61-A4DF35ABC4BC" dmnElementRef="_DD3EDC24-0CF2-4D64-9A4B-A03C70D3D7AB" sourceElement="_542DD9ED-539C-472A-9132-5CD3765ED70D" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
         <di:waypoint x="960" y="240" />
         <di:waypoint x="720" y="40" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="_EFDE4FE4-A004-4EDF-BEEA-1DDD88916108" dmnElementRef="_852B7F99-7BD2-4343-8688-BD715CD2330B" sourceElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
-        <di:waypoint x="460" y="240" />
-        <di:waypoint x="720" y="40" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="_E73EA17A-E50E-43F8-9444-39CA12C91D6E" dmnElementRef="_5B3CA3C1-A6E7-4536-850C-B2DEF286F265" sourceElement="_330EB84F-8910-4939-96CD-0D4171394688" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
-        <di:waypoint x="220" y="240" />
+        <di:waypoint x="500" y="240" />
         <di:waypoint x="720" y="40" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="_52918FF5-D8A2-4D19-8933-71424DCC8A40" dmnElementRef="_353D63F7-36C5-47E0-91A5-DCCF076014C7" sourceElement="_82652066-4FEE-4674-AE60-BDC66180425C" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
         <di:waypoint x="1180" y="240" />
         <di:waypoint x="720" y="40" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_BDA7E140-A34D-4492-AB5B-929C8AC876EC" dmnElementRef="_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="180" y="200" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_02ED424E-4C7C-4DE7-B04D-8D19CE31F39C" dmnElementRef="_E99EC59E-7EBC-43AC-B6CD-60764D91F47D" sourceElement="_BDA7E140-A34D-4492-AB5B-929C8AC876EC" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="260" y="240" />
+        <di:waypoint x="640" y="40" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_27B2702A-C7CD-4A9E-B467-DCE7EA0C31AB" dmnElementRef="_6CED6C4D-167F-4163-826D-F07EB90D8F16" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_BDA7E140-A34D-4492-AB5B-929C8AC876EC">
+        <di:waypoint x="720" y="540" />
+        <di:waypoint x="260" y="280" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

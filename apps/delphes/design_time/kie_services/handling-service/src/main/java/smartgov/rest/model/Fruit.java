@@ -1,14 +1,14 @@
-package smartgov.rest;
+package smartgov.rest.model;
 
-public class MyRequest {
+public class Fruit {
 
     public String name;
     public String description;
 
-    public MyRequest() {
+    public Fruit() {
     }
 
-    public MyRequest(String name, String description) {
+    public Fruit(String name, String description) {
         this.name = name;
         this.description = description;
     }
