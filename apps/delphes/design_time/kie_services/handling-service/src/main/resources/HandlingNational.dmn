@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0" id="_0CDBB51E-5965-4836-8C06-755D560BB31D" name="Handling78">
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0" id="_0CDBB51E-5965-4836-8C06-755D560BB31D" name="HandlingNational">
   <import id="_74033A08-3A6C-4603-90EE-6273EA53E30D" name="DataTypes" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" />
   <inputData name="the request" id="_2029D04B-BE3C-41E8-8287-02FBD328E3DE">
     <variable name="the request" id="_10C01B54-8F5A-4075-A319-F36AA5EDD7E2" typeRef="DataTypes.CaseHandlingDecisionInput" />
@@ -89,7 +89,7 @@
       <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
     </informationRequirement>
     <literalExpression id="_A2EFBAE9-14B2-4DC1-A30F-E0305F36DB94" typeRef="string" label="WorkBasket">
-      <text>null</text>
+      <text>&quot;generique&quot;</text>
     </literalExpression>
   </decision>
   <decision name="EmailTemplate" id="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA">
@@ -116,16 +116,6 @@
       <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE" />
     </informationRequirement>
     <decisionTable id="_771AB8BC-0C0B-4DCA-8831-FA5B90DC584F" typeRef="string" hitPolicy="UNIQUE" label="Priority">
-      <input id="_698E3F06-D712-4B34-BC18-DE47778765BD">
-        <inputExpression id="_B15B5358-A1AF-42ED-99DC-5E2DC9706C34" typeRef="string">
-          <text>the request.intention</text>
-        </inputExpression>
-      </input>
-      <input id="_95B7B95E-49FC-4DBF-B26F-E9304D914220">
-        <inputExpression id="_115D3352-FE66-470F-B107-C5C202F87B6D" typeRef="days and time duration">
-          <text>the request.customer_data.date_expiration_api - the request.customer_data.date_demande</text>
-        </inputExpression>
-      </input>
       <input id="_906376EF-E6CB-4281-8E5A-6E3C4E415FF6">
         <inputExpression id="_8922BB8C-8935-499C-8AD4-84F2E861E193" typeRef="boolean">
           <text>the request.customer_data.risque_sur_l_emploi</text>
@@ -134,102 +124,22 @@
       <output id="_6E4458A6-C861-4F83-AD88-E261F7F329E8" />
       <annotation name="Annotations" />
       <rule id="_3CB8AE9C-934E-46D1-86E0-6DD8DD50B896">
-        <inputEntry id="_D504D925-0E73-48F4-9CCF-86284FF5623D">
-          <text>&quot;expiration api&quot;</text>
-        </inputEntry>
-        <inputEntry id="_8D867138-8F78-4313-A253-17F5E4E2C224">
-          <text>&lt; duration(&quot;P15D&quot;)</text>
-        </inputEntry>
         <inputEntry id="_F1867ECC-EFF7-44BD-A456-C2F7CA42E58B">
           <text>true</text>
         </inputEntry>
         <outputEntry id="_61C8EE40-3510-433D-9956-EABAB8AABEA0">
-          <text>&quot;VERY HIGH&quot;</text>
+          <text>&quot;HIGH&quot;</text>
         </outputEntry>
         <annotationEntry>
           <text>// Your annotations here</text>
         </annotationEntry>
       </rule>
       <rule id="_BB0E90A2-115D-4CDF-BB95-ADD15BFE53F3">
-        <inputEntry id="_ABAADB34-7988-4B36-9B51-E985C044D953">
-          <text>&quot;expiration api&quot;</text>
-        </inputEntry>
-        <inputEntry id="_7DB00DAA-72A3-415A-B127-73CF7E66C38E">
-          <text>&lt; duration(&quot;P15D&quot;)</text>
-        </inputEntry>
         <inputEntry id="_644F9EEE-F697-4C83-A2AB-9BE864A8FB63">
           <text>false</text>
         </inputEntry>
         <outputEntry id="_C19D1369-6590-46A4-A901-7DFC9623C1EB">
-          <text>&quot;HIGH&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text></text>
-        </annotationEntry>
-      </rule>
-      <rule id="_663C7EF0-5CA7-49D7-9A0F-63D7739098BC">
-        <inputEntry id="_750AB72B-5D20-4054-8400-14745196B5BE">
-          <text>&quot;expiration api&quot;</text>
-        </inputEntry>
-        <inputEntry id="_ED8FC8C4-E4E9-4B74-B6A8-FEC04FFFD6B7">
-          <text>&gt;= duration(&quot;P15D&quot;)</text>
-        </inputEntry>
-        <inputEntry id="_78748138-38A2-4675-810E-5E293E9B1A3C">
-          <text>true</text>
-        </inputEntry>
-        <outputEntry id="_5B22487B-F33E-4F76-B5E7-8399242509CE">
           <text>&quot;MEDIUM&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text></text>
-        </annotationEntry>
-      </rule>
-      <rule id="_E963284A-EC50-466C-A4C1-6B6DA74B0FC6">
-        <inputEntry id="_0C253056-86A2-46D4-B3C9-DFE551ECE3E3">
-          <text>&quot;expiration api&quot;</text>
-        </inputEntry>
-        <inputEntry id="_0A933146-6EAC-48B4-BEAC-2C382261DF8C">
-          <text>&gt;= duration(&quot;P15D&quot;)</text>
-        </inputEntry>
-        <inputEntry id="_AED6B90F-54EB-46B8-ADDF-847307EE2056">
-          <text>false</text>
-        </inputEntry>
-        <outputEntry id="_2FA809EC-03CA-4A1D-AFD9-BBD75412B642">
-          <text>&quot;LOW&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text></text>
-        </annotationEntry>
-      </rule>
-      <rule id="_DBE6DA3C-2E8E-4BC3-B313-DC4B9EC808C7">
-        <inputEntry id="_36DCA7AF-6AA2-425C-9A5C-3F2A42C5C496">
-          <text>not(&quot;expiration api&quot;)</text>
-        </inputEntry>
-        <inputEntry id="_814AD5D4-0484-4B83-8DFF-E0E8FB098411">
-          <text>-</text>
-        </inputEntry>
-        <inputEntry id="_37240D9B-90FA-4598-BBEC-A71FC39AD276">
-          <text>true</text>
-        </inputEntry>
-        <outputEntry id="_5B023CE8-8C1F-414C-8A91-501E4F402F16">
-          <text>&quot;MEDIUM&quot;</text>
-        </outputEntry>
-        <annotationEntry>
-          <text></text>
-        </annotationEntry>
-      </rule>
-      <rule id="_78955F81-B97C-4A25-AE9A-8E9117A101F6">
-        <inputEntry id="_16B74A2F-D75C-44F7-B083-3AFFA7567521">
-          <text>not(&quot;expiration api&quot;)</text>
-        </inputEntry>
-        <inputEntry id="_56638215-F6D5-4F69-9FB5-54195075E016">
-          <text>-</text>
-        </inputEntry>
-        <inputEntry id="_0E0D9A1B-06F7-4D3A-8374-6457FE666347">
-          <text>false</text>
-        </inputEntry>
-        <outputEntry id="_FC892CD7-3E0C-470F-ACD6-523E1337C684">
-          <text>&quot;LOW&quot;</text>
         </outputEntry>
         <annotationEntry>
           <text></text>
@@ -266,8 +176,6 @@
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_771AB8BC-0C0B-4DCA-8831-FA5B90DC584F">
             <kie:width>60</kie:width>
-            <kie:width>209</kie:width>
-            <kie:width>273</kie:width>
             <kie:width>331</kie:width>
             <kie:width>241</kie:width>
             <kie:width>240</kie:width>

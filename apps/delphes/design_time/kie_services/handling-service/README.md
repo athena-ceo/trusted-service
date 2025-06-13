@@ -28,6 +28,9 @@ When using native image compilation, you will also need:
 mvn clean quarkus:dev -Dquarkus.http.port=7070
 ```
 
+You need to set the JAVA_HOME env variable in order to have a recent JDK (21 at least).
+`export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`
+
 ### Package and Run in JVM mode
 
 ```

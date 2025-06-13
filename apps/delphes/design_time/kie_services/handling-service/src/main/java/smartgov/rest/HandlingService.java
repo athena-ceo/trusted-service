@@ -41,11 +41,33 @@ public class HandlingService {
 
         logger.info("-----> Getting a DMN model");
         String namespace = "https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0";        
-        String modelName = "Handling78";
 
-        DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
 
-        logger.info("-----> Creating input parameters");
+        // Model selection logic
+        DMNModel modelNational = dmnRuntime.getModel(namespace, "HandlingNational");
+        MyResponse nationalResponse = getResponse(dmnRuntime, modelNational, request);
+
+        if ("78".equals(request.getCustomerData().getDepartement())) {
+            DMNModel model78 = dmnRuntime.getModel(namespace, "Handling78");
+            MyResponse response78 = getResponse(dmnRuntime, model78, request);
+
+            return mergeResponse(response78, nationalResponse);
+        }
+        else 
+            return nationalResponse;
+    }
+
+    MyResponse mergeResponse(MyResponse specificResp, MyResponse defaultResp) {
+        return new MyResponse(specificResp.priority == null ? defaultResp.priority : specificResp.priority, 
+                            specificResp.work_basket == null ? defaultResp.work_basket : specificResp.work_basket, 
+                            specificResp.response_template_id == null ? defaultResp.response_template_id : specificResp.response_template_id, 
+                            specificResp.acknowledgement_message == null ? defaultResp.acknowledgement_message : specificResp.acknowledgement_message, 
+                            specificResp.handling == null ? defaultResp.handling : specificResp.handling);
+    }
+
+    MyResponse getResponse(DMNRuntime dmnRuntime, DMNModel dmnModel, MyRequest request) {
+        logger.info("--------------");
+        logger.info("-----> Creating input parameters for " + dmnModel.getName());
         DMNContext dmnContext = dmnRuntime.newContext();  
         dmnContext.set("the request", request);                 // TODO: does not work as expected...
 
@@ -75,7 +97,7 @@ public class HandlingService {
                 handling =  (String)dr.getResult();
          }
 
-        logger.info("-----> About execute DMN 6");
+        logger.info("-----> Building response object for " + dmnModel.getName());
         // TODO: build a response from the DMNDecisionResult 
         return new MyResponse(priority, 
                                 work_basket, 
@@ -83,6 +105,5 @@ public class HandlingService {
                                 acknowledgement_message, 
                                 handling);
     }
-
 
 }

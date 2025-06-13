@@ -46,7 +46,7 @@ public class CustomerCase {
                 boolean risque_sur_l_emploi,
                 LocalDate date_expiration_api) {
         this.date_demande = date_demande;
-        this.departement = departement;
+        this.departement = departement; // 78 or 92 for instance
         this.refugie_ou_protege_subsidiaire = refugie_ou_protege_subsidiaire;
         this.risque_sur_l_emploi = risque_sur_l_emploi;
         this.date_expiration_api = date_expiration_api;
