@@ -115,7 +115,7 @@ docker run -e LICENSE=accept -m 2048M --memory-reservation 2048M -p 9060:9060 -p
 ### Unless you only want to launch the test client, and you configured that client to access the API directly, launch the uvicorn server
 In the `trusted-service` top directory, type:
 ```
-python launcher_uvicorn.py .\apps\delphes\runtime\configuration_delphes.xlsx
+python launcher_uvicorn.py ./apps/delphes/runtime/configuration_delphes.xlsx
 ```
 
 ### Launch the test client

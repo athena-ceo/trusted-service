@@ -1,0 +1,21 @@
+id,label_fr,description_fr
+expiration_d_une_api,EXPIRATION D'UNE API,"Le document provisoire (récépissé ou API, Attestation de Prolongation d'Instruction) que le demandeur a obtenu au moment de sa demande de titre de séjour a expiré ou va bientôt expirer"
+depot_de_demande_d_asile,DEPOT DE DEMANDE D'ASILE,Le demandeur exprime qu'il souhaite déposer une demande de droit d'asile
+ou_en_est_ma_demande_d_asile_en_cours,OU EN EST MA DEMANDE D'ASILE EN COURS,Le demandeur souhaite savoir où sa demande d'asile en est
+expiration_d_une_atda,EXPIRATION D'UNE ATDA,L'ATDA du demandeur va expirer ou a déjà expiré
+mise_a_jour_infos_atda,MISE A JOUR INFOS ATDA,Le demandeur souhaite communiquer des éléments nouveaux concernant son ATDA
+demande_en_rapport_avec_procedure_dublin_en_cours,DEMANDE EN RAPPORT AVEC PROCEDURE DUBLIN EN COURS,Le demandeur fait une demande en rapport avec une procédure Dublin en cours
+ressortissant_ukrainien_demande_un_nouveau_titre,RESSORTISSANT UKRAINIEN DEMANDE UN NOUVEAU TITRE,Le demandeur est un ressortissant ukrainien et demande un titre de séjour pour la première fois
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,RESSORTISSANT UKRAINIEN DEMANDE RENOUVELLEMENT DE SON TITRE,Le demandeur est un ressortissant ukrainien et demande le renouvellement de son titre de séjour
+ressortissant_ukrainien_autre_demande,RESSORTISSANT UKRAINIEN AUTRE DEMANDE,Le demandeur est un ressortissant ukrainien et fait une demande qui n'est ni celle d'un nouveau titre de séjour ni celle d'un renouvellement de son titre de séjour
+demande_d_un_etudiant_en_programme_de_mobilite,DEMANDE D'UN ETUDIANT EN PROGRAMME DE MOBILITE,Le demandeur est étudiant en programme de mobilité
+demande_d_un_stagiaire_associe_en_profession_medicale,DEMANDE D'UN STAGIAIRE ASSOCIE EN PROFESSION MEDICALE,Le demandeur est un stagiaire associé en profession médicale
+difficultes_avec_le_site_de_l_anef,DIFFICULTES AVEC LE SITE DE L'ANEF,Le demandeur a des difficultés pour naviguer sur le site de l'ANEF ou pour créer son compte ANEF
+changement_statut_etudiant_a_salarie,CHANGEMENT STATUT ETUDIANT A SALARIE,Le demandeur souhaite déclarer un changement de statut d'étudiant à salarié
+changement_statut_etudiant_a_recherche_d_emploi,CHANGEMENT STATUT ETUDIANT A RECHERCHE D'EMPLOI,Le demandeur souhaite déclarer un changement de statut d'étudiant à demandeur d'emploi
+sollicitation_titre_vie_privee_et_familiale_hors_anef,SOLLICITATION TITRE VIE PRIVEE ET FAMILIALE HORS ANEF,Le demandeur sollicite un titre vie privée et familiale hors ANEF
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,DEPOT D'UNE DEMANDE DE TITRE ET JE N'ARRIVE PAS A CREER MON COMPTE ANEF,DEPOT D'UNE DEMANDE DE TITRE ET JE N'ARRIVE PAS A CREER MON COMPTE ANEF
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,DEPOT D'UNE DEMANDE DE TITRE ET AUTRE BLOCAGE SUR LE SITE DE L'ANEF,DEPOT D'UNE DEMANDE DE TITRE ET AUTRE BLOCAGE SUR LE SITE DE L'ANEF
+depot_d_une_demande_de_titre_et_autre_probleme_anef,DEPOT D'UNE DEMANDE DE TITRE ET AUTRE PROBLEME ANEF,DEPOT D'UNE DEMANDE DE TITRE ET AUTRE PROBLEME ANEF
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,JE VEUX RETOURNER DANS MON PAYS POUR MOTIF EXCEPTIONNEL,JE VEUX RETOURNER DANS MON PAYS POUR MOTIF EXCEPTIONNEL
+autres,AUTRES,La demande ne correspond à aucune des intentions listées ci-dessus
