@@ -62,8 +62,11 @@
     </div>
 
     <script>
-        const departement = '78';
-        let resultatAnalyse;
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        const date_demande = `${day}/${month}/${year}`;
 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
@@ -78,8 +81,22 @@
         // Affichage du message
         const formDataDiv = document.getElementById('form-data');
         formDataDiv.innerHTML = `<div class="fr-list fr-mb-3v">
-            <p style="font-style: italic;">${formData.Message.replace(/\n/g, '<br>')}</p>
-            </div>`;
+        <p style="font-style: italic;">${formData.Message.replace(/\n/g, '<br>')}</p>
+        </div>`;
+
+        const departement = '78';
+        let scoringsPositifs;
+        let highlighted_text_and_features;
+        let field_values = {
+            date_demande: date_demande,
+            departement: departement,
+            nom: formData.Nom,
+            prenom: formData.Prenom,
+            adresse_mail: formData.Email,
+            numero_AGDREF: formData.Agdref,
+            mention_de_risque_sur_l_emploi: false,
+            refugie_ou_protege_subsidiaire: false,
+        };
     </script>
 
     <!-- Conteneur pour le spinner -->
@@ -124,8 +141,7 @@
 
                 const acknowledgement = document.getElementById('acknowledgement');
                 acknowledgement.innerHTML = `
-                    <h3>Nous analysons votre demande</h3>
-                    <p>Votre message est prétraité par une IA avant d'être transmis à un agent.
+                    <h3>Nous traitons votre réponse</h3>
                     <br />
                     Veuillez patienter quelques instants...</p>`;
 
@@ -137,83 +153,41 @@
                 };
 
                 // Récupérer les champs associés à l'intention sélectionnée
-                intention = resultatAnalyse.matched_intentions.find(item => item.nom === intentionValue);
+                intention = scoringsPositifs.find(item => item.intention_label === intentionValue);
 
                 // Index de l'intention sélectionnée
-                const index = resultatAnalyse.matched_intentions.findIndex(item => item.nom === intentionValue);
+                const index = scoringsPositifs.findIndex(item => item.intention_label === intentionValue);
 
                 // Mise à jour des infos du demandeur
-                intention.champs_ui.forEach(champ => {
-                    switch (champ.nom) {
-                        case 'date_expiration_atda':
-                            const valeurDateAtda = document.getElementById(`intention-${index}-${champ.nom}`).value;
-                            if (valeurDateAtda) {
-                                const datePartsAtda = valeurDateAtda.split('-');
-                                if (datePartsAtda.length === 3) {
-                                    const formattedDateAtda = `${datePartsAtda[2]}/${datePartsAtda[1]}/${datePartsAtda[0]}`;
-                                    demandeur.date_expiration_atda = formattedDateAtda;
-                                }
-                            }
-                            break;
-                        case 'residence_dans_le_78':
-                            const radio78 = document.getElementsByName(`intention-${index}-${champ.nom}`);
-                            let residence_dans_le_78 = false;
-                            for (const radio of radio78) {
-                                if (radio.checked && radio.id === `intention-${index}-${champ.nom}-oui`) {
-                                    residence_dans_le_78 = true;
-                                    break;
-                                }
-                            }
-                            demandeur.residence_dans_le_78 = residence_dans_le_78;
-                            break;
-                        case 'demanagement_autre_dept':
-                            const radioAutreDept = document.getElementsByName(`intention-${index}-${champ.nom}`);
-                            let demanagement_autre_dept = false;
-                            for (const radio of radioAutreDept) {
-                                if (radio.checked && radio.id === `intention-${index}-${champ.nom}-oui`) {
-                                    demanagement_autre_dept = true;
-                                    break;
-                                }
-                            }
-                            demandeur.demanagement_autre_dept = demanagement_autre_dept;
-                            break;
-                        case 'date_expiration_api':
-                            const valeurDateApi = document.getElementById(`intention-${index}-${champ.nom}`).value;
-                            if (valeurDateApi) {
-                                const datePartsApi = valeurDateApi.split('-');
-                                if (datePartsApi.length === 3) {
-                                    const formattedDateApi = `${datePartsApi[2]}/${datePartsApi[1]}/${datePartsApi[0]}`;
-                                    demandeur.date_expiration_api = formattedDateApi;
-                                }
-                            }
-                            break;
-                    }
+                scoringsPositifs[index].intention_fields.forEach(champ => {
+                    const valeur = document.getElementById(`intention-${index}-${champ}`).value;
+                    field_values[champ] = valeur;
                 });
 
                 // Appeler le Web Service de décision
-                fetch('http://localhost:8001/api/v1/decider_traitement_demande', {
+                fetch('http://localhost:8002/api/v1/process_request', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        departement: departement,
-                        demandeur: demandeur,
-                        message: formData.Message,
-                        analyse: resultatAnalyse,
-                        intention: intention,
+                        case_request: {
+                            intention_id: intention.intention_id,
+                            field_values: field_values,
+                            highlighted_text_and_features: highlighted_text_and_features,
+                        },
                     })
                 })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok for Web Service decider_traitement_demande');
+                            throw new Error('Erreur de traitement côté serveur. Veuillez réessayer.');
                         }
                         return response.json();
                     })
                     .then(data => {
                         // Traiter la réponse du Web Service
-                        console.log('Réponse du Web Service decider_traitement_demande :', data);
+                        console.log('Réponse du Web Service process_request :', data);
                         // Retirer le spinner après la réponse
                         spinnerContainer.innerHTML = '';
                         acknowledgement.innerHTML = '';
@@ -221,7 +195,7 @@
                         if (data) {
                             analyseContainer.innerHTML = '';
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
-                                <p>${data}</p>`;
+                                <p>${data.case_handling_decision_output.acknowledgement_to_requester}</p>`
                         } else {
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
                                 <p>Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.</p>`;
@@ -231,21 +205,21 @@
                         console.error('Erreur lors de l\'appel au Web Service decider_traitement_demande :', error);
                         // Retirer le spinner en cas d'erreur
                         spinnerContainer.innerHTML = '';
-                        acknowledgement.innerHTML = '<p>Une erreur est survenue lors de l\'envoi de votre demande. Veuillez réessayer.</p>';
+                        acknowledgement.innerHTML = '<h3 style="color:red">Erreur de traitement</h3><p>Une erreur est survenue lors de l\'envoi de votre demande. Veuillez réessayer.</p>';
                     });
             }
         }
 
         // Appeler le Web Service d'analyse de la demande
-        fetch('http://localhost:8002/analyze', {
+        fetch('http://localhost:8002/api/v1/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                field_values: JSON.stringify({
-                    date_demande: "12/12/2024",
+                field_values: {
+                    date_demande: date_demande,
                     departement: departement,
                     nom: formData.Nom,
                     prenom: formData.Prenom,
@@ -253,22 +227,22 @@
                     numero_AGDREF: formData.Agdref,
                     mention_de_risque_sur_l_emploi: false,
                     refugie_ou_protege_subsidiaire: false,
-                }),
+                },
                 text: formData.Message
             })
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok for Web Service analyser_demande');
+                    throw new Error('Erreur de traitement côté serveur. Veuillez réessayer.');
                 }
                 return response.json();
             })
             .then(data => {
-                // Sauver le résultat pour l'appel au Web Service de décision
-                resultatAnalyse = data;
-
                 // Traiter la réponse du Web Service
-                console.log('Réponse du Web Service analyser_demande :', data);
+                console.log('Réponse du Web Service analyze :', data);
+
+                // Sauver le résultat pour l'appel au Web Service de décision
+                highlighted_text_and_features = data.highlighted_text_and_features;
 
                 // Retirer le spinner après la réponse
                 spinnerContainer.innerHTML = '';
@@ -278,18 +252,20 @@
                     const votreDemande = document.getElementById('votre-demande');
                     // votreDemande.innerHTML = `Votre demande du ${data.date_de_la_demande}`;
                 }
+                // Filtrer les scorings avec un score > 0
+                scoringsPositifs = data.analysis_result.scorings.filter(item => item.score > 0);
 
                 // Créer le radio button pour chaque intention
                 let radioIntentions = `<fieldset class="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
                     <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-intentions-legend">
-                        L'IA a identifié ${data.matched_intentions.length} cas qui correspondent à votre demande.<br />Votre sélection : *
+                        L'IA a identifié ${scoringsPositifs.length} cas qui correspondent à votre demande.<br />Votre sélection : *
                     </legend>`
-                for (const [index, intention] of data.matched_intentions.entries()) {
+                for (const [index, intention] of scoringsPositifs.entries()) {
                     radioIntentions += `<div class="fr-fieldset__element">
                             <div class="fr-radio-group">
-                                <input type="radio" id="intention-${index}" name="intention" value="${intention.nom}" required>
+                                <input type="radio" id="intention-${index}" name="intention" value="${intention.intention_label}" required>
                                 <label class="fr-label" for="intention-${index}">
-                                    ${intention.nom}
+                                    ${intention.intention_label}
                                 </label>
                             </div>
                         </div>`;
@@ -299,42 +275,43 @@
 
                 // Créer les champs associés à chaque intention
                 let champsIntentions = '';
-                for (const [index, intention] of data.matched_intentions.entries()) {
-                    if (intention.champs_ui.length > 0) {
+                const champ_type = "text";
+                for (const [index, intention] of scoringsPositifs.entries()) {
+                    if (intention.intention_fields.length > 0) {
                         champsIntentions += `
                             <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
-                                ${intention.champs_ui.map(champ => `
-                                    ${champ.type_name === 'bool' ? `
-                                    <fieldset class="fr-fieldset" id="intention-${index}-${champ.nom}" aria-labelledby="intention-${index}-${champ.nom}-legend intention-${index}-${champ.nom}-messages">
-                                        <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="intention-${index}-${champ.nom}-legend">
-                                            ${champ.libelle} *
+                                ${intention.intention_fields.map(champ => `
+                                    ${champ_type === 'bool' ? `
+                                    <fieldset class="fr-fieldset" id="intention-${index}-${champ}" aria-labelledby="intention-${index}-${champ}-legend intention-${index}-${champ}-messages">
+                                        <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="intention-${index}-${champ}-legend">
+                                            ${champ} *
                                         </legend>
                                         <div class="fr-fieldset__element fr-fieldset__element--inline">
                                             <div class="fr-radio-group">
-                                                <input type="radio" id="intention-${index}-${champ.nom}-oui" name="intention-${index}-${champ.nom}">
-                                                <label class="fr-label" for="intention-${index}-${champ.nom}-oui">
+                                                <input type="radio" id="intention-${index}-${champ}-oui" name="intention-${index}-${champ}">
+                                                <label class="fr-label" for="intention-${index}-${champ}-oui">
                                                     Oui
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="fr-fieldset__element fr-fieldset__element--inline">
                                             <div class="fr-radio-group">
-                                                <input type="radio" id="intention-${index}-${champ.nom}-non" name="intention-${index}-${champ.nom}">
-                                                <label class="fr-label" for="intention-${index}-${champ.nom}-non">
+                                                <input type="radio" id="intention-${index}-${champ}-non" name="intention-${index}-${champ}">
+                                                <label class="fr-label" for="intention-${index}-${champ}-non">
                                                     Non
                                                 </label>
                                             </div>
                                         </div>
-                                        <div class="fr-messages-group" id="intention-${index}-${champ.nom}-messages" aria-live="assertive" />
+                                        <div class="fr-messages-group" id="intention-${index}-${champ}-messages" aria-live="assertive" />
                                     </fieldset>
                                     ` : `
                                     <div class="fr-input-group">
-                                        <label class="fr-label" for="intention-${index}-${champ.nom}">
-                                            ${champ.libelle} *
-                                            ${champ.type_name === 'date' ? '<span class="fr-hint-text">Format attendu : JJ/MM/AAAA</span>' : ''}
+                                        <label class="fr-label" for="intention-${index}-${champ}">
+                                            ${champ} *
+                                            ${champ_type === 'date' ? '<span class="fr-hint-text">Format attendu : JJ/MM/AAAA</span>' : ''}
                                         </label>
-                                        <input class="fr-input" aria-describedby="intention-${index}-${champ.nom}-messages" id="intention-${index}-${champ.nom}" name="intention-${index}-${champ.nom}" type="${champ.type_name === 'date' ? 'date' : 'text'}" value="${convertDateToISO(champ.valeur_par_defaut)}">
-                                        <div class="fr-messages-group" id="intention-${index}-${champ.nom}-messages" aria-live="assertive"> </div>
+                                        <input class="fr-input" aria-describedby="intention-${index}-${champ}-messages" id="intention-${index}-${champ}" name="intention-${index}-${champ}" type="${champ.type_name === 'date' ? 'date' : 'text'}" value="${convertDateToISO(champ.valeur_par_defaut)}">
+                                        <div class="fr-messages-group" id="intention-${index}-${champ}-messages" aria-live="assertive"> </div>
                                     </div>
                                     `}
                                 `).join('')}
@@ -359,7 +336,7 @@
                     <p>&nbsp;</p>`;
 
                 // Ajouter les gestionnaires d'événements après l'insertion des boutons radio
-                data.matched_intentions.forEach((_, index) => {
+                scoringsPositifs.forEach((_, index) => {
                     const radioButton = document.getElementById(`intention-${index}`);
 
                     const associatedDiv = document.getElementById(`champs-intention-${index}`);
@@ -385,7 +362,7 @@
                 console.error('Erreur lors de l\'appel au Web Service analyser_demande :', error);
                 // Retirer le spinner en cas d'erreur
                 spinnerContainer.innerHTML = '';
-                analyseContainer.innerHTML = '<p>Une erreur est survenue lors de l\'analyse de votre demande. Veuillez réessayer.</p>';
+                analyseContainer.innerHTML = '<h3 style="color:red">Erreur de traitement</h3><p>Une erreur est survenue lors de l\'analyse de votre demande. Veuillez réessayer.</p>';
             });
     </script>
 
