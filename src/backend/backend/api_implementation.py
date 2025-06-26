@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine
@@ -23,7 +24,12 @@ class ApiImplementation(Api):
         return self.case_model
 
     def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        return self.text_analyzer.analyze(field_values, text)
+        # return self.text_analyzer.analyze(field_values, text)
+        result = self.text_analyzer.analyze(field_values, text)
+        print("*** RESULT")
+        print(json.dumps(result, indent=4))
+        print("*** /RESULT")
+        return result
 
     def handle_case(self, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
 

@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field, create_model
 
 from src.backend.rendering.html import build_html_highlighted_text_and_features
 from src.backend.rendering.md import build_markdown_table_intentions
-from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS
+from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention
 from src.backend.text_analysis.llm import Llm
 from src.backend.text_analysis.llm_openai import LlmOpenAI
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
@@ -125,6 +125,8 @@ class TextAnalyzer:
                  config: TextAnalysisConfiguration,
                  locale: SupportedLocale):
 
+        self.case_model = case_model
+
         features: list[Feature] = []
         for case_field in case_model.case_fields:  ## TODO: Do that in the constructor of TextAnalyzer
             if case_field.extraction != "DO NOT EXTRACT":
@@ -182,8 +184,10 @@ class TextAnalyzer:
         for scoring in analysis_result[FIELD_NAME_SCORINGS]:
             matching_intentions = [intention for intention in self.config2.intentions if
                                    intention.id == scoring["intention_id"]]
-            matching_intention = matching_intentions[0] if matching_intentions else None
-            scoring["intention_label"] = matching_intention.label if matching_intention else None
+            if matching_intentions:
+                matching_intention: Intention = matching_intentions[0]
+                scoring["intention_label"] = matching_intention.label
+                scoring["intention_fields"] = [case_field.id for case_field in self.case_model.case_fields if matching_intention.id in case_field.intention_ids]
 
         analysis_result[FIELD_NAME_SCORINGS] = [scoring for scoring in analysis_result[FIELD_NAME_SCORINGS] if
                                                 scoring["intention_label"] is not None]
@@ -194,11 +198,14 @@ class TextAnalyzer:
 
         analysis_result = self._analyze(field_values, text)
 
+        print("DUMP")
+        print(json.dumps(analysis_result, indent=4))
+        print("DONE")
+
         analysis_result_and_rendering = {
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),
             KEY_MARKDOWN_TABLE: build_markdown_table_intentions(analysis_result),
-            KEY_HIGHLIGHTED_TEXT_AND_FEATURES: build_html_highlighted_text_and_features(text, self.features,
-                                                                                        analysis_result)
+            KEY_HIGHLIGHTED_TEXT_AND_FEATURES: build_html_highlighted_text_and_features(text, self.features, analysis_result)
         }
 
         return analysis_result_and_rendering

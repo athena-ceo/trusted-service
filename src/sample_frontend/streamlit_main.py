@@ -83,6 +83,9 @@ def submit_text_for_ia_analysis():
     analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.texte_demande)
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
+    print("CLIENT SIDE")
+    print(json.dumps(analysis_result_and_rendering, indent=4))
+
     # Copy the extracted field values to the case
     for case_field in context.case_model.case_fields:
         if case_field.extraction in ["EXTRACT", "EXTRACT AND HIGHLIGHT"]:
