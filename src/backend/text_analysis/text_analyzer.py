@@ -151,9 +151,9 @@ class TextAnalyzer:
         for k, v in field_values.items():
             system_prompt = system_prompt.replace("{" + k + "}", str(v))  # a copy, so no change of original prompt
 
-        print("---------- begin system_prompt ----------")
-        print(system_prompt)
-        print("----------- end system_prompt -----------")
+        # print("---------- begin system_prompt ----------")
+        # print(system_prompt)
+        # print("----------- end system_prompt -----------")
 
         # Calling LLM
 
@@ -198,9 +198,9 @@ class TextAnalyzer:
 
         analysis_result = self._analyze(field_values, text)
 
-        print("DUMP")
-        print(json.dumps(analysis_result, indent=4))
-        print("DONE")
+        # print("DUMP")
+        # print(json.dumps(analysis_result, indent=4))
+        # print("DONE")
 
         analysis_result_and_rendering = {
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),
