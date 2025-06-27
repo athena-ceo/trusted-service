@@ -1,6 +1,6 @@
 """
 Evaluate how strongly a piece of text expresses a set of “intentions”
-using OpenAI Chat Completions, with all I/O validated by Pydantic.
+using OpenAI (or Ollama with a specific model) Chat Completions, with all I/O validated by Pydantic.
 
 Author: Francis Friedlander
 Date: 2025-04-29
@@ -19,6 +19,7 @@ from src.backend.rendering.md import build_markdown_table_intentions
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention
 from src.backend.text_analysis.llm import Llm
 from src.backend.text_analysis.llm_openai import LlmOpenAI
+from src.backend.text_analysis.llm_ollama import LlmOllama
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
 from src.backend.text_analysis.text_analysis_localization import get_text_analysis_localization, TextAnalysisLocalization
 from src.common.case_model import CaseModel
@@ -142,7 +143,7 @@ class TextAnalyzer:
         self.config2: TextAnalysisConfiguration = config
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(locale, features)
         self.templated_system_prompt: str = build_system_prompt(self.config2, locale, self.features, self.analysis_response_model)
-        self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOpenAI()
+        self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOllama()
 
     def _analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
 
