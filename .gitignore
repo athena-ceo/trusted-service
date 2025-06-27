@@ -4,6 +4,8 @@ venv/
 .venv/
 **/__pycache__/
 
+**/.DS_Store
+
 */.bin
 **/*.pyc
 **/__pycache__
