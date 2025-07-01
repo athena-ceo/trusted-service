@@ -7,8 +7,6 @@ from pydantic import BaseModel
 
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
 
-from openai import BaseModel
-
 
 # Important: Update TextAnalyzer.__init__ when adding a new subclass
 
