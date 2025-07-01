@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional, Literal
+from typing import Any, Optional, Literal, get_origin, get_args
 
 import streamlit as st
 from pydantic import BaseModel
@@ -48,34 +48,58 @@ class Context:
         pass
 
 
+# class IdLabel:
+#     def __init__(self, id: str, label: str):
+#         self.id = id
+#         self.label = label
+#
+#     def __str__(self):
+#         return self.label
+
+
 def add_case_field_input_widget(case: Case, case_field: CaseField):
     key = "input_" + case_field.id
 
     value = case.field_values.get(case_field.id)
 
-    if case_field.get_type() is str:
+    if case_field.type == "str":
 
-        def update_case_field_str():
-            case.field_values[case_field.id] = st.session_state[key]
+        if case_field.options:
+            index = 0
+            for index2, option in enumerate(case_field.options):
+                if option.id == case_field.default_value:
+                    index = index2
+                    break
+            selected_option_label = st.selectbox(label=case_field.label,
+                                                 options=[option.label for option in case_field.options],
+                                                 index=index,
+                                                 )
+            selected_options = [option for option in case_field.options if option.label == selected_option_label]
+            selected_option = selected_options[0]
+            case.field_values[case_field.id] = selected_option.id
 
-        st.text_input(label=case_field.label,
-                      value=value,
-                      key=key,
-                      on_change=update_case_field_str, )
+        else:  # TODO Remove update_case_field_str
+            def update_case_field_str():
+                case.field_values[case_field.id] = st.session_state[key]
 
-    elif case_field.get_type() is bool:
-        def update_case_field_bool():
-            case.field_values[case_field.id] = st.session_state[key] == "OUI"
+            st.text_input(label=case_field.label,
+                          value=value,
+                          key=key,
+                          on_change=update_case_field_str, )
+
+    elif case_field.type == "bool":
 
         if value is None:
             index = None
         else:
             index = 0 if value else 1
-        st.radio(label=case_field.label,
-                 options=["OUI", "NON"],
-                 index=index,
-                 key=key,
-                 on_change=update_case_field_bool)
+        val_str = st.radio(label=case_field.label,
+                           options=["OUI", "NON"],
+                           index=index,
+                           key=key,
+                           # on_change=update_case_field_bool
+                           )
+        case.field_values[case_field.id] = val_str == "OUI"
 
 
 def submit_text_for_ia_analysis():

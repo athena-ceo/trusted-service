@@ -133,7 +133,8 @@ class TextAnalyzer:
             if case_field.extraction != "DO NOT EXTRACT":
                 feature = Feature(id=case_field.id,
                                   label=case_field.label,
-                                  type=case_field.get_type(),
+                                  # type=case_field.get_type(),
+                                  type=case_field.type,
                                   description=case_field.description,
                                   highlight_fragments=case_field.extraction == "EXTRACT AND HIGHLIGHT")
                 features.append(feature)

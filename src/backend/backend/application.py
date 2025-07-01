@@ -7,7 +7,8 @@ from src.backend.distribution.distribution_email.distribution_email import CaseH
 from src.backend.distribution.distribution_email.distribution_email_configuration import DistributionEmailConfiguration, load_email_configuration_from_workbook
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration, load_text_analysis_configuration_from_workbook
 from src.backend.text_analysis.text_analyzer import TextAnalyzer
-from src.common.case_model import load_case_model_configuration_from_workbook, CaseModelConfiguration, CaseModel
+from src.common.case_model import load_case_model_configuration_from_workbook, CaseModelConfiguration, CaseModel, OptionConfiguration, load_option_configuration_from_workbook, \
+    Option
 from src.backend.backend.api_implementation import ApiImplementation
 from src.backend.backend.backend_configuration import BackendConfiguration, load_backend_configuration_from_workbook
 from src.common.common_configuration import load_common_configuration_from_workbook, CommonConfiguration
@@ -17,12 +18,26 @@ from src.common.configuration import SupportedLocale
 class Application:
     def __init__(self, config_filename: str, ):
 
-        common_configuration: CommonConfiguration=load_common_configuration_from_workbook(config_filename)
+        common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
         locale: SupportedLocale = common_configuration.locale
         backend_configuration: BackendConfiguration = load_backend_configuration_from_workbook(config_filename, locale)
 
+        option_configuration: OptionConfiguration = load_option_configuration_from_workbook(config_filename, locale)
+        for option in option_configuration.options:
+            print(option)
+
         case_model_configuration: CaseModelConfiguration = load_case_model_configuration_from_workbook(config_filename, locale)
         case_model: CaseModel = CaseModel(case_fields=case_model_configuration.case_fields)
+
+        id_to_label_dict: dict[str, str] = {option.id: option.label for option in option_configuration.options}
+
+        for case_field in case_model.case_fields:
+            if case_field.option_ids_csv:
+                option_ids = [id.strip() for id in case_field.option_ids_csv.split(",")]
+                case_field.options = [Option(id=option_id, label=id_to_label_dict.get(option_id, option_id)) for option_id in option_ids]
+            else:
+                case_field.options = []
+            print("***", case_field.option_ids_csv, "=", case_field.options)
 
         text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(config_filename, locale)
         text_analyzer = TextAnalyzer(case_model, backend_configuration.runtime_directory, text_analysis_configuration, locale)

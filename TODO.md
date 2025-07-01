@@ -2,6 +2,12 @@
 * TODO.md
 *********
 
+# ONGOING
+- In case_field move options in attribute dedicated to options and put type=str
+- Put label of options in model
+- Define type and options as attribute
+- Remove update_case_field_str
+
 # Priority 1
 ## Framework
 - Improve
@@ -11,6 +17,7 @@
   - Complete localization
   - use constants instead of string everywhere
 - hallucinations on intentions
+- Remove callbacks on all fields in Streamlit client
 ## Delphes
 
 # Priority 2
@@ -26,3 +33,4 @@
 - mandatory fields
 - Show prompt
 - Streamlit test client launcher
+- Take default value of case fields of type Literal into account in Streamlit client
