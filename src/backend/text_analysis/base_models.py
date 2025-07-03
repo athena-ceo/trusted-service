@@ -37,7 +37,7 @@ class Feature(BaseModel):
             return float
         if v == "bool":
             return bool
-        if v == "str":
+        if v == "str" or v == "date":
             return str
         raise TypeError(f"Invalid type value: {v}")
 

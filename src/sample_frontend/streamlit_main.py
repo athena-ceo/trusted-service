@@ -1,4 +1,6 @@
 import json
+from datetime import date, datetime
+from time import strptime, struct_time
 from typing import Any, Optional, Literal, get_origin, get_args
 
 import streamlit as st
@@ -48,33 +50,62 @@ class Context:
         pass
 
 
-# class IdLabel:
-#     def __init__(self, id: str, label: str):
-#         self.id = id
-#         self.label = label
-#
-#     def __str__(self):
-#         return self.label
-
-
 def add_case_field_input_widget(case: Case, case_field: CaseField):
     key = "input_" + case_field.id
 
+    label = case_field.label
+    if case_field.mandatory:
+        label = label + " __*__"
+
     value = case.field_values.get(case_field.id)
 
-    if case_field.type == "str":
+    help:str = case_field.help
+    if help.startswith("https://"):
+        help = f"![]({help})"
 
-        if case_field.options:
+    if case_field.type == "date":
+        # In this case type(value) == str
+        format_streamlit = case_field.format
+        format_python = (case_field.format
+                         .replace("DD", "%d")
+                         .replace("MM", "%m")
+                         .replace("YYYY", "%Y"))
+
+        st_: struct_time = strptime(value, format_python)
+        d_: date = date(st_.tm_year, st_.tm_mon, st_.tm_mday)
+
+        d_: date = st.date_input(label=label,
+                                 value=d_,
+                                 min_value=None,
+                                 max_value=None,
+                                 key=None,
+                                 help=help,
+                                 on_change=None,
+                                 args=None, kwargs=None,
+                                 format=format_streamlit,
+                                 disabled=False,
+                                 label_visibility="visible",
+                                 )
+        print(type(value), value)
+        print(type(d_))
+
+        case.field_values[case_field.id] = d_.strftime(format_python)
+        print(case.field_values[case_field.id])
+
+    elif case_field.type == "str":
+
+        if case_field.allowed_values:
             index = 0
-            for index2, option in enumerate(case_field.options):
+            for index2, option in enumerate(case_field.allowed_values):
                 if option.id == case_field.default_value:
                     index = index2
                     break
-            selected_option_label = st.selectbox(label=case_field.label,
-                                                 options=[option.label for option in case_field.options],
+            selected_option_label = st.selectbox(label=label,
+                                                 options=[option.label for option in case_field.allowed_values],
                                                  index=index,
+                                                 help=help,
                                                  )
-            selected_options = [option for option in case_field.options if option.label == selected_option_label]
+            selected_options = [option for option in case_field.allowed_values if option.label == selected_option_label]
             selected_option = selected_options[0]
             case.field_values[case_field.id] = selected_option.id
 
@@ -82,9 +113,10 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             def update_case_field_str():
                 case.field_values[case_field.id] = st.session_state[key]
 
-            st.text_input(label=case_field.label,
+            st.text_input(label=label,
                           value=value,
                           key=key,
+                          help =  help,
                           on_change=update_case_field_str, )
 
     elif case_field.type == "bool":
@@ -93,10 +125,11 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             index = None
         else:
             index = 0 if value else 1
-        val_str = st.radio(label=case_field.label,
+        val_str = st.radio(label=label,
                            options=["OUI", "NON"],
                            index=index,
                            key=key,
+                           help=help,
                            # on_change=update_case_field_bool
                            )
         case.field_values[case_field.id] = val_str == "OUI"

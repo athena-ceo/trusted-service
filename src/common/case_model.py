@@ -4,32 +4,34 @@ from pydantic import BaseModel, field_validator, Field
 
 from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
 
-class Option(BaseModel):
+class IdLabel(BaseModel):
     id: str
     label: str
 
 
-class OptionConfiguration(Configuration):
-    options: list[Option]
+class IdLabelsConfiguration(Configuration):
+    id_labels: list[IdLabel]
 
 
-def load_option_configuration_from_workbook(filename: str, locale: SupportedLocale) -> OptionConfiguration:
+def load_id_labels_configuration_from_workbook(filename: str, locale: SupportedLocale) -> IdLabelsConfiguration:
     configuration: Configuration = load_configuration_from_workbook(filename=filename,
                                                                     main_tab=None,
-                                                                    collections=[("options", Option)],
-                                                                    configuration_type=OptionConfiguration,
+                                                                    collections=[("id_labels", IdLabel)],
+                                                                    configuration_type=IdLabelsConfiguration,
                                                                     locale=locale)
-    option_configuration: OptionConfiguration = cast(OptionConfiguration, configuration)
+    option_configuration: IdLabelsConfiguration = cast(IdLabelsConfiguration, configuration)
 
     return option_configuration
 
 class CaseField(BaseModel):
     id: str
     type: str
-    # type: Type[Any]
     label: str
-    option_ids_csv: str
-    options: list[Option]  = Field(default_factory=list)
+    mandatory: bool
+    help: str
+    format: str  # format should be one of YYYY/MM/DD, DD/MM/YYYY, or MM/DD/YYYY and can also use a period (.) or hyphen (-) as separators
+    allowed_values_csv: str
+    allowed_values: list[IdLabel]  = Field(default_factory=list)
     default_value: Any
 
     # Fields required in UI
@@ -43,27 +45,6 @@ class CaseField(BaseModel):
 
     # Fields required for integration of decision engine
     send_to_decision_engine: bool
-
-    # def get_type(self) -> type:
-    #     try:
-    #         type_: type = eval(self.type)
-    #
-    #     except NameError:
-    #         values = [word.strip() for word in self.type.split(",")]
-    #         type_ = Literal[*values]
-    #
-    #     print(type_)
-    #     return type_
-
-    # @field_validator('type', mode='before')
-    # @classmethod
-    # def convert_type(cls, v):
-    #     if isinstance(v, type):
-    #         return v
-    #     elif isinstance(v, str):
-    #         return eval(v)
-    #     else:
-    #         raise TypeError(f"Invalid type value: {v}")
 
     @field_validator('intention_ids', mode='before')
     @classmethod
