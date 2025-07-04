@@ -69,6 +69,8 @@ In addition, various clients to interact with this service can be easily generat
 
 When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8080/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
 
+As we run Quarkus on port 7070, find your REST endpoints on [Swagger UI on 7070](http://localhost:7070/swagger-ui/)
+
 ## Test DMN Model using Maven
 
 Validate the functionality of DMN models before deploying them into a production environment by defining test scenarios in Test Scenario Editor. 
