@@ -35,14 +35,14 @@ You need to set the JAVA_HOME env variable in order to have a recent JDK (21 at 
 
 ```
 mvn clean package
-java -jar target/quarkus-app/quarkus-run.jar
+java -Dquarkus.http.port=7070 -jar target/quarkus-app/quarkus-run.jar
 ```
 
 or on Windows
 
 ```
 mvn clean package
-java -jar target\quarkus-app\quarkus-run.jar
+java -Dquarkus.http.port=7070 -jar target\quarkus-app\quarkus-run.jar
 ```
 
 ### Package and Run using Local Native Image
