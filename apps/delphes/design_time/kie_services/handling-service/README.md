@@ -136,3 +136,24 @@ Example response:
 }
 ```
 
+## Deploying as a Docker image
+
+### Compile your Quarkus project in production mode
+
+```sh
+mvn clean package -DskipTests
+```
+
+### Build the Docker image
+
+```sh
+docker build -t handling-service .
+```
+
+### Test the Docker image
+
+```sh
+docker run -p 7070:7070 handling-service .
+```
+
+This container **handling-service** is to be invoked together with the other ones thru `docker compose`.
