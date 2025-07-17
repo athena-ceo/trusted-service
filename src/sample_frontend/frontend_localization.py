@@ -1,3 +1,4 @@
+from src.common.configuration import SupportedLocale
 from src.common.localization import Localization
 
 
@@ -48,3 +49,9 @@ class FrontendLocalizationFr(FrontendLocalization):
 
     def description_of_fragments_feature(self, description_of_feature: str) -> str:
         return f"si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne"
+
+
+# IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
+# Add here support for new languages
+def get_frontend_localization(locale: SupportedLocale) -> FrontendLocalization:
+    return FrontendLocalizationEn() if locale == "en" else FrontendLocalizationFr()

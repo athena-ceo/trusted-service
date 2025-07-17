@@ -7,6 +7,8 @@ from openpyxl.workbook import Workbook
 from pydantic import BaseModel, field_validator
 
 
+# IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
+# Add here support for new languages
 SupportedLocale = Literal["en", "fr"]
 
 class Configuration(BaseModel):

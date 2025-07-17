@@ -10,7 +10,7 @@ Date: 2025-04-29
 from __future__ import annotations
 
 import json
-from typing import List, Type, Optional, Any, Callable
+from typing import List, Type, Optional, Any
 
 from pydantic import BaseModel, Field, create_model
 
@@ -116,6 +116,8 @@ def build_system_prompt(config: TextAnalysisConfiguration,
 
     system_prompt = "\n".join(lines)
 
+    print("PROMPT", system_prompt)
+
     return system_prompt
 
 
@@ -133,7 +135,6 @@ class TextAnalyzer:
             if case_field.extraction != "DO NOT EXTRACT":
                 feature = Feature(id=case_field.id,
                                   label=case_field.label,
-                                  # type=case_field.get_type(),
                                   type=case_field.type,
                                   description=case_field.description,
                                   highlight_fragments=case_field.extraction == "EXTRACT AND HIGHLIGHT")
@@ -153,13 +154,11 @@ class TextAnalyzer:
         for k, v in field_values.items():
             system_prompt = system_prompt.replace("{" + k + "}", str(v))  # a copy, so no change of original prompt
 
-        # print("---------- begin system_prompt ----------")
-        # print(system_prompt)
-        # print("----------- end system_prompt -----------")
+        print("---------- begin system_prompt ----------")
+        print(system_prompt)
+        print("----------- end system_prompt -----------")
 
         # Calling LLM
-
-        # read_from_cache = True
 
         cache_filename = self.runtime_directory + "/cache.json"
 
@@ -184,15 +183,47 @@ class TextAnalyzer:
 
         # Joining with collection of intentions
         for scoring in analysis_result[FIELD_NAME_SCORINGS]:
-            matching_intentions = [intention for intention in self.config2.intentions if
-                                   intention.id == scoring["intention_id"]]
+            scoring: dict[int, str]
+
+            print("*****>")
+
+            print(type(scoring))
+
+            for key, value in enumerate(scoring):
+                print(type(key), type(value), key, value)
+
+            print("<*****")
+
+            matching_intentions = [intention for intention in self.config2.intentions if intention.id == scoring.get("intention_id")]
             if matching_intentions:
                 matching_intention: Intention = matching_intentions[0]
                 scoring["intention_label"] = matching_intention.label
                 scoring["intention_fields"] = [case_field.id for case_field in self.case_model.case_fields if matching_intention.id in case_field.intention_ids]
 
         analysis_result[FIELD_NAME_SCORINGS] = [scoring for scoring in analysis_result[FIELD_NAME_SCORINGS] if
-                                                scoring["intention_label"] is not None]
+                                                scoring.get("intention_label") is not None]
+
+        print("* * * * * * * * * * * * * * * * ")
+
+        intention_other = Intention(id="other", label="OTHER", description="Fallback")
+
+        dict_other: dict[str, Any] = {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "AUTRE",
+            "intention_fields": [
+                "refugie_ou_protege_subsidiaire"
+            ]
+        }
+
+        analysis_result[FIELD_NAME_SCORINGS].append(dict_other)
+
+        for a in analysis_result[FIELD_NAME_SCORINGS]:
+            print(json.dumps(a, indent=4))
+        print(type(analysis_result[FIELD_NAME_SCORINGS][0]))
+
+        print("* * * * * * * * * * * * * * * * ")
 
         return analysis_result
 

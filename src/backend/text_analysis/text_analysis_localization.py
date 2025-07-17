@@ -31,7 +31,7 @@ class TextAnalysisLocalizationEn(TextAnalysisLocalization):
             docstring_scoring_for_one_intention_intention_id="Matches Intention.id",
             docstring_scoring_for_one_intention_score="0 = absent, 10 = fully present",
             docstring_scoring_for_one_intention_justification="Why the model chose this score",
-            docstring_scoring_for_multiple_intentions="List scorings for individual intentions",
+            docstring_scoring_for_multiple_intentions="List of the scorings for individual intentions",
 
             promptstring_perform_the_2_tasks_below="Please perform the 2 tasks below",
             promptstring_task="TASK",
@@ -69,5 +69,7 @@ class TextAnalysisLocalizationFr(TextAnalysisLocalization):
         return f"si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne"
 
 
+# IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
+# Add here support for new languages
 def get_text_analysis_localization(locale: SupportedLocale) -> TextAnalysisLocalization:
     return TextAnalysisLocalizationEn() if locale == "en" else TextAnalysisLocalizationFr()

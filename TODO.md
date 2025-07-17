@@ -3,9 +3,8 @@
 *********
 
 # ONGOING
-- In case_field move options in attribute dedicated to options and put type=str
-- Put label of options in model
-- Define type and options as attribute
+- Add Other intention
+- Put comment "Add here support for new languages" in streamlit_main.py
 - Remove update_case_field_str
 
 # Priority 1

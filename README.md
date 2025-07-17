@@ -132,4 +132,32 @@ Click the link to launch the app in your default browser.
 
 **Warning** If you need to run the Streamlit test client (or any other http client) on another port than 8501, update cell `common > client_url` in the configuration xlsxx file. 
 
+## Common tasks
 
+### Adding support for a new language in the Trusted Services framework
+Each language supported is identified by a string, such as "fr_FR" (French of France) or "fr" (General French, in practice identical to fr_FR). As of today, the supported languages are: `fr` and `en`.
+If you need to add support for a new language, for instance `fi` (Finnish):
+- Add `fi` to the list above
+- Update the Trusted Services framework Python code. To do so, look for the following comment:
+    ```
+    # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
+    # Add here support for new languages
+    ```
+  in the following files:
+  - `trusted-service/src/common/configuration.py` (definition of `SupportedLocale`)
+  - `trusted-service/src/backend/text_analysis/text_analysis_localization.py`
+  - `trusted-service/src/sample_frontend/frontend_localization.py`
+  - `trusted-service/src/sample_frontend/streamlit_main.py`
+
+### Localizing an existing application
+- First, make sure there exists support for the language in the Trusted Services framework
+- Second, follow the steps below, shown on what it took to localize the Delphes app to `en`, initially supporting `fr` only
+This is an illustration on Delphes, which was supporting `fr` initially. Below are the steps followed to support `en` too
+- In `./apps/delphes/runtime/configuration_delphes.xlsx` duplicate all rows and columns labeled `<property>_fr` and label the duplicate row or column `<property>_en`
+- Best practices:
+  - Translate the content with a LLM and give a bit of context in the prompt
+  - Do not translate official names such as "AES: admission exceptionnelle au séjour", but provide extra explanation in English
+
+### Bestr practices for localizing an existing application
+- Copy-paste the configuation from a language your application already support
+- Use a LLM 

@@ -32,6 +32,8 @@ class Context:
         common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
         frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename, common_configuration.locale)
 
+        self.locale = common_configuration.locale
+
         if frontend_configuration.connection_to_api == "rest":
             url = f"http://{common_configuration.rest_api_host}:{common_configuration.rest_api_port}"
             print("URL", url)
@@ -59,7 +61,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
     value = case.field_values.get(case_field.id)
 
-    help:str = case_field.help
+    help: str = case_field.help
     if help.startswith("https://"):
         help = f"![]({help})"
 
@@ -116,7 +118,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             st.text_input(label=label,
                           value=value,
                           key=key,
-                          help =  help,
+                          help=help,
                           on_change=update_case_field_str, )
 
     elif case_field.type == "bool":
@@ -161,28 +163,62 @@ def submit_case_for_handling():
     context.stage = 3
 
 
-text1 = """Attestation de prolongation expirée depuis le 11 octobre. 
-    Bonjour, 
-    
-    Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont la situation est assez complexe, et dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003.
-    
-    Il bénéficie actuellement du statut de protection subsidiaire et aimerait se rendre aux obsèques de son père à l'étranger;
-    
-    Il aimerait déposer une demande de droit d'asile.
-    
-    Par ailleurs, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
-    
-    Sans action dans les prochains jours, il risquera de perdre son travail.
-    
-    Je vous remercie par avance et vous prie de noter l'urgence. Il risque son emploi, c'est donc très important.
-    
-    Monsieur C aimerait, par ailleurs, faire une demande d'Asile à la France.
-    
-    
-    Ses coordonnées: 
-    Monsieur C C 78500 Sartrouville 07 00 00 00 00 CC@yahoo.com 
-    
-    Bien à vous.
+sample1_en = """Hello,
+
+I am writing on behalf of one of our members, Mr C C, whose case is rather complex and whose residence‑permit renewal application number (numéro de la demande de renouvellement de carte de séjour) is 7500000000000000003.
+
+He currently holds subsidiary protection status and would like to travel to his home country, on a temporary and exceptional basis, to attend his father’s funeral.
+
+
+
+
+
+
+
+
+
+Ask ChatGPT
+
+
+He would also like to submit an asylum application.
+
+In addition, Mr C’s processing‑extension certificate expired on 11 October 2024. He therefore wishes to obtain a new certificate so he can prove the legality of his stay while awaiting his residence permit.
+
+Without action in the next few days, he risks losing his job.
+
+Thank you in advance for your attention; please note the urgency—his employment is at stake, so this matter is very important.
+
+Mr C would furthermore like to file an asylum request with France.
+
+Contact details:
+Mr C C
+78500 Sartrouville
+07 00 00 00 00
+[CC@yahoo.com](mailto:CC@yahoo.com)
+
+Best regards.
+"""
+
+sample1_fr = """Bonjour, 
+
+Je vous sollicite pour le compte de l'un de nos adhérents, Monsieur C C, dont la situation est assez complexe, et dont le numéro de la demande de renouvellement de carte de séjour est le 7500000000000000003.
+
+Il bénéficie actuellement du statut de protection subsidiaire et aimerait se rendre dans son pays de façon temporaire et exceptionnelle pour assister aux obsèques de son père.
+
+Il aimerait déposer une demande de droit d'asile.
+
+Par ailleurs, l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024. Aussi, il souhaiterait obtenir une nouvelle attestation pour pouvoir justifier de la régularité de son séjour, dans l'attente de recevoir carte de séjour. 
+
+Sans action dans les prochains jours, il risquera de perdre son travail.
+
+Je vous remercie par avance et vous prie de noter l'urgence. Il risque son emploi, c'est donc très important.
+
+Monsieur C aimerait, par ailleurs, faire une demande d'Asile à la France.
+
+Ses coordonnées: 
+Monsieur C C 78500 Sartrouville 07 00 00 00 00 CC@yahoo.com 
+
+Bien à vous.
 """
 
 
@@ -225,9 +261,13 @@ def streamlit_main(config_filename: str):
                 if case_field.show_in_ui:
                     add_case_field_input_widget(context.case, case_field)
 
+        # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
+        # Add here support for new languages
+        sample = sample1_en if context.locale == "en" else sample1_fr
+
         st.text_area(label="Veuillez décrire votre demande",
                      height=330,
-                     value=text1,
+                     value=sample,
                      key="texte_demande", )
 
     st.button(
@@ -239,7 +279,7 @@ def streamlit_main(config_filename: str):
         return
 
     if st.session_state.show_details:
-        with expander_detail("Scoring des intentionspar l'IA", expanded=False, icon="✨"):
+        with expander_detail("Scoring des intentions par l'IA", expanded=False, icon="✨"):
             analysis_result_and_rendering = context.analysis_result_and_rendering
             markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
 
