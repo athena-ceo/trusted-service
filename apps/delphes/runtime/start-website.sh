@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the port number
-PORT=8080
+PORT=5005
 
 # Navigate to the website directory
 cd website || exit

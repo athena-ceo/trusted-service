@@ -1,7 +1,7 @@
 @echo off
 
 :: Define the port number
-set PORT=8080
+set PORT=5005
 
 :: Navigate to the website directory
 cd website || exit /b
