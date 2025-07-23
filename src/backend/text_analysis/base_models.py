@@ -42,6 +42,6 @@ class Feature(BaseModel):
         raise TypeError(f"Invalid type value: {v}")
 
 
-class Test(BaseModel):
-    text: str
-    expected_intention: str
+# class Test(BaseModel):
+#     text: str
+#     expected_intention: str

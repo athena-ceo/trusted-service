@@ -80,16 +80,18 @@ def build_html_highlighted_text_and_features(text: str,
                                 + "</span>"
                                 + highlighted_text[colored_segment.end:])
 
-    highlighted_text = "<b>" + highlighted_text + "</b>"
-    # highlighted_text = '<p style="font-size: 10px;">' + highlighted_text  + "</p>"
-    # highlighted_text = "<blockquote>" + highlighted_text + "</blockquote>"
+    # highlighted_text = "<b>" + highlighted_text + "</b>"
     highlighted_text = f'<table border="1" cellpadding="10"><tr><td bgcolor="#F0F2F6">{highlighted_text}</td></tr></table>'
 
-    highlighted_features = "\n".join(
-        [f"<span style='background-color: {feature_value.color}'>{feature_value.label}: {feature_value.value}</span>"
-         for feature_value in feature_values])
-    highlighted_text_and_features = highlighted_text + "\n" + highlighted_features
-    return highlighted_text_and_features.replace("\n", "<br>")  # self
+    table = "<table cellpadding='10'>"
+    for feature_value in feature_values:
+        table += f"<tr><td bgcolor=#F0F2F6>{feature_value.label}</td><td bgcolor={feature_value.color}>{feature_value.value}</td></tr>"
+    table += "</table>"
+
+    highlighted_text += "<br>"
+    highlighted_text += table
+
+    return highlighted_text.replace("\n", "<br>")  # self
 
 
 def hilite(label: str) -> str:
@@ -100,9 +102,23 @@ def hilite_blue(text: str) -> str:
     return f'<p style="font-weight: bold; color: blue;">{text}</p>'
 
 
-def render_email(email: Email) -> str:
+def render_email(email: Optional[Email]) -> str:
+    if email is None:
+        return None
     s = hilite("From:&nbsp;") + email.from_email_address + "<br>"
     s += hilite("To:&nbsp;") + email.to_email_address + "<br>"
     s += hilite("Subject:&nbsp;") + email.subject + "<br><br>"
-    s += hilite("Body du mail") + "<br>" + email.body.replace("\n", "<br>")
+    s += email.body
     return s
+
+
+standard_table_style = """<style>
+      table, th, td {
+        border: 1px solid #000;
+        border-collapse: collapse;   /* makes adjacent borders appear as one */
+      }
+      th {
+        background: #F0F2F6;
+      }
+    </style>"""
+

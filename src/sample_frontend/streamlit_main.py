@@ -1,7 +1,7 @@
 import json
-from datetime import date, datetime
+from datetime import date
 from time import strptime, struct_time
-from typing import Any, Optional, Literal, get_origin, get_args
+from typing import Any, Optional
 
 import streamlit as st
 from pydantic import BaseModel
@@ -10,9 +10,10 @@ from streamlit.delta_generator import DeltaGenerator
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.common_configuration import CommonConfiguration, load_common_configuration_from_workbook
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
 from src.sample_frontend.frontend_configuration import load_frontend_configuration_from_workbook, FrontendConfiguration
+from src.sample_frontend.frontend_localization import FrontendLocalization, frontend_localizations
 
 
 def expander_user(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
@@ -34,12 +35,17 @@ class Context:
 
         self.locale = common_configuration.locale
 
+        self.frontend_localization: FrontendLocalization = frontend_localizations[self.locale]  # Will fail here if language is not supported
+
         if frontend_configuration.connection_to_api == "rest":
             url = f"http://{common_configuration.rest_api_host}:{common_configuration.rest_api_port}"
             print("URL", url)
             self.api_client: ApiClient = ApiClientHttp(url)
         else:
             self.api_client: ApiClient = ApiClientDirect(config_filename)
+
+        self.app_name = self.api_client.get_app_name()
+        self.app_description = self.api_client.get_app_description()
 
         self.case_model: CaseModel = self.api_client.get_case_model()
         self.case: Case = Case.create_default_instance(self.case_model)
@@ -61,9 +67,9 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
     value = case.field_values.get(case_field.id)
 
-    help: str = case_field.help
-    if help.startswith("https://"):
-        help = f"![]({help})"
+    help_message: str = case_field.help
+    if help_message.startswith("https://"):
+        help_message = f"![]({help_message})"
 
     if case_field.type == "date":
         # In this case type(value) == str
@@ -81,7 +87,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
                                  min_value=None,
                                  max_value=None,
                                  key=None,
-                                 help=help,
+                                 help=help_message,
                                  on_change=None,
                                  args=None, kwargs=None,
                                  format=format_streamlit,
@@ -105,7 +111,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             selected_option_label = st.selectbox(label=label,
                                                  options=[option.label for option in case_field.allowed_values],
                                                  index=index,
-                                                 help=help,
+                                                 help=help_message,
                                                  )
             selected_options = [option for option in case_field.allowed_values if option.label == selected_option_label]
             selected_option = selected_options[0]
@@ -118,7 +124,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             st.text_input(label=label,
                           value=value,
                           key=key,
-                          help=help,
+                          help=help_message,
                           on_change=update_case_field_str, )
 
     elif case_field.type == "bool":
@@ -131,7 +137,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
                            options=["OUI", "NON"],
                            index=index,
                            key=key,
-                           help=help,
+                           help=help_message,
                            # on_change=update_case_field_bool
                            )
         case.field_values[case_field.id] = val_str == "OUI"
@@ -139,7 +145,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
 def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
-    analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.texte_demande)
+    analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.request_description_text_area)
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
     print("CLIENT SIDE")
@@ -169,17 +175,6 @@ I am writing on behalf of one of our members, Mr C C, whose case is rather compl
 
 He currently holds subsidiary protection status and would like to travel to his home country, on a temporary and exceptional basis, to attend his father’s funeral.
 
-
-
-
-
-
-
-
-
-Ask ChatGPT
-
-
 He would also like to submit an asylum application.
 
 In addition, Mr C’s processing‑extension certificate expired on 11 October 2024. He therefore wishes to obtain a new certificate so he can prove the legality of his stay while awaiting his residence permit.
@@ -188,16 +183,7 @@ Without action in the next few days, he risks losing his job.
 
 Thank you in advance for your attention; please note the urgency—his employment is at stake, so this matter is very important.
 
-Mr C would furthermore like to file an asylum request with France.
-
-Contact details:
-Mr C C
-78500 Sartrouville
-07 00 00 00 00
-[CC@yahoo.com](mailto:CC@yahoo.com)
-
-Best regards.
-"""
+Mr C would furthermore like to file an asylum request with France."""
 
 sample1_fr = """Bonjour, 
 
@@ -213,13 +199,7 @@ Sans action dans les prochains jours, il risquera de perdre son travail.
 
 Je vous remercie par avance et vous prie de noter l'urgence. Il risque son emploi, c'est donc très important.
 
-Monsieur C aimerait, par ailleurs, faire une demande d'Asile à la France.
-
-Ses coordonnées: 
-Monsieur C C 78500 Sartrouville 07 00 00 00 00 CC@yahoo.com 
-
-Bien à vous.
-"""
+Monsieur C aimerait, par ailleurs, faire une demande d'Asile à la France."""
 
 
 class DecisionPayload(BaseModel):
@@ -231,26 +211,23 @@ def streamlit_main(config_filename: str):
     if not hasattr(st.session_state, "context"):
         st.session_state.context = Context(config_filename)
     context = st.session_state.context
+    l12n = context.frontend_localization
 
-    st.write("""
-    # DELPHES
-    DELPHES est une solution innovante et efficace de pré-traitement et de routage intelligent des demandes adressées par des demandeurs étrangers aux préfectures."
-    Il est construit sur le framewotk Athena Démarches en Confiance
-    """)
+    st.write(f"# {context.app_name}\n{context.app_description}")
 
     case_model = context.case_model
 
     case = context.case
 
-    st.toggle("Montrer les détails", value=False, key="show_details")
+    st.toggle(l12n.label_show_details, value=False, key="show_details")
 
-    with expander_user("Contexte de la demande", expanded=True):
+    with expander_user(l12n.label_context, expanded=True):
 
         for case_field in case_model.case_fields:
             if case_field.scope == "CONTEXT":
                 add_case_field_input_widget(context.case, case_field)
 
-    with expander_user("Demande", expanded=True):
+    with expander_user(l12n.label_request, expanded=True):
 
         for case_field in case_model.case_fields:
             if case_field.scope == "CONTEXT":
@@ -265,56 +242,52 @@ def streamlit_main(config_filename: str):
         # Add here support for new languages
         sample = sample1_en if context.locale == "en" else sample1_fr
 
-        st.text_area(label="Veuillez décrire votre demande",
+        st.text_area(label=l12n.label_please_describe_your_request,
                      height=330,
                      value=sample,
-                     key="texte_demande", )
+                     key="request_description_text_area", )
 
     st.button(
-        label=f"Etape suivante",
+        label=l12n.label_next_step,
         on_click=submit_text_for_ia_analysis,
+        icon="➡️"
     )
 
     if context.stage == 1:
         return
 
     if st.session_state.show_details:
-        with expander_detail("Scoring des intentions par l'IA", expanded=False, icon="✨"):
-            analysis_result_and_rendering = context.analysis_result_and_rendering
-            markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
+        analysis_result_and_rendering = context.analysis_result_and_rendering
+        prompt = analysis_result_and_rendering[KEY_PROMPT]
+        markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
+        highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
 
-            st.write(markdown_table)
+        with st.popover(l12n.label_text_analysis, icon = "🔎"):
+            tab_prompt, tab_intents, tab_extraction = st.tabs([l12n.label_prompt, l12n.label_intent_scoring, l12n.label_feature_extraction])
+            tab_prompt.write(prompt)
+            tab_intents.write(markdown_table)
+            tab_extraction.html(highlighted_text)
 
-        with expander_detail("Extraction d'information par l'IA", expanded=False, icon="✨"):
-            analysis_result_and_rendering = context.analysis_result_and_rendering
-            highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
-
-            st.html(highlighted_text)
-
-    with expander_user("Informations complémentaires", expanded=True):
+    with expander_user(l12n.label_additional_information, expanded=True):
         analysis_result_and_rendering = context.analysis_result_and_rendering
         analysis_result = analysis_result_and_rendering[KEY_ANALYSIS_RESULT]
         scorings = analysis_result["scorings"]
 
-        # Labels of the intentions to show: Either score >= 1 or "OTHER" which exists anyway
-        labels = [scoring["intention_label"] for scoring in scorings if
-                  scoring["score"] != 0 or scoring["intention_label"] == "AUTRES"]
+        # Labels of the intentions to show: Either score >= 1 or other which exists anyway
+        labels = [scoring["intention_label"] for scoring in scorings if scoring["score"] != 0]
 
-        label_of_selected_intention = st.radio(label="Confirmer votre demande", options=labels, index=0)
-        matching_ids = [scoring["intention_id"] for scoring in scorings if
-                        scoring["intention_label"] == label_of_selected_intention]
+        label_of_selected_intention = st.radio(label=l12n.label_confirm_your_request, options=labels, index=0)
+        matching_ids = [scoring["intention_id"] for scoring in scorings if scoring["intention_label"] == label_of_selected_intention]
         if matching_ids:
             id_of_selected_intention = matching_ids[0]
 
             # Show matching fields
             for case_field in case_model.case_fields:
-                # case_field: CaseField = case_field
-                # Show fields specific to the selected intention!
                 if id_of_selected_intention in case_field.intention_ids:
                     if case_field.show_in_ui:
                         add_case_field_input_widget(context.case, case_field)
 
-    with expander_detail("Requête"):
+    with expander_detail(l12n.label_request):
 
         payload = {
             "intention_id": id_of_selected_intention,
@@ -339,9 +312,9 @@ def streamlit_main(config_filename: str):
                      )
 
     st.button(
-        label=f"Soumettre votre demande",
+        label=l12n.label_submit,
         on_click=submit_case_for_handling,
-        disabled=False,
+        icon="📤",
     )
 
     if context.stage == 2:
@@ -350,14 +323,26 @@ def streamlit_main(config_filename: str):
     case_handling_detailed_response = context.case_handling_detailed_response
 
     if st.session_state.show_details:
-        with expander_detail("Appel au moteur de règles", expanded=False):
-            st.write("Input:")
-            st.write(case_handling_detailed_response.case_handling_decision_input)
-            st.write("Output:")
-            st.write(case_handling_detailed_response.case_handling_decision_output)
+        with st.popover(l12n.label_processing_of_the_request, icon="🔎"):
+            rendering_email_to_agent, rendering_email_to_requester = case_handling_detailed_response.case_handling_response.case_handling_report
+
+            # TASK or LOGGING?
+            handling = case_handling_detailed_response.case_handling_decision_output.handling
+            label_task_or_logging = l12n.label_task if handling=="AGENT" else l12n.label_logging
+
+            tab_labels = [l12n.label_rule_engine_invocation, label_task_or_logging]
+            if rendering_email_to_requester:
+                tab_labels.append(l12n.label_proposed_response)
+            tabs = st.tabs(tab_labels)
+
+            tabs[0].write("Input:")
+            tabs[0].write(case_handling_detailed_response.case_handling_decision_input)
+            tabs[0].write("Output:")
+            tabs[0].write(case_handling_detailed_response.case_handling_decision_output)
+
+            tabs[1].html(rendering_email_to_agent)
+
+            if rendering_email_to_requester:
+                tabs[2].html(rendering_email_to_requester)
 
     st.write(case_handling_detailed_response.case_handling_response.acknowledgement_to_requester)
-
-    if st.session_state.show_details:
-        with expander_detail("Traitement de la demande", expanded=False):
-            st.html(case_handling_detailed_response.case_handling_response.case_handling_report)

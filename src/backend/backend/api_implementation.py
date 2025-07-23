@@ -11,20 +11,29 @@ from src.common.case_model import CaseModel
 class ApiImplementation(Api):
 
     def __init__(self,
+                 app_name: str,
+                 app_description: str,
                  case_model: CaseModel,
                  text_analyzer: TextAnalyzer,
                  case_handling_decision_engine: CaseHandlingDecisionEngine,
                  case_handling_distribution_engine: CaseHandlingDistributionEngine):
+        self.app_name = app_name
+        self.app_description = app_description
         self.case_model: CaseModel = case_model
         self.text_analyzer: TextAnalyzer = text_analyzer
         self.case_handling_decision_engine: CaseHandlingDecisionEngine = case_handling_decision_engine
         self.case_handling_distribution_engine: CaseHandlingDistributionEngine = case_handling_distribution_engine
 
+    def get_app_name(self) -> str:
+        return self.app_name
+
+    def get_app_description(self) -> str:
+        return self.app_description
+
     def get_case_model(self) -> CaseModel:
         return self.case_model
 
     def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        # return self.text_analyzer.analyze(field_values, text)
         result = self.text_analyzer.analyze(field_values, text)
         print("*** RESULT")
         print(json.dumps(result, indent=4))
