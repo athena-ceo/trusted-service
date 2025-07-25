@@ -20,6 +20,7 @@ from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIE
 from src.backend.text_analysis.llm import Llm
 from src.backend.text_analysis.llm_openai import LlmOpenAI
 from src.backend.text_analysis.llm_ollama import LlmOllama
+from src.backend.text_analysis.llm_scaleway import LlmScaleway
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
 from src.backend.text_analysis.text_analysis_localization import get_text_analysis_localization, TextAnalysisLocalization
 from src.common.case_model import CaseModel
@@ -145,7 +146,14 @@ class TextAnalyzer:
         self.config2: TextAnalysisConfiguration = config
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(locale, features)
         self.templated_system_prompt: str = build_system_prompt(self.config2, locale, self.features, self.analysis_response_model)
-        self.llm: Llm = LlmOpenAI() if config.llm == "openai" else LlmOllama()
+        if config.llm == "openai":
+            self.llm: Llm = LlmOpenAI(config)
+        elif config.llm == "ollama":
+            self.llm: Llm = LlmOllama(config)
+        elif config.llm == "scaleway":
+            self.llm: Llm = LlmScaleway(config)
+        else:
+            raise ValueError(f"Unsupported LLM: {config.llm}")
 
     def _analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
 
@@ -167,12 +175,10 @@ class TextAnalyzer:
                 analysis_result = json.load(f)
         else:
             if self.config2.response_format_type == "json_object":
-                _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.config2,
-                                                                                 self.analysis_response_model,
+                _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model,
                                                                                  self.templated_system_prompt, text)
             else:
-                _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.config2,
-                                                                                    self.analysis_response_model,
+                _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model,
                                                                                     self.templated_system_prompt, text)
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
 
