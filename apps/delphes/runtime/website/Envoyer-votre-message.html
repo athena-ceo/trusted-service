@@ -165,7 +165,8 @@
                 });
 
                 // Appeler le Web Service de décision
-                fetch('http://localhost:8002/api/v1/process_request', {
+                // fetch('http://localhost:8002/api/v1/process_request', {
+                fetch('/delphes-api/api/v1/process_request', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -211,7 +212,8 @@
         }
 
         // Appeler le Web Service d'analyse de la demande
-        fetch('http://localhost:8002/api/v1/analyze', {
+        // fetch('http://localhost:8002/api/v1/analyze', {
+        fetch('/delphes-api/api/v1/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
