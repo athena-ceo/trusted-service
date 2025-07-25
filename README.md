@@ -1,5 +1,11 @@
 # Trusted Services README
 
+## Warning
+- If you migrate from the legacy Delphes POC, make sure you create the Thunderbird folders and update the matching filters
+according to the instructions below. Accentuated characters have been removed from the tags, folders and filters.
+- If you are not receiving the emails as you would expect, check `send_email` in tab `email_configuration` of the Excel Configuration File
+
+## What is Trusted Services?
 Trusted Services is a framework that streamlines the build of localizable, accountable, self-service applications.
 
 You can create a new application either by using a Python API or by parameterizing in a low code fashion the framework
@@ -27,11 +33,6 @@ This git repository comes with:
 - The source code of the Python library
 - A generic Streamlit test client
 - The configuration file for the Delphes app provided as a sample
-
-## Warning
-
-If you migrate from the legacy Delphes POC, make sure you create the Thunderbird folders and update the matching filters
-according to the instructions below. Accentuated characters have been removed from the tags, folders and filters.
 
 ## 1. INSTALLATION
 ### Install the framework and the sample application (Delphes)

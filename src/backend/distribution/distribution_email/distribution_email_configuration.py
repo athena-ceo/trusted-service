@@ -18,6 +18,7 @@ class DistributionEmailConfiguration(Configuration):
     smtp_server: str
     password: str
     smtp_port: int
+    send_email: bool
 
     email_templates: list[EmailTemplate]
 

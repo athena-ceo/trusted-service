@@ -36,7 +36,7 @@ class CaseHandlingDecisionOutput(BaseModel):
 
 class CaseHandlingResponse(BaseModel):
     acknowledgement_to_requester: str
-    case_handling_report: str
+    case_handling_report: tuple[str, str | None]  # 1rst element: Rendering of the mail to to the agent. 2nd element: Rendering of the mail to to the requester
 
 
 class CaseHandlingDetailedResponse(BaseModel):
@@ -46,6 +46,14 @@ class CaseHandlingDetailedResponse(BaseModel):
 
 
 class Api(ABC):
+
+    @abstractmethod
+    def get_app_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_app_description(self) -> str:
+        pass
 
     @abstractmethod
     def get_case_model(self) -> CaseModel:

@@ -17,6 +17,12 @@ class ApiClientDirect(ApiClient):
     def __init__(self, config_filename: str):
         self.api: Api = Application(config_filename).api_implementation
 
+    def get_app_name(self) -> str:
+        return self.api.get_app_name()
+
+    def get_app_description(self) -> str:
+        return self.api.get_app_description()
+
     def get_case_model(self) -> CaseModel:
         case_model: CaseModel = self.api.get_case_model()
         print("case_model", case_model.model_dump_json(indent=4))
@@ -32,6 +38,31 @@ class ApiClientDirect(ApiClient):
 class ApiClientHttp(ApiClient):
     def __init__(self, http_connection_url: str):
         self.base_url = http_connection_url
+
+    def get_app_name(self) -> str:
+
+        url = f"{self.base_url}/app_name"
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            return response.text
+        else:
+            print(f"Request failed with status code: {response.status_code}")
+
+    def get_app_description(self) -> str:
+
+        url = f"{self.base_url}/app_description"
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            return response.text
+        else:
+            print(f"Request failed with status code: {response.status_code}")
+
+    def get_app_description(self) -> str:
+        return self.api.get_app_description()
 
     def get_case_model(self) -> CaseModel:
 

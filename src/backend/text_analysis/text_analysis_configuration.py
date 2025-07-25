@@ -1,8 +1,7 @@
 from typing import Literal, cast
 
-from src.backend.text_analysis.base_models import Intention, Test, Definition
+from src.backend.text_analysis.base_models import Intention, Definition
 from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
-from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, TextAnalysisLocalizationEn, TextAnalysisLocalizationFr
 
 
 class TextAnalysisConfiguration(Configuration):
@@ -19,7 +18,7 @@ class TextAnalysisConfiguration(Configuration):
     # Misc
     definitions: list[Definition]
     intentions: list[Intention]
-    tests: list[Test]
+    # tests: list[Test]
     read_from_cache: bool
     save_to_cache: bool
 
@@ -30,11 +29,11 @@ def load_text_analysis_configuration_from_workbook(filename: str, locale: Suppor
                                                            collections=[("definitions", Definition),
                                                                         ("intentions", Intention),
                                                                         # ("features", Feature),
-                                                                        ("tests", Test)],
+                                                                        # ("tests", Test)
+                                                                        ],
                                                            configuration_type=TextAnalysisConfiguration,
                                                            locale=locale)
     return cast(TextAnalysisConfiguration, conf)
-
 
 # def get_localization(config: TextAnalysisConfiguration) -> TextAnalysisLocalization:
 #     return TextAnalysisLocalizationEn() if config.locale == "en" else TextAnalysisLocalizationFr()

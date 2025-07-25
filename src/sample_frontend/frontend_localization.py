@@ -3,55 +3,72 @@ from src.common.localization import Localization
 
 
 class FrontendLocalization(Localization):
-    pass
-
-
-class FrontendLocalizationEn(FrontendLocalization):
-    def __init__(self):
-        super().__init__(
-            docstring_scoring_for_one_intention="Model output for a single intention.",
-            docstring_scoring_for_one_intention_intention_id="Matches Intention.id",
-            docstring_scoring_for_one_intention_score="0 = absent, 10 = fully present",
-            docstring_scoring_for_one_intention_justification="Why the model chose this score",
-            docstring_scoring_for_multiple_intentions="List scorings for individual intentions",
-
-            promptstring_perform_the_2_tasks_below="Please perform the 2 tasks below",
-            promptstring_task="TASK",
-            promptstring_instructions_intentions="Given the *user's* text and the list of intentions below, rate each intention between 0 and 10 and justify the rating in one or two sentences.",
-            promptstring_list_of_intentions="List of intentions",
-            promptstring_instructions_extract_features="Extract the following features from the text",
-            promptstring_definitions="DEFINITIONS",
-            promptstring_return_only_json="Return ONLY valid JSON that matches this JSON Schema (no extra keys, no prose)",
-        )
-
-    def description_of_fragments_feature(self, description_of_feature: str) -> str:
-        return f"if the text mentions {description_of_feature}, the list of string fragments that mention it"
-        pass
-
-
-class FrontendLocalizationFr(FrontendLocalization):
-    def __init__(self):
-        super().__init__(
-            docstring_scoring_for_one_intention="Résultat pour une intention unique.",
-            docstring_scoring_for_one_intention_intention_id="Correspond à Intention.id",
-            docstring_scoring_for_one_intention_score="0 = absence, 10 = forte présence",
-            docstring_scoring_for_one_intention_justification="La raison pour laquelle le modèle a déterminé ce score",
-            docstring_scoring_for_multiple_intentions="Liste des scorings pour chacune des intentions",
-
-            promptstring_perform_the_2_tasks_below="Merci d'exécuter les 2 tâches suivantes",
-            promptstring_task="TACHE",
-            promptstring_instructions_intentions="Pour un texte donné fourni par *l'utilisateur* et la liste d'intentions ci-dessous, calculer un score entre 0 et 10 pour chaque intention et justifier le score en une ou deux phrases.",
-            promptstring_list_of_intentions="Liste des intentions",
-            promptstring_instructions_extract_features="Extraire les éléments suivants du texte",
-            promptstring_definitions="DEFINITIONS",
-            promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
-        )
-
-    def description_of_fragments_feature(self, description_of_feature: str) -> str:
-        return f"si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne"
+    label_show_details: str
+    label_context: str
+    label_request: str
+    label_please_describe_your_request: str
+    label_next_step: str
+    label_text_analysis: str
+    label_prompt: str
+    label_intent_scoring: str
+    label_feature_extraction: str
+    label_intentions_scored_by_ai: str
+    label_data_extracted_by_ai: str
+    label_additional_information: str
+    label_confirm_your_request: str
+    label_submit: str
+    label_task: str
+    label_logging: str
+    label_rule_engine_invocation: str
+    label_processing_of_the_request: str
+    label_proposed_response: str
 
 
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
 # Add here support for new languages
-def get_frontend_localization(locale: SupportedLocale) -> FrontendLocalization:
-    return FrontendLocalizationEn() if locale == "en" else FrontendLocalizationFr()
+
+
+frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
+    "en": FrontendLocalization(
+        label_show_details="Show details",
+        label_context="Context",
+        label_request="Request",
+        label_please_describe_your_request="Please describe your request",
+        label_next_step="Next step",
+        label_text_analysis="Text analysis",
+        label_prompt="Prompt",
+        label_intent_scoring="Intent scoring",
+        label_feature_extraction="Feature extraction",
+        label_intentions_scored_by_ai="Intentions scored by AI",
+        label_data_extracted_by_ai="Data extracted by AI",
+        label_additional_information="Additional information",
+        label_confirm_your_request="Please confirm your request",
+        label_submit="Submit",
+        label_task="Task",
+        label_logging="Logging",
+        label_rule_engine_invocation="Rule engine invocation",
+        label_processing_of_the_request="Processing of the request",
+        label_proposed_response="Proposed response",
+    ),
+    "fr": FrontendLocalization(
+        label_show_details="Montrer les détails",
+        label_context="Contexte de la demande",
+        label_request="Demande",
+        label_please_describe_your_request="Veuillez décrire votre demande",
+        label_next_step="Etape suivante",
+        label_text_analysis="Analyse du texte",
+        label_prompt="Prompt",
+        label_intent_scoring="Scoring des intentionss",
+        label_feature_extraction="Extraction des features",
+        label_intentions_scored_by_ai="Scoring des intentions par l'IA",
+        label_data_extracted_by_ai="Extraction d'information par l'IA",
+        label_additional_information="Informations complémentaires",
+        label_confirm_your_request="Merci de confirmer votre demande",
+        label_submit="Soumettre votre demande",
+        label_task="Tâche",
+        label_logging="Logging",
+        label_rule_engine_invocation="Appel au moteur de règles",
+        label_processing_of_the_request="Traitement de la demande",
+        label_proposed_response="Résponse proposée",
+    )
+}
