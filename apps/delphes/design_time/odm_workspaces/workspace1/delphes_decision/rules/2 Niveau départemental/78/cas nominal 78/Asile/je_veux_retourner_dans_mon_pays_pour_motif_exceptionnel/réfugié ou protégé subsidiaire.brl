@@ -9,7 +9,7 @@
 
 alors
     traitement = AGENT ;
-    notification au demandeur = "Votre demande a été prise en compte. Un agent la traitera dans les plus brefs délais." ;
+    notification au demandeur = "#ACK" ;
     template de réponse = "sauf-conduits" ;
     bannette = 'sauf-conduits' ;
     priorité = HIGH ;]]></definition>

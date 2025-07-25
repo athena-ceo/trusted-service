@@ -4,9 +4,8 @@
   <uuid>915ea439-d8e6-4c85-99f4-65fdb9a3dd5d</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[définitions
-    soit 'texte' étant "**Je demande l'asile en France** de la Préfecture des Yvelines" ;
+    soit 'texte' étant "**Les services de l'État dans les Yvelines** - Je demande l'asile en France" ;
     soit 'url' étant "https://www.yvelines.gouv.fr/Demarches/Accueil-des-etrangers-dans-les-Yvelines/Asile/Je-demande-l-asile-en-France" ;
-    soit 'page_demande_asile_yvelines' étant "[" + texte + "]" + "(" + url + ")" ;
 
     
 si
@@ -14,7 +13,7 @@ si
 
 alors
     traitement = DEFLECTION ;
-    notification au demandeur = "Veuillez consulter la page " + page_demande_asile_yvelines ;
+    notification au demandeur = "#VISIT_PAGE," + texte + "," + url;
     template de réponse = "" ;
     bannette = reorientation ;
     priorité = MEDIUM ;]]></definition>

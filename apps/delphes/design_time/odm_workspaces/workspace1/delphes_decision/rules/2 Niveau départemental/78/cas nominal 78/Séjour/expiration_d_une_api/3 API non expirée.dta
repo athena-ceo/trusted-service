@@ -7,8 +7,8 @@
 <DT xmlns="http://schemas.ilog.com/Rules/7.0/DecisionTable" Version="7.0">
   <Body>
     <Properties>
-      <Property Name="OptimizedExpressionMemory"><![CDATA[false]]></Property>
       <Property Name="OptimizedExpressions"><![CDATA[false]]></Property>
+      <Property Name="OptimizedExpressionMemory"><![CDATA[false]]></Property>
     </Properties>
     <Preconditions>
       <Text><![CDATA[définitions
@@ -54,7 +54,7 @@ si
             </Action>
             <Action DefId="A2">
               <Expression>
-                <Param><![CDATA["API va expirer dans " + nb_jours + " jour(s)"]]></Param>
+                <Param><![CDATA["#API_VA_EXPIRER_DANS_X_JOURS" + "," + nb_jours]]></Param>
               </Expression>
             </Action>
           </ActionSet>
@@ -96,10 +96,10 @@ si
   </Body>
   <Resources DefaultLocale="en_US">
     <ResourceSet Locale="fr_FR">
-      <Data Name="Definitions(A0)#HeaderText"><![CDATA[Priorité]]></Data>
-      <Data Name="Definitions(A2)#HeaderText"><![CDATA[Note]]></Data>
       <Data Name="Definitions(A2)#Width"><![CDATA[374]]></Data>
       <Data Name="Definitions(C0)#HeaderText"><![CDATA[Nombre de jours jusqu'à expiration API]]></Data>
+      <Data Name="Definitions(A0)#HeaderText"><![CDATA[Priorité]]></Data>
+      <Data Name="Definitions(A2)#HeaderText"><![CDATA[Note]]></Data>
       <Data Name="Definitions(C0)#Width"><![CDATA[283]]></Data>
     </ResourceSet>
   </Resources>

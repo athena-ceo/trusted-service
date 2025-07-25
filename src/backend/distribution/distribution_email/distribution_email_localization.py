@@ -3,21 +3,24 @@ from src.common.localization import Localization
 from src.common.configuration import SupportedLocale
 
 
-class DistributionEngineEmailocalization(Localization):
+class DistributionEngineEmaiLocalization(Localization):
+    label_intent: str
     label_yes: str
     label_no: str
-    label_alerts: str
+    label_notes: str
 
 
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
 # Add here support for new languages
-distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngineEmailocalization] = {
-    "en": DistributionEngineEmailocalization(
+distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngineEmaiLocalization] = {
+    "en": DistributionEngineEmaiLocalization(
+        label_intent="Intent",
         label_yes="yes",
         label_no="no",
-        label_alerts="Alerts"),
-    "fr": DistributionEngineEmailocalization(
+        label_notes="Important notes"),
+    "fr": DistributionEngineEmaiLocalization(
+        label_intent="Intention",
         label_yes="oui",
         label_no="non",
-        label_alerts="Alertes")
+        label_notes="Eléments importants")
 }

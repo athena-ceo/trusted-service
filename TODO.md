@@ -5,12 +5,9 @@
 # ONGOING
 - Remove app_name from API and put in frontend
 - Show narrative about prompt and rule engine
-- Localization of decision engine output
-- 
-- Review intentions passed to ODM / rename notes alerts, ssems that `other` is not correctly handled 
-- Python version
-- localization of messages sent to user
-- localization of email sent to agent
+
+- Rename notes alerts
+- Python version, ssems that `other` is not correctly handled 
 - read example in xls
 - test with Calc
 - Remove update_case_field_str

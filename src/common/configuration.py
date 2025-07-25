@@ -45,6 +45,9 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[s
 
 def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
     list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
+    print("list1")
+    print(list1)
+    print("/list1")
     return [model_type.model_validate(data) for data in list1]
 
 
@@ -115,11 +118,14 @@ def load_configuration_from_workbook(filename: str,
                 key = key[:len(key) - len(locale) - 1]
             config_values[key] = row[1].value
 
+    print("iterating")
     for collection_name, model_type in collections:
+        print(collection_name, model_type)
         config_values[collection_name] = load_pydantic_objects_from_worksheet(
             worksheet=config_workbook[collection_name],
             model_type=model_type,
             locale=locale)
+    print("done")
 
         # print(config_values)
 

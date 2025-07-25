@@ -4,16 +4,15 @@
   <uuid>9197765e-9d19-4386-b21d-e199930240b4</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[définitions
-    soit 'texte' étant "**Demande d'asile** du site officiel de l'administration française" ;
+    soit 'texte' étant "**Le site officiel de l'administration française** - Demande d'asile" ;
     soit 'url' étant "https://www.service-public.fr/particuliers/vosdroits/F2232#:~:text=Si%20vous%20souhaitez%20entrer%20en,de%20votre%20lieu%20d'arriv%C3%A9e." ;
-    soit 'page_demande_asile_france' étant "[" + texte + "]" + "(" + url + ")" ;
 
 si
     intention est depot_de_demande_d_asile
 
 alors
     traitement = DEFLECTION  ;
-    notification au demandeur = "Veuillez consulter la page " + page_demande_asile_france ;
+    notification au demandeur = "#VISIT_PAGE," + texte + "," + url;
     template de réponse = "" ;
     bannette = reorientation ;
     priorité = MEDIUM ;]]></definition>

@@ -39,9 +39,8 @@ final class Intention
         static depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,
         static depot_d_une_demande_de_titre_et_autre_probleme_anef,
         static je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,
-        static autres
+        static other
     }
-    static final readonly delphes.Intention autres;
     static final readonly delphes.Intention changement_statut_etudiant_a_recherche_d_emploi;
     static final readonly delphes.Intention changement_statut_etudiant_a_salarie;
     static final readonly delphes.Intention demande_d_un_etudiant_en_programme_de_mobilite;
@@ -56,6 +55,7 @@ final class Intention
     static final readonly delphes.Intention expiration_d_une_atda;
     static final readonly delphes.Intention je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel;
     static final readonly delphes.Intention mise_a_jour_infos_atda;
+    static final readonly delphes.Intention other;
     static final readonly delphes.Intention ou_en_est_ma_demande_d_asile_en_cours;
     static final readonly delphes.Intention ressortissant_ukrainien_autre_demande;
     static final readonly delphes.Intention ressortissant_ukrainien_demande_renouvellement_de_son_titre;

@@ -32,7 +32,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         # Build table with field values
 
-        labels_and_values = [("Intention", request.intention_id)]
+        labels_and_values = [(self.localization.label_intent, request.intention_id)]
         for case_field_id, case_field_value in request.field_values.items():
             case_field = case_model.get_field_by_id(case_field_id)
             case_field_label = case_field.label
@@ -59,7 +59,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         if notes := case_handling_decision_output.notes:
             table = "<table cellpadding='10'>\n"
-            table += f"<tr><th>{self.localization.label_alerts}</th></tr>\n"
+            table += f"<tr><th>{self.localization.label_notes}</th></tr>\n"
             for note in notes:
                 table += f"<tr><td>{note}</td></tr>\n"
             table += "</table>"
@@ -70,7 +70,8 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     def distribute(self,
                    case_model: CaseModel,
                    request: CaseHandlingRequest,
-                   case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
+                   # case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
+                   case_handling_decision_output: CaseHandlingDecisionOutput) -> tuple[str, str]:
 
         # email_to_agent
 
@@ -114,8 +115,10 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         rendering_email_to_agent = render_email(email_to_agent)
         rendering_email_to_requester = render_email(email_to_requester)  # is None if email_to_requester is None
 
-        return CaseHandlingResponse(acknowledgement_to_requester=case_handling_decision_output.acknowledgement_to_requester,
-                                    case_handling_report=(rendering_email_to_agent, rendering_email_to_requester))
+        # return CaseHandlingResponse(acknowledgement_to_requester=case_handling_decision_output.acknowledgement_to_requester,
+                                    # case_handling_report=(rendering_email_to_agent, rendering_email_to_requester))
+
+        return rendering_email_to_agent, rendering_email_to_requester
 
     @staticmethod
     def create_mailto_link(email: str, subject: str, body: str) -> str:

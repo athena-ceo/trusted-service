@@ -8,7 +8,7 @@
 
 alors
     traitement = DEFLECTION ;
-    notification au demandeur = "Veuillez vous adresser à votre contact OFPRA" ;
+    notification au demandeur = "#CONTACT_OFPRA" ;
     template de réponse = "" ;
     bannette = reorientation ;
     priorité = MEDIUM ;]]></definition>

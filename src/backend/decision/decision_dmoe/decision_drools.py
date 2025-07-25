@@ -9,5 +9,5 @@ class CaseHandlingDecisionEngineDrools(CaseHandlingDecisionEngine):
         self.drools_param: str = decision_drools_configuration.drools_param
 
 
-    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
+    def _decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
         pass

@@ -20,6 +20,6 @@ public enum Intention {
 	depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,
 	depot_d_une_demande_de_titre_et_autre_probleme_anef,
 	je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,
-	autres
+	other
 
 }

@@ -5,7 +5,6 @@ from src.common.configuration import Configuration, load_configuration_from_work
 
 
 class TextAnalysisConfiguration(Configuration):
-    # locale: Literal["en", "fr"]
 
     # LLM
     llm: Literal["openai", "ollama"]

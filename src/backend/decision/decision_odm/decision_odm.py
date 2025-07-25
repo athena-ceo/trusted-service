@@ -14,7 +14,7 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
         self.decision_service_url: str = decision_odm_configuration.decision_service_url
         self.trace_rules: bool = decision_odm_configuration.trace_rules
 
-    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
+    def _decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
 
         payload = {
             "intention": case_handling_decision_input.intention_id,

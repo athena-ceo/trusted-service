@@ -25,7 +25,6 @@ class ApiClientDirect(ApiClient):
 
     def get_case_model(self) -> CaseModel:
         case_model: CaseModel = self.api.get_case_model()
-        print("case_model", case_model.model_dump_json(indent=4))
         return case_model
 
     def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:

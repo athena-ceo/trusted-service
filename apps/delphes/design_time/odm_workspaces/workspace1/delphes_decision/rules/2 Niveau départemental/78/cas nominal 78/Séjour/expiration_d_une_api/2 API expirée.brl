@@ -12,5 +12,5 @@ si
 
 alors
     priorité = VERY_HIGH ;
-    ajouter la note: "API expirée depuis " + nb_jours + " jour(s)" ;]]></definition>
+    ajouter la note: "#API_EXPIREE_DEPUIS_X_JOURS" + "," + nb_jours ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

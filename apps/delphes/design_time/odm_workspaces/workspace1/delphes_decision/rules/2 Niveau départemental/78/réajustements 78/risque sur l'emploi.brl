@@ -6,6 +6,6 @@
   <definition><![CDATA[si
     il y a risque sur l'emploi
 alors
-    ajouter la note: "Risque sur l'emploi" ;
+    ajouter la note: "#RISQUE_SUR_EMPLOI" ;
     augmenter le niveau de priorité ;]]></definition>
 </ilog.rules.studio.model.brl:ActionRule>

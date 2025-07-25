@@ -1,4 +1,5 @@
 # Vocabulary Properties
+delphes.Intention.autres#instance.label = autres
 uuid = 720e98dd-3575-475a-b47c-d7d4f403e97d
 
 # delphes.Case
@@ -11,7 +12,6 @@ delphes.Case.refugie_ou_protege_subsidiaire#phrase.navigation = le demandeur est
 
 # delphes.Intention
 delphes.Intention#concept.label = intention
-delphes.Intention.autres#instance.label = autres
 delphes.Intention.changement_statut_etudiant_a_recherche_d_emploi#instance.label = changement_statut_etudiant_a_recherche_d_emploi
 delphes.Intention.changement_statut_etudiant_a_salarie#instance.label = changement_statut_etudiant_a_salarie
 delphes.Intention.demande_d_un_etudiant_en_programme_de_mobilite#instance.label = demande_d_un_etudiant_en_programme_de_mobilite
@@ -26,6 +26,7 @@ delphes.Intention.expiration_d_une_api#instance.label = expiration_d_une_api
 delphes.Intention.expiration_d_une_atda#instance.label = expiration_d_une_atda
 delphes.Intention.je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel#instance.label = je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel
 delphes.Intention.mise_a_jour_infos_atda#instance.label = mise_a_jour_infos_atda
+delphes.Intention.other#instance.label = other
 delphes.Intention.ou_en_est_ma_demande_d_asile_en_cours#instance.label = ou_en_est_ma_demande_d_asile_en_cours
 delphes.Intention.ressortissant_ukrainien_autre_demande#instance.label = ressortissant_ukrainien_autre_demande
 delphes.Intention.ressortissant_ukrainien_demande_renouvellement_de_son_titre#instance.label = ressortissant_ukrainien_demande_renouvellement_de_son_titre
