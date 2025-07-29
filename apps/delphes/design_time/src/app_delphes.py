@@ -5,7 +5,7 @@ from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandli
 from src.backend.backend.application import Application
 
 
-class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
+class CaseHandlingDecisionEngineDelphesPython_OLD(CaseHandlingDecisionEngine):
     def _decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
 
         handling: Literal["AUTOMATED", "AGENT", "DEFLECTION"]

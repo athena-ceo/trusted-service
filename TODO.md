@@ -3,7 +3,6 @@
 *********
 
 # ONGOING
-- merge
 - Rename notes alerts
 - Python version of ODM 
 - read example in xls
@@ -12,6 +11,7 @@
 - solve issue with FastAPI
 - test with Calc
 - Remove update_case_field_str
+- FastAPI call
 
 - intention => intent
 
