@@ -65,8 +65,14 @@ def build_html_highlighted_text_and_features(text: str,
         for fragment in fragments["list"]:
             start = text.find(fragment)
             if start == -1:  # condition 1 not met
-                print_red(f"Fragment '{fragment}' not found in the original text")
-                continue
+                print_red(f"Fragment '{fragment}' not found in the original text ...")
+                # Trying by capitilizing
+                start = text.upper().find(fragment.upper())
+                if start == -1:  # condition 1 not met
+                    print_red(f"even after comparing uppercase copies")
+                    continue
+                else:
+                    print_red(f"but found after comparing uppercase copies")
             end = start + len(fragment)
 
             overlaps = False

@@ -3,11 +3,13 @@
 *********
 
 # ONGOING
-- tester en mode md et pas md
-
+- merge
 - Rename notes alerts
 - Python version of ODM 
 - read example in xls
+- String for date format
+- liste dynamique
+- solve issue with FastAPI
 - test with Calc
 - Remove update_case_field_str
 
