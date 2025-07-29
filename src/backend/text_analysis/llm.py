@@ -5,16 +5,20 @@ from typing import Type
 
 from pydantic import BaseModel
 
-from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
-
 
 # Important: Update TextAnalyzer.__init__ when adding a new subclass
 
 class Llm(ABC):
+    def __init__(self, config) -> None:
+        self.client = None # To be defined in the subclass
+        self.config = config
+
+    @abstractmethod
+    def build_client(self, config) -> None:
+        pass
 
     @abstractmethod
     def call_llm_with_json_schema(self,
-                                  config: TextAnalysisConfiguration,
                                   analysis_response_model: Type[BaseModel],
                                   system_prompt: str,
                                   text: str) -> BaseModel:
@@ -22,7 +26,6 @@ class Llm(ABC):
 
     @abstractmethod
     def call_llm_with_pydantic_model(self,
-                                     config: TextAnalysisConfiguration,
                                      analysis_response_model: Type[BaseModel],
                                      system_prompt: str,
                                      text: str) -> BaseModel:

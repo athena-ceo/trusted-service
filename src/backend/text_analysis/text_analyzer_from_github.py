@@ -10,13 +10,12 @@ Date: 2025-04-29
 from __future__ import annotations
 
 import json
-from typing import List, Type, Optional, Any, Iterable, Callable
+from typing import List, Type, Optional, Any
 
-from dotenv.variables import Literal
 from pydantic import BaseModel, Field, create_model
 
 from src.backend.rendering.html import build_html_highlighted_text_and_features
-from src.backend.rendering.md import build_markdown_table_intentions, build_markdown_table
+from src.backend.rendering.md import build_markdown_table_intentions
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention
 from src.backend.text_analysis.llm import Llm
 from src.backend.text_analysis.llm_openai import LlmOpenAI
@@ -82,96 +81,42 @@ def build_system_prompt(config: TextAnalysisConfiguration,
                         analysis_response_model: Type[BaseModel]) -> str:
     localization: TextAnalysisLocalization = text_analysis_localizations[locale]  # Will fail here if language is not supported
 
-    md_line_break = "  \n"
-
-    lines: list[str] = []
-
-    # Initial part
-
-    if config.prompt_format == "markdown":
-        lines.append(localization.promptstring_prompt_is_markdown)
-        lines.append("")
+    lines = []
 
     if config.system_prompt_prefix:
         lines.append(config.system_prompt_prefix)
-        lines.append("")
 
     if features:
         lines.append(localization.promptstring_perform_the_2_tasks_below)
-        lines.append(f"## {localization.promptstring_task} 1")
+        lines.append(f"--- {localization.promptstring_task} 1 ---")
 
     lines.append(localization.promptstring_instructions_intentions)
-    lines.append(f"### {localization.promptstring_list_of_intentions}:")
-
-    # Append a md_line_break to each string
-    lines = [line + md_line_break for line in lines]
-    system_prompt = "".join(lines)
-
-    # List of intents
-
-    rows = config.intentions
-    column_names = [localization.promptstring_intent_id, localization.promptstring_intent_description]
-    lambda1 = lambda intent: intent.id
-    lambda2 = lambda intent: intent.description
-
-    if config.prompt_format == "markdown":
-        system_prompt += build_markdown_table(rows, column_names, [lambda1, lambda2])
-        system_prompt += md_line_break
-
-    else:
-        for definition in rows:
-            system_prompt += f"- {lambda1(definition)}: {lambda2(definition)}{md_line_break}"
-
-    # Features to extract
+    lines.append(f"{localization.promptstring_list_of_intentions}:")
+    for intention in config.intentions:
+        lines.append(f"- {intention.id}: {intention.description}")
 
     if features:
-        system_prompt += f"## {localization.promptstring_task} 2{md_line_break}"
-        system_prompt += f"{localization.promptstring_instructions_extract_features}:{md_line_break}"
-
-        rows: list[tuple[str, str]] = []
+        lines.append(f"--- {localization.promptstring_task} 2 ---")
+        lines.append(f"{localization.promptstring_instructions_extract_features}:")
         for f in features:
-            if config.prompt_format == "markdown":
-                rows.append((f.id, f.description))
-            else:
-                system_prompt += f"- {f.id}: {f.description}{md_line_break}"
-
-            # TODO: check in the case model that extraction == "EXTRACT AND HIGHLIGHT" (copy this in the feature object)
-            # TODO; Rename description_of_feature in *feature_id
-            description_fragments = localization.promptstring_description_of_fragments_feature.format(description_of_feature=f.id)
-            if config.prompt_format == "markdown":
-                rows.append((PREFIX_FRAGMENTS + f.id, description_fragments))
-            else:
-                system_prompt += f"- {PREFIX_FRAGMENTS}{f.id}: {description_fragments}{md_line_break}"
-
-        if config.prompt_format == "markdown":
-            system_prompt += build_markdown_table(
-                rows=rows,
-                column_names=["Feature", "Description"],
-                producers=[lambda row: row[0], lambda row: row[1]])
-            system_prompt += md_line_break
+            lines.append(f"- {f.id}: {f.description}")
+            description = localization.promptstring_description_of_fragments_feature.format(description_of_feature=f.id)
+            # lines.append(f"- {PREFIX_FRAGMENTS}{f.id}: {localization.description_of_fragments_feature(f.id)}")
+            lines.append(f"- {PREFIX_FRAGMENTS}{f.id}: {description}")
 
     if config.definitions:
-        system_prompt +=f"## {localization.promptstring_definitions}{md_line_break}"
-
-        rows = config.definitions
-        column_names = [localization.promptstring_term, localization.promptstring_definition]
-        lambda1 = lambda definition: definition.term
-        lambda2 = lambda definition: definition.definition
-
-        if config.prompt_format == "markdown":
-            system_prompt += build_markdown_table(rows, column_names, [lambda1, lambda2])
-            system_prompt += md_line_break
-
-        else:
-            for definition in rows:
-                system_prompt += f"- {lambda1(definition)}: {lambda2(definition)}{md_line_break}"
-            system_prompt += f"---------{md_line_break}"
+        lines.append(f"--------- Définitions  ---------")
+        for definition in config.definitions:
+            lines.append(f"- {definition.term}: {definition.definition}")
 
     if config.response_format_type == "json_object":
-
-        system_prompt +=f"{localization.promptstring_return_only_json}:{md_line_break}"
+        lines.append("---------")
+        lines.append(f"{localization.promptstring_return_only_json}:")
         schema: str = json.dumps(analysis_response_model.model_json_schema(), indent=2)
-        system_prompt +=f"```{schema}```"
+        lines.append(f"{schema}")
+
+    md_line_break = "  "
+    system_prompt = (md_line_break + "\n").join(lines)
 
     return system_prompt
 
