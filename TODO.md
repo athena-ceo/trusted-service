@@ -4,7 +4,6 @@
 
 # ONGOING
 - Rename notes alerts
-- Python version of ODM 
 - read example in xls
 - String for date format
 - liste dynamique
