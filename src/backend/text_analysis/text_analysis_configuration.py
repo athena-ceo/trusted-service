@@ -12,6 +12,7 @@ class TextAnalysisConfiguration(Configuration):
     model: str
     response_format_type: Literal["json_object", "pydantic_model"]
     # Ollama and Scaleway do not support Pydantic models, so this is only for OpenAI
+    prompt_format: Literal["markdown", "text"]
     temperature: float
     system_prompt_prefix: str
 

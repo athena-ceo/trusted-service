@@ -4,7 +4,7 @@
   <uuid>07f0683e-f6cb-4323-b302-d872754ea0f2</uuid>
   <locale>fr_FR</locale>
   <definition><![CDATA[si
-    intention est ou_en_est_ma_demande_d_asile_en_cours
+    intention est ou_en_est_ma_dem_asile_en_cours
 
 alors
     traitement = DEFLECTION ;

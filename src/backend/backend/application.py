@@ -41,7 +41,7 @@ class Application:
                 case_field.allowed_values = [IdLabel(id=option_id, label=id_to_label_dict.get(option_id, option_id)) for option_id in allowed_values]
             else:
                 case_field.allowed_values = []
-            print("***", case_field.allowed_values_csv, "=", case_field.allowed_values)
+            # print("***", case_field.allowed_values_csv, "=", case_field.allowed_values)
 
         text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(config_filename, locale)
         text_analyzer = TextAnalyzer(case_model, backend_configuration.runtime_directory, text_analysis_configuration, locale)

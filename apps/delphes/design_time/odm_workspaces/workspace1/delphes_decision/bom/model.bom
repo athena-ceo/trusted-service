@@ -22,45 +22,45 @@ final class Intention
     {
         static expiration_d_une_api,
         static depot_de_demande_d_asile,
-        static ou_en_est_ma_demande_d_asile_en_cours,
+        static ou_en_est_ma_dem_asile_en_cours,
         static expiration_d_une_atda,
         static mise_a_jour_infos_atda,
-        static demande_en_rapport_avec_procedure_dublin_en_cours,
-        static ressortissant_ukrainien_demande_un_nouveau_titre,
-        static ressortissant_ukrainien_demande_renouvellement_de_son_titre,
-        static ressortissant_ukrainien_autre_demande,
-        static demande_d_un_etudiant_en_programme_de_mobilite,
-        static demande_d_un_stagiaire_associe_en_profession_medicale,
-        static difficultes_avec_le_site_de_l_anef,
-        static changement_statut_etudiant_a_salarie,
-        static changement_statut_etudiant_a_recherche_d_emploi,
-        static sollicitation_titre_vie_privee_et_familiale_hors_anef,
-        static depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,
-        static depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,
-        static depot_d_une_demande_de_titre_et_autre_probleme_anef,
-        static je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,
+        static dem_en_rapport_dublin_en_cours,
+        static ukr_demande_un_nouveau_titre,
+        static ukr_demande_renouv_titre,
+        static ukr_autre_demande,
+        static dem_etudiant_progr_mobilite,
+        static dem_stagiaire_prof_medic,
+        static diff_avec_le_site_de_l_anef,
+        static chang_stat_etud_a_salarie,
+        static chang_stat_etud_a_rech_empl,
+        static sollicit_titre_vpf_hors_anef,
+        static depot_dem_titre_pb_cr_cpte_anef,
+        static depot_dem_titre_autre_blocage_anef,
+        static depot_dem_titre_autre_pb_anef,
+        static dem_retour_pays_motif_except,
         static other
     }
-    static final readonly delphes.Intention changement_statut_etudiant_a_recherche_d_emploi;
-    static final readonly delphes.Intention changement_statut_etudiant_a_salarie;
-    static final readonly delphes.Intention demande_d_un_etudiant_en_programme_de_mobilite;
-    static final readonly delphes.Intention demande_d_un_stagiaire_associe_en_profession_medicale;
-    static final readonly delphes.Intention demande_en_rapport_avec_procedure_dublin_en_cours;
-    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef;
-    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_autre_probleme_anef;
-    static final readonly delphes.Intention depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef;
+    static final readonly delphes.Intention chang_stat_etud_a_rech_empl;
+    static final readonly delphes.Intention chang_stat_etud_a_salarie;
+    static final readonly delphes.Intention dem_en_rapport_dublin_en_cours;
+    static final readonly delphes.Intention dem_etudiant_progr_mobilite;
+    static final readonly delphes.Intention dem_retour_pays_motif_except;
+    static final readonly delphes.Intention dem_stagiaire_prof_medic;
     static final readonly delphes.Intention depot_de_demande_d_asile;
-    static final readonly delphes.Intention difficultes_avec_le_site_de_l_anef;
+    static final readonly delphes.Intention depot_dem_titre_autre_blocage_anef;
+    static final readonly delphes.Intention depot_dem_titre_autre_pb_anef;
+    static final readonly delphes.Intention depot_dem_titre_pb_cr_cpte_anef;
+    static final readonly delphes.Intention diff_avec_le_site_de_l_anef;
     static final readonly delphes.Intention expiration_d_une_api;
     static final readonly delphes.Intention expiration_d_une_atda;
-    static final readonly delphes.Intention je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel;
     static final readonly delphes.Intention mise_a_jour_infos_atda;
     static final readonly delphes.Intention other;
-    static final readonly delphes.Intention ou_en_est_ma_demande_d_asile_en_cours;
-    static final readonly delphes.Intention ressortissant_ukrainien_autre_demande;
-    static final readonly delphes.Intention ressortissant_ukrainien_demande_renouvellement_de_son_titre;
-    static final readonly delphes.Intention ressortissant_ukrainien_demande_un_nouveau_titre;
-    static final readonly delphes.Intention sollicitation_titre_vie_privee_et_familiale_hors_anef;
+    static final readonly delphes.Intention ou_en_est_ma_dem_asile_en_cours;
+    static final readonly delphes.Intention sollicit_titre_vpf_hors_anef;
+    static final readonly delphes.Intention ukr_autre_demande;
+    static final readonly delphes.Intention ukr_demande_renouv_titre;
+    static final readonly delphes.Intention ukr_demande_un_nouveau_titre;
     static delphes.Intention valueOf(string arg);
     static delphes.Intention[] values();
 }

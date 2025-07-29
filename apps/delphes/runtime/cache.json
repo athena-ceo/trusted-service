@@ -1,1 +1,102 @@
-{"scorings": [{"intention_id": "expiration_d_une_api", "score": 8, "justification": "The user mentions Mr C's processing-extension certificate that expired on 11 October 2024, indicating a need for a new certificate."}, {"intention_id": "depot_de_demande_d_asile", "score": 10, "justification": "The user explicitly states that Mr C wants to submit an asylum application, which is a clear and direct request."}, {"intention_id": "ou_en_est_ma_demande_d_asile_en_cours", "score": 0, "justification": "There is no inquiry or mention of the status of any pending asylum applications."}, {"intention_id": "expiration_d_une_atda", "score": 0, "justification": "There is no mention of the expiration of an ATDA (Asylum-Seeker Certificate) in the text."}, {"intention_id": "mise_a_jour_infos_atda", "score": 0, "justification": "No request for updating ATDA information is made in the text."}, {"intention_id": "demande_en_rapport_avec_procedure_dublin_en_cours", "score": 0, "justification": "There is no indication that this case involves any Dublin procedure."}, {"intention_id": "ressortissant_ukrainien_demande_un_nouveau_titre", "score": 0, "justification": "Mr C does not identify as a Ukrainian national nor is his request related to this category."}, {"intention_id": "ressortissant_ukrainien_demande_renouvellement_de_son_titre", "score": 0, "justification": "This intention is not applicable as Mr C is not a Ukrainian national."}, {"intention_id": "ressortissant_ukrainien_autre_demande", "score": 0, "justification": "Mr C is not a Ukrainian national."}, {"intention_id": "demande_d_un_etudiant_en_programme_de_mobilite", "score": 0, "justification": "There is no indication in the text that Mr C is a student in a mobility program."}, {"intention_id": "demande_d_un_stagiaire_associe_en_profession_medicale", "score": 0, "justification": "There is no mention of Mr C being a trainee in the medical profession."}, {"intention_id": "difficultes_avec_le_site_de_l_anef", "score": 0, "justification": "No difficulties with the ANEF website have been mentioned."}, {"intention_id": "changement_statut_etudiant_a_salarie", "score": 0, "justification": "The request does not involve a change of status from student to salaried employee."}, {"intention_id": "changement_statut_etudiant_a_recherche_d_emploi", "score": 0, "justification": "There is no mention of changing status from student to job seeker."}, {"intention_id": "sollicitation_titre_vie_privee_et_familiale_hors_anef", "score": 0, "justification": "There is no application for a \"private and family life\" residence permit outside the ANEF portal mentioned."}, {"intention_id": "depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef", "score": 0, "justification": "This situation does not apply as there is no mention of issues creating an ANEF account."}, {"intention_id": "depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef", "score": 0, "justification": "No other blockage on the ANEF site is mentioned."}, {"intention_id": "depot_d_une_demande_de_titre_et_autre_probleme_anef", "score": 0, "justification": "No other ANEF-related problems are mentioned."}, {"intention_id": "je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel", "score": 10, "justification": "Mr C's request to travel to his home country for his father's funeral is clearly stated as an exceptional reason."}], "date_expiration_api": "11/10/2024", "fragments_date_expiration_api": {"list": ["expired on 11 October 2024"]}, "mention_de_risque_sur_l_emploi": true, "fragments_mention_de_risque_sur_l_emploi": {"list": ["Without action in the next few days, he risks losing his job."]}, "refugie_ou_protege_subsidiaire": true, "fragments_refugie_ou_protege_subsidiaire": {"list": ["currently holds subsidiary protection status"]}}
+{
+  "scorings": [
+    {
+      "intention_id": "ukr_demande_renouv_titre",
+      "score": 0,
+      "justification": "The request does not relate to a Ukrainian national or their residence permit."
+    },
+    {
+      "intention_id": "ukr_demande_un_nouveau_titre",
+      "score": 0,
+      "justification": "The request does not involve a Ukrainian national seeking a new residence permit."
+    },
+    {
+      "intention_id": "dem_retour_pays_motif_except",
+      "score": 10,
+      "justification": "The requester explicitly states a desire to return to his home country for an exceptional reason, attending his father's funeral."
+    },
+    {
+      "intention_id": "refugie_ou_protege_subsidiaire",
+      "score": 10,
+      "justification": "The requester holds subsidiary protection status, which is clearly mentioned."
+    },
+    {
+      "intention_id": "expiration_d_une_api",
+      "score": 8,
+      "justification": "The text states the API expired on 11 October 2024, indicating that an extension is needed."
+    },
+    {
+      "intention_id": "ou_en_est_ma_dem_asile_en_cours",
+      "score": 0,
+      "justification": "There is no mention of the status of a pending asylum application since he wishes to submit a new one."
+    },
+    {
+      "intention_id": "demand_d_asile",
+      "score": 10,
+      "justification": "The requester expresses a clear intention to submit an asylum application."
+    },
+    {
+      "intention_id": "chang_stat_etud_a_salarie",
+      "score": 0,
+      "justification": "The text does not pertain to a change of status from student to salaried employee."
+    },
+    {
+      "intention_id": "chang_stat_etud_a_rech_empl",
+      "score": 0,
+      "justification": "The text does not include a status change from student to job seeker."
+    },
+    {
+      "intention_id": "depot_dem_titre_pb_cr_cpte_anef",
+      "score": 0,
+      "justification": "The request does not mention issues with creating an ANEF account."
+    },
+    {
+      "intention_id": "depot_dem_titre_autre_pb_anef",
+      "score": 0,
+      "justification": "There are no other issues mentioned regarding the ANEF site."
+    },
+    {
+      "intention_id": "diff_avec_le_site_de_l_anef",
+      "score": 0,
+      "justification": "There are no difficulties reported with the ANEF website."
+    },
+    {
+      "intention_id": "dem_en_rapport_dublin_en_cours",
+      "score": 0,
+      "justification": "There is no relevance to a Dublin procedure in the context."
+    },
+    {
+      "intention_id": "dem_etudiant_progr_mobilite",
+      "score": 0,
+      "justification": "The request does not stem from a student in a mobility program."
+    },
+    {
+      "intention_id": "dem_stagiaire_prof_medic",
+      "score": 0,
+      "justification": "The requester is not linked to the medical profession as a trainee."
+    },
+    {
+      "intention_id": "mise_a_jour_infos_atda",
+      "score": 0,
+      "justification": "The text does not mention updating information regarding ATDA."
+    }
+  ],
+  "date_expiration_api": "11/10/2024",
+  "fragments_date_expiration_api": {
+    "list": [
+      "the processing‑extension certificate expired on 11 October 2024"
+    ]
+  },
+  "mention_de_risque_sur_l_emploi": true,
+  "fragments_mention_de_risque_sur_l_emploi": {
+    "list": [
+      "Without action in the next few days, he risks losing his job."
+    ]
+  },
+  "refugie_ou_protege_subsidiaire": true,
+  "fragments_refugie_ou_protege_subsidiaire": {
+    "list": [
+      "currently holds subsidiary protection status"
+    ]
+  }
+}

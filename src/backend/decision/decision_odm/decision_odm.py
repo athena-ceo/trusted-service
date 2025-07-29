@@ -22,9 +22,9 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
             "__TraceFilter__": {"infoRulesFired": self.trace_rules}
         }
 
-        print("*********************")
-        print(json.dumps(payload, indent=4))
-        print("*********************")
+        # print("*********************")
+        # print(json.dumps(payload, indent=4))
+        # print("*********************")
 
         try:
             response = requests.post(self.decision_service_url, json=payload, headers={"Content-Type": "application/json"})

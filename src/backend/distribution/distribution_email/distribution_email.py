@@ -4,7 +4,7 @@ from src.backend.decision.decision import CaseHandlingDecisionOutput
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
 from src.backend.distribution.distribution_email.distribution_email_configuration import EmailTemplate
 from src.backend.distribution.distribution_email.distribution_email_localization import distribution_engine_email_localizations
-from src.backend.rendering.html import render_email, hilite_blue, standard_table_style
+from src.backend.rendering.html import render_email, hilite_blue, standard_table_style, standard_back_ground_color
 from src.common.api import CaseHandlingRequest, CaseHandlingResponse
 from src.common.case_model import CaseModel
 
@@ -28,11 +28,12 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     def build_body_of_email_to_agent(self,
                                      case_model: CaseModel,
                                      request: CaseHandlingRequest,
+                                     intent_label: str,
                                      case_handling_decision_output: CaseHandlingDecisionOutput) -> str:
 
         # Build table with field values
 
-        labels_and_values = [(self.localization.label_intent, request.intention_id)]
+        labels_and_values = [(self.localization.label_intent, intent_label)]
         for case_field_id, case_field_value in request.field_values.items():
             case_field = case_model.get_field_by_id(case_field_id)
             case_field_label = case_field.label
@@ -45,7 +46,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         table = "<table cellpadding='10'>\n"
         for label, value in labels_and_values:
-            table += f"<tr><td bgcolor=#F0F2F6>{label}</td><td>{value}</td></tr>\n"
+            table += f"<tr><td bgcolor={standard_back_ground_color}>{label}</td><td>{value}</td></tr>\n"
         table += "</table>"
 
         body = standard_table_style + table + "<br>"
@@ -70,12 +71,13 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     def distribute(self,
                    case_model: CaseModel,
                    request: CaseHandlingRequest,
+                   intent_label: str,
                    # case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
                    case_handling_decision_output: CaseHandlingDecisionOutput) -> tuple[str, str]:
 
         # email_to_agent
 
-        body_of_email_to_agent: str = self.build_body_of_email_to_agent(case_model, request, case_handling_decision_output, )
+        body_of_email_to_agent: str = self.build_body_of_email_to_agent(case_model, request, intent_label, case_handling_decision_output, )
 
         email_to_agent: Email = Email(
             from_email_address=self.email_configuration.hub_email_address,
@@ -116,7 +118,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         rendering_email_to_requester = render_email(email_to_requester)  # is None if email_to_requester is None
 
         # return CaseHandlingResponse(acknowledgement_to_requester=case_handling_decision_output.acknowledgement_to_requester,
-                                    # case_handling_report=(rendering_email_to_agent, rendering_email_to_requester))
+        # case_handling_report=(rendering_email_to_agent, rendering_email_to_requester))
 
         return rendering_email_to_agent, rendering_email_to_requester
 
@@ -149,7 +151,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 subject=email_mail_to.subject,
                 body=email_mail_to.body,
             )
-            body += "<br>Répondre à " + mailto_link
+            body += "<br>mailto" + mailto_link
 
         body += "</blockquote> </html>"
 
@@ -173,9 +175,9 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         body = self.build_body(body=email_to_send.body, email_mail_to=email_mail_to)
 
-        print("--- body ---")
-        print(body)
-        print("------------")
+        # print("--- body ---")
+        # print(body)
+        # print("------------")
 
         message.attach(MIMEText(body, "html"))
 

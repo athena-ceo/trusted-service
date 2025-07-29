@@ -11,6 +11,9 @@ class TextAnalysisLocalization(Localization):
     docstring_scoring_for_one_intention_justification: str
     docstring_scoring_for_multiple_intentions: str
 
+    promptstring_prompt_is_markdown: str
+    promptstring_intent_id: str
+    promptstring_intent_description: str
     promptstring_perform_the_2_tasks_below: str
     promptstring_task: str
     promptstring_instructions_intentions: str
@@ -18,6 +21,8 @@ class TextAnalysisLocalization(Localization):
     promptstring_instructions_extract_features: str
     promptstring_description_of_fragments_feature: str
     promptstring_definitions: str
+    promptstring_term: str
+    promptstring_definition: str
     promptstring_return_only_json: str
 
     label_intention_other: str
@@ -34,13 +39,18 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         docstring_scoring_for_one_intention_justification="Why the model chose this score",
         docstring_scoring_for_multiple_intentions="List of the scorings for individual intentions",
 
+        promptstring_prompt_is_markdown="This prompt is written in Markdown format.",
+        promptstring_intent_id="Intent id",
+        promptstring_intent_description="Intent description",
         promptstring_perform_the_2_tasks_below="Please perform the 2 tasks below",
         promptstring_task="TASK",
         promptstring_instructions_intentions="Given the *user's* text and the list of intentions below, rate each intention between 0 and 10 and justify the rating in one or two sentences.",
         promptstring_list_of_intentions="List of intentions",
         promptstring_instructions_extract_features="Extract the following features from the text",
         promptstring_description_of_fragments_feature="If the text mentions {description_of_feature}, the list of string fragments that mention it",
-        promptstring_definitions="DEFINITIONS",
+        promptstring_definitions="Definitions",
+        promptstring_term="Term",
+        promptstring_definition="Definition",
         promptstring_return_only_json="Return ONLY valid JSON that matches this JSON Schema (no extra keys, no prose)",
 
         label_intention_other="OTHER", ),
@@ -52,13 +62,18 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         docstring_scoring_for_one_intention_justification="La raison pour laquelle le modèle a déterminé ce score",
         docstring_scoring_for_multiple_intentions="Liste des scorings pour chacune des intentions",
 
+        promptstring_prompt_is_markdown="Ce prompt est au format Markdown.",
+        promptstring_intent_id="Identifiant de l'intention",
+        promptstring_intent_description="Description de l'intention",
         promptstring_perform_the_2_tasks_below="Merci d'exécuter les 2 tâches suivantes",
         promptstring_task="TACHE",
         promptstring_instructions_intentions="Pour un texte donné fourni par *l'utilisateur* et la liste d'intentions ci-dessous, calculer un score entre 0 et 10 pour chaque intention et justifier le score en une ou deux phrases.",
         promptstring_list_of_intentions="Liste des intentions",
         promptstring_instructions_extract_features="Extraire les éléments suivants du texte",
         promptstring_description_of_fragments_feature="si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne",
-        promptstring_definitions="DEFINITIONS",
+        promptstring_definitions="Définitions",
+        promptstring_term="Terme",
+        promptstring_definition="Définition",
         promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
 
         label_intention_other="AUTRE")

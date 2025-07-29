@@ -39,7 +39,7 @@ class Context:
 
         if frontend_configuration.connection_to_api == "rest":
             url = f"http://{common_configuration.rest_api_host}:{common_configuration.rest_api_port}"
-            print("URL", url)
+            # print("URL", url)
             self.api_client: ApiClient = ApiClientHttp(url)
         else:
             self.api_client: ApiClient = ApiClientDirect(config_filename)
@@ -94,11 +94,11 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
                                  disabled=False,
                                  label_visibility="visible",
                                  )
-        print(type(value), value)
-        print(type(d_))
+        # print(type(value), value)
+        # print(type(d_))
 
         case.field_values[case_field.id] = d_.strftime(format_python)
-        print(case.field_values[case_field.id])
+        # print(case.field_values[case_field.id])
 
     elif case_field.type == "str":
 
@@ -148,8 +148,8 @@ def submit_text_for_ia_analysis():
     analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.request_description_text_area)
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
-    print("CLIENT SIDE")
-    print(json.dumps(analysis_result_and_rendering, indent=4))
+    # print("CLIENT SIDE")
+    # print(json.dumps(analysis_result_and_rendering, indent=4))
 
     # Copy the extracted field values to the case
     for case_field in context.case_model.case_fields:
@@ -262,7 +262,7 @@ def streamlit_main(config_filename: str):
         markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
         highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
 
-        with st.popover(l12n.label_text_analysis, icon = "🔎"):
+        with expander_detail(l12n.label_text_analysis):
             tab_prompt, tab_intents, tab_extraction = st.tabs([l12n.label_prompt, l12n.label_intent_scoring, l12n.label_feature_extraction])
             tab_prompt.write(prompt)
             tab_intents.write(markdown_table)
@@ -287,29 +287,36 @@ def streamlit_main(config_filename: str):
                     if case_field.show_in_ui:
                         add_case_field_input_widget(context.case, case_field)
 
-    with expander_detail(l12n.label_request):
+    # Request text area
 
-        payload = {
-            "intention_id": id_of_selected_intention,
-            "field_values": case.field_values,
-            "highlighted_text_and_features": context.analysis_result_and_rendering["highlighted_text_and_features"],
-        }
+    payload = {
+        "intention_id": id_of_selected_intention,
+        "field_values": case.field_values,
+        "highlighted_text_and_features": context.analysis_result_and_rendering["highlighted_text_and_features"],
+    }
 
-        json_string = json.dumps(payload, indent=4)
+    json_string = json.dumps(payload, indent=4)
 
-        pixels_per_line = 34
-        st.text_area(label="JSON string", label_visibility="hidden",
-                     value=json_string,
-                     height=len(json_string.splitlines()) * pixels_per_line,
-                     max_chars=None,
-                     key="payload",
-                     help=None,
-                     on_change=None,
-                     args=None,
-                     kwargs=None,
-                     placeholder=None,
-                     disabled=False,
-                     )
+    pixels_per_line = 34
+
+    if st.session_state.show_details:
+
+        with expander_detail(l12n.label_request):
+            st.text_area(label="JSON string", label_visibility="hidden",
+                         value=json_string,
+                         height=len(json_string.splitlines()) * pixels_per_line,
+                         key="payload",
+                         disabled=False,
+                         )
+    else:
+
+        with st.expander(label="", expanded=False):
+            st.text_area(label="JSON string", label_visibility="hidden",
+                         value=json_string,
+                         height=len(json_string.splitlines()) * pixels_per_line,
+                         key="payload",
+                         disabled=True,
+                         )
 
     st.button(
         label=l12n.label_submit,
@@ -323,7 +330,7 @@ def streamlit_main(config_filename: str):
     case_handling_detailed_response = context.case_handling_detailed_response
 
     if st.session_state.show_details:
-        with st.popover(l12n.label_processing_of_the_request, icon="🔎"):
+        with expander_detail(l12n.label_text_analysis):
             rendering_email_to_agent, rendering_email_to_requester = case_handling_detailed_response.case_handling_response.case_handling_report
 
             # TASK or LOGGING?

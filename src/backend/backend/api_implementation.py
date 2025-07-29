@@ -76,9 +76,15 @@ class ApiImplementation(Api):
         verbalized_case_handling_decision_output.acknowledgement_to_requester = self.verbalize(self.messages_to_requester,
             verbalized_case_handling_decision_output.acknowledgement_to_requester)
 
+        intent_label = None
+        for intent in self.text_analyzer.config2.intentions:
+            if intent.id == request.intention_id:
+                intent_label = intent.label
+
         rendering_email_to_agent, rendering_email_to_requester = self.case_handling_distribution_engine.distribute(
             self.case_model,  # TODO avoid passing this
             request,
+            intent_label,
             verbalized_case_handling_decision_output)
 
         case_handling_response: CaseHandlingResponse = CaseHandlingResponse(

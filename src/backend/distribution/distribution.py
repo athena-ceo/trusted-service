@@ -9,7 +9,7 @@ class CaseHandlingDistributionEngine(ABC):  # TODO: pass App
     def distribute(self,
                    case_model: CaseModel,
                    request: CaseHandlingRequest,
-                   # case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
+                   intent_label: str,
                    case_handling_decision_output: CaseHandlingDecisionOutput) -> tuple[str, str]:
         pass
 

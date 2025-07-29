@@ -3,33 +3,29 @@
 *********
 
 # ONGOING
-- Remove app_name from API and put in frontend
-- Show narrative about prompt and rule engine
+- tester en mode md et pas md
 
 - Rename notes alerts
-- Python version, ssems that `other` is not correctly handled 
+- Python version of ODM 
 - read example in xls
 - test with Calc
 - Remove update_case_field_str
 
-- ODM verbalization in English
 - intention => intent
-- si date pas trouvée dans texte => tableau des fragments de couleur noire
 
 # Priority 1
 ## Framework
-- Support for Open Office Calc
+- Dynamic list of values, ffor instance arrondissements
 - Improve
   - Complete exception handling on send email, call decision service, call OpenAI
-  - Complete comments
-  - Complete parameterization, Manage port numbers for all the demos - including cors
-  - Complete localization
   - use constants instead of string everywhere
   - Do not return fields associated with intent
-- hallucinations on intentions
+- hallucinations on intentions - https://chatgpt.com/share/68874b59-2764-800d-a763-7fb2cc053af1
 - Remove callbacks on all fields in Streamlit client
 - response.raise_for_status()              # raise an error on 4xx/5xx
-- In the task list only relevant attributes
+- In the prompt show in the task list only relevant attributes (see)
+- in system promp list only fragments that are asked (use highlight_fragments)
+
 ## Delphes
 
 # Priority 2
@@ -44,7 +40,5 @@
 - pick scenarios in list
 - Analyze several texts at once
 - integer and float fields
-- Show prompt
-- Streamlit test client launcher
 - Take default value of case fields of type Literal into account in Streamlit client
 - Move app_name to frontend configuration
