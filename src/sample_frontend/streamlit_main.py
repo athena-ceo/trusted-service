@@ -330,10 +330,12 @@ def streamlit_main(config_filename: str):
     case_handling_detailed_response = context.case_handling_detailed_response
 
     if st.session_state.show_details:
-        with expander_detail(l12n.label_text_analysis):
+        with expander_detail(l12n.label_processing_of_the_request):
             rendering_email_to_agent, rendering_email_to_requester = case_handling_detailed_response.case_handling_response.case_handling_report
 
             # TASK or LOGGING?
+            # TASK if agent receives email or ticket
+            # LOGGING if AUTO processing or DEFLECTION
             handling = case_handling_detailed_response.case_handling_decision_output.handling
             label_task_or_logging = l12n.label_task if handling=="AGENT" else l12n.label_logging
 
