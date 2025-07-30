@@ -7,6 +7,8 @@ from src.common.configuration import Configuration, load_configuration_from_work
 class IdLabel(BaseModel):
     id: str
     label: str
+    condition_python: str
+    condition_javascript: str
 
 
 class IdLabelsConfiguration(Configuration):

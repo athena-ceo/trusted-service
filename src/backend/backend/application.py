@@ -33,15 +33,19 @@ class Application:
         case_model_configuration: CaseModelConfiguration = load_case_model_configuration_from_workbook(config_filename, locale)
         case_model: CaseModel = CaseModel(case_fields=case_model_configuration.case_fields)
 
-        id_to_label_dict: dict[str, str] = {option.id: option.label for option in option_configuration.id_labels}
+        dict2: dict[str, IdLabel] = {option.id: option for option in option_configuration.id_labels}
 
         for case_field in case_model.case_fields:
             if case_field.allowed_values_csv:
                 allowed_values = [_id.strip() for _id in case_field.allowed_values_csv.split(",")]
-                case_field.allowed_values = [IdLabel(id=option_id, label=id_to_label_dict.get(option_id, option_id)) for option_id in allowed_values]
+                case_field.allowed_values = []
+                for option_id in allowed_values:
+                    id_label: IdLabel | None = dict2.get(option_id, None)
+                    if id_label is None:  # A string that is not registered. We set its id to its label
+                        id_label = IdLabel(id=option_id, label=option_id, condition_python="True", condition_javascript="true")
+                    case_field.allowed_values.append(id_label)
             else:
                 case_field.allowed_values = []
-            # print("***", case_field.allowed_values_csv, "=", case_field.allowed_values)
 
         text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(config_filename, locale)
         text_analyzer = TextAnalyzer(case_model, backend_configuration.runtime_directory, text_analysis_configuration, locale)

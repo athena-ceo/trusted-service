@@ -11,6 +11,7 @@ from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, Ca
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.common_configuration import CommonConfiguration, load_common_configuration_from_workbook
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
+from src.common.logging import print_red
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
 from src.sample_frontend.frontend_configuration import load_frontend_configuration_from_workbook, FrontendConfiguration
 from src.sample_frontend.frontend_localization import FrontendLocalization, frontend_localizations
@@ -94,25 +95,50 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
                                  disabled=False,
                                  label_visibility="visible",
                                  )
-        # print(type(value), value)
-        # print(type(d_))
 
         case.field_values[case_field.id] = d_.strftime(format_python)
-        # print(case.field_values[case_field.id])
 
     elif case_field.type == "str":
 
         if case_field.allowed_values:
+
+            # Find index of default value
+            # TODO try
+            # try
+            #     index = case_field.allowed_values.index(case_field.default_value)
+            # except ValueError:
+            #     index = 0
             index = 0
             for index2, option in enumerate(case_field.allowed_values):
                 if option.id == case_field.default_value:
                     index = index2
                     break
+
+            print("----------------------------")
+
+            # Filtering according to the condition
+
+            options: list[str] = []
+            for option in case_field.allowed_values:
+                try:
+                    # Replacing the placeholder with case values in the allowed value condition
+                    option_condition = option.condition_python
+                    for field_id in case.field_values:
+                        field_value = case.field_values[field_id]
+                        option_condition = option_condition.replace("{" + field_id + "}", str(field_value))
+
+                    if eval(option_condition):
+                        options.append(option.label)
+
+                except NameError:
+                    print_red(f"Error evaluating {option_condition}")
+                    options.append(option.label)
+
             selected_option_label = st.selectbox(label=label,
-                                                 options=[option.label for option in case_field.allowed_values],
+                                                 options=options,
                                                  index=index,
-                                                 help=help_message,
-                                                 )
+                                                 help=help_message, )
+
             selected_options = [option for option in case_field.allowed_values if option.label == selected_option_label]
             selected_option = selected_options[0]
             case.field_values[case_field.id] = selected_option.id
@@ -147,9 +173,6 @@ def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
     analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.request_description_text_area)
     context.analysis_result_and_rendering = analysis_result_and_rendering
-
-    # print("CLIENT SIDE")
-    # print(json.dumps(analysis_result_and_rendering, indent=4))
 
     # Copy the extracted field values to the case
     for case_field in context.case_model.case_fields:
@@ -187,7 +210,8 @@ def streamlit_main(config_filename: str):
 
     case = context.case
 
-    st.toggle(l12n.label_show_details, value=False, key="show_details")
+    with st.sidebar:
+        st.toggle(l12n.label_show_details, value=False, key="show_details")
 
     with expander_user(l12n.label_context, expanded=True):
 
@@ -205,10 +229,6 @@ def streamlit_main(config_filename: str):
             if not case_field.intention_ids:
                 if case_field.show_in_ui:
                     add_case_field_input_widget(context.case, case_field)
-
-        # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
-        # Add here support for new languages
-        # sample = sample1_en if context.locale == "en" else sample1_fr
 
         st.text_area(label=l12n.label_please_describe_your_request,
                      height=330,
@@ -305,7 +325,7 @@ def streamlit_main(config_filename: str):
             # TASK if agent receives email or ticket
             # LOGGING if AUTO processing or DEFLECTION
             handling = case_handling_detailed_response.case_handling_decision_output.handling
-            label_task_or_logging = l12n.label_task if handling=="AGENT" else l12n.label_logging
+            label_task_or_logging = l12n.label_task if handling == "AGENT" else l12n.label_logging
 
             tab_labels = [l12n.label_rule_engine_invocation, label_task_or_logging]
             if rendering_email_to_requester:

@@ -4,7 +4,6 @@
 
 # ONGOING
 - Rename notes alerts
-- read example in xls
 - String for date format
 - liste dynamique
 - solve issue with FastAPI
