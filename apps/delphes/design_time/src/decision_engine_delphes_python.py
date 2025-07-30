@@ -42,7 +42,6 @@ def augmenter_niveau_priorite(output: CaseHandlingDecisionOutput):
 
 
 def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-
     def package_initialisations(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
         def rule_decision_par_defaut(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
@@ -53,9 +52,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.work_basket = work_basket_generique
             output.priority = "MEDIUM"
 
-
         rule_decision_par_defaut(input, output)
-
 
     def package_regles_nationales(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
         def rule_depot_de_demande_d_asile_regle_nationale(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
@@ -64,41 +61,26 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
             if input.intention_id == "depot_de_demande_d_asile":
                 output.details.append("rule_depot_de_demande_d_asile_regle_nationale")
-                (
-                    output.handling,
-                    output.acknowledgement_to_requester,
-                    output.response_template_id,
-                    output.work_basket,
-                    output.priority
-                ) = (
-                    "DEFLECTION",
-                    f"#VISIT_PAGE,{text},{url}",
-                    "",
-                    work_basket_reorientation,
-                    "MEDIUM"
-                )
+
+                output.handling = "DEFLECTION"
+                output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.response_template_id = ""
+                output.work_basket = work_basket_reorientation
+                output.priority = "MEDIUM"
 
         def rule_ou_en_est_ma_demande_d_asile_en_cours(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "ou_en_est_ma_dem_asile_en_cours":
                 output.details.append("ou_en_est_ma_dem_asile_en_cours")
-                (
-                    output.handling,
-                    output.acknowledgement_to_requester,
-                    output.response_template_id,
-                    output.work_basket,
-                    output.priority
-                ) = (
-                    "DEFLECTION",
-                    "#CONTACT_OFPRA",
-                    "",
-                    work_basket_reorientation,
-                    "MEDIUM"
-                )
+
+                output.handling = "DEFLECTION"
+                output.acknowledgement_to_requester = "#CONTACT_OFPRA"
+                output.response_template_id = ""
+                output.work_basket = work_basket_reorientation
+                output.priority = "MEDIUM"
 
         rule_depot_de_demande_d_asile_regle_nationale(input, output)
         rule_ou_en_est_ma_demande_d_asile_en_cours(input, output)
-
 
     def package_cas_nominal_78(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
         def rule_depot_de_demande_d_asile_78(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
@@ -106,50 +88,40 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             url = "https://www.yvelines.gouv.fr/Demarches/Accueil-des-etrangers-dans-les-Yvelines/Asile/Je-demande-l-asile-en-France"
 
             if input.intention_id == "depot_de_demande_d_asile":
-                output.details.append("rule_depot_de_demande_d_asile_78")
-                (
-                    output.handling,
-                    output.acknowledgement_to_requester,
-                    output.response_template_id,
-                    output.work_basket,
-                    output.priority
-                ) = (
-                    "DEFLECTION",
-                    f"#VISIT_PAGE,{text},{url}",
-                    "",
-                    work_basket_reorientation,
-                    "MEDIUM"
-                )
+                output.details.append("rule_depot_de_demande_d_asile_78")  # Rule trace
+
+                output.handling = "DEFLECTION"
+                output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.response_template_id = ""
+                output.work_basket = work_basket_reorientation
+                output.priority = "MEDIUM"
 
         def rule_refugie_ou_protege_subsidiaire(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "dem_retour_pays_motif_except" and input.field_values["refugie_ou_protege_subsidiaire"]:
                 output.details.append("rule_refugie_ou_protege_subsidiaire")
-                (
-                    output.handling,
-                    output.acknowledgement_to_requester,
-                    output.response_template_id,
-                    output.work_basket,
-                    output.priority
-                ) = (
-                    "AGENT",
-                    "#ACK",
-                    response_template_id_sauf_conduits,
-                    work_basket_sauf_conduits,
-                    "HIGH"
-                )
+
+                output.handling = "AGENT"
+                output.acknowledgement_to_requester = "#ACK"
+                output.response_template_id = response_template_id_sauf_conduits
+                output.work_basket = work_basket_sauf_conduits
+                output.priority = "HIGH"
 
         def rule_expiration_d_une_api_cas_nominal(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "expiration_d_une_api":
                 output.details.append("rule_expiration_d_une_api_cas_nominal")
-                output.handling, output.acknowledgement_to_requester, output.response_template_id, output.work_basket = \
-                    "AGENT", "#ACK", response_template_id_api_a_renouveler, work_basket_api_a_renouveler
+
+                output.handling = "AGENT"
+                output.acknowledgement_to_requester = "#ACK"
+                output.response_template_id = response_template_id_api_a_renouveler
+                output.work_basket = work_basket_api_a_renouveler
 
         def rule_expiration_d_une_api_api_expiree(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "expiration_d_une_api" and (difference_in_days := jours_jusqu_a_expiration_api(input)) <= 0:
                 output.details.append("rule_expiration_d_une_api_api_expiree")
+
                 output.priority = "VERY_HIGH"
                 output.notes.append(f"#API_EXPIREE_DEPUIS_X_JOURS,{difference_in_days}")
 
@@ -157,11 +129,14 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
             if input.intention_id == "expiration_d_une_api" and (difference_in_days := jours_jusqu_a_expiration_api(input)) > 0:
                 output.details.append("rule_expiration_d_une_api_api_expiree")
+
                 if difference_in_days <= 30:
                     output.priority = "HIGH"
                     output.notes.append(f"#API_VA_EXPIRER_DANS_X_JOURS,{difference_in_days}")
+
                 elif difference_in_days <= 90:
                     output.priority = "MEDIUM"
+
                 else:
                     output.priority = "LOW"
 
@@ -171,10 +146,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         rule_expiration_d_une_api_api_expiree(input, output)
         rule_expiration_d_une_api_api_non_expiree(input, output)
 
-
     def package_reajustements_78(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
         def rule_risque_sur_l_emploi(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-
             if input.field_values["mention_de_risque_sur_l_emploi"]:
                 output.details.append("rule_risque_sur_l_emploi")
                 augmenter_niveau_priorite(output)
@@ -191,7 +164,6 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
 
     def _decide(self, input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
-
         # Random value that will be overwritten in the rules
         output: CaseHandlingDecisionOutput = CaseHandlingDecisionOutput(
             handling="AUTOMATED",
@@ -205,4 +177,3 @@ class CaseHandlingDecisionEngineDelphesPython(CaseHandlingDecisionEngine):
         ruleflow(input, output)
 
         return output
-
