@@ -102,6 +102,8 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
         if case_field.allowed_values:
 
+            # TODO (BUG!) Move after filtering
+
             # Find index of default value
             # TODO try
             # try
@@ -120,9 +122,9 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
 
             options: list[str] = []
             for option in case_field.allowed_values:
+                option_condition = option.condition_python
                 try:
                     # Replacing the placeholder with case values in the allowed value condition
-                    option_condition = option.condition_python
                     for field_id in case.field_values:
                         field_value = case.field_values[field_id]
                         option_condition = option_condition.replace("{" + field_id + "}", str(field_value))

@@ -4,26 +4,26 @@ from pydantic import BaseModel, field_validator, Field
 
 from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
 
-class IdLabel(BaseModel):
+class OptionalListElement(BaseModel):
     id: str
     label: str
     condition_python: str
     condition_javascript: str
 
 
-class IdLabelsConfiguration(Configuration):
-    id_labels: list[IdLabel]
-
-
-def load_id_labels_configuration_from_workbook(filename: str, locale: SupportedLocale) -> IdLabelsConfiguration:
-    configuration: Configuration = load_configuration_from_workbook(filename=filename,
-                                                                    main_tab=None,
-                                                                    collections=[("id_labels", IdLabel)],
-                                                                    configuration_type=IdLabelsConfiguration,
-                                                                    locale=locale)
-    option_configuration: IdLabelsConfiguration = cast(IdLabelsConfiguration, configuration)
-
-    return option_configuration
+# class IdLabelsConfiguration(Configuration):
+#     id_labels: list[OptionalListElement]
+#
+#
+# def load_id_labels_configuration_from_workbook(filename: str, locale: SupportedLocale) -> IdLabelsConfiguration:
+#     configuration: Configuration = load_configuration_from_workbook(filename=filename,
+#                                                                     main_tab=None,
+#                                                                     collections=[("id_labels", OptionalListElement)],
+#                                                                     configuration_type=IdLabelsConfiguration,
+#                                                                     locale=locale)
+#     option_configuration: IdLabelsConfiguration = cast(IdLabelsConfiguration, configuration)
+#
+#     return option_configuration
 
 class CaseField(BaseModel):
     id: str
@@ -32,8 +32,8 @@ class CaseField(BaseModel):
     mandatory: bool
     help: str
     format: str  # format should be one of YYYY/MM/DD, DD/MM/YYYY, or MM/DD/YYYY and can also use a period (.) or hyphen (-) as separators
-    allowed_values_csv: str
-    allowed_values: list[IdLabel]  = Field(default_factory=list)
+    allowed_values_list_name: str
+    allowed_values: list[OptionalListElement]  = Field(default_factory=list)
     default_value: Any
 
     # Fields required in UI

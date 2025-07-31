@@ -45,9 +45,6 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[s
 
 def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
     list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
-    # print("list1")
-    # print(list1)
-    # print("/list1")
     return [model_type.model_validate(data) for data in list1]
 
 
@@ -82,24 +79,12 @@ def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel]
 
 
 def load_configuration_from_workbook(filename: str,
-                                     main_tab: str,
+                                     main_tab: str | None,
                                      collections: list[tuple[str, type[BaseModel]]],
                                      configuration_type: Type[Configuration],
                                      locale: SupportedLocale) -> Configuration:
     config_workbook: Workbook = load_workbook(filename)
     config_values: dict[str, Any] = {}
-
-    # Locale
-
-    # locale = "en"  # Locale by default
-    #
-    # worksheet = config_workbook["locale"]
-    # for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row):
-    #     if row[0].value is None:
-    #         continue
-    #     locale = row[0].value
-    #
-    # config_values["locale"] = locale
 
     # main_tab
     if main_tab:
@@ -117,15 +102,11 @@ def load_configuration_from_workbook(filename: str,
                 key = key[:len(key) - len(locale) - 1]
             config_values[key] = row[1].value
 
-    # print("iterating")
     for collection_name, model_type in collections:
-        # print(collection_name, model_type)
+
         config_values[collection_name] = load_pydantic_objects_from_worksheet(
             worksheet=config_workbook[collection_name],
             model_type=model_type,
             locale=locale)
-    # print("done")
-
-    # print(config_values)
 
     return configuration_type.model_validate(config_values)
