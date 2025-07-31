@@ -95,8 +95,12 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             if matching_templates:
                 template: EmailTemplate = matching_templates[0]
                 body_of_email_to_requester = template.body
-                for k, v in request.field_values.items():
-                    body_of_email_to_requester = body_of_email_to_requester.replace("{" + k + "}", str(v))
+                # for k, v in request.field_values.items():
+                #     body_of_email_to_requester = body_of_email_to_requester.replace("{" + k + "}", str(v))
+                # More elegant:
+
+                body_of_email_to_requester = body_of_email_to_requester.format(**request.field_values)
+
                 email_to_requester = Email(
                     from_email_address=self.email_configuration.agent_email_address,
                     to_email_address=request.field_values[self.email_configuration.case_field_email_address],

@@ -4,10 +4,7 @@
 
 # ONGOING
 - in Streamlit client, look for default value in list AFTER filtering
-- Move logic to set allowed_values outside Application & make indep from Excel
-- remove idlabconfig
 - improve Error evaluating {departeme2nt} == 78
-- More elegant way to replace placeholders
 - 
 - Rename notes alerts
 - String for date format

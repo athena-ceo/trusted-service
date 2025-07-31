@@ -215,8 +215,13 @@ class TextAnalyzer:
     def _analyze(self, field_values: dict[str, Any], text: str) -> tuple[str, dict[str, str]]:
 
         system_prompt = self.templated_system_prompt
-        for k, v in field_values.items():
-            system_prompt = system_prompt.replace("{" + k + "}", str(v))  # a copy, so no change of original prompt
+
+        # for k, v in field_values.items():
+        #     system_prompt = system_prompt.replace("{" + k + "}", str(v))  # a copy, so no change of original prompt
+        #
+        # More elegant style below
+
+        system_prompt = system_prompt.format(**field_values)
 
         # Calling LLM
 

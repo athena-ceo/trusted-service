@@ -1,8 +1,11 @@
-from typing import Literal, cast, Self, Any, Type
+from typing import Literal, cast, Any
 
+from openpyxl.reader.excel import load_workbook
+from openpyxl.workbook import Workbook
 from pydantic import BaseModel, field_validator, Field
 
-from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale
+from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale, load_pydantic_objects_from_worksheet
+
 
 class OptionalListElement(BaseModel):
     id: str
@@ -94,5 +97,15 @@ def load_case_model_configuration_from_workbook(filename: str, locale: Supported
                                                                     configuration_type=CaseModelConfiguration,
                                                                     locale=locale)
     case_model_configuration: CaseModelConfiguration = cast(CaseModelConfiguration, configuration)
+
+    for case_field in case_model_configuration.case_fields:
+
+        # If the field has an associated list of allowed values, get the values from the matching tab
+
+        if case_field.allowed_values_list_name:
+            config_workbook: Workbook = load_workbook(filename)
+            worksheet = config_workbook[case_field.allowed_values_list_name]
+            allowed_values: list[BaseModel] = load_pydantic_objects_from_worksheet(worksheet, OptionalListElement, locale)
+            case_field.allowed_values = [cast(OptionalListElement, e) for e in allowed_values]  # This is cleaner than casting the list
 
     return case_model_configuration
