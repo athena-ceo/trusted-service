@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Literal
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
-from src.backend.backend.application import Application
 
 
 class CaseHandlingDecisionEngineDelphesPython_OLD(CaseHandlingDecisionEngine):

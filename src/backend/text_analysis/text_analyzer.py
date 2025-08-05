@@ -10,17 +10,18 @@ Date: 2025-04-29
 from __future__ import annotations
 
 import json
-from typing import List, Type, Optional, Any, Iterable, Callable
+from typing import List, Type, Optional, Any
 
-from dotenv.variables import Literal
 from pydantic import BaseModel, Field, create_model
 
+# from src.backend.backend.app import App
+# from src.backend.backend.localized_app import LocalizedApp
 from src.backend.rendering.html import build_html_highlighted_text_and_features
 from src.backend.rendering.md import build_markdown_table_intentions, build_markdown_table
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention
 from src.backend.text_analysis.llm import Llm
-from src.backend.text_analysis.llm_openai import LlmOpenAI
 from src.backend.text_analysis.llm_ollama import LlmOllama
+from src.backend.text_analysis.llm_openai import LlmOpenAI
 from src.backend.text_analysis.llm_scaleway import LlmScaleway
 from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
 from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, text_analysis_localizations
@@ -151,7 +152,7 @@ def build_system_prompt(config: TextAnalysisConfiguration,
             system_prompt += md_line_break
 
     if config.definitions:
-        system_prompt +=f"## {localization.promptstring_definitions}{md_line_break}"
+        system_prompt += f"## {localization.promptstring_definitions}{md_line_break}"
 
         rows = config.definitions
         column_names = [localization.promptstring_term, localization.promptstring_definition]
@@ -168,25 +169,29 @@ def build_system_prompt(config: TextAnalysisConfiguration,
             system_prompt += f"---------{md_line_break}"
 
     if config.response_format_type == "json_object":
-
-        system_prompt +=f"{localization.promptstring_return_only_json}:{md_line_break}"
+        system_prompt += f"{localization.promptstring_return_only_json}:{md_line_break}"
         schema: str = json.dumps(analysis_response_model.model_json_schema(), indent=2)
-        system_prompt +=f"```{schema}```"
+        system_prompt += f"```{schema}```"
 
     return system_prompt
 
 
 class TextAnalyzer:
     def __init__(self,
-                 case_model: CaseModel,
-                 runtime_directory: str,
+                 # case_model: CaseModel,
+                 localized_app: 'LocalizedApp',
+                 # runtime_directory: str,
                  config: TextAnalysisConfiguration,
-                 locale: SupportedLocale):
+                 # locale: SupportedLocale
+                 ):
 
-        self.case_model = case_model
+        self.case_model: CaseModel = localized_app.case_model
+        self.parent_app: 'App' = localized_app.parent_app
+        # self.runtime_directory: str = parent_app.runtime_directory
+        self.locale: SupportedLocale = localized_app.locale
 
         features: list[Feature] = []
-        for case_field in case_model.case_fields:  ## TODO: Do that in the constructor of TextAnalyzer
+        for case_field in self.case_model.case_fields:  ## TODO: Do that in the constructor of TextAnalyzer
             if case_field.extraction != "DO NOT EXTRACT":
                 feature = Feature(id=case_field.id,
                                   label=case_field.label,
@@ -196,11 +201,11 @@ class TextAnalyzer:
                 features.append(feature)
         self.features: list[Feature] = features
 
-        self.runtime_directory: str = runtime_directory
+        # self.runtime_directory: str = runtime_directory
         self.config2: TextAnalysisConfiguration = config
-        self.analysis_response_model: Type[BaseModel] = create_analysis_models(locale, features)
-        self.templated_system_prompt: str = build_system_prompt(self.config2, locale, self.features, self.analysis_response_model)
-        self.localization: TextAnalysisLocalization = text_analysis_localizations[locale]  # Will fail here if language is not supported
+        self.analysis_response_model: Type[BaseModel] = create_analysis_models(self.locale, features)
+        self.templated_system_prompt: str = build_system_prompt(self.config2, self.locale, self.features, self.analysis_response_model)
+        self.localization: TextAnalysisLocalization = text_analysis_localizations[self.locale]  # Will fail here if language is not supported
 
         if config.llm == "openai":
             self.llm: Llm = LlmOpenAI(config)
@@ -210,7 +215,6 @@ class TextAnalyzer:
             self.llm: Llm = LlmScaleway(config)
         else:
             raise ValueError(f"Unsupported LLM: {config.llm}")
-
 
     def _analyze(self, field_values: dict[str, Any], text: str) -> tuple[str, dict[str, str]]:
 
@@ -225,7 +229,7 @@ class TextAnalyzer:
 
         # Calling LLM
 
-        cache_filename = self.runtime_directory + "/cache.json"
+        cache_filename = "{directory}/cache_{app_id}_{locale}.json".format(directory=self.parent_app.runtime_directory, app_id=self.parent_app.app_id, locale=self.locale)
 
         if self.config2.read_from_cache:
             with open(file=cache_filename, mode="r", encoding="utf-8") as f:

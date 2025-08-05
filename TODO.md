@@ -2,13 +2,52 @@
 * TODO.md
 *********
 
+# Ongoing
+Server
+- Create REST for all
+- Test Préfecture
+- git push
+- Vidéos
+- 
+- Créer branche
+- Faire le launcher client rest (config tech) et le launcher server rest (config tech et appdef files)
+- 
+- Corriger l'API REST
+- Faire marcher avec portail Préfecture
+- Décider quel modèle depuis le client
+- Variables calculées
+- 
+
+CLEAN
+- Les trois classes de la hierarchie doivent implémenter l'interface
+- typage SupportedLocale
+- Vérifier la logique des callbacks
+- intention => intent
+- simplifier le code de ces deux constructeurs
+- chercher tous les todo et tous les warnings et cas d'erreur
+- README
+- Nom des classes postfix
+- Rzevoier les __init__ des trois composants en cascade
+- config => def
+- loc => locale
+- cas d'erreur (app inconnue, locale non supportée)
+- improve Error evaluating {departeme2nt} == 78
+- Better manage the case where the cache file does not exist
+- True / False in display of booleans
+- Manage Python code evaluation error in app-specific lists
+- Manage gently config file absent or incorrect
+- Erreur de connexion
+
+---------------------------------------------------------------- 
+- nom de fichier json de cachingcontient app et loc
+- changer les api rest
+
+
 # ONGOING
 - in Streamlit client, look for default value in list AFTER filtering
-- improve Error evaluating {departeme2nt} == 78
-- 
+
 - Rename notes alerts
 - String for date format
-- liste dynamique
 - solve issue with FastAPI
 - test with Calc
 - Remove update_case_field_str

@@ -54,6 +54,13 @@ class LlmOpenAI(Llm):
                                      analysis_response_model: Type[BaseModel],
                                      system_prompt: str,
                                      text: str) -> BaseModel:
+
+        # print("SYSTEM PROMPT:")
+        # print(system_prompt)
+        # print("USER PROMPT:")
+        # print(text)
+        # print("DONE")
+
         completion: Any = self.client.chat.completions.parse(
             model=self.config.model,
             response_format=analysis_response_model,

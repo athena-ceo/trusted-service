@@ -45,6 +45,7 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[s
 
 def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
     list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
+    print("locale", locale)
     return [model_type.model_validate(data) for data in list1]
 
 
@@ -82,7 +83,7 @@ def load_configuration_from_workbook(filename: str,
                                      main_tab: str | None,
                                      collections: list[tuple[str, type[BaseModel]]],
                                      configuration_type: Type[Configuration],
-                                     locale: SupportedLocale) -> Configuration:
+                                     locale: SupportedLocale | None) -> Configuration:
     config_workbook: Workbook = load_workbook(filename)
     config_values: dict[str, Any] = {}
 
@@ -103,7 +104,6 @@ def load_configuration_from_workbook(filename: str,
             config_values[key] = row[1].value
 
     for collection_name, model_type in collections:
-
         config_values[collection_name] = load_pydantic_objects_from_worksheet(
             worksheet=config_workbook[collection_name],
             model_type=model_type,

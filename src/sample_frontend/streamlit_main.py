@@ -9,12 +9,14 @@ from streamlit.delta_generator import DeltaGenerator
 
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
-from src.common.common_configuration import CommonConfiguration, load_common_configuration_from_workbook
+from src.common.configuration import SupportedLocale
+from src.common.connection_configuration import ConnectionConfiguration
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
 from src.common.logging import print_red
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
-from src.sample_frontend.frontend_configuration import load_frontend_configuration_from_workbook, FrontendConfiguration
 from src.sample_frontend.frontend_localization import FrontendLocalization, frontend_localizations
+
+connection_to_api = "direct"
 
 
 def expander_user(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
@@ -30,25 +32,30 @@ def expander_detail(label: str, expanded: bool = False, *, icon: str | None = No
 
 
 class Context:
-    def __init__(self, config_filename: str):
-        self.common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
-        self.frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename, self.common_configuration.locale)
+    def __init__(self, api_client: ApiClient, app_id: str, locale: SupportedLocale):
+        # self.common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
+        # self.frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename, self.common_configuration.locale)
 
-        self.locale = self.common_configuration.locale
+        self.api_client: ApiClient = api_client
+        self.app_id: str = app_id
+        self.locale: SupportedLocale = locale
 
-        self.frontend_localization: FrontendLocalization = frontend_localizations[self.locale]  # Will fail here if language is not supported
+        self.frontend_localization: FrontendLocalization = frontend_localizations[locale]  # Will fail here if language is not supported
 
-        if self.frontend_configuration.connection_to_api == "rest":
-            url = f"http://{self.common_configuration.rest_api_host}:{self.common_configuration.rest_api_port}"
-            # print("URL", url)
-            self.api_client: ApiClient = ApiClientHttp(url)
-        else:
-            self.api_client: ApiClient = ApiClientDirect(config_filename)
+        # if self.frontend_configuration.connection_to_api == "rest":
+        # if connection_to_api == "rest":
+        #     url = f"http://{self.common_configuration.rest_api_host}:{self.common_configuration.rest_api_port}"
+        #     self.api_client: ApiClient = ApiClientHttp(url)
+        # else:
+        #     self.api_client: ApiClient = ApiClientDirect(config_filename)
 
-        self.app_name = self.api_client.get_app_name()
-        self.app_description = self.api_client.get_app_description()
+        # self.api_client: ApiClient = ApiClientDirect(config_filename)
 
-        self.case_model: CaseModel = self.api_client.get_case_model()
+        self.app_name = api_client.get_app_name(app_id, locale)
+        self.app_description = api_client.get_app_description(app_id, locale)
+        self.sample_message = api_client.get_sample_message(app_id, locale)
+
+        self.case_model: CaseModel = api_client.get_case_model(app_id, locale)
         self.case: Case = Case.create_default_instance(self.case_model)
         self.analysis_result_and_rendering: dict[str, Any] = {}
         self.payload_to_process: str | None = None
@@ -59,7 +66,7 @@ class Context:
         pass
 
 
-def add_case_field_input_widget(case: Case, case_field: CaseField):
+def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: FrontendLocalization):
     key = "input_" + case_field.id
 
     label = case_field.label
@@ -161,19 +168,19 @@ def add_case_field_input_widget(case: Case, case_field: CaseField):
             index = None
         else:
             index = 0 if value else 1
-        val_str = st.radio(label=label,
-                           options=["OUI", "NON"],
-                           index=index,
-                           key=key,
-                           help=help_message,
-                           # on_change=update_case_field_bool
-                           )
-        case.field_values[case_field.id] = val_str == "OUI"
+        case.field_values[case_field.id] = st.radio(label=label,
+                                                    options=[True, False],
+                                                    index=index,
+                                                    format_func=lambda v: l12n.label_yes if v else l12n.label_no,
+                                                    key=key,
+                                                    help=help_message,
+                                                    # on_change=update_case_field_bool
+                                                    )
 
 
 def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
-    analysis_result_and_rendering = context.api_client.analyze(context.case.field_values, st.session_state.request_description_text_area)
+    analysis_result_and_rendering = context.api_client.analyze(context.app_id, context.locale, context.case.field_values, st.session_state.request_description_text_area)
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
     # Copy the extracted field values to the case
@@ -189,7 +196,7 @@ def submit_case_for_handling():
     payload_str = st.session_state.payload
     payload_dict = json.loads(payload_str)
     case_handling_request = CaseHandlingRequest.model_validate(payload_dict)
-    context.case_handling_detailed_response = context.api_client.handle_case(case_handling_request)
+    context.case_handling_detailed_response = context.api_client.handle_case(context.app_id, context.locale, case_handling_request)
 
     context.stage = 3
 
@@ -199,9 +206,89 @@ class DecisionPayload(BaseModel):
     decision_output: CaseHandlingDecisionOutput
 
 
-def streamlit_main(config_filename: str):
-    if not hasattr(st.session_state, "context"):
-        st.session_state.context = Context(config_filename)
+class LocalizableApp(BaseModel):
+    app_id: str
+    locales: list[SupportedLocale]  # TODO list[SupportedLocale]
+
+
+def create_context():
+    api_client = st.session_state.api_client
+    app_id = st.session_state.localizable_app.app_id
+    locale = st.session_state.locale
+    print(type(api_client), app_id, locale)
+    if locale is None:  # Happens when user unselects locale
+        print_red("Not creating a context")
+        return
+    print_red("creating a context")
+    st.session_state.context = Context(api_client, app_id, locale)
+
+
+def init(api_client: ApiClient):
+    localizable_apps: list[LocalizableApp] = []
+    app_ids: list[str] = api_client.get_app_ids()
+    for app_id in app_ids:
+        locales: list[SupportedLocale] = api_client.get_locales(app_id)
+        localizable_app = LocalizableApp(app_id=app_id, locales=locales)
+        localizable_apps.append(localizable_app)
+    st.session_state.api_client = api_client
+    st.session_state.localizable_apps = localizable_apps
+
+
+def streamlit_rest_main(config_connection_filename: str):
+    if "api_client" not in st.session_state:
+        connection_configuration: ConnectionConfiguration=ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
+        url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
+        init(ApiClientHttp(url))
+
+    streamlit_main()
+
+
+def streamlit_direct_main(appdef_filenames: list[str]):
+    if "api_client" not in st.session_state:
+        init(ApiClientDirect(appdef_filenames))
+
+    streamlit_main()
+
+
+def streamlit_main():
+    api_client: ApiClient = st.session_state.api_client
+    localizable_apps: list[LocalizableApp] = st.session_state.localizable_apps
+
+    with st.sidebar:
+
+        st.write("# Trusted Services")
+
+        localizable_app: LocalizableApp = st.segmented_control(
+            label="App",
+            options=localizable_apps,
+            selection_mode="single",
+            default=None,
+            format_func=lambda loc_app: loc_app.app_id,
+            key="localizable_app",
+        )
+
+        if localizable_app is None:
+            return
+
+        locale: SupportedLocale = st.segmented_control(
+            label="Locale",
+            options=localizable_app.locales,
+            selection_mode="single",
+            default=None,
+            key="locale",
+            on_change=create_context,
+        )
+
+        if locale is None:
+            return
+
+        l12n: FrontendLocalization = frontend_localizations[locale]
+
+        st.toggle(l12n.label_show_details, value=False, key="show_details")
+
+    # print(st.session_state)
+    # if not hasattr(st.session_state, "context"):
+    #     st.session_state.context = Context(config_filename)
 
     context: Context = st.session_state.context
     l12n = context.frontend_localization
@@ -212,14 +299,11 @@ def streamlit_main(config_filename: str):
 
     case = context.case
 
-    with st.sidebar:
-        st.toggle(l12n.label_show_details, value=False, key="show_details")
-
     with expander_user(l12n.label_context, expanded=True):
 
         for case_field in case_model.case_fields:
             if case_field.scope == "CONTEXT":
-                add_case_field_input_widget(context.case, case_field)
+                add_case_field_input_widget(context.case, case_field, l12n)
 
     with expander_user(l12n.label_request, expanded=True):
 
@@ -230,11 +314,11 @@ def streamlit_main(config_filename: str):
             # Show only fields not specific to an intention!
             if not case_field.intention_ids:
                 if case_field.show_in_ui:
-                    add_case_field_input_widget(context.case, case_field)
+                    add_case_field_input_widget(context.case, case_field, l12n)
 
         st.text_area(label=l12n.label_please_describe_your_request,
                      height=330,
-                     value=context.frontend_configuration.sample_text,
+                     value=context.sample_message,
                      key="request_description_text_area", )
 
     st.button(
@@ -275,7 +359,7 @@ def streamlit_main(config_filename: str):
             for case_field in case_model.case_fields:
                 if id_of_selected_intention in case_field.intention_ids:
                     if case_field.show_in_ui:
-                        add_case_field_input_widget(context.case, case_field)
+                        add_case_field_input_widget(context.case, case_field, l12n)
 
     # Request text area
 

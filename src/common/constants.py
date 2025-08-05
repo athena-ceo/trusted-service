@@ -1,3 +1,5 @@
+API_ROUTE_V2 = "/trusted_services/v2"
+
 KEY_ANALYSIS_RESULT = "analysis_result"
 KEY_PROMPT = "prompt"
 KEY_MARKDOWN_TABLE = "markdown_table"

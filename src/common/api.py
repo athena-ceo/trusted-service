@@ -4,6 +4,7 @@ from typing import Any, Literal
 from pydantic import BaseModel
 
 from src.common.case_model import CaseModel
+from src.common.configuration import SupportedLocale
 
 
 class CaseHandlingRequest(BaseModel):
@@ -48,21 +49,33 @@ class CaseHandlingDetailedResponse(BaseModel):
 class Api(ABC):
 
     @abstractmethod
-    def get_app_name(self) -> str:
+    def get_app_ids(self) -> list[str]:
         pass
 
     @abstractmethod
-    def get_app_description(self) -> str:
+    def get_locales(self, app_id: str) -> list[SupportedLocale]:
         pass
 
     @abstractmethod
-    def get_case_model(self) -> CaseModel:
+    def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
         pass
 
     @abstractmethod
-    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    def get_app_description(self, app_id: str, loc: SupportedLocale) -> str:
         pass
 
     @abstractmethod
-    def handle_case(self, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
+    def get_sample_message(self, app_id: str, loc: SupportedLocale) -> str:
+        pass
+
+    @abstractmethod
+    def get_case_model(self, app_id: str, loc: SupportedLocale) -> CaseModel:
+        pass
+
+    @abstractmethod
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+        pass
+
+    @abstractmethod
+    def handle_case(self, app_id: str, loc: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
         pass

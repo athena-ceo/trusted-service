@@ -5,6 +5,8 @@ from src.common.localization import Localization
 class FrontendLocalization(Localization):
     label_show_details: str
     label_context: str
+    label_yes: str
+    label_no: str
     label_request: str
     label_please_describe_your_request: str
     label_next_step: str
@@ -32,6 +34,8 @@ frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
     "en": FrontendLocalization(
         label_show_details="Show details",
         label_context="Context",
+        label_yes="Yes",
+        label_no="No",
         label_request="Request",
         label_please_describe_your_request="Please describe your request",
         label_next_step="Next step",
@@ -53,6 +57,8 @@ frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
     "fr": FrontendLocalization(
         label_show_details="Montrer les détails",
         label_context="Contexte de la demande",
+        label_yes="Oui",
+        label_no="Non",
         label_request="Demande",
         label_please_describe_your_request="Veuillez décrire votre demande",
         label_next_step="Etape suivante",
