@@ -27,8 +27,7 @@ from src.backend.text_analysis.text_analysis_configuration import TextAnalysisCo
 from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, text_analysis_localizations
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT, TEXT_ANALYSIS_CACHING_READ, \
-    TEXT_ANALYSIS_CACHING_RUN_AND_WRITE
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
 
 
 class ListOfTextFragments(BaseModel):
@@ -178,7 +177,7 @@ def build_system_prompt(config: TextAnalysisConfiguration,
 
 
 class TextAnalyzer:
-    def __init__(self, localized_app: 'LocalizedApp', config: TextAnalysisConfiguration,):
+    def __init__(self, localized_app: 'LocalizedApp', config: TextAnalysisConfiguration, ):
 
         self.case_model: CaseModel = localized_app.case_model
         self.parent_app: 'App' = localized_app.parent_app
@@ -224,16 +223,12 @@ class TextAnalyzer:
             with open(file=cache_filename, mode="r", encoding="utf-8") as f:
                 analysis_result = json.load(f)
 
-        else:  # TEXT_ANALYSIS_CACHING_RUN, TEXT_ANALYSIS_CACHING_RUN_AND_WRITE
+        else:
             if self.config2.response_format_type == "json_object":
                 _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
             else:
                 _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
-
-            # if text_analysis_caching == TEXT_ANALYSIS_CACHING_RUN_AND_WRITE:
-            #     with open(file=cache_filename, mode="w", encoding="utf-8") as f:
-            #         json.dump(analysis_result, f, ensure_ascii=False)
 
         # Joining with collection of intentions
         for scoring in analysis_result[FIELD_NAME_SCORINGS]:
@@ -248,18 +243,19 @@ class TextAnalyzer:
         analysis_result[FIELD_NAME_SCORINGS] = [scoring for scoring in analysis_result[FIELD_NAME_SCORINGS] if
                                                 scoring.get("intention_label") is not None]
 
-        intention_other = Intention(id="other", label=self.localization.label_intention_other, description="Fallback")
+        if not read_from_cache:
+            intention_other = Intention(id="other", label=self.localization.label_intention_other, description="Fallback")
 
-        dict_other: dict[str, Any] = {
-            "intention_id": intention_other.id,
-            "score": 1,
-            "justification": intention_other.description,
-            "intention_label": intention_other.label,
-            "intention_fields": [
-            ]
-        }
+            dict_other: dict[str, Any] = {
+                "intention_id": intention_other.id,
+                "score": 1,
+                "justification": intention_other.description,
+                "intention_label": intention_other.label,
+                "intention_fields": [
+                ]
+            }
 
-        analysis_result[FIELD_NAME_SCORINGS].append(dict_other)
+            analysis_result[FIELD_NAME_SCORINGS].append(dict_other)
 
         return system_prompt, analysis_result
 

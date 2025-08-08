@@ -1,3 +1,4 @@
+import inspect
 import json
 from typing import Optional, Any, List
 
@@ -8,7 +9,15 @@ from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
-from src.common.constants import API_ROUTE_V2, TEXT_ANALYSIS_CACHING_RUN
+from src.common.constants import API_ROUTE_V2
+
+
+def log_function_call():
+    frame = inspect.currentframe().f_back
+    func_name = frame.f_code.co_name
+    args_info = inspect.getargvalues(frame)
+    args_str = ", ".join(f"{arg}={args_info.locals[arg]!r}" for arg in args_info.args)
+    print(f"{func_name}({args_str})")
 
 
 class FastAPI2(FastAPI):
@@ -37,70 +46,70 @@ async def root():
     return {"message": "Hello"}
 
 
-@app.get(API_ROUTE_V2 + "/app_ids", response_model=list[str])
+@app.get(API_ROUTE_V2 + "/app_ids", response_model=list[str], summary="Get the ids of all apps defined")
 async def get_app_ids() -> list[str]:
-    print("********************************** get_app_ids **********************************")
+    log_function_call()
     return app.api.get_app_ids()
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/locales", response_model=list[str])
 async def get_locales(app_id: str) -> list[str]:
-    print("********************************** get_locales **********************************")
+    log_function_call()
     return app.api.get_locales(app_id)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/llm_config_ids", response_model=list[str])
 async def get_llm_config_ids(app_id: str) -> list[str]:
-    print("********************************** get_llm_config_ids **********************************")
+    log_function_call()
     return app.api.get_llm_config_ids(app_id)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/decision_engine_config_ids", response_model=list[str])
 async def get_decision_engine_config_ids(app_id: str) -> list[str]:
-    print("********************************** get_decision_engine_config_ids **********************************")
+    log_function_call()
     return app.api.get_decision_engine_config_ids(app_id)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/{loc}/app_name")
 async def get_app_name(app_id: str, loc: SupportedLocale) -> str:
-    print("********************************** get_app_name **********************************")
+    log_function_call()
     return app.api.get_app_name(app_id=app_id, loc=loc)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/{loc}/app_description")
 async def get_app_description(app_id: str, loc: SupportedLocale) -> str:
-    print("********************************** get_app_description **********************************")
+    log_function_call()
     return app.api.get_app_description(app_id=app_id, loc=loc)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/{loc}/sample_message")
 async def get_sample_message(app_id: str, loc: SupportedLocale) -> str:
-    print("********************************** get_app_description **********************************")
+    log_function_call()
     return app.api.get_sample_message(app_id=app_id, loc=loc)
 
 
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/{loc}/case_model")
 async def get_case_model(app_id: str, loc: SupportedLocale) -> CaseModel:
-    print("********************************** get_case_model **********************************")
+    log_function_call()
     return app.api.get_case_model(app_id=app_id, loc=loc)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/analyze")
 async def analyze(app_id: str, loc: SupportedLocale, field_values: str, text: str, read_from_cache: bool):
-    print("********************************** analyze **********************************")
+    log_function_call()
     field_values2 = json.loads(field_values)
     return app.api.analyze(app_id=app_id, loc=loc, field_values=field_values2, text=text, read_from_cache=read_from_cache)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/save_text_analysis_cache")
 async def save_text_analysis_cache(app_id: str, loc: SupportedLocale, text_analysis_cache: str):
-    print("********************************** save_text_analysis_cache **********************************")
+    log_function_call()
     return app.api.save_text_analysis_cache(app_id, loc, text_analysis_cache)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/handle_case")
 async def handle_case(app_id: str, loc: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
-    print("********************************** request **********************************")
+    log_function_call()
     return app.api.handle_case(app_id=app_id, loc=loc, request=request)
 
 
@@ -109,6 +118,8 @@ API_ROUTE = "/delphes-api/api/v1"
 
 print(f"{API_ROUTE}/analyze")
 print("***")
+
+
 @app.post(f"{API_ROUTE}/analyze", tags=["Services"])
 async def analyze_v1(data: dict) -> dict[str, Any]:
     # Extract the field values from the POST request body
