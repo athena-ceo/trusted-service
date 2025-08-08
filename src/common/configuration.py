@@ -45,7 +45,6 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[s
 
 def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
     list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
-    print("locale", locale)
     return [model_type.model_validate(data) for data in list1]
 
 

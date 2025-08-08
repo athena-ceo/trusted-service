@@ -1,5 +1,5 @@
 import json
-from abc import ABC, ABCMeta
+from abc import ABC
 from typing import Any
 
 import requests
@@ -15,6 +15,8 @@ class ApiClient(Api, ABC):
     pass
 
 
+#  TODO: Generic delegation
+
 class ApiClientDirect(ApiClient):
     def __init__(self, config_filenames: list[str]):
         self.api: Api = TrustedServicesServer(config_filenames)
@@ -24,6 +26,12 @@ class ApiClientDirect(ApiClient):
 
     def get_locales(self, app_id: str) -> list[SupportedLocale]:
         return self.api.get_locales(app_id)
+
+    def get_llm_config_ids(self, app_id: str) -> list[str]:
+        return self.api.get_llm_config_ids(app_id)
+
+    def get_decision_engine_config_ids(self, app_id: str) -> list[str]:
+        return self.api.get_decision_engine_config_ids(app_id)
 
     def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
         return self.api.get_app_name(app_id, loc)
@@ -38,8 +46,11 @@ class ApiClientDirect(ApiClient):
         case_model: CaseModel = self.api.get_case_model(app_id, loc)
         return case_model
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        return self.api.analyze(app_id, loc, field_values, text)
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
+        return self.api.analyze(app_id, loc, field_values, text, read_from_cache)
+
+    def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
+        self.api.save_text_analysis_cache(app_id, loc, text_analysis_cache)
 
     def handle_case(self, app_id: str, loc: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
         return self.api.handle_case(app_id, loc, request)
@@ -72,6 +83,12 @@ class ApiClientHttp(ApiClient):
     def get_locales(self, app_id: str) -> list[SupportedLocale]:
         return self.get("locales", app_id)
 
+    def get_llm_config_ids(self, app_id: str) -> list[str]:
+        return self.get("llm_config_ids", app_id)
+
+    def get_decision_engine_config_ids(self, app_id: str) -> list[str]:
+        return self.get("decision_engine_config_ids", app_id)
+
     def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
         return self.get("app_name", app_id, loc)
 
@@ -87,9 +104,25 @@ class ApiClientHttp(ApiClient):
             return None
         return CaseModel.model_validate(case_model_data)
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
         url = f"{self.base_url}/{API_ROUTE_V2}/apps/{app_id}/{loc}/analyze"
-        response = requests.post(url, params={"field_values": json.dumps(field_values), "text": text})
+        params = {
+            "field_values": json.dumps(field_values),
+            "text": text,
+            "read_from_cache": read_from_cache,
+        }
+        response = requests.post(url, params=params)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"Request failed with status code: {response.status_code}")
+
+    def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
+        url = f"{self.base_url}/{API_ROUTE_V2}/apps/{app_id}/{loc}/save_text_analysis_cache"
+        params = {
+            "text_analysis_cache": text_analysis_cache
+        }
+        response = requests.post(url, params=params)
         if response.status_code == 200:
             return response.json()
         else:

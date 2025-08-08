@@ -27,7 +27,8 @@ from src.backend.text_analysis.text_analysis_configuration import TextAnalysisCo
 from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, text_analysis_localizations
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT, TEXT_ANALYSIS_CACHING_READ, \
+    TEXT_ANALYSIS_CACHING_RUN_AND_WRITE
 
 
 class ListOfTextFragments(BaseModel):
@@ -177,17 +178,10 @@ def build_system_prompt(config: TextAnalysisConfiguration,
 
 
 class TextAnalyzer:
-    def __init__(self,
-                 # case_model: CaseModel,
-                 localized_app: 'LocalizedApp',
-                 # runtime_directory: str,
-                 config: TextAnalysisConfiguration,
-                 # locale: SupportedLocale
-                 ):
+    def __init__(self, localized_app: 'LocalizedApp', config: TextAnalysisConfiguration,):
 
         self.case_model: CaseModel = localized_app.case_model
         self.parent_app: 'App' = localized_app.parent_app
-        # self.runtime_directory: str = parent_app.runtime_directory
         self.locale: SupportedLocale = localized_app.locale
 
         features: list[Feature] = []
@@ -201,7 +195,6 @@ class TextAnalyzer:
                 features.append(feature)
         self.features: list[Feature] = features
 
-        # self.runtime_directory: str = runtime_directory
         self.config2: TextAnalysisConfiguration = config
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(self.locale, features)
         self.templated_system_prompt: str = build_system_prompt(self.config2, self.locale, self.features, self.analysis_response_model)
@@ -216,14 +209,9 @@ class TextAnalyzer:
         else:
             raise ValueError(f"Unsupported LLM: {config.llm}")
 
-    def _analyze(self, field_values: dict[str, Any], text: str) -> tuple[str, dict[str, str]]:
+    def _analyze(self, field_values: dict[str, Any], text: str, read_from_cache: bool) -> tuple[str, dict[str, str]]:
 
         system_prompt = self.templated_system_prompt
-
-        # for k, v in field_values.items():
-        #     system_prompt = system_prompt.replace("{" + k + "}", str(v))  # a copy, so no change of original prompt
-        #
-        # More elegant style below
 
         system_prompt = system_prompt.format(**field_values)
 
@@ -231,20 +219,21 @@ class TextAnalyzer:
 
         cache_filename = "{directory}/cache_{app_id}_{locale}.json".format(directory=self.parent_app.runtime_directory, app_id=self.parent_app.app_id, locale=self.locale)
 
-        if self.config2.read_from_cache:
+        # if self.config2.read_from_cache:
+        if read_from_cache:
             with open(file=cache_filename, mode="r", encoding="utf-8") as f:
                 analysis_result = json.load(f)
-        else:
+
+        else:  # TEXT_ANALYSIS_CACHING_RUN, TEXT_ANALYSIS_CACHING_RUN_AND_WRITE
             if self.config2.response_format_type == "json_object":
                 _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
             else:
                 _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
 
-            # save_to_cache = True
-            if self.config2.save_to_cache:
-                with open(file=cache_filename, mode="w", encoding="utf-8") as f:
-                    json.dump(analysis_result, f, ensure_ascii=False)
+            # if text_analysis_caching == TEXT_ANALYSIS_CACHING_RUN_AND_WRITE:
+            #     with open(file=cache_filename, mode="w", encoding="utf-8") as f:
+            #         json.dump(analysis_result, f, ensure_ascii=False)
 
         # Joining with collection of intentions
         for scoring in analysis_result[FIELD_NAME_SCORINGS]:
@@ -274,9 +263,9 @@ class TextAnalyzer:
 
         return system_prompt, analysis_result
 
-    def analyze(self, field_values: dict[str, Any], text: str) -> dict[str, str]:
+    def analyze(self, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
 
-        system_prompt, analysis_result = self._analyze(field_values, text)
+        system_prompt, analysis_result = self._analyze(field_values, text, read_from_cache)
 
         analysis_result_and_rendering = {
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),

@@ -8,7 +8,7 @@ from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
-from src.common.constants import API_ROUTE_V2
+from src.common.constants import API_ROUTE_V2, TEXT_ANALYSIS_CACHING_RUN
 
 
 class FastAPI2(FastAPI):
@@ -20,7 +20,7 @@ class FastAPI2(FastAPI):
     def init(self, connection_configuration, appdef_filenames: list[str]):
         self.add_middleware(
             CORSMiddleware,
-            allow_origins=[connection_configuration.client_url, ],
+            allow_origins=[connection_configuration.client_url, "http://localhost:5005"],
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
@@ -49,6 +49,18 @@ async def get_locales(app_id: str) -> list[str]:
     return app.api.get_locales(app_id)
 
 
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/llm_config_ids", response_model=list[str])
+async def get_llm_config_ids(app_id: str) -> list[str]:
+    print("********************************** get_llm_config_ids **********************************")
+    return app.api.get_llm_config_ids(app_id)
+
+
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/decision_engine_config_ids", response_model=list[str])
+async def get_decision_engine_config_ids(app_id: str) -> list[str]:
+    print("********************************** get_decision_engine_config_ids **********************************")
+    return app.api.get_decision_engine_config_ids(app_id)
+
+
 @app.get(API_ROUTE_V2 + "/apps/{app_id}/{loc}/app_name")
 async def get_app_name(app_id: str, loc: SupportedLocale) -> str:
     print("********************************** get_app_name **********************************")
@@ -73,14 +85,17 @@ async def get_case_model(app_id: str, loc: SupportedLocale) -> CaseModel:
     return app.api.get_case_model(app_id=app_id, loc=loc)
 
 
-print(API_ROUTE_V2 + "/apps/{app_id}/{loc}/analyze")
-print("***")
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/analyze")
-async def analyze(app_id: str, loc: SupportedLocale, field_values: str, text: str):
+async def analyze(app_id: str, loc: SupportedLocale, field_values: str, text: str, read_from_cache: bool):
     print("********************************** analyze **********************************")
-    print(app_id, loc)
     field_values2 = json.loads(field_values)
-    return app.api.analyze(app_id=app_id, loc=loc, field_values=field_values2, text=text)
+    return app.api.analyze(app_id=app_id, loc=loc, field_values=field_values2, text=text, read_from_cache=read_from_cache)
+
+
+@app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/save_text_analysis_cache")
+async def save_text_analysis_cache(app_id: str, loc: SupportedLocale, text_analysis_cache: str):
+    print("********************************** save_text_analysis_cache **********************************")
+    return app.api.save_text_analysis_cache(app_id, loc, text_analysis_cache)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/handle_case")
@@ -89,8 +104,8 @@ async def handle_case(app_id: str, loc: SupportedLocale, request: CaseHandlingRe
     return app.api.handle_case(app_id=app_id, loc=loc, request=request)
 
 
-API_ROUTE = "/api/v1"
-# API_ROUTE = "/delphes-api/api/v1"
+# API_ROUTE = "/api/v1"
+API_ROUTE = "/delphes-api/api/v1"
 
 print(f"{API_ROUTE}/analyze")
 print("***")
@@ -103,7 +118,7 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
     text: str = data.get("text", "")
 
     print("********************************** analyser_demande **********************************")
-    return app.api.analyze(app_id="delphes", loc="fr", field_values=field_values, text=text)
+    return app.api.analyze(app_id="delphes", loc="fr", field_values=field_values, text=text, read_from_cache=False)
 
 
 @app.post(f"{API_ROUTE}/process_request", tags=["Services"])
@@ -111,6 +126,8 @@ async def handle_case_v1(data: dict):
     # Extract the case request object from the POST request body
     case_request = data.get("case_request", "{}")
     if isinstance(case_request, dict):
+        if "decision_engine_config_id" not in case_request:
+            case_request["decision_engine_config_id"] = "tests"
         case_request = CaseHandlingRequest(**case_request)
 
     print("********************************** handle_case_v1 **********************************")

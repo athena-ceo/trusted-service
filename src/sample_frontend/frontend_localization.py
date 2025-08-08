@@ -14,6 +14,7 @@ class FrontendLocalization(Localization):
     label_prompt: str
     label_intent_scoring: str
     label_feature_extraction: str
+    label_misc: str
     label_intentions_scored_by_ai: str
     label_data_extracted_by_ai: str
     label_additional_information: str
@@ -43,6 +44,7 @@ frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
         label_prompt="Prompt",
         label_intent_scoring="Intent scoring",
         label_feature_extraction="Feature extraction",
+        label_misc="Misc",
         label_intentions_scored_by_ai="Intentions scored by AI",
         label_data_extracted_by_ai="Data extracted by AI",
         label_additional_information="Additional information",
@@ -66,6 +68,7 @@ frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
         label_prompt="Prompt",
         label_intent_scoring="Scoring des intentions",
         label_feature_extraction="Extraction des features",
+        label_misc="Divers",
         label_intentions_scored_by_ai="Scoring des intentions par l'IA",
         label_data_extracted_by_ai="Extraction d'information par l'IA",
         label_additional_information="Informations complémentaires",

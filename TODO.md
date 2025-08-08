@@ -3,16 +3,15 @@
 *********
 
 # Ongoing
+- Tester save cache, vérifier ensure_ascii
+- Tester en mode rest
+- lecture du cache: booleen, virer les constantes
+- commit
+
 Server
-- Create REST for all
 - Test Préfecture
-- git push
 - Vidéos
-- 
-- Créer branche
-- Faire le launcher client rest (config tech) et le launcher server rest (config tech et appdef files)
-- 
-- Corriger l'API REST
+
 - Faire marcher avec portail Préfecture
 - Décider quel modèle depuis le client
 - Variables calculées
@@ -37,6 +36,7 @@ CLEAN
 - Manage Python code evaluation error in app-specific lists
 - Manage gently config file absent or incorrect
 - Erreur de connexion
+- Documenter APIs RESR
 
 ---------------------------------------------------------------- 
 - nom de fichier json de cachingcontient app et loc

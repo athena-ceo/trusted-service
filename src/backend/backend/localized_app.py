@@ -3,9 +3,6 @@ from typing import Any, cast
 
 from pydantic import BaseModel
 
-from src.backend.decision.decision import CaseHandlingDecisionEngine
-from src.backend.decision.decision_odm.decision_odm import CaseHandlingDecisionEngineODM
-from src.backend.decision.decision_odm.decision_odm_configuration import load_odm_configuration_from_workbook
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
 from src.backend.distribution.distribution_email.distribution_email import CaseHandlingDistributionEngineEmail
 from src.backend.distribution.distribution_email.distribution_email_configuration import DistributionEmailConfiguration, load_email_configuration_from_workbook
@@ -24,7 +21,7 @@ class LocalizedAppConfiguration(Configuration):
     app_name: str
     app_description: str
     sample_message: str
-    decision_engine: str
+    # decision_engine: str
     distribution_engine: str
     messages_to_agent: list[Message]
     messages_to_requester: list[Message]
@@ -41,19 +38,15 @@ def load_localized_app_configuration_from_workbook(filename: str, locale: Suppor
     return cast(LocalizedAppConfiguration, conf)
 
 
-class LocalizedApp:
+class LocalizedApp(Api):
 
     def __init__(self, config_filename: str, parent_app: 'App', locale: SupportedLocale, ):
 
-        # common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
-        # locale: SupportedLocale = common_configuration.locale
-        # backend_configuration: AppConfiguration = load_app_configuration_from_workbook(config_filename, locale)
         localized_app_configuration = load_localized_app_configuration_from_workbook(config_filename, locale)
 
         self.parent_app: 'App' = parent_app
         self.locale = locale
 
-        # app_id: str = backend_configuration.app_id
         app_name: str = localized_app_configuration.app_name
         app_description: str = localized_app_configuration.app_description
         sample_message: str = localized_app_configuration.sample_message
@@ -65,18 +58,7 @@ class LocalizedApp:
         self.case_model: CaseModel = case_model
 
         text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(config_filename, locale)
-        # text_analyzer = TextAnalyzer(case_model, parent_app.runtime_directory, text_analysis_configuration, locale)
         text_analyzer = TextAnalyzer(self, text_analysis_configuration)
-
-        if localized_app_configuration.decision_engine == "odm":
-            decision_odm_configuration = load_odm_configuration_from_workbook(config_filename, locale)
-            case_handling_decision_engine = CaseHandlingDecisionEngineODM(case_model, decision_odm_configuration)
-        else:
-            # For instance "apps.delphes.src.app_delphes.CaseHandlingDecisionEngineDelphesPython"
-            module_name, sep, classname = localized_app_configuration.decision_engine.rpartition(".")
-            module = importlib.import_module(module_name)
-            cls = getattr(module, classname)
-            case_handling_decision_engine = cls()
 
         case_handling_distribution_engine: CaseHandlingDistributionEngine = None
         if localized_app_configuration.distribution_engine == "email":
@@ -92,13 +74,19 @@ class LocalizedApp:
         self.messages_to_agent = messages_to_agent
         self.messages_to_requester = messages_to_requester
         self.text_analyzer: TextAnalyzer = text_analyzer
-        self.case_handling_decision_engine: CaseHandlingDecisionEngine = case_handling_decision_engine
+        # self.case_handling_decision_engine: CaseHandlingDecisionEngine = case_handling_decision_engine
         self.case_handling_distribution_engine: CaseHandlingDistributionEngine = case_handling_distribution_engine
 
     def get_app_ids(self) -> list[str]:
         pass
 
     def get_locales(self, app_id: str) -> list[SupportedLocale]:
+        pass
+
+    def get_llm_config_ids(self, app_id: str) -> list[str]:
+        pass
+
+    def get_decision_engine_config_ids(self, app_id: str) -> list[str]:
         pass
 
     def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
@@ -113,9 +101,18 @@ class LocalizedApp:
     def get_case_model(self, app_id: str, loc: SupportedLocale) -> CaseModel:
         return self.case_model
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str) -> dict[str, Any]:
-        result = self.text_analyzer.analyze(field_values, text)
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
+        result = self.text_analyzer.analyze(field_values, text, read_from_cache)
         return result
+
+    def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
+        cache_filename = ("{directory}/cache_{app_id}_{locale}.json".
+                          format(directory=self.parent_app.runtime_directory,
+                                 app_id=self.parent_app.app_id,
+                                 locale=self.locale))
+        with open(file=cache_filename, mode="w", encoding="utf-8") as f:
+            f.write(text_analysis_cache)
+
 
     @staticmethod
     def verbalize(list_verbalized_messages: list[Message], message_to_verbalize: str):
@@ -142,7 +139,7 @@ class LocalizedApp:
 
         case_handling_decision_input = CaseHandlingDecisionInput(intention_id=request.intention_id, field_values=field_values)
 
-        case_handling_decision_output: CaseHandlingDecisionOutput = self.case_handling_decision_engine.decide(case_handling_decision_input)
+        case_handling_decision_output: CaseHandlingDecisionOutput = self.parent_app.decide(request.decision_engine_config_id, case_handling_decision_input)
 
         # A verbalized copy of case_handling_decision_output
         verbalized_case_handling_decision_output = case_handling_decision_output.copy(deep=True)

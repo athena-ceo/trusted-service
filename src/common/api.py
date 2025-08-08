@@ -11,6 +11,7 @@ class CaseHandlingRequest(BaseModel):
     intention_id: str
     field_values: dict[str, Any]  # rename case field values
     highlighted_text_and_features: str
+    decision_engine_config_id: str
 
 
 class CaseHandlingDecisionInput(BaseModel):
@@ -57,6 +58,14 @@ class Api(ABC):
         pass
 
     @abstractmethod
+    def get_llm_config_ids(self, app_id: str) -> list[str]:
+        pass
+
+    @abstractmethod
+    def get_decision_engine_config_ids(self, app_id: str) -> list[str]:
+        pass
+
+    @abstractmethod
     def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
         pass
 
@@ -73,7 +82,11 @@ class Api(ABC):
         pass
 
     @abstractmethod
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str) -> dict[str, Any]:
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
+        pass
+
+    @abstractmethod
+    def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
         pass
 
     @abstractmethod

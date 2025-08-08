@@ -11,7 +11,8 @@ from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, Ca
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.configuration import SupportedLocale
 from src.common.connection_configuration import ConnectionConfiguration
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT, TEXT_ANALYSIS_CACHING_READ, TEXT_ANALYSIS_CACHING_RUN, \
+    TEXT_ANALYSIS_CACHING_RUN_AND_WRITE
 from src.common.logging import print_red
 from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
 from src.sample_frontend.frontend_localization import FrontendLocalization, frontend_localizations
@@ -33,23 +34,11 @@ def expander_detail(label: str, expanded: bool = False, *, icon: str | None = No
 
 class Context:
     def __init__(self, api_client: ApiClient, app_id: str, locale: SupportedLocale):
-        # self.common_configuration: CommonConfiguration = load_common_configuration_from_workbook(config_filename)
-        # self.frontend_configuration: FrontendConfiguration = load_frontend_configuration_from_workbook(config_filename, self.common_configuration.locale)
-
         self.api_client: ApiClient = api_client
         self.app_id: str = app_id
         self.locale: SupportedLocale = locale
 
         self.frontend_localization: FrontendLocalization = frontend_localizations[locale]  # Will fail here if language is not supported
-
-        # if self.frontend_configuration.connection_to_api == "rest":
-        # if connection_to_api == "rest":
-        #     url = f"http://{self.common_configuration.rest_api_host}:{self.common_configuration.rest_api_port}"
-        #     self.api_client: ApiClient = ApiClientHttp(url)
-        # else:
-        #     self.api_client: ApiClient = ApiClientDirect(config_filename)
-
-        # self.api_client: ApiClient = ApiClientDirect(config_filename)
 
         self.app_name = api_client.get_app_name(app_id, locale)
         self.app_description = api_client.get_app_description(app_id, locale)
@@ -180,7 +169,12 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: Fronten
 
 def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
-    analysis_result_and_rendering = context.api_client.analyze(context.app_id, context.locale, context.case.field_values, st.session_state.request_description_text_area)
+    analysis_result_and_rendering = context.api_client.analyze(app_id=context.app_id,
+                                                               loc=context.locale,
+                                                               field_values=context.case.field_values,
+                                                               text=st.session_state.request_description_text_area,
+                                                               read_from_cache=st.session_state.read_from_cache)
+
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
     # Copy the extracted field values to the case
@@ -206,37 +200,32 @@ class DecisionPayload(BaseModel):
     decision_output: CaseHandlingDecisionOutput
 
 
-class LocalizableApp(BaseModel):
+class AppProxy(BaseModel):
     app_id: str
-    locales: list[SupportedLocale]  # TODO list[SupportedLocale]
-
-
-def create_context():
-    api_client = st.session_state.api_client
-    app_id = st.session_state.localizable_app.app_id
-    locale = st.session_state.locale
-    print(type(api_client), app_id, locale)
-    if locale is None:  # Happens when user unselects locale
-        print_red("Not creating a context")
-        return
-    print_red("creating a context")
-    st.session_state.context = Context(api_client, app_id, locale)
+    locales: list[SupportedLocale]
+    llm_config_ids: list[str]
+    decision_engine_config_ids: list[str]
 
 
 def init(api_client: ApiClient):
-    localizable_apps: list[LocalizableApp] = []
+    app_proxys: list[AppProxy] = []
     app_ids: list[str] = api_client.get_app_ids()
     for app_id in app_ids:
         locales: list[SupportedLocale] = api_client.get_locales(app_id)
-        localizable_app = LocalizableApp(app_id=app_id, locales=locales)
-        localizable_apps.append(localizable_app)
+        decision_engine_config_ids: list[str] = api_client.get_decision_engine_config_ids(app_id)
+        llm_config_ids: list[str] = api_client.get_llm_config_ids(app_id)
+        app_proxy = AppProxy(app_id=app_id,
+                             locales=locales,
+                             llm_config_ids=llm_config_ids,
+                             decision_engine_config_ids=decision_engine_config_ids)
+        app_proxys.append(app_proxy)
     st.session_state.api_client = api_client
-    st.session_state.localizable_apps = localizable_apps
+    st.session_state.app_proxys = app_proxys
 
 
 def streamlit_rest_main(config_connection_filename: str):
     if "api_client" not in st.session_state:
-        connection_configuration: ConnectionConfiguration=ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
+        connection_configuration: ConnectionConfiguration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
         url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
         init(ApiClientHttp(url))
 
@@ -250,47 +239,109 @@ def streamlit_direct_main(appdef_filenames: list[str]):
     streamlit_main()
 
 
+def app_selected_unselected():
+    api_client = st.session_state.api_client
+    app_proxy = st.session_state.app_proxy
+
+    if app_proxy is None:
+        context = None
+        print_red("app_selected_unselected", "context == None")
+
+    else:
+        locale = app_proxy.locales[0]
+        context = Context(api_client, app_proxy.app_id, locale)
+        print_red("app_selected_unselected", app_proxy.app_id, locale)
+    st.session_state.context = context
+
+
+def locale_selected_unselected():
+    api_client = st.session_state.api_client
+    app_proxy = st.session_state.app_proxy
+    locale = st.session_state.locale
+
+    if locale is None:
+        context = None
+        print_red("locale_selected_unselected", "context == None")
+
+    else:
+        context = Context(api_client, app_proxy.app_id, locale)
+        print_red("locale_selected_unselected", app_proxy.app_id, locale)
+    st.session_state.context = context
+
+
+def save_cache():
+    api_client: ApiClient = st.session_state.api_client
+    context: Context = st.session_state.context
+
+    analysis_result: dict[str, Any] = context.analysis_result_and_rendering[KEY_ANALYSIS_RESULT]
+    text_analysis_cache: str = json.dumps(analysis_result, ensure_ascii=False, indent=4)
+    api_client.save_text_analysis_cache(context.app_id, context.locale, text_analysis_cache)
+
+
 def streamlit_main():
     api_client: ApiClient = st.session_state.api_client
-    localizable_apps: list[LocalizableApp] = st.session_state.localizable_apps
+    app_proxys: list[AppProxy] = st.session_state.app_proxys
 
     with st.sidebar:
 
         st.write("# Trusted Services")
 
-        localizable_app: LocalizableApp = st.segmented_control(
+        app_proxy: AppProxy = st.segmented_control(
             label="App",
-            options=localizable_apps,
+            options=app_proxys,
             selection_mode="single",
             default=None,
-            format_func=lambda loc_app: loc_app.app_id,
-            key="localizable_app",
+            format_func=lambda app_proxy: app_proxy.app_id,
+            key="app_proxy",
+            on_change=app_selected_unselected
         )
 
-        if localizable_app is None:
+        if app_proxy is None:
             return
 
         locale: SupportedLocale = st.segmented_control(
             label="Locale",
-            options=localizable_app.locales,
+            options=app_proxy.locales,
             selection_mode="single",
-            default=None,
+            default=app_proxy.locales[0],
             key="locale",
-            on_change=create_context,
+            on_change=locale_selected_unselected,
         )
 
-        if locale is None:
+
+        read_from_cache = st.toggle("Read text analysis from cache", value=True, key="read_from_cache")
+
+        llm_config_id: str | None = st.segmented_control(
+            label="LLM config",
+            options=app_proxy.llm_config_ids,
+            selection_mode="single",
+            default=app_proxy.llm_config_ids[0],
+            key="llm_config_id",
+            on_change=None,
+            disabled=read_from_cache,
+        )
+
+        decision_engine_config_id: str | None = st.segmented_control(
+            label="Decision engine config",
+            options=app_proxy.decision_engine_config_ids,
+            selection_mode="single",
+            default=app_proxy.decision_engine_config_ids[0],
+            key="decision_engine_config_id",
+            on_change=None,
+        )
+        st.toggle("Details", value=False, key="show_details")
+
+        # if not hasattr(st.session_state, "context") or (context := st.session_state.context) is None:
+        #    return
+
+        values_to_check = [locale, read_from_cache, llm_config_id, decision_engine_config_id]
+        if [v for v in values_to_check if v is None]:
             return
 
-        l12n: FrontendLocalization = frontend_localizations[locale]
+        context = st.session_state.context
 
-        st.toggle(l12n.label_show_details, value=False, key="show_details")
+    #  l12n: FrontendLocalization = frontend_localizations[locale]
 
-    # print(st.session_state)
-    # if not hasattr(st.session_state, "context"):
-    #     st.session_state.context = Context(config_filename)
-
-    context: Context = st.session_state.context
     l12n = context.frontend_localization
 
     st.write(f"# {context.app_name}\n{context.app_description}")
@@ -337,10 +388,17 @@ def streamlit_main():
         highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
 
         with expander_detail(l12n.label_text_analysis):
-            tab_prompt, tab_intents, tab_extraction = st.tabs([l12n.label_prompt, l12n.label_intent_scoring, l12n.label_feature_extraction])
+            tab_prompt, tab_intents, tab_extraction, tab_misc = st.tabs([l12n.label_prompt, l12n.label_intent_scoring, l12n.label_feature_extraction, l12n.label_misc])
             tab_prompt.write(prompt)
             tab_intents.write(markdown_table)
             tab_extraction.html(highlighted_text)
+            with tab_misc:
+                st.button(
+                    label="Save to cache",
+                    help="Not implemented yet",
+                    on_click=save_cache,
+                    icon=None,
+                )
 
     with expander_user(l12n.label_additional_information, expanded=True):
         analysis_result_and_rendering = context.analysis_result_and_rendering
@@ -367,6 +425,7 @@ def streamlit_main():
         "intention_id": id_of_selected_intention,
         "field_values": case.field_values,
         "highlighted_text_and_features": context.analysis_result_and_rendering["highlighted_text_and_features"],
+        "decision_engine_config_id": st.session_state.decision_engine_config_id
     }
 
     json_string = json.dumps(payload, indent=4)

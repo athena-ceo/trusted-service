@@ -18,4 +18,6 @@ appdef_filenames: list[str] = sys.argv[2:]
 
 app.init(connection_configuration, appdef_filenames)
 
-uvicorn.run(app, host=connection_configuration.rest_api_host, port=connection_configuration.rest_api_port)
+uvicorn.run(app, host=connection_configuration.rest_api_host,
+            port=connection_configuration.rest_api_port,
+            access_log=True)

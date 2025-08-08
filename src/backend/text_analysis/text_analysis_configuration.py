@@ -20,8 +20,8 @@ class TextAnalysisConfiguration(Configuration):
     definitions: list[Definition]
     intentions: list[Intention]
     # tests: list[Test]
-    read_from_cache: bool
-    save_to_cache: bool
+    # read_from_cache: bool
+    # save_to_cache: bool
 
 
 def load_text_analysis_configuration_from_workbook(filename: str, locale: SupportedLocale) -> TextAnalysisConfiguration:

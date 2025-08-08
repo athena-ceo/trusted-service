@@ -1,1 +1,55 @@
-{"scorings": [{"intention_id": "billing_issues", "score": 10, "justification": "The user explicitly mentions unexpected charges under 'Data Usage' and requests clarification, indicating a clear billing issue."}, {"intention_id": "network_problems", "score": 0, "justification": "There is no mention of service outages, dropped calls, or any network-related issues."}, {"intention_id": "plan_changes", "score": 0, "justification": "The user does not express interest in changing their subscription plan or adding any services."}, {"intention_id": "sim_or_device_support", "score": 0, "justification": "There are no references to issues with SIM cards or devices."}, {"intention_id": "account_management", "score": 5, "justification": "The user's request to review the account could relate to account management, but it primarily centers around billing."}], "level_of_frustration": 4, "fragments_level_of_frustration": {"list": ["That's just unacceptable.", "I am extremely nervous about this situation."]}}
+{
+    "scorings": [
+        {
+            "intention_id": "billing_issues",
+            "score": 10,
+            "justification": "The user clearly expresses concern about unexpected charges on their bill related to data usage, which falls directly under the category of billing issues.",
+            "intention_label": "Billing Issues",
+            "intention_fields": [
+                "recently_changed_plan_or_added_services"
+            ]
+        },
+        {
+            "intention_id": "network_problems",
+            "score": 0,
+            "justification": "There is no mention of network problems or issues related to service performance.",
+            "intention_label": "Network Problems",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "plan_changes",
+            "score": 0,
+            "justification": "The user does not indicate any desire to change their plan, upgrade, or downgrade their subscription.",
+            "intention_label": "Plan Changes",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sim_or_device_support",
+            "score": 0,
+            "justification": "There is no request for SIM or device support or mention of issues regarding a SIM or device.",
+            "intention_label": "SIM or Device Support",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "account_management",
+            "score": 0,
+            "justification": "While the user is seeking clarification regarding their account, the emphasis is primarily on billing issues without specific account management requests.",
+            "intention_label": "Account Management",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "level_of_frustration": 4,
+    "fragments_level_of_frustration": {
+        "list": [
+            "That's just unacceptable.",
+            "I am extremely nervous about this situation."
+        ]
+    }
+}
