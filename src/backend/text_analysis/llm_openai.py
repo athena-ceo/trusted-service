@@ -1,26 +1,24 @@
 from __future__ import annotations
 
 import os
-from typing import Type, Any
+from typing import Type, Any, Literal
 
 import openai
-from openai import beta
 from openai.types.chat.chat_completion import ChatCompletion
 from pydantic import BaseModel
 
-from src.backend.text_analysis.llm import Llm
-from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
+from src.backend.text_analysis.llm import Llm, LlmConfig
 
 
 class LlmOpenAI(Llm):
-    def __init__(self, config) -> None:
-        super().__init__(config)
-        self.build_client(config)
+    def __init__(self, llm_config: LlmConfig) -> None:
+        super().__init__(llm_config)
+        self.build_client(llm_config)
 
     def build_client(self, config) -> None:
         if "OPENAI_API_KEY" not in os.environ:
             raise ValueError("OPENAI_API_KEY environment variable is not set")
-        
+
         self.client = openai.OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY"),
             base_url="https://api.openai.com/v1"
@@ -31,9 +29,11 @@ class LlmOpenAI(Llm):
                                   system_prompt: str,
                                   text: str) -> BaseModel:
         completion: ChatCompletion = self.client.chat.completions.create(
-            model=self.config.model,
+            # model=self.text_analysis_config.model,
+            model=self.llm_config.model,
             response_format={"type": "json_object"},
-            temperature=self.config.temperature,
+            # temperature=self.text_analysis_config.temperature,
+            temperature=self.llm_config.temperature,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": text},
@@ -62,9 +62,11 @@ class LlmOpenAI(Llm):
         # print("DONE")
 
         completion: Any = self.client.chat.completions.parse(
-            model=self.config.model,
+            # model=self.text_analysis_config.model,
+            model=self.llm_config.model,
             response_format=analysis_response_model,
-            temperature=self.config.temperature,
+            # temperature=self.text_analysis_config.temperature,
+            temperature=float(self.llm_config.temperature),
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": text},

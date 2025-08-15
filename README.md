@@ -20,9 +20,9 @@ If needed, please refer to more specific README files:
 - [Troubleshooting](#troubleshooting)
 
 ## Quickstart
-Launch the untagrated demo (test/demo client + colocated Trusted Services server)
+Launch the intagrated demo (test/demo client + colocated Trusted Services server)
 
-```streamlit run launcher_testclient_direct.py apps/delphes/design_time/appdef_delphes_ff.xlsx apps/conneXion/design_time/appdef_conneXion_ff.xlsx```  
+```streamlit run launcher_testclient_direct.py runtime/config_server.yaml apps/delphes/design_time/appdef_delphes_ff.xlsx apps/conneXion/design_time/appdef_conneXion_ff.xlsx```  
 
 Launch the Trusted Services API  
 

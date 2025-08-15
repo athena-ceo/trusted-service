@@ -1,6 +1,7 @@
 from typing import Any
 
 from src.backend.backend.app import App
+from src.backend.backend.server_configuration import ServerConfiguration
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
@@ -8,10 +9,10 @@ from src.common.configuration import SupportedLocale
 
 class TrustedServicesServer(Api):
 
-    def __init__(self, config_filenames: list[str]):
+    def __init__(self, server_configuration: ServerConfiguration, config_filenames: list[str]):
         self.apps: dict[str, App] = {}
         for config_filename in config_filenames:
-            app = App(config_filename)
+            app = App(config_filename, server_configuration)
             self.apps[app.app_id] = app
 
     def get_app_ids(self) -> list[str]:
@@ -48,8 +49,8 @@ class TrustedServicesServer(Api):
     def get_case_model(self, app_id: str, loc: SupportedLocale) -> CaseModel:
         return self.apps[app_id].get_case_model(app_id, loc)
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
-        result = self.apps[app_id].analyze(app_id, loc, field_values, text, read_from_cache)
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
+        result = self.apps[app_id].analyze(app_id, loc, field_values, text, read_from_cache, llm_config_id)
         return result
 
     def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):

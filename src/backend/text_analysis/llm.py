@@ -1,20 +1,30 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Type
+from typing import Type, Literal
 
 from pydantic import BaseModel
 
 
 # Important: Update TextAnalyzer.__init__ when adding a new subclass
 
+class LlmConfig(BaseModel):
+    id: str
+    llm: Literal["openai", "ollama", "scaleway"]
+    model: str
+    response_format_type: Literal["json_object", "pydantic_model"]
+    prompt_format: Literal["markdown", "text"]
+    temperature: float
+
+
 class Llm(ABC):
-    def __init__(self, config) -> None:
-        self.client = None # To be defined in the subclass
-        self.config = config
+    def __init__(self, llm_config: LlmConfig) -> None:
+        self.client = None  # To be defined in the subclass
+        # self.text_analysis_config = text_analysis_config
+        self.llm_config: LlmConfig = llm_config
 
     @abstractmethod
-    def build_client(self, config) -> None:
+    def build_client(self, llm_config: LlmConfig) -> None:
         pass
 
     @abstractmethod

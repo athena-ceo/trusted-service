@@ -5,14 +5,13 @@ from typing import Type
 import ollama
 from pydantic import BaseModel
 
-from src.backend.text_analysis.llm import Llm
-from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
+from src.backend.text_analysis.llm import Llm, LlmConfig
 
 
 class LlmOllama(Llm):
-    def __init__(self, config) -> None:
-        super().__init__(config)
-        self.build_client(config)
+    def __init__(self, llm_config: LlmConfig) -> None:
+        super().__init__(llm_config)
+        self.build_client(llm_config)
 
     def build_client(self, config) -> None:
         self.client = None
@@ -23,13 +22,13 @@ class LlmOllama(Llm):
                                   text: str) -> BaseModel:
         # Using Ollama to generate a completion in JSON format
         response = ollama.chat(
-            model=self.config.model,
+            model=self.llm_config.model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": text},
             ],
             options={
-                "temperature": self.config.temperature,
+                "temperature": self.llm_config.temperature,
                 "format": "json"
             }
         )

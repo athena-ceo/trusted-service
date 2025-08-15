@@ -148,13 +148,14 @@
     "date_expiration_api": "11/10/2024",
     "fragments_date_expiration_api": {
         "list": [
-            "his processing‑extension certificate expired on 11 October 2024"
+            "Mr C’s processing‑extension certificate expired on 11 October 2024"
         ]
     },
     "mention_de_risque_sur_l_emploi": true,
     "fragments_mention_de_risque_sur_l_emploi": {
         "list": [
-            "Without action in the next few days, he risks losing his job."
+            "Without action in the next few days, he risks losing his job.",
+            "his employment is at stake"
         ]
     },
     "refugie_ou_protege_subsidiaire": true,

@@ -82,7 +82,7 @@ class Api(ABC):
         pass
 
     @abstractmethod
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
         pass
 
     @abstractmethod

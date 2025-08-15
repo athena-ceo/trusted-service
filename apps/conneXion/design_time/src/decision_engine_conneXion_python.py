@@ -1,9 +1,17 @@
+import inspect
 from datetime import datetime
 from typing import Literal
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 
 work_basket_all_issues = "all_issues"
+
+
+def trace_this_rule(output: CaseHandlingDecisionOutput):
+    frame = inspect.currentframe().f_back
+    func_name = frame.f_code.co_name
+    # output.details.append({"rule": func_name, "documentation": "This rule etc"})
+    output.details.append(func_name)
 
 
 def increment_priority_level(output: CaseHandlingDecisionOutput):
@@ -17,11 +25,10 @@ def increment_priority_level(output: CaseHandlingDecisionOutput):
 
 
 def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-
     def package_initialisations(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
         def rule_default(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-            output.details.append("rule_decision_par_defaut")
+            trace_this_rule(output)
 
             output.handling = "AGENT"
             output.acknowledgement_to_requester = "#ACK"
@@ -35,31 +42,31 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         def rule_standard_billing_issues(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "billing_issues":
-                output.details.append("rule_standard_billing_issues")
+                trace_this_rule(output)
 
                 output.priority = "VERY_LOW"
 
         def rule_standard_network_problems(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "network_problems":
-                output.details.append("rule_standard_network_problems")
+                trace_this_rule(output)
 
                 output.priority = "LOW"
 
         def rule_standard_plan_changes(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "plan_changes":
-                output.details.append("rule_standard_plan_changes")
+                trace_this_rule(output)
 
                 output.priority = "MEDIUM"
 
         def rule_standard_sim_or_device_support(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "sim_or_device_support":
-                output.details.append("rule_standard_sim_or_device_support")
+                trace_this_rule(output)
 
                 output.priority = "HIGH"
 
         def rule_standard_account_management(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "account_management":
-                output.details.append("rule_standard_account_management")
+                trace_this_rule(output)
 
                 output.priority = "VERY_HIGH"
 
@@ -73,20 +80,20 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         def rule_frustration_3(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.field_values["level_of_frustration"] == 3:
-                output.details.append("rule_frustration_3")
+                trace_this_rule(output)
 
                 increment_priority_level(output)
 
         def rule_frustration_4(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.field_values["level_of_frustration"] == 4:
-                output.details.append("rule_frustration_4")
+                trace_this_rule(output)
 
                 increment_priority_level(output)
                 increment_priority_level(output)
 
         def rule_frustration_5(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.field_values["level_of_frustration"] == 5:
-                output.details.append("rule_frustration_5")
+                trace_this_rule(output)
 
                 increment_priority_level(output)
                 increment_priority_level(output)
@@ -99,14 +106,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
     def package_alerts(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
         def rule_high_cltv_and_frustrated(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-            if input.field_values["level_of_frustration"] >= 3 and input.field_values["customer_lifetime_value"] >= "High":
-                output.details.append("rule_high_cltv_and_frustrated")
+            if input.field_values["level_of_frustration"] >= 3 and input.field_values["customer_lifetime_value"] == "High":
+                trace_this_rule(output)
 
                 output.notes.append("#CLIENT_FRUSTRATED")
                 output.notes.append("#CLIENT_HIGH_VALUE")
 
         rule_high_cltv_and_frustrated(input, output)
-
 
     package_initialisations(input, output)
     package_standard_priority(input, output)

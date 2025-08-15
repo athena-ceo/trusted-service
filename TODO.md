@@ -3,61 +3,48 @@
 *********
 
 # Ongoing
-- Tester save cache, vérifier ensure_ascii
-- Tester en mode rest
-- lecture du cache: booleen, virer les constantes
-- commit
-
-Server
-- Test Préfecture
-- Vidéos
-
-- Faire marcher avec portail Préfecture
-- Décider quel modèle depuis le client
-- Variables calculées
+- float() => virer
+- Faire marcher le launcher REST
+- Update README
+- Très important: llm_config dans test préfecture
+- git
 - 
+- Tester les deux launchers
+- Pas de référence de LocalizedApp dans TextAnalyzer, etc...
+- Error messages
+- Documenter APIs REST
 
-CLEAN
-- Les trois classes de la hierarchie doivent implémenter l'interface
+# Avec Joël
+- Test deux autres LLM
+- Scaleway
+- Test Préfecture
+
+Détails
 - typage SupportedLocale
 - Vérifier la logique des callbacks
 - intention => intent
-- simplifier le code de ces deux constructeurs
 - chercher tous les todo et tous les warnings et cas d'erreur
 - README
-- Nom des classes postfix
-- Rzevoier les __init__ des trois composants en cascade
 - config => def
 - loc => locale
 - cas d'erreur (app inconnue, locale non supportée)
 - improve Error evaluating {departeme2nt} == 78
 - Better manage the case where the cache file does not exist
-- True / False in display of booleans
 - Manage Python code evaluation error in app-specific lists
 - Manage gently config file absent or incorrect
 - Erreur de connexion
-- Documenter APIs RESR
-
----------------------------------------------------------------- 
-- nom de fichier json de cachingcontient app et loc
-- changer les api rest
-
-
-# ONGOING
+- details => traces
+- configuration => config
 - in Streamlit client, look for default value in list AFTER filtering
-
 - Rename notes alerts
-- String for date format
-- solve issue with FastAPI
-- test with Calc
+- String for date format should be localized
+- test with Libre Office Calc
 - Remove update_case_field_str
-- FastAPI call
 
 - intention => intent
 
 # Priority 1
 ## Framework
-- Dynamic list of values, for instance arrondissements
 - Improve
   - Complete exception handling on send email, call decision service, call OpenAI
   - use constants instead of string everywhere

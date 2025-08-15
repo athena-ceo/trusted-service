@@ -95,10 +95,10 @@ async def get_case_model(app_id: str, loc: SupportedLocale) -> CaseModel:
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/analyze")
-async def analyze(app_id: str, loc: SupportedLocale, field_values: str, text: str, read_from_cache: bool):
+async def analyze(app_id: str, loc: SupportedLocale, field_values: str, text: str, read_from_cache: bool, llm_config_id: str):
     log_function_call()
     field_values2 = json.loads(field_values)
-    return app.api.analyze(app_id=app_id, loc=loc, field_values=field_values2, text=text, read_from_cache=read_from_cache)
+    return app.api.analyze(app_id=app_id, loc=loc, field_values=field_values2, text=text, read_from_cache=read_from_cache, llm_config_id=llm_config_id)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{loc}/save_text_analysis_cache")
@@ -116,9 +116,6 @@ async def handle_case(app_id: str, loc: SupportedLocale, request: CaseHandlingRe
 # API_ROUTE = "/api/v1"
 API_ROUTE = "/delphes-api/api/v1"
 
-print(f"{API_ROUTE}/analyze")
-print("***")
-
 
 @app.post(f"{API_ROUTE}/analyze", tags=["Services"])
 async def analyze_v1(data: dict) -> dict[str, Any]:
@@ -129,7 +126,7 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
     text: str = data.get("text", "")
 
     print("********************************** analyser_demande **********************************")
-    return app.api.analyze(app_id="delphes", loc="fr", field_values=field_values, text=text, read_from_cache=False)
+    return app.api.analyze(app_id="delphes", loc="fr", field_values=field_values, text=text, read_from_cache=False, llm_config_id="tests")
 
 
 @app.post(f"{API_ROUTE}/process_request", tags=["Services"])

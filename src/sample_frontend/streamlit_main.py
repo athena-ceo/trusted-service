@@ -7,6 +7,7 @@ import streamlit as st
 from pydantic import BaseModel
 from streamlit.delta_generator import DeltaGenerator
 
+from src.backend.backend.server_configuration import ServerConfiguration
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.configuration import SupportedLocale
@@ -88,8 +89,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: Fronten
                                  args=None, kwargs=None,
                                  format=format_streamlit,
                                  disabled=False,
-                                 label_visibility="visible",
-                                 )
+                                 label_visibility="visible",)
 
         case.field_values[case_field.id] = d_.strftime(format_python)
 
@@ -110,8 +110,6 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: Fronten
                 if option.id == case_field.default_value:
                     index = index2
                     break
-
-            print("----------------------------")
 
             # Filtering according to the condition
 
@@ -172,7 +170,8 @@ def submit_text_for_ia_analysis():
                                                                loc=context.locale,
                                                                field_values=context.case.field_values,
                                                                text=st.session_state.request_description_text_area,
-                                                               read_from_cache=st.session_state.read_from_cache)
+                                                               read_from_cache=st.session_state.read_from_cache,
+                                                               llm_config_id=st.session_state.llm_config_id)
 
     context.analysis_result_and_rendering = analysis_result_and_rendering
 
@@ -231,9 +230,9 @@ def streamlit_rest_main(config_connection_filename: str):
     streamlit_main()
 
 
-def streamlit_direct_main(appdef_filenames: list[str]):
+def streamlit_direct_main(server_configuration: ServerConfiguration, appdef_filenames: list[str]):
     if "api_client" not in st.session_state:
-        init(ApiClientDirect(appdef_filenames))
+        init(ApiClientDirect(server_configuration, appdef_filenames))
 
     streamlit_main()
 

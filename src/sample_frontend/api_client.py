@@ -4,6 +4,7 @@ from typing import Any
 
 import requests
 
+from src.backend.backend.server_configuration import ServerConfiguration
 from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.case_model import CaseModel
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
@@ -18,8 +19,8 @@ class ApiClient(Api, ABC):
 #  TODO: Generic delegation
 
 class ApiClientDirect(ApiClient):
-    def __init__(self, config_filenames: list[str]):
-        self.api: Api = TrustedServicesServer(config_filenames)
+    def __init__(self, server_configuration: ServerConfiguration, config_filenames: list[str]):
+        self.api: Api = TrustedServicesServer(server_configuration, config_filenames)
 
     def get_app_ids(self) -> list[str]:
         return self.api.get_app_ids()
@@ -46,8 +47,8 @@ class ApiClientDirect(ApiClient):
         case_model: CaseModel = self.api.get_case_model(app_id, loc)
         return case_model
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
-        return self.api.analyze(app_id, loc, field_values, text, read_from_cache)
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
+        return self.api.analyze(app_id, loc, field_values, text, read_from_cache, llm_config_id)
 
     def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
         self.api.save_text_analysis_cache(app_id, loc, text_analysis_cache)
@@ -104,12 +105,13 @@ class ApiClientHttp(ApiClient):
             return None
         return CaseModel.model_validate(case_model_data)
 
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, Any]:
+    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
         url = f"{self.base_url}/{API_ROUTE_V2}/apps/{app_id}/{loc}/analyze"
         params = {
             "field_values": json.dumps(field_values),
             "text": text,
             "read_from_cache": read_from_cache,
+            "llm_config_id": llm_config_id
         }
         response = requests.post(url, params=params)
         if response.status_code == 200:

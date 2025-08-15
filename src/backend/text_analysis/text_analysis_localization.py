@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from src.common.configuration import SupportedLocale
 from src.common.localization import Localization
 

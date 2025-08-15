@@ -6,14 +6,13 @@ from typing import Type
 from openai import OpenAI
 from pydantic import BaseModel
 
-from src.backend.text_analysis.llm import Llm
-from src.backend.text_analysis.text_analysis_configuration import TextAnalysisConfiguration
+from src.backend.text_analysis.llm import Llm, LlmConfig
 
 
 class LlmScaleway(Llm):
-    def __init__(self, config) -> None:
-        super().__init__(config)
-        self.build_client(config)
+    def __init__(self, llm_config: LlmConfig) -> None:
+        super().__init__(llm_config)
+        self.build_client(llm_config)
 
     def build_client(self, config) -> None:
         project_id = os.environ.get("SCW_PROJECT_ID")
@@ -35,13 +34,13 @@ class LlmScaleway(Llm):
                                   text: str) -> BaseModel:
         # Using OpenAI API with Scaleway to generate a completion in JSON format
         response = self.client.chat.completions.parse(
-            model=self.config.model,
+            model=self.llm_config.model,
             response_format={"type": "json_object"},
             messages=[
                 { "role": "system", "content": system_prompt },
                 { "role": "user", "content": text },
             ],
-            temperature=self.config.temperature,
+            temperature=self.llm_config.temperature,
             top_p=0.9,
             presence_penalty=0,
         )
