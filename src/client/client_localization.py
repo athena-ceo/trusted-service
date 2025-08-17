@@ -2,7 +2,7 @@ from src.common.configuration import SupportedLocale
 from src.common.localization import Localization
 
 
-class FrontendLocalization(Localization):
+class ClientLocalization(Localization):
     label_show_details: str
     label_context: str
     label_yes: str
@@ -31,8 +31,8 @@ class FrontendLocalization(Localization):
 # Add here support for new languages
 
 
-frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
-    "en": FrontendLocalization(
+frontend_localizations: dict[SupportedLocale, ClientLocalization] = {
+    "en": ClientLocalization(
         label_show_details="Show details",
         label_context="Context",
         label_yes="Yes",
@@ -56,7 +56,7 @@ frontend_localizations: dict[SupportedLocale, FrontendLocalization] = {
         label_processing_of_the_request="Processing of the request",
         label_proposed_response="Proposed response",
     ),
-    "fr": FrontendLocalization(
+    "fr": ClientLocalization(
         label_show_details="Montrer les détails",
         label_context="Contexte de la demande",
         label_yes="Oui",

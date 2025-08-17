@@ -50,6 +50,10 @@ class CaseHandlingDetailedResponse(BaseModel):
 class Api(ABC):
 
     @abstractmethod
+    def reload_apps(self):
+        pass
+
+    @abstractmethod
     def get_app_ids(self) -> list[str]:
         pass
 

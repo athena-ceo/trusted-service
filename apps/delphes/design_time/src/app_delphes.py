@@ -62,4 +62,4 @@ class CaseHandlingDecisionEngineDelphesPython_OLD(CaseHandlingDecisionEngine):
 
 # class AppDelphes(App):
 #     def __init__(self):
-#         super().__init__(configuration_filename="apps/delphes/runtime/configuration_delphes.xlsx")
+#         super().__init__(configuration_filename="apps/delphes/runtime_ff/configuration_delphes.xlsx")

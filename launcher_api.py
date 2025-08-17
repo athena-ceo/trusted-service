@@ -3,7 +3,7 @@ import sys
 import uvicorn
 
 from src.backend.backend.rest.main import app
-from src.backend.backend.server_configuration import ServerConfiguration
+from src.backend.backend.server_config import ServerConfig
 from src.common.connection_configuration import ConnectionConfiguration
 
 if len(sys.argv) < 4:
@@ -15,19 +15,19 @@ if len(sys.argv) < 4:
     print(f"python {sys.argv[0]} "
           "runtime/config_connection.yaml "
           "runtime/config_server.yaml "
-          "apps/delphes/design_time/appdef_delphes_ff.xlsx "
-          "apps/conneXion/design_time/appdef_conneXion_ff.xlsx")
+          "apps/delphes/design_time/delphes.xlsx "
+          "apps/conneXion/design_time/conneXion.xlsx")
 else:
 
     config_connection_filename = sys.argv[1]
     connection_configuration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
 
     config_server_filename = sys.argv[2]
-    server_configuration = ServerConfiguration.load_from_yaml_file(config_server_filename)
+    server_configuration = ServerConfig.load_from_yaml_file(config_server_filename)
 
     appdef_filenames: list[str] = sys.argv[3:]
 
-    app.init(connection_configuration, appdef_filenames)
+    app.init(connection_configuration, server_configuration, appdef_filenames)
 
     uvicorn.run(app, host=connection_configuration.rest_api_host,
                 port=connection_configuration.rest_api_port,

@@ -14,6 +14,7 @@ from typing import List, Type, Optional, Any, cast
 
 from pydantic import BaseModel, Field, create_model
 
+from src.backend.backend.paths import get_cache_file_path
 from src.backend.rendering.html import build_html_highlighted_text_and_features
 from src.backend.rendering.md import build_markdown_table_intentions, build_markdown_table
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention, Definition
@@ -25,7 +26,6 @@ from src.backend.text_analysis.text_analysis_localization import TextAnalysisLoc
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale, Configuration, load_configuration_from_workbook
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
-from src.common.logging import print_red
 
 
 class TextAnalysisConfiguration(Configuration):
@@ -83,7 +83,6 @@ def create_analysis_models(locale: SupportedLocale,
 
         if feature.highlight_fragments:
             description = localization.promptstring_description_of_fragments_feature.format(description_of_feature=feature.description)
-            # description=localization.description_of_fragments_feature(feature.description)))
             field_definitions[f"{PREFIX_FRAGMENTS}{feature.id}"] = Optional[ListOfTextFragments], Field(default=None, description=description)
 
     return create_model(
@@ -93,11 +92,16 @@ def create_analysis_models(locale: SupportedLocale,
 
 
 class TextAnalyzer:
-    def __init__(self, localized_app: 'LocalizedApp', text_analysis_config: TextAnalysisConfiguration, llm_config: LlmConfig):
+    def __init__(self, runtime_directory: str, app_id: str, locale: SupportedLocale, llm_config: LlmConfig,
+                 case_model: CaseModel, text_analysis_config: TextAnalysisConfiguration):
 
-        self.case_model: CaseModel = localized_app.case_model
-        self.parent_app: 'App' = localized_app.parent_app
-        self.locale: SupportedLocale = localized_app.locale
+        self.runtime_directory = runtime_directory
+        self.app_id = app_id
+        self.locale = locale
+        self.llm_config = llm_config
+        self.text_analysis_config = text_analysis_config  # TODO - READ HERE
+
+        self.case_model: CaseModel = case_model
 
         features: list[Feature] = []
         for case_field in self.case_model.case_fields:
@@ -110,8 +114,6 @@ class TextAnalyzer:
                 features.append(feature)
         self.features: list[Feature] = features
 
-        self.text_analysis_config: TextAnalysisConfiguration = text_analysis_config
-        self.llm_config: LlmConfig = llm_config
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(self.locale, features)
 
         self.templated_system_prompt: str = self.build_system_prompt()
@@ -130,9 +132,7 @@ class TextAnalyzer:
 
         text_analysis_config: TextAnalysisConfiguration = self.text_analysis_config
         llm_config: LlmConfig = self.llm_config
-        # locale: SupportedLocale = self.locale
         features: list[Feature] = self.features
-        # analysis_response_model: Type[BaseModel] = self.analysis_response_model
 
         localization: TextAnalysisLocalization = text_analysis_localizations[self.locale]  # Will fail here if language is not supported - b
 
@@ -239,15 +239,14 @@ class TextAnalyzer:
 
         # Calling LLM
 
-        cache_filename = "{directory}/cache_{app_id}_{locale}.json".format(directory=self.parent_app.runtime_directory, app_id=self.parent_app.app_id, locale=self.locale)
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
 
         if read_from_cache:
             with open(file=cache_filename, mode="r", encoding="utf-8") as f:
                 analysis_result = json.load(f)
 
-        else:  # read_from_cache
+        else:
             if self.llm_config.response_format_type == "json_object":
-                # if self.text_analysis_config.response_format_type == "json_object":
                 _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
             else:
                 _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)

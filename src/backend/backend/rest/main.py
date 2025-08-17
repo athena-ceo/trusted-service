@@ -5,6 +5,7 @@ from typing import Optional, Any, List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.backend.backend.server_config import ServerConfig
 from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
@@ -26,7 +27,10 @@ class FastAPI2(FastAPI):
         super().__init__()
         self.api: Optional[Api] = None
 
-    def init(self, connection_configuration, appdef_filenames: list[str]):
+    def init(self,
+             connection_configuration,
+             server_configuration: ServerConfig,
+             appdef_filenames: list[str]):
         self.add_middleware(
             CORSMiddleware,
             allow_origins=[connection_configuration.client_url, "http://localhost:5005"],
@@ -35,7 +39,7 @@ class FastAPI2(FastAPI):
             allow_headers=["*"],
         )
 
-        self.api: Api = TrustedServicesServer(appdef_filenames)
+        self.api: Api = TrustedServicesServer(server_configuration, appdef_filenames)
 
 
 app: FastAPI2 = FastAPI2()

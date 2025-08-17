@@ -3,7 +3,7 @@ from typing import Any, cast
 
 from pydantic import BaseModel
 
-# from src.backend.backend.app import App
+from src.backend.backend.paths import get_cache_file_path
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
 from src.backend.distribution.distribution_email.distribution_email import CaseHandlingDistributionEngineEmail
 from src.backend.distribution.distribution_email.distribution_email_configuration import DistributionEmailConfiguration, load_email_configuration_from_workbook
@@ -28,8 +28,6 @@ class LocalizedAppConfiguration(Configuration):
     messages_to_requester: list[Message]
 
 
-
-
 def load_localized_app_configuration_from_workbook(filename: str, locale: SupportedLocale) -> LocalizedAppConfiguration:
     conf: Configuration = load_configuration_from_workbook(filename=filename,
                                                            main_tab="localized_app",
@@ -43,22 +41,26 @@ def load_localized_app_configuration_from_workbook(filename: str, locale: Suppor
 
 class LocalizedApp(Api):
 
-    def __init__(self, config_filename: str, parent_app: 'App', locale: SupportedLocale, ):
+    def __init__(self, runtime_directory: str, app_id: str, parent_app: 'App', locale: SupportedLocale):
 
+        self.runtime_directory: str = runtime_directory
+        self.app_id: str = app_id
         self.parent_app: 'App' = parent_app
-        self.locale = locale
+        self.locale: SupportedLocale = locale
 
         # READ FROM localized_app_configuration
 
-        localized_app_configuration = load_localized_app_configuration_from_workbook(config_filename, locale)
+        app_dir = runtime_directory + "/apps/" + app_id
+        app_def_filename = app_dir + "/" + app_id + ".xlsx"
+        localized_app_configuration = load_localized_app_configuration_from_workbook(app_def_filename, locale)
 
         self.app_name: str = localized_app_configuration.app_name
         self.app_description: str = localized_app_configuration.app_description
         self.sample_message: str = localized_app_configuration.sample_message
 
-        self.case_handling_distribution_engine: CaseHandlingDistributionEngine | None= None
+        self.case_handling_distribution_engine: CaseHandlingDistributionEngine | None = None
         if localized_app_configuration.distribution_engine == "email":
-            email_configuration: DistributionEmailConfiguration = load_email_configuration_from_workbook(config_filename, locale)
+            email_configuration: DistributionEmailConfiguration = load_email_configuration_from_workbook(app_def_filename, locale)
             self.case_handling_distribution_engine = CaseHandlingDistributionEngineEmail(email_configuration, locale)
         else:  # Ticketing system, etc...
             pass
@@ -68,13 +70,17 @@ class LocalizedApp(Api):
 
         #####
 
-        case_model_configuration: CaseModelConfiguration = load_case_model_configuration_from_workbook(config_filename, locale)
+        case_model_configuration: CaseModelConfiguration = load_case_model_configuration_from_workbook(app_def_filename, locale)
         case_model: CaseModel = CaseModel(case_fields=case_model_configuration.case_fields)
         self.case_model: CaseModel = case_model
 
-        self.text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(config_filename, locale)
-
+        self.text_analysis_configuration: TextAnalysisConfiguration = load_text_analysis_configuration_from_workbook(app_def_filename, locale)
         self.text_analyzers: dict[str, TextAnalyzer] = {}
+
+    # API implementation
+
+    def reload_apps(self):
+        pass
 
     def get_app_ids(self) -> list[str]:
         pass
@@ -106,7 +112,8 @@ class LocalizedApp(Api):
             print("Creating a new text analyzer for llm config '{llm_config_id}'".format(llm_config_id=llm_config_id))
             llm_configs: dict[str, LlmConfig] = self.parent_app.llm_configs
             llm_config: LlmConfig = llm_configs[llm_config_id]
-            text_analyzer = TextAnalyzer(self, self.text_analysis_configuration, llm_config)
+
+            text_analyzer = TextAnalyzer(self.runtime_directory, self.app_id, self.locale, llm_config, self.case_model, self.text_analysis_configuration)
             self.text_analyzers[llm_config_id] = text_analyzer
         else:
             print("Reusing text analyzer for locale '{llm_config_id}".format(llm_config_id=llm_config_id))
@@ -114,10 +121,7 @@ class LocalizedApp(Api):
         return result
 
     def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
-        cache_filename = ("{directory}/cache_{app_id}_{locale}.json".
-                          format(directory=self.parent_app.runtime_directory,
-                                 app_id=self.parent_app.app_id,
-                                 locale=self.locale))
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
         with open(file=cache_filename, mode="w", encoding="utf-8") as f:
             f.write(text_analysis_cache)
 

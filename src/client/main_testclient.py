@@ -7,15 +7,13 @@ import streamlit as st
 from pydantic import BaseModel
 from streamlit.delta_generator import DeltaGenerator
 
-from src.backend.backend.server_configuration import ServerConfiguration
+from src.client.api_client import ApiClient
+from src.client.client_localization import ClientLocalization, frontend_localizations
 from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.configuration import SupportedLocale
-from src.common.connection_configuration import ConnectionConfiguration
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
-from src.common.logging import print_red
-from src.sample_frontend.api_client import ApiClientDirect, ApiClient, ApiClientHttp
-from src.sample_frontend.frontend_localization import FrontendLocalization, frontend_localizations
+from src.common.logging import print_red, print_blue
 
 connection_to_api = "direct"
 
@@ -38,7 +36,7 @@ class Context:
         self.app_id: str = app_id
         self.locale: SupportedLocale = locale
 
-        self.frontend_localization: FrontendLocalization = frontend_localizations[locale]  # Will fail here if language is not supported
+        self.frontend_localization: ClientLocalization = frontend_localizations[locale]  # Will fail here if language is not supported
 
         self.app_name = api_client.get_app_name(app_id, locale)
         self.app_description = api_client.get_app_description(app_id, locale)
@@ -55,7 +53,7 @@ class Context:
         pass
 
 
-def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: FrontendLocalization):
+def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: ClientLocalization):
     key = "input_" + case_field.id
 
     label = case_field.label
@@ -89,7 +87,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: Fronten
                                  args=None, kwargs=None,
                                  format=format_streamlit,
                                  disabled=False,
-                                 label_visibility="visible",)
+                                 label_visibility="visible", )
 
         case.field_values[case_field.id] = d_.strftime(format_python)
 
@@ -205,7 +203,7 @@ class AppProxy(BaseModel):
     decision_engine_config_ids: list[str]
 
 
-def init(api_client: ApiClient):
+def populate_apps(api_client: ApiClient):
     app_proxys: list[AppProxy] = []
     app_ids: list[str] = api_client.get_app_ids()
     for app_id in app_ids:
@@ -217,24 +215,24 @@ def init(api_client: ApiClient):
                              llm_config_ids=llm_config_ids,
                              decision_engine_config_ids=decision_engine_config_ids)
         app_proxys.append(app_proxy)
-    st.session_state.api_client = api_client
     st.session_state.app_proxys = app_proxys
 
 
-def streamlit_rest_main(config_connection_filename: str):
-    if "api_client" not in st.session_state:
-        connection_configuration: ConnectionConfiguration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
-        url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
-        init(ApiClientHttp(url))
-
-    streamlit_main()
-
-
-def streamlit_direct_main(server_configuration: ServerConfiguration, appdef_filenames: list[str]):
-    if "api_client" not in st.session_state:
-        init(ApiClientDirect(server_configuration, appdef_filenames))
-
-    streamlit_main()
+# def streamlit_rest_main(config_connection_filename: str):
+#     if "api_client" not in st.session_state:
+#         connection_configuration: ConnectionConfiguration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
+#         url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
+#         populate_aps(ApiClientRest(url))
+#
+#     main_testclient()
+#
+#
+# def streamlit_direct_main(server_configuration: ServerConfiguration, appdef_filenames: list[str]):
+#     if "api_client" not in st.session_state:
+#         api: Api = TrustedServicesServer(server_configuration, appdef_filenames)
+#         populate_aps(ApiDecorator(api))
+#
+#     main_testclient()
 
 
 def app_selected_unselected():
@@ -275,16 +273,38 @@ def save_cache():
     text_analysis_cache: str = json.dumps(analysis_result, ensure_ascii=False, indent=4)
     api_client.save_text_analysis_cache(context.app_id, context.locale, text_analysis_cache)
 
-
-def streamlit_main():
+def reload_apps():
+    print_red("reload_apps")
     api_client: ApiClient = st.session_state.api_client
-    app_proxys: list[AppProxy] = st.session_state.app_proxys
+    # api_client.reload_apps()
+    populate_apps(api_client)
+
+
+def main_testclient():
+
+    # https://yt3.googleusercontent.com/egw_LrYaDpQ5dUxq_8O1Szx_cP2IqZv2_WlQbsJBoVC5TrqhWmYbVEwSW3qfNwnUlZ6CtesMC8s=s160-c-k-c0x00ffffff-no-rj
+
+    st.logo("images/channels4_profile.jpg", link=None)
 
     with st.sidebar:
 
+        st.button(
+            label="",
+            help="Reload the apps from the the Trusted Services runtime home directory", # runtime dir => runtime_home
+            on_click=reload_apps(),
+            icon=":material/directory_sync:",)
+
+        st.button(
+            label="",
+            help="Trusted Services Assistant",
+            on_click=None,
+            icon=":material/robot_2:",)
+
         st.write("# Trusted Services")
 
-        app_proxy: AppProxy = st.segmented_control(
+        app_proxys: list[AppProxy] = st.session_state.app_proxys
+
+        app_proxy: AppProxy = st.pills(
             label="App",
             options=app_proxys,
             selection_mode="single",
@@ -297,7 +317,7 @@ def streamlit_main():
         if app_proxy is None:
             return
 
-        locale: SupportedLocale = st.segmented_control(
+        locale: SupportedLocale = st.pills(
             label="Locale",
             options=app_proxy.locales,
             selection_mode="single",
@@ -306,10 +326,9 @@ def streamlit_main():
             on_change=locale_selected_unselected,
         )
 
-
         read_from_cache = st.toggle("Read text analysis from cache", value=True, key="read_from_cache")
 
-        llm_config_id: str | None = st.segmented_control(
+        llm_config_id: str | None = st.pills(
             label="LLM config",
             options=app_proxy.llm_config_ids,
             selection_mode="single",
@@ -319,7 +338,7 @@ def streamlit_main():
             disabled=read_from_cache,
         )
 
-        decision_engine_config_id: str | None = st.segmented_control(
+        decision_engine_config_id: str | None = st.pills(
             label="Decision engine config",
             options=app_proxy.decision_engine_config_ids,
             selection_mode="single",

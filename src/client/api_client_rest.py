@@ -4,60 +4,14 @@ from typing import Any
 
 import requests
 
-from src.backend.backend.server_configuration import ServerConfiguration
-from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.case_model import CaseModel
 from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.configuration import SupportedLocale
 from src.common.constants import API_ROUTE_V2
+from src.client.api_client import ApiClient
 
 
-class ApiClient(Api, ABC):
-    pass
-
-
-#  TODO: Generic delegation
-
-class ApiClientDirect(ApiClient):
-    def __init__(self, server_configuration: ServerConfiguration, config_filenames: list[str]):
-        self.api: Api = TrustedServicesServer(server_configuration, config_filenames)
-
-    def get_app_ids(self) -> list[str]:
-        return self.api.get_app_ids()
-
-    def get_locales(self, app_id: str) -> list[SupportedLocale]:
-        return self.api.get_locales(app_id)
-
-    def get_llm_config_ids(self, app_id: str) -> list[str]:
-        return self.api.get_llm_config_ids(app_id)
-
-    def get_decision_engine_config_ids(self, app_id: str) -> list[str]:
-        return self.api.get_decision_engine_config_ids(app_id)
-
-    def get_app_name(self, app_id: str, loc: SupportedLocale) -> str:
-        return self.api.get_app_name(app_id, loc)
-
-    def get_app_description(self, app_id: str, loc: SupportedLocale) -> str:
-        return self.api.get_app_description(app_id, loc)
-
-    def get_sample_message(self, app_id: str, loc: SupportedLocale) -> str:
-        return self.api.get_sample_message(app_id, loc)
-
-    def get_case_model(self, app_id: str, loc: SupportedLocale) -> CaseModel:
-        case_model: CaseModel = self.api.get_case_model(app_id, loc)
-        return case_model
-
-    def analyze(self, app_id: str, loc: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
-        return self.api.analyze(app_id, loc, field_values, text, read_from_cache, llm_config_id)
-
-    def save_text_analysis_cache(self, app_id: str, loc: str, text_analysis_cache: str):
-        self.api.save_text_analysis_cache(app_id, loc, text_analysis_cache)
-
-    def handle_case(self, app_id: str, loc: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
-        return self.api.handle_case(app_id, loc, request)
-
-
-class ApiClientHttp(ApiClient):
+class ApiClientRest(ApiClient):
 
     def __init__(self, http_connection_url: str):
         self.base_url = http_connection_url

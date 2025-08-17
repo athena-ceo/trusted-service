@@ -1,19 +1,39 @@
+from pathlib import Path
 from typing import Any
 
 from src.backend.backend.app import App
-from src.backend.backend.server_configuration import ServerConfiguration
-from src.common.api import Api, CaseHandlingRequest, CaseHandlingDetailedResponse
+from src.backend.backend.server_config import ServerConfig
+from src.common.api import Api
+from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse
 from src.common.case_model import CaseModel
 from src.common.configuration import SupportedLocale
+from src.common.logging import print_blue
 
 
 class TrustedServicesServer(Api):
 
-    def __init__(self, server_configuration: ServerConfiguration, config_filenames: list[str]):
-        self.apps: dict[str, App] = {}
-        for config_filename in config_filenames:
-            app = App(config_filename, server_configuration)
-            self.apps[app.app_id] = app
+    def __init__(self, runtime_directory: str):
+        self.runtime_directory = runtime_directory
+
+        # config_server_filename = runtime_directory + "/" + "config_server.yaml"
+        # self.server_configuration = ServerConfig.load_from_yaml_file(config_server_filename)
+
+        self.apps: dict[str, App] = {}  # To be ovedrriden in reload_apps
+        self.reload_apps()
+
+    def reload_apps(self):
+        apps_subdirectory = Path(self.runtime_directory + "/apps")
+        app_ids = [p.name for p in apps_subdirectory.iterdir() if p.is_dir()]
+        # appdef_filenames: list[str] = [self.runtime_directory + "/apps/" + app_id + "/" + app_id + ".xlsx" for app_id in app_ids]
+
+        # self.apps: dict[str, App] = {}  # TODO : More idiomatic
+        # for app_id in app_ids:
+        #     self.apps[app_id] = App(app_id, self.runtime_directory, self.server_configuration)
+
+        self.apps: dict[str, App] = {
+            app_id: App(self.runtime_directory, app_id, )
+            for app_id in app_ids
+        }
 
     def get_app_ids(self) -> list[str]:
         return list(self.apps.keys())

@@ -1,4 +1,3 @@
-home_directory: "/opt/llm"
 llm_configs:
 
   - id: "tests"
@@ -28,7 +27,6 @@ llm_configs:
     response_format_type: "json_object"
     prompt_format: "markdown"
     temperature: 1
-
 
 
 

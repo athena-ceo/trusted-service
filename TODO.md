@@ -2,11 +2,22 @@
 * TODO.md
 *********
 
+#  Seriously
+- test avec et sans read
+- test save
+- les deux rubriques précédentes en mode REST
+
 # Ongoing
-- float() => virer
-- Faire marcher le launcher REST
+- Tester le save config
+- AppConfiguration => AppDef
+- Configuration => Config
+- add method to determine appdef from runtime directory
+- add reload_apps(self) to client rest
+- virer app_id et directory du xlsx
 - Update README
-- Très important: llm_config dans test préfecture
+- Autre arrondissements
+- Rename: config_filenames => appdef_filenames
+- Sortir app_id et directo de ce fichier xlsx
 - git
 - 
 - Tester les deux launchers
