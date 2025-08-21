@@ -1,0 +1,152 @@
+{
+    "scorings": [
+        {
+            "intention_id": "dem_retour_pays_motif_except",
+            "score": 10,
+            "justification": "The request to travel to his home country for his father's funeral qualifies as an exceptional reason.",
+            "intention_label": "I WANT TO RETURN TO MY COUNTRY FOR AN EXCEPTIONAL REASON",
+            "intention_fields": [
+                "refugie_ou_protege_subsidiaire"
+            ]
+        },
+        {
+            "intention_id": "depot_de_demande_d_asile",
+            "score": 10,
+            "justification": "Mr. C explicitly states that he would like to submit an asylum application.",
+            "intention_label": "FILING AN ASYLUM APPLICATION",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "expiration_d_une_api",
+            "score": 10,
+            "justification": "The text mentions that Mr. C's processing-extension certificate expired on 11 October 2024.",
+            "intention_label": "EXPIRATION OF AN API (EXTENSION‑OF‑PROCESSING CERTIFICATE)",
+            "intention_fields": [
+                "date_expiration_api"
+            ]
+        },
+        {
+            "intention_id": "ou_en_est_ma_dem_asile_en_cours",
+            "score": 0,
+            "justification": "There is no inquiry about the status of a pending asylum application; Mr. C is asking to file a new application.",
+            "intention_label": "STATUS OF MY PENDING ASYLUM APPLICATION",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_demande_un_nouveau_titre",
+            "score": 0,
+            "justification": "This intention does not apply as Mr. C is not a Ukrainian national.",
+            "intention_label": "UKRAINIAN NATIONAL REQUESTS A NEW RESIDENCE PERMIT",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_demande_renouv_titre",
+            "score": 0,
+            "justification": "This intention does not apply as Mr. C is not a Ukrainian national.",
+            "intention_label": "UKRAINIAN NATIONAL REQUESTS RENEWAL OF THEIR PERMIT",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_autre_demande",
+            "score": 0,
+            "justification": "This intention does not apply as Mr. C is not a Ukrainian national.",
+            "intention_label": "UKRAINIAN NATIONAL – OTHER REQUEST",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_en_rapport_dublin_en_cours",
+            "score": 0,
+            "justification": "This intention does not apply as there is no mention of a Dublin procedure.",
+            "intention_label": "REQUEST CONCERNING AN ONGOING DUBLIN PROCEDURE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_etudiant_progr_mobilite",
+            "score": 0,
+            "justification": "This intention does not apply as Mr. C is not a student in a mobility programme.",
+            "intention_label": "REQUEST FROM A STUDENT IN A MOBILITY PROGRAMME",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_stagiaire_prof_medic",
+            "score": 0,
+            "justification": "This intention does not apply as Mr. C is not a medical trainee.",
+            "intention_label": "REQUEST FROM A TRAINEE ATTACHED TO THE MEDICAL PROFESSION",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "diff_avec_le_site_de_l_anef",
+            "score": 0,
+            "justification": "There are no difficulties mentioned regarding the ANEF website.",
+            "intention_label": "DIFFICULTIES WITH THE ANEF WEBSITE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "chang_stat_etud_a_salarie",
+            "score": 0,
+            "justification": "There is no mention of a change of status from student to salaried employee.",
+            "intention_label": "CHANGE OF STATUS FROM STUDENT TO SALARIED EMPLOYEE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "chang_stat_etud_a_rech_empl",
+            "score": 0,
+            "justification": "There is no mention of a change of status from student to job seeker.",
+            "intention_label": "CHANGE OF STATUS FROM STUDENT TO JOB SEEKER",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sollicit_titre_vpf_hors_anef",
+            "score": 0,
+            "justification": "There is no mention of applying for a 'private and family life' residence permit outside the ANEF portal.",
+            "intention_label": "APPLICATION FOR A “PRIVATE AND FAMILY LIFE” RESIDENCE PERMIT OUTSIDE THE ANEF PORTAL",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_pb_cr_cpte_anef",
+            "score": 0,
+            "justification": "There is no mention of problems creating an ANEF account.",
+            "intention_label": "FILING A PERMIT APPLICATION AND UNABLE TO CREATE MY ANEF ACCOUNT",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_autre_blocage_anef",
+            "score": 0,
+            "justification": "There is no mention of another specific blockage on the ANEF site.",
+            "intention_label": "FILING A PERMIT APPLICATION AND ENCOUNTERING ANOTHER BLOCKAGE ON THE ANEF SITE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_autre_pb_anef",
+            "score": 0,
+            "justification": "There is no indication of another ANEF-related problem.",
+            "intention_label": "FILING A PERMIT APPLICATION AND ANOTHER ANEF‑RELATED PROBLEM",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "date_expiration_api": "11/10/2024",
+    "fragments_date_expiration_api": {
+        "list": [
+            "processing‑extension certificate expired on 11 October 2024"
+        ]
+    },
+    "mention_de_risque_sur_l_emploi": true,
+    "fragments_mention_de_risque_sur_l_emploi": {
+        "list": [
+            "Without action in the next few days, he risks losing his job."
+        ]
+    },
+    "refugie_ou_protege_subsidiaire": true,
+    "fragments_refugie_ou_protege_subsidiaire": {
+        "list": [
+            "currently holds subsidiary protection status"
+        ]
+    }
+}

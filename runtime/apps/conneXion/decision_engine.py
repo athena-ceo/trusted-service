@@ -1,5 +1,4 @@
 import inspect
-from datetime import datetime
 from typing import Literal
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
@@ -10,7 +9,6 @@ work_basket_all_issues = "all_issues"
 def trace_this_rule(output: CaseHandlingDecisionOutput):
     frame = inspect.currentframe().f_back
     func_name = frame.f_code.co_name
-    # output.details.append({"rule": func_name, "documentation": "This rule etc"})
     output.details.append(func_name)
 
 
@@ -37,6 +35,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.priority = "MEDIUM"
 
         rule_default(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
 
     def package_standard_priority(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -71,10 +70,15 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.priority = "VERY_HIGH"
 
         rule_standard_billing_issues(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_standard_network_problems(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_standard_plan_changes(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_standard_sim_or_device_support(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_standard_account_management(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
 
     def package_particular_cases(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -100,8 +104,11 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 increment_priority_level(output)
 
         rule_frustration_3(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_frustration_4(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
         rule_frustration_5(input, output)
+        CaseHandlingDecisionOutput.model_validate(output)
 
     def package_alerts(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -115,9 +122,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         rule_high_cltv_and_frustrated(input, output)
 
     package_initialisations(input, output)
+    CaseHandlingDecisionOutput.model_validate(output)
     package_standard_priority(input, output)
+    CaseHandlingDecisionOutput.model_validate(output)
     package_particular_cases(input, output)
+    CaseHandlingDecisionOutput.model_validate(output)
     package_alerts(input, output)
+    CaseHandlingDecisionOutput.model_validate(output)
 
 
 class DecisionEngineConnexion(CaseHandlingDecisionEngine):
@@ -133,6 +144,10 @@ class DecisionEngineConnexion(CaseHandlingDecisionEngine):
             notes=[],
             details=[])
 
+        CaseHandlingDecisionOutput.model_validate(output)
+
         ruleflow(input, output)
+
+        CaseHandlingDecisionOutput.model_validate(output)
 
         return output

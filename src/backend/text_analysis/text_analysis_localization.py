@@ -1,4 +1,4 @@
-from src.common.configuration import SupportedLocale
+from src.common.config import SupportedLocale
 from src.common.localization import Localization
 
 

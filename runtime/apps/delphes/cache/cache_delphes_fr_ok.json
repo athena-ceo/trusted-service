@@ -1,0 +1,167 @@
+{
+    "scorings": [
+        {
+            "intention_id": "expiration_d_une_api",
+            "score": 8,
+            "justification": "Le texte mentionne clairement que l'attestation de prolongation d'instruction de Monsieur C a expiré depuis le 11 octobre 2024.",
+            "intention_label": "EXPIRATION D'UNE API",
+            "intention_fields": [
+                "date_expiration_api"
+            ]
+        },
+        {
+            "intention_id": "depot_de_demande_d_asile",
+            "score": 10,
+            "justification": "Monsieur C exprime explicitement son souhait de déposer une demande de droit d'asile.",
+            "intention_label": "DEPOT DE DEMANDE D'ASILE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ou_en_est_ma_dem_asile_en_cours",
+            "score": 0,
+            "justification": "Il n'y a pas d'indication qu'il souhaite un suivi sur une demande d'asile en cours, juste qu'il souhaite en faire une nouvelle.",
+            "intention_label": "OU EN EST MA DEMANDE D'ASILE EN COURS",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "expiration_d_une_atda",
+            "score": 0,
+            "justification": "Il n'est pas mentionné que l'ATDA de Monsieur C a expiré.",
+            "intention_label": "EXPIRATION D'UNE ATDA",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "mise_a_jour_infos_atda",
+            "score": 0,
+            "justification": "Aucune information à mettre à jour concernant son ATDA trouvée dans le texte.",
+            "intention_label": "MISE A JOUR INFOS ATDA",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_en_rapport_dublin_en_cours",
+            "score": 0,
+            "justification": "Il n'y a aucune mention d'une demande en rapport avec une procédure Dublin.",
+            "intention_label": "DEMANDE EN RAPPORT AVEC PROCEDURE DUBLIN EN COURS",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_demande_un_nouveau_titre",
+            "score": 0,
+            "justification": "Monsieur C ne semble pas être un ressortissant ukrainien.",
+            "intention_label": "RESSORTISSANT UKRAINIEN DEMANDE UN NOUVEAU TITRE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_demande_renouv_titre",
+            "score": 0,
+            "justification": "Again, il ne s'agit pas d'un ressortissant ukrainien.",
+            "intention_label": "RESSORTISSANT UKRAINIEN DEMANDE RENOUVELLEMENT DE SON TITRE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "ukr_autre_demande",
+            "score": 0,
+            "justification": "Monsieur C n'est pas un ressortissant ukrainien.",
+            "intention_label": "RESSORTISSANT UKRAINIEN AUTRE DEMANDE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_etudiant_progr_mobilite",
+            "score": 0,
+            "justification": "Aucune mention de son statut d'étudiant ou de programme de mobilité.",
+            "intention_label": "DEMANDE D'UN ETUDIANT EN PROGRAMME DE MOBILITE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_stagiaire_prof_medic",
+            "score": 0,
+            "justification": "Monsieur C n'est pas mentionné comme stagiaire en profession médicale.",
+            "intention_label": "DEMANDE D'UN STAGIAIRE ASSOCIE EN PROFESSION MEDICALE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "diff_avec_le_site_de_l_anef",
+            "score": 0,
+            "justification": "Il n'y a pas d'indication de difficultés pour naviguer sur le site de l'ANEF.",
+            "intention_label": "DIFFICULTES AVEC LE SITE DE L'ANEF",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "chang_stat_etud_a_salarie",
+            "score": 0,
+            "justification": "Pas de changement de statut d'étudiant à salarié mentionné.",
+            "intention_label": "CHANGEMENT STATUT ETUDIANT A SALARIE",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "chang_stat_etud_a_rech_empl",
+            "score": 0,
+            "justification": "Pas de changement de statut d'étudiant à demandeur d'emploi mentionné.",
+            "intention_label": "CHANGEMENT STATUT ETUDIANT A RECHERCHE D'EMPLOI",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sollicit_titre_vpf_hors_anef",
+            "score": 0,
+            "justification": "Aucune demande de titre vie privée et familiale.",
+            "intention_label": "SOLLICITATION TITRE VIE PRIVEE ET FAMILIALE HORS ANEF",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_pb_cr_cpte_anef",
+            "score": 0,
+            "justification": "Pas de mention de problèmes à créer un compte sur l'ANEF.",
+            "intention_label": "DEPOT D'UNE DEMANDE DE TITRE ET JE N'ARRIVE PAS A CREER MON COMPTE ANEF",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_autre_blocage_anef",
+            "score": 0,
+            "justification": "Aucun autre blocage mentionné sur le site de l'ANEF.",
+            "intention_label": "DEPOT D'UNE DEMANDE DE TITRE ET AUTRE BLOCAGE SUR LE SITE DE L'ANEF",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "depot_dem_titre_autre_pb_anef",
+            "score": 0,
+            "justification": "Pas d'autres problèmes mentionnés concernant l'ANEF.",
+            "intention_label": "DEPOT D'UNE DEMANDE DE TITRE ET AUTRE PROBLEME ANEF",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "dem_retour_pays_motif_except",
+            "score": 9,
+            "justification": "Monsieur C souhaite retourner dans son pays pour assister aux obsèques de son père, ce qui constitue un motif exceptionnel.",
+            "intention_label": "JE VEUX RETOURNER DANS MON PAYS POUR MOTIF EXCEPTIONNEL",
+            "intention_fields": [
+                "refugie_ou_protege_subsidiaire"
+            ]
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "AUTRE",
+            "intention_fields": []
+        }
+    ],
+    "date_expiration_api": "11/10/2024",
+    "fragments_date_expiration_api": {
+        "list": [
+            "l'attestation de prolongation d'instruction de Monsieur C est arrivée à expiration depuis le 11 octobre 2024"
+        ]
+    },
+    "mention_de_risque_sur_l_emploi": true,
+    "fragments_mention_de_risque_sur_l_emploi": {
+        "list": [
+            "Sans action dans les prochains jours, il risquera de perdre son travail.",
+            "Il risque son emploi"
+        ]
+    },
+    "refugie_ou_protege_subsidiaire": true,
+    "fragments_refugie_ou_protege_subsidiaire": {
+        "list": [
+            "Il bénéficie actuellement du statut de protection subsidiaire"
+        ]
+    }
+}

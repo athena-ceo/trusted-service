@@ -20,17 +20,32 @@ If needed, please refer to more specific README files:
 - [Troubleshooting](#troubleshooting)
 
 ## Quickstart
-Launch the intagrated demo (test/demo client + colocated Trusted Services server)
 
-```streamlit run launcher_testclient_direct.py runtime/config_server.yaml apps/delphes/design_time/appdef_delphes_ff.xlsx apps/conneXion/design_time/appdef_conneXion_ff.xlsx```  
+### Running the Trusted Services Demo
 
-Launch the Trusted Services API  
+This project includes a Streamlit test/demo client and a Trusted Services server.
+You can run everything in-process (direct) or via a REST API (FastAPI/Uvicorn).
 
-```python launcher_api.py runtime/config_connection.yaml apps/delphes/design_time/appdef_delphes_ff.xlsx apps/conneXion/design_time/appdef_conneXion_ff.xlsx```  
+1) Integrated demo (client + in-process server)
 
-Launch the Trusted Services test client  
+Runs the test/demo client and the Trusted Services server in the same process.
 
-```streamlit run launcher_testclient_rest.py runtime/config_connection.yaml```
+`streamlit run launcher_testclient.py ./runtime direct`
+
+2) Start the REST API server (FastAPI via Uvicorn)
+
+Exposes the Trusted Services server over HTTP.
+
+`python launcher_api.py ./runtime`
+
+3) Test/demo client over HTTP (REST mode)
+
+Launches the client that talks to the server via the REST API.
+
+`streamlit run launcher_testclient.py ./runtime rest`
+
+Note: For REST mode, start the API server (step 2) before launching the client (step 3).
+If your runtime path differs, replace ./runtime accordingly.
 
 ## What is Trusted Services?
 
@@ -236,4 +251,5 @@ If you need to add support for a new language, for instance `fi` (Finnish):
 
 - If you are not receiving the emails as you would expect, check `send_email` in tab `email_configuration` of the Excel
   Configuration File
+- If you get an empty page on the test client, make sure the left-hand side panel is open
 

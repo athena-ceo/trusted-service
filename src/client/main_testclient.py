@@ -9,9 +9,9 @@ from streamlit.delta_generator import DeltaGenerator
 
 from src.client.api_client import ApiClient
 from src.client.client_localization import ClientLocalization, frontend_localizations
-from src.common.api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
+from src.common.server_api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
-from src.common.configuration import SupportedLocale
+from src.common.config import SupportedLocale
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
 from src.common.logging import print_red, print_blue
 
@@ -165,7 +165,7 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: ClientL
 def submit_text_for_ia_analysis():
     context: Context = st.session_state.context
     analysis_result_and_rendering = context.api_client.analyze(app_id=context.app_id,
-                                                               loc=context.locale,
+                                                               locale=context.locale,
                                                                field_values=context.case.field_values,
                                                                text=st.session_state.request_description_text_area,
                                                                read_from_cache=st.session_state.read_from_cache,
@@ -218,23 +218,6 @@ def populate_apps(api_client: ApiClient):
     st.session_state.app_proxys = app_proxys
 
 
-# def streamlit_rest_main(config_connection_filename: str):
-#     if "api_client" not in st.session_state:
-#         connection_configuration: ConnectionConfiguration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
-#         url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
-#         populate_aps(ApiClientRest(url))
-#
-#     main_testclient()
-#
-#
-# def streamlit_direct_main(server_configuration: ServerConfiguration, appdef_filenames: list[str]):
-#     if "api_client" not in st.session_state:
-#         api: Api = TrustedServicesServer(server_configuration, appdef_filenames)
-#         populate_aps(ApiDecorator(api))
-#
-#     main_testclient()
-
-
 def app_selected_unselected():
     api_client = st.session_state.api_client
     app_proxy = st.session_state.app_proxy
@@ -273,34 +256,49 @@ def save_cache():
     text_analysis_cache: str = json.dumps(analysis_result, ensure_ascii=False, indent=4)
     api_client.save_text_analysis_cache(context.app_id, context.locale, text_analysis_cache)
 
+
 def reload_apps():
-    print_red("reload_apps")
     api_client: ApiClient = st.session_state.api_client
-    # api_client.reload_apps()
+    api_client.reload_apps()
     populate_apps(api_client)
 
 
 def main_testclient():
-
     # https://yt3.googleusercontent.com/egw_LrYaDpQ5dUxq_8O1Szx_cP2IqZv2_WlQbsJBoVC5TrqhWmYbVEwSW3qfNwnUlZ6CtesMC8s=s160-c-k-c0x00ffffff-no-rj
 
-    st.logo("images/channels4_profile.jpg", link=None)
+    st.logo("images/channels4_profile.jpg", size="small", icon_image=None, link=None)
 
     with st.sidebar:
 
-        st.button(
-            label="",
-            help="Reload the apps from the the Trusted Services runtime home directory", # runtime dir => runtime_home
-            on_click=reload_apps(),
-            icon=":material/directory_sync:",)
+        st.write("# Trusted Services")
 
-        st.button(
+        columns = st.columns(6, gap=None)
+
+        columns[0].button(
+            label="",
+            help="Upload app. Not implemented yet; Instead use file transfer and reload apps",
+            on_click=None,
+            icon=":material/upload:",
+            disabled=True, )
+
+        columns[1].button(
+            label="",
+            help="Download app. Not implemented yet; Instead use file transfer and reload apps",
+            on_click=None,
+            icon=":material/download:",
+            disabled=True, )
+
+        columns[2].button(
+            label="",
+            help="Reload the apps from the the Trusted Services runtime home directory",  # runtime dir => runtime_home
+            on_click=reload_apps,
+            icon=":material/directory_sync:", )
+
+        columns[3].button(
             label="",
             help="Trusted Services Assistant",
             on_click=None,
-            icon=":material/robot_2:",)
-
-        st.write("# Trusted Services")
+            icon=":material/robot_2:", )
 
         app_proxys: list[AppProxy] = st.session_state.app_proxys
 
@@ -314,8 +312,12 @@ def main_testclient():
             on_change=app_selected_unselected
         )
 
+        print_red("1")
+
         if app_proxy is None:
             return
+
+        print_red("2")
 
         locale: SupportedLocale = st.pills(
             label="Locale",
@@ -347,9 +349,6 @@ def main_testclient():
             on_change=None,
         )
         st.toggle("Details", value=False, key="show_details")
-
-        # if not hasattr(st.session_state, "context") or (context := st.session_state.context) is None:
-        #    return
 
         values_to_check = [locale, read_from_cache, llm_config_id, decision_engine_config_id]
         if [v for v in values_to_check if v is None]:
@@ -411,10 +410,9 @@ def main_testclient():
             tab_extraction.html(highlighted_text)
             with tab_misc:
                 st.button(
-                    label="Save to cache",
-                    help="Not implemented yet",
+                    label=l12n.label_save_to_cache,
                     on_click=save_cache,
-                    icon=None,
+                    icon=":material/save:",
                 )
 
     with expander_user(l12n.label_additional_information, expanded=True):

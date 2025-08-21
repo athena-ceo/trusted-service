@@ -4,7 +4,7 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.workbook import Workbook
 from pydantic import BaseModel, field_validator, Field
 
-from src.common.configuration import Configuration, load_configuration_from_workbook, SupportedLocale, load_pydantic_objects_from_worksheet
+from src.common.config import Config, load_config_from_workbook, SupportedLocale, load_pydantic_objects_from_worksheet
 
 
 class OptionalListElement(BaseModel):
@@ -12,21 +12,6 @@ class OptionalListElement(BaseModel):
     label: str
     condition_python: str
     condition_javascript: str
-
-
-# class IdLabelsConfiguration(Configuration):
-#     id_labels: list[OptionalListElement]
-#
-#
-# def load_id_labels_configuration_from_workbook(filename: str, locale: SupportedLocale) -> IdLabelsConfiguration:
-#     configuration: Configuration = load_configuration_from_workbook(filename=filename,
-#                                                                     main_tab=None,
-#                                                                     collections=[("id_labels", OptionalListElement)],
-#                                                                     configuration_type=IdLabelsConfiguration,
-#                                                                     locale=locale)
-#     option_configuration: IdLabelsConfiguration = cast(IdLabelsConfiguration, configuration)
-#
-#     return option_configuration
 
 class CaseField(BaseModel):
     id: str
@@ -64,7 +49,7 @@ class CaseField(BaseModel):
             raise TypeError(f"Invalid type value: {v}")
 
 
-class CaseModelConfiguration(Configuration):
+class CaseModelConfig(Config):
     case_fields: list[CaseField]
 
 
@@ -90,15 +75,15 @@ class Case(BaseModel):
         return Case(field_values=field_values)
 
 
-def load_case_model_configuration_from_workbook(filename: str, locale: SupportedLocale) -> CaseModelConfiguration:
-    configuration: Configuration = load_configuration_from_workbook(filename=filename,
-                                                                    main_tab=None,
-                                                                    collections=[("case_fields", CaseField)],
-                                                                    configuration_type=CaseModelConfiguration,
-                                                                    locale=locale)
-    case_model_configuration: CaseModelConfiguration = cast(CaseModelConfiguration, configuration)
+def load_case_model_config_from_workbook(filename: str, locale: SupportedLocale) -> CaseModelConfig:
+    config: Config = load_config_from_workbook(filename=filename,
+                                                      main_tab=None,
+                                                      collections=[("case_fields", CaseField)],
+                                                      config_type=CaseModelConfig,
+                                                      locale=locale)
+    case_model_config: CaseModelConfig = cast(CaseModelConfig, config)
 
-    for case_field in case_model_configuration.case_fields:
+    for case_field in case_model_config.case_fields:
 
         # If the field has an associated list of allowed values, get the values from the matching tab
 
@@ -108,4 +93,4 @@ def load_case_model_configuration_from_workbook(filename: str, locale: Supported
             allowed_values: list[BaseModel] = load_pydantic_objects_from_worksheet(worksheet, OptionalListElement, locale)
             case_field.allowed_values = [cast(OptionalListElement, e) for e in allowed_values]  # This is cleaner than casting the list
 
-    return case_model_configuration
+    return case_model_config

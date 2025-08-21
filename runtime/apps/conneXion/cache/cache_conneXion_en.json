@@ -1,0 +1,55 @@
+{
+    "scorings": [
+        {
+            "intention_id": "billing_issues",
+            "score": 10,
+            "justification": "The user explicitly mentions unexpected charges on their bill, expressing a clear need for clarification on billing issues.",
+            "intention_label": "Billing Issues",
+            "intention_fields": [
+                "recently_changed_plan_or_added_services"
+            ]
+        },
+        {
+            "intention_id": "network_problems",
+            "score": 0,
+            "justification": "There is no mention of network outages, dropped calls, or internet speed problems.",
+            "intention_label": "Network Problems",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "plan_changes",
+            "score": 0,
+            "justification": "The user does not request any changes to their subscription plan.",
+            "intention_label": "Plan Changes",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sim_or_device_support",
+            "score": 0,
+            "justification": "There is no indication of any issues with SIMs or devices.",
+            "intention_label": "SIM or Device Support",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "account_management",
+            "score": 0,
+            "justification": "The user does not mention any requests related to personal information changes or access issues.",
+            "intention_label": "Account Management",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "level_of_frustration": 4,
+    "fragments_level_of_frustration": {
+        "list": [
+            "That's just unacceptable.",
+            "I am extremely nervous about this situation."
+        ]
+    }
+}

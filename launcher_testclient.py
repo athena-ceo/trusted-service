@@ -3,8 +3,8 @@ import sys
 import streamlit as st
 
 from src.backend.backend.trusted_services_server import TrustedServicesServer
-from src.common.api import Api
-from src.common.connection_configuration import ConnectionConfiguration
+from src.common.server_api import ServerApi
+from src.common.connection_config import ConnectionConfig
 from src.common.logging import print_yellow
 from src.client.api_client import ApiClient
 from src.client.api_client_rest import ApiClientRest
@@ -17,15 +17,15 @@ def create_client(argv: list[str]) -> ApiClient:
 
     if argv[2] == "direct":
 
-        api: Api = TrustedServicesServer(runtime_directory)
+        server_api: ServerApi = TrustedServicesServer(runtime_directory)
 
-        return ApiDecorator(api)
+        return ApiDecorator(server_api)
     else:
 
         config_connection_filename = runtime_directory + "/" + "config_connection.yaml"
 
-        connection_configuration: ConnectionConfiguration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
-        url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_configuration.rest_api_host, rest_api_port=connection_configuration.rest_api_port)
+        connection_config: ConnectionConfig = ConnectionConfig.load_from_yaml_file(config_connection_filename)
+        url = "http://{rest_api_host}:{rest_api_port}".format(rest_api_host=connection_config.rest_api_host, rest_api_port=connection_config.rest_api_port)
         return ApiClientRest(url)
 
 # If the ApiClient does not exist yet then create it

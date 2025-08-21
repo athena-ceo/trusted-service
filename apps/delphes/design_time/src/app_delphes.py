@@ -47,8 +47,6 @@ class CaseHandlingDecisionEngineDelphesPython_OLD(CaseHandlingDecisionEngine):
             work_basket = "reorientation"
             priority = "VERY_LOW"
 
-        # subject = f"AGDREF - {work_basket} - {priority}"
-
         return CaseHandlingDecisionOutput(
             handling=handling,
             acknowledgement_to_requester=acknowledgement_to_requester,
@@ -58,8 +56,3 @@ class CaseHandlingDecisionEngineDelphesPython_OLD(CaseHandlingDecisionEngine):
             notes=notes,
             details="The hardcoded implementation does not provide traceability information yet"
         )
-
-
-# class AppDelphes(App):
-#     def __init__(self):
-#         super().__init__(configuration_filename="apps/delphes/runtime_ff/configuration_delphes.xlsx")

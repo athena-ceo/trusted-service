@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from src.backend.decision.decision import CaseHandlingDecisionOutput
-from src.common.api import CaseHandlingRequest, CaseHandlingResponse
+from src.common.server_api import CaseHandlingRequest, CaseHandlingResponse
 from src.common.case_model import CaseModel
 
 class CaseHandlingDistributionEngine(ABC):  # TODO: pass App

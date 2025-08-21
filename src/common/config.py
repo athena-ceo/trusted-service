@@ -11,7 +11,7 @@ from pydantic import BaseModel, field_validator
 SupportedLocale = Literal["en", "fr"]
 
 
-class Configuration(BaseModel):
+class Config(BaseModel):
     pass
 
 
@@ -78,11 +78,11 @@ def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel]
     return objects
 
 
-def load_configuration_from_workbook(filename: str,
-                                     main_tab: str | None,
-                                     collections: list[tuple[str, type[BaseModel]]],
-                                     configuration_type: Type[Configuration],
-                                     locale: SupportedLocale | None) -> Configuration:
+def load_config_from_workbook(filename: str,
+                              main_tab: str | None,
+                              collections: list[tuple[str, type[BaseModel]]],
+                              config_type: Type[Config],
+                              locale: SupportedLocale | None) -> Config:
     config_workbook: Workbook = load_workbook(filename)
     config_values: dict[str, Any] = {}
 
@@ -108,4 +108,4 @@ def load_configuration_from_workbook(filename: str,
             model_type=model_type,
             locale=locale)
 
-    return configuration_type.model_validate(config_values)
+    return config_type.model_validate(config_values)

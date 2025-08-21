@@ -1,9 +1,9 @@
 from abc import ABC
 
-from src.common.api import Api
+from src.common.server_api import ServerApi
 
 
-class ApiClient(Api, ABC):
+class ApiClient(ServerApi, ABC):
     pass
 
 

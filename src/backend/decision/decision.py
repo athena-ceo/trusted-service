@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.common.api import CaseHandlingDecisionInput, CaseHandlingDecisionOutput
+from src.common.server_api import CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 
 
 class CaseHandlingDecisionEngine(ABC):

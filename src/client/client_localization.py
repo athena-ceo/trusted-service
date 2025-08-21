@@ -1,4 +1,4 @@
-from src.common.configuration import SupportedLocale
+from src.common.config import SupportedLocale
 from src.common.localization import Localization
 
 
@@ -11,6 +11,7 @@ class ClientLocalization(Localization):
     label_please_describe_your_request: str
     label_next_step: str
     label_text_analysis: str
+    label_save_to_cache: str
     label_prompt: str
     label_intent_scoring: str
     label_feature_extraction: str
@@ -41,6 +42,7 @@ frontend_localizations: dict[SupportedLocale, ClientLocalization] = {
         label_please_describe_your_request="Please describe your request",
         label_next_step="Next step",
         label_text_analysis="Text analysis",
+        label_save_to_cache="Save to cache",
         label_prompt="Prompt",
         label_intent_scoring="Intent scoring",
         label_feature_extraction="Feature extraction",
@@ -65,6 +67,7 @@ frontend_localizations: dict[SupportedLocale, ClientLocalization] = {
         label_please_describe_your_request="Veuillez décrire votre demande",
         label_next_step="Etape suivante",
         label_text_analysis="Analyse du texte",
+        label_save_to_cache="Sauver en cache",
         label_prompt="Prompt",
         label_intent_scoring="Scoring des intentions",
         label_feature_extraction="Extraction des features",

@@ -2,27 +2,34 @@
 * TODO.md
 *********
 
-#  Seriously
-- test avec et sans read
+
+#  Now
+1) test avec et sans read
 - test save
 - les deux rubriques précédentes en mode REST
+3) cursor
+4) video vj + harley
+5) Improve Assistant by providing a template xlsx
+6) git
 
-# Ongoing
-- Tester le save config
-- AppConfiguration => AppDef
-- Configuration => Config
-- add method to determine appdef from runtime directory
-- add reload_apps(self) to client rest
-- virer app_id et directory du xlsx
-- Update README
-- Autre arrondissements
-- Rename: config_filenames => appdef_filenames
-- Sortir app_id et directo de ce fichier xlsx
-- git
-- 
-- Tester les deux launchers
-- Pas de référence de LocalizedApp dans TextAnalyzer, etc...
+# Done
+2) Update README
+
+# Bugs
+- localized_apps are nor reused => correct and check that text_analyzers are reused
+- key of text_analyzer should be combination of text_config and llm_config
+- click très rapides => validation error
+- Mettre le prompt et le texte initial dans text analysis
+
+# Improvement
 - Error messages
+- Save dans fichier hashé et msg d'erreur si fichier n'existe pas ou pas bon numéro de version
+- add method to determine appdef from runtime directory
+- Pas de référence de LocalizedApp dans TextAnalyzer, etc...
+- Numéro de version dans les fichiers
+- time processing
+
+# Renaming
 - Documenter APIs REST
 
 # Avec Joël
@@ -30,14 +37,10 @@
 - Scaleway
 - Test Préfecture
 
+===
 Détails
-- typage SupportedLocale
-- Vérifier la logique des callbacks
 - intention => intent
 - chercher tous les todo et tous les warnings et cas d'erreur
-- README
-- config => def
-- loc => locale
 - cas d'erreur (app inconnue, locale non supportée)
 - improve Error evaluating {departeme2nt} == 78
 - Better manage the case where the cache file does not exist
@@ -45,14 +48,11 @@ Détails
 - Manage gently config file absent or incorrect
 - Erreur de connexion
 - details => traces
-- configuration => config
 - in Streamlit client, look for default value in list AFTER filtering
 - Rename notes alerts
 - String for date format should be localized
 - test with Libre Office Calc
 - Remove update_case_field_str
-
-- intention => intent
 
 # Priority 1
 ## Framework

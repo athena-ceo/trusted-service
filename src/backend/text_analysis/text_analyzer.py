@@ -10,6 +10,7 @@ Date: 2025-04-29
 from __future__ import annotations
 
 import json
+from datetime import datetime, timedelta
 from typing import List, Type, Optional, Any, cast
 
 from pydantic import BaseModel, Field, create_model
@@ -24,25 +25,23 @@ from src.backend.text_analysis.llm_openai import LlmOpenAI
 from src.backend.text_analysis.llm_scaleway import LlmScaleway
 from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, text_analysis_localizations
 from src.common.case_model import CaseModel
-from src.common.configuration import SupportedLocale, Configuration, load_configuration_from_workbook
+from src.common.config import SupportedLocale, Config, load_config_from_workbook
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
 
 
-class TextAnalysisConfiguration(Configuration):
+class TextAnalysisConfig(Config):
     system_prompt_prefix: str
     definitions: list[Definition]
     intentions: list[Intention]
 
 
-def load_text_analysis_configuration_from_workbook(filename: str, locale: SupportedLocale) -> TextAnalysisConfiguration:
-    conf: Configuration = load_configuration_from_workbook(filename=filename,
-                                                           main_tab="text_analysis",
-                                                           collections=[("definitions", Definition),
-                                                                        ("intentions", Intention),
-                                                                        ],
-                                                           configuration_type=TextAnalysisConfiguration,
-                                                           locale=locale)
-    return cast(TextAnalysisConfiguration, conf)
+def load_text_analysis_config_from_workbook(filename: str, locale: SupportedLocale) -> TextAnalysisConfig:
+    conf: Config = load_config_from_workbook(filename=filename,
+                                             main_tab="text_analysis",
+                                             collections=[("definitions", Definition), ("intentions", Intention)],
+                                             config_type=TextAnalysisConfig,
+                                             locale=locale)
+    return cast(TextAnalysisConfig, conf)
 
 
 class ListOfTextFragments(BaseModel):
@@ -93,7 +92,9 @@ def create_analysis_models(locale: SupportedLocale,
 
 class TextAnalyzer:
     def __init__(self, runtime_directory: str, app_id: str, locale: SupportedLocale, llm_config: LlmConfig,
-                 case_model: CaseModel, text_analysis_config: TextAnalysisConfiguration):
+                 case_model: CaseModel, text_analysis_config: TextAnalysisConfig):
+
+        start_init_datetime = datetime.now()
 
         self.runtime_directory = runtime_directory
         self.app_id = app_id
@@ -116,7 +117,7 @@ class TextAnalyzer:
 
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(self.locale, features)
 
-        self.templated_system_prompt: str = self.build_system_prompt()
+        self.localized_system_prompt_template: str = self.build_localizedsystem_prompt_template()
         self.localization: TextAnalysisLocalization = text_analysis_localizations[self.locale]  # Will fail here if language is not supported
 
         if llm_config.llm == "openai":
@@ -128,9 +129,17 @@ class TextAnalyzer:
         else:
             raise ValueError(f"Unsupported LLM: {llm_config.llm}")
 
-    def build_system_prompt(self) -> str:
+        end_init_datetime = datetime.now()
+        time_difference: timedelta = end_init_datetime - start_init_datetime
+        seconds: float = time_difference.total_seconds()
+        print(f"end_init_datetime - start_init_datetime: {seconds:.2f}s")
 
-        text_analysis_config: TextAnalysisConfiguration = self.text_analysis_config
+    def build_localizedsystem_prompt_template(self) -> str:
+        """
+        :return: The localized system prompt template with placeholders to be replaced with actual case fiels values 
+        """
+
+        text_analysis_config: TextAnalysisConfig = self.text_analysis_config
         llm_config: LlmConfig = self.llm_config
         features: list[Feature] = self.features
 
@@ -231,11 +240,11 @@ class TextAnalyzer:
 
     def _analyze(self, field_values: dict[str, Any], text: str, read_from_cache: bool) -> tuple[str, dict[str, str]]:
 
-        # TODO: Sva the system_prompt in cache and move down the lines that follow under else:  # read_from_cache
+        # TODO: Save the system_prompt in cache and move down the lines that follow under else:  # read_from_cache
 
-        system_prompt = self.templated_system_prompt
+        # system_prompt = self.localized_system_prompt_template
 
-        system_prompt = system_prompt.format(**field_values)
+        system_prompt = self.localized_system_prompt_template.format(**field_values)
 
         # Calling LLM
 
@@ -246,13 +255,24 @@ class TextAnalyzer:
                 analysis_result = json.load(f)
 
         else:
+
+            before = datetime.now()
+
             if self.llm_config.response_format_type == "json_object":
                 _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
             else:
                 _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
+            
+            time_difference: timedelta = datetime.now() - before
+            
+            seconds: float = time_difference.total_seconds()
+            
+            print(f"{seconds:.2f}s")
+
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
 
         # Joining with collection of intentions
+        # intention_id => intention_label, intention_fields
         for scoring in analysis_result[FIELD_NAME_SCORINGS]:
             scoring: dict[int, str]
 

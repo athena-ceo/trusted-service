@@ -3,32 +3,22 @@ import sys
 import uvicorn
 
 from src.backend.backend.rest.main import app
-from src.backend.backend.server_config import ServerConfig
-from src.common.connection_configuration import ConnectionConfiguration
+from src.common.connection_config import ConnectionConfig
 
-if len(sys.argv) < 4:
+if len(sys.argv) != 2:
     print("Missing required inputs. Please provide as command-line arguments:")
-    print("  • A YAML file containing the connection configuration for the Trusted Services server.")
-    print("  • A YAML file containing the execution configuration for the Trusted Services server.")
-    print("  • One or more xlsx application definition files.")
+    print("  • A runtime directory")
     print("For instance:")
     print(f"python {sys.argv[0]} "
-          "runtime/config_connection.yaml "
-          "runtime/config_server.yaml "
-          "apps/delphes/design_time/delphes.xlsx "
-          "apps/conneXion/design_time/conneXion.xlsx")
+          "./runtime")
 else:
+    runtime_directory = sys.argv[1]
 
-    config_connection_filename = sys.argv[1]
-    connection_configuration = ConnectionConfiguration.load_from_yaml_file(config_connection_filename)
+    config_connection_filename = runtime_directory + "/" + "config_connection.yaml"
+    connection_config = ConnectionConfig.load_from_yaml_file(config_connection_filename)
 
-    config_server_filename = sys.argv[2]
-    server_configuration = ServerConfig.load_from_yaml_file(config_server_filename)
+    app.init(connection_config, runtime_directory)
 
-    appdef_filenames: list[str] = sys.argv[3:]
-
-    app.init(connection_configuration, server_configuration, appdef_filenames)
-
-    uvicorn.run(app, host=connection_configuration.rest_api_host,
-                port=connection_configuration.rest_api_port,
+    uvicorn.run(app, host=connection_config.rest_api_host,
+                port=connection_config.rest_api_port,
                 access_log=True)
