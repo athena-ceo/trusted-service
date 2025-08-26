@@ -237,7 +237,8 @@ class TextAnalyzer:
 
         # Calling LLM
 
-        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, system_prompt, text)
+        # cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, system_prompt, text)
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
 
         if read_from_cache and not os.path.exists(cache_filename):
             print_red(f"File {cache_filename} does not exist")
