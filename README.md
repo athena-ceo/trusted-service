@@ -11,6 +11,7 @@ If needed, please refer to more specific README files:
 - [What is Trusted Services?](#what-is-trusted-services)
 - [Git Repository Contents](#git-repository-contents)
 - [Installation](#installation)
+- [Athena Server Environment](#athena-server-environment)
 - [Configuration](#configuration)
 - [Run](#run)
 - [Common tasks](#common-tasks)  
@@ -113,6 +114,8 @@ Type
 
 ```
 git clone https://github.com/athena-ceo/trusted-service.git
+python3.12 -m venv .venv
+. .venv/bin/activate (or source .venv/scripts/Activate)
 pip install -r requirements.txt
 ```
 
@@ -124,9 +127,52 @@ Please follow the instructions in https://hub.docker.com/r/ibmcom/odm
 
 Visit https://www.thunderbird.net/en-US/download/
 
+
+## Athena Server Environment
+
+### Connect to Athena Servers
+
+``` 
+ssh yourname@apps.athenadecisions.com
+```
+If you haven't changed your password, try `Athena4ever`.
+
+Don't forget to set your env variables (OPENAI_API_KEY, SCW_PROJECT_ID, SCW_SECRET_KEY).
+
+```
+cd /data/demos/trusted-services
+git pull
+. .venv/bin/activate
+```
+
+### Launch the test client
+
+```
+streamlit run launcher_testclient.py ./runtime direct
+```
+
+The test client's url is `https://apps.athenadecisions.com/trusted-services-test-client/`. A shortcut is displayed on the home page: `https://apps.athenadecisions.com`.
+
+If you would like to run Streamlit (or the server) and close your connection, use the following command:
+
+```
+nohup streamlit run launcher_testclient.py ./runtime direct > server.log 2>&1 &
+```
+
+If you would like to know if the test client (or server) is currently running:
+
+```
+ps -ef|grep streamlit
+```
+or
+```
+ps -ef|grep python
+```
+(Be carefull, we're running Python in a shared system. Another Athenian may be running another Python process at the moment.)
+
 ## Configuration
 
-Trusted Services apps are configured in an Excel file. For Delphes check `apps\delphes\runtime\spec_delphes_ff.xlsx`
+Trusted Services apps are configured in an Excel file. For Delphes check `apps\delphes\runtime\spec_delphes_ff.xlsx` (**TO BE UPDATED**)
 where fields are either self-explanatory or explained in a comment cell.
 
 ### Configure how the test client accesses the API
