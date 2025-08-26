@@ -10,6 +10,7 @@ Date: 2025-04-29
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timedelta
 from typing import List, Type, Optional, Any, cast
 
@@ -27,6 +28,7 @@ from src.backend.text_analysis.text_analysis_localization import TextAnalysisLoc
 from src.common.case_model import CaseModel
 from src.common.config import SupportedLocale, Config, load_config_from_workbook
 from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
+from src.common.logging import print_red
 
 
 class TextAnalysisConfig(Config):
@@ -91,7 +93,7 @@ def create_analysis_models(locale: SupportedLocale,
 
 
 class TextAnalyzer:
-    def __init__(self, runtime_directory: str, app_id: str, locale: SupportedLocale, llm_config: LlmConfig,
+    def __init__(self, runtime_directory: str, app_id: str, locale: SupportedLocale,  # llm_config: LlmConfig,
                  case_model: CaseModel, text_analysis_config: TextAnalysisConfig):
 
         start_init_datetime = datetime.now()
@@ -99,7 +101,6 @@ class TextAnalyzer:
         self.runtime_directory = runtime_directory
         self.app_id = app_id
         self.locale = locale
-        self.llm_config = llm_config
         self.text_analysis_config = text_analysis_config  # TODO - READ HERE
 
         self.case_model: CaseModel = case_model
@@ -117,30 +118,19 @@ class TextAnalyzer:
 
         self.analysis_response_model: Type[BaseModel] = create_analysis_models(self.locale, features)
 
-        self.localized_system_prompt_template: str = self.build_localizedsystem_prompt_template()
         self.localization: TextAnalysisLocalization = text_analysis_localizations[self.locale]  # Will fail here if language is not supported
-
-        if llm_config.llm == "openai":
-            self.llm: Llm = LlmOpenAI(llm_config)
-        elif llm_config.llm == "ollama":
-            self.llm: Llm = LlmOllama(llm_config)
-        elif llm_config.llm == "scaleway":
-            self.llm: Llm = LlmScaleway(llm_config)
-        else:
-            raise ValueError(f"Unsupported LLM: {llm_config.llm}")
 
         end_init_datetime = datetime.now()
         time_difference: timedelta = end_init_datetime - start_init_datetime
         seconds: float = time_difference.total_seconds()
         print(f"end_init_datetime - start_init_datetime: {seconds:.2f}s")
 
-    def build_localizedsystem_prompt_template(self) -> str:
+    def build_localizedsystem_prompt_template(self, llm_config: LlmConfig) -> str:
         """
         :return: The localized system prompt template with placeholders to be replaced with actual case fiels values 
         """
 
         text_analysis_config: TextAnalysisConfig = self.text_analysis_config
-        llm_config: LlmConfig = self.llm_config
         features: list[Feature] = self.features
 
         localization: TextAnalysisLocalization = text_analysis_localizations[self.locale]  # Will fail here if language is not supported - b
@@ -238,17 +228,20 @@ class TextAnalyzer:
 
         return system_prompt
 
-    def _analyze(self, field_values: dict[str, Any], text: str, read_from_cache: bool) -> tuple[str, dict[str, str]]:
+    def _analyze(self, llm_config: LlmConfig, field_values: dict[str, Any], text: str, read_from_cache: bool) -> tuple[str, dict[str, str]]:
 
         # TODO: Save the system_prompt in cache and move down the lines that follow under else:  # read_from_cache
 
-        # system_prompt = self.localized_system_prompt_template
-
-        system_prompt = self.localized_system_prompt_template.format(**field_values)
+        localized_system_prompt_template: str = self.build_localizedsystem_prompt_template(llm_config)
+        system_prompt = localized_system_prompt_template.format(**field_values)
 
         # Calling LLM
 
-        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, system_prompt, text)
+
+        if read_from_cache and not os.path.exists(cache_filename):
+            print_red(f"File {cache_filename} does not exist")
+            read_from_cache = False
 
         if read_from_cache:
             with open(file=cache_filename, mode="r", encoding="utf-8") as f:
@@ -258,15 +251,24 @@ class TextAnalyzer:
 
             before = datetime.now()
 
-            if self.llm_config.response_format_type == "json_object":
-                _analysis_result: BaseModel = self.llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
+            if llm_config.llm == "openai":
+                llm: Llm = LlmOpenAI(llm_config)
+            elif llm_config.llm == "ollama":
+                llm: Llm = LlmOllama(llm_config)
+            elif llm_config.llm == "scaleway":
+                llm: Llm = LlmScaleway(llm_config)
             else:
-                _analysis_result: BaseModel = self.llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
-            
+                raise ValueError(f"Unsupported LLM: {llm_config.llm}")
+
+            if llm_config.response_format_type == "json_object":
+                _analysis_result: BaseModel = llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
+            else:
+                _analysis_result: BaseModel = llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
+
             time_difference: timedelta = datetime.now() - before
-            
+
             seconds: float = time_difference.total_seconds()
-            
+
             print(f"{seconds:.2f}s")
 
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
@@ -301,9 +303,9 @@ class TextAnalyzer:
 
         return system_prompt, analysis_result
 
-    def analyze(self, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
+    def analyze(self, llm_config: LlmConfig, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
 
-        system_prompt, analysis_result = self._analyze(field_values, text, read_from_cache)
+        system_prompt, analysis_result = self._analyze(llm_config, field_values, text, read_from_cache)
 
         analysis_result_and_rendering = {
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),

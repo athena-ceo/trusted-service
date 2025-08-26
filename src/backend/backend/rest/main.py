@@ -30,10 +30,19 @@ class FastAPI2(FastAPI):
     def init(self,
              connection_configuration,
              runtime_directory):
+
+        # self.add_middleware(
+        #     CORSMiddleware,
+        #     allow_origins=[connection_configuration.client_url, "http://localhost:5005"],
+        #     allow_credentials=True,
+        #     allow_methods=["*"],
+        #     allow_headers=["*"],
+        # )
+
         self.add_middleware(
             CORSMiddleware,
-            allow_origins=[connection_configuration.client_url, "http://localhost:5005"],
-            allow_credentials=True,
+            allow_origins=["*"],  # allow any origin
+            allow_credentials=False,
             allow_methods=["*"],
             allow_headers=["*"],
         )
@@ -123,8 +132,8 @@ async def handle_case(app_id: str, locale: SupportedLocale, request: CaseHandlin
     return app.server_api.handle_case(app_id=app_id, locale=locale, request=request)
 
 
-# API_ROUTE = "/api/v1"
-API_ROUTE = "/delphes-api/api/v1"
+API_ROUTE = "/api/v1"
+# API_ROUTE = "/delphes-api/api/v1"
 
 
 @app.post(f"{API_ROUTE}/analyze", tags=["Services"])

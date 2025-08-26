@@ -33,7 +33,7 @@ def load_localized_app_config_from_workbook(filename: str, locale: SupportedLoca
     conf: Config = load_config_from_workbook(filename=filename,
                                              main_tab="localized_app",
                                              collections=[("messages_to_agent", Message),
-                                                                        ("messages_to_requester", Message)],
+                                                          ("messages_to_requester", Message)],
                                              config_type=LocalizedAppConfig,
                                              locale=locale)
 
@@ -75,7 +75,7 @@ class LocalizedApp(ServerApi):
         self.case_model: CaseModel = case_model
 
         self.text_analysis_config: TextAnalysisConfig = load_text_analysis_config_from_workbook(app_def_filename, locale)
-        # self.text_analyzers: dict[str, TextAnalyzer] = {}
+        self.text_analyzer = TextAnalyzer(runtime_directory, app_id, locale, case_model, self.text_analysis_config)
 
     # API implementation
 
@@ -110,9 +110,7 @@ class LocalizedApp(ServerApi):
 
         llm_configs: dict[str, LlmConfig] = self.parent_app.llm_configs
         llm_config: LlmConfig = llm_configs[llm_config_id]
-
-        text_analyzer = TextAnalyzer(self.runtime_directory, self.app_id, self.locale, llm_config, self.case_model, self.text_analysis_config)
-        result = text_analyzer.analyze(field_values, text, read_from_cache)
+        result = self.text_analyzer.analyze(llm_config, field_values, text, read_from_cache)
         return result
 
     def save_text_analysis_cache(self, app_id: str, locale: SupportedLocale, text_analysis_cache: str):
@@ -171,7 +169,6 @@ class LocalizedApp(ServerApi):
             input("-> ")
         else:
             print_red("no ValidationError")
-
 
         # A verbalized copy of case_handling_decision_output
         verbalized_case_handling_decision_output = case_handling_decision_output.copy(deep=True)
