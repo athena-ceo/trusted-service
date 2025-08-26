@@ -9,7 +9,7 @@ def get_app_def_filename(runtime_directory: str, app_id: str) -> str:
     return app_dir + "/" + app_id + ".xlsx"
 
 
-def get_cache_file_path2(runtime_directory: str, app_id: str, locale: SupportedLocale, hashed) -> str:
+def get_cache_file_path2(runtime_directory: str, app_id: str, locale: SupportedLocale, hash_key: str) -> str:
     # return f"{runtime_directory}/apps/{app_id}/cache/cache_{app_id}_{locale}_{hashed}.json"
     return f"{runtime_directory}/apps/{app_id}/cache/cache_{app_id}_{locale}.json"
 
@@ -24,6 +24,8 @@ def short_hash(s: str) -> str:
     return b64[:6]
 
 
-def get_cache_file_path(runtime_directory: str, app_id: str, locale: SupportedLocale, system_prompt: str, text: str) -> str:
-    hashed = short_hash(system_prompt + text)
-    return get_cache_file_path2(runtime_directory, app_id, locale, hashed)
+# def get_cache_file_path(runtime_directory: str, app_id: str, locale: SupportedLocale, system_prompt: str, text: str) -> str:
+def get_cache_file_path(runtime_directory: str, app_id: str, locale: SupportedLocale) -> str:
+
+    # hashed = short_hash(system_prompt + text)
+    return get_cache_file_path2(runtime_directory, app_id, locale, "xxx")
