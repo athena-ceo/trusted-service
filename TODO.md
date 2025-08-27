@@ -18,3 +18,4 @@ After
 - [ ] Deplyment flow & Reorganization of runtime directory
 - [/] README
 - [ ] Architecture diagram
+- [ ] Passer à l'API V2, i.e. créer une couche d'intermédiation Delphes/Trusted Services
