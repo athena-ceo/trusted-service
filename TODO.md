@@ -1,4 +1,4 @@
-TODO for Munich and Paris events on Sept 11th
+## TODO for Munich and Paris events on Sept 11th
 
 - [ ] PPTX Presentation  1
 - [ ] Assistant
@@ -10,7 +10,8 @@ TODO for Munich and Paris events on Sept 11th
 - [ ] json file name hash
 - [ ] Measure timelapse, tokens, llm config
 
-After
+## After
+
 - [ ] Gestion clean de toutes les erreurs: consistency xlsx, 
 - [ ] Logs techniques
 - [ ] Feedback log
@@ -18,4 +19,8 @@ After
 - [ ] Deplyment flow & Reorganization of runtime directory
 - [/] README
 - [ ] Architecture diagram
-- [ ] Passer à l'API V2, i.e. créer une couche d'intermédiation Delphes/Trusted Services
+
+
+## To be decided
+
+- [ ] Passer à l'API V2, i.e. créer une façade Delphes/Trusted Services
