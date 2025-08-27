@@ -19,6 +19,7 @@
 - [ ] Deplyment flow & Reorganization of runtime directory
 - [/] README
 - [ ] Architecture diagram
+- [ ] Script de déploiement d'une application
 
 
 ## To be decided
