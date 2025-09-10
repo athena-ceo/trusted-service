@@ -1,0 +1,65 @@
+{
+    "scorings": [
+        {
+            "intention_id": "billing_issues",
+            "score": 10,
+            "justification": "The user explicitly mentions unexpected charges under 'Data Usage' and requests clarification on their bill, clearly indicating a billing issue.",
+            "intention_label": "Billing Issues",
+            "intention_fields": [
+                "recently_changed_plan_or_added_services"
+            ]
+        },
+        {
+            "intention_id": "network_problems",
+            "score": 0,
+            "justification": "There is no mention of service outages, dropped calls, or any network-related problems.",
+            "intention_label": "Network Problems",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "plan_changes",
+            "score": 0,
+            "justification": "The text does not request any changes to the user's plan or subscription.",
+            "intention_label": "Plan Changes",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sim_or_device_support",
+            "score": 0,
+            "justification": "There is no reference to issues related to a SIM card or device.",
+            "intention_label": "SIM or Device Support",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "account_management",
+            "score": 0,
+            "justification": "The request focuses on billing clarification rather than changing personal info or account issues.",
+            "intention_label": "Account Management",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "level_of_frustration": 4,
+    "fragments_level_of_frustration": {
+        "list": [
+            "That is unacceptable.",
+            "I am extremely nervous about this situation."
+        ]
+    },
+    "statistics": {
+        "LLM config": "tests",
+        "LLM": "openai",
+        "LLM Model": "gpt-4o-mini",
+        "Prompt format": "markdown",
+        "Response time": "5.90s",
+        "Prompt tokens": "Not implemented yet",
+        "Completion tokens": "Not implemented yet"
+    },
+    "hash_code": "FQyLXq"
+}

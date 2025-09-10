@@ -24,7 +24,7 @@ class DecisionEngineConfig(BaseModel):
 
 class AppDef(Config):
     locales: str
-    preprocessing: str
+    data_enrichment: str
     decision_engine_configs: list[DecisionEngineConfig]
 
 
@@ -58,7 +58,7 @@ class App(ServerApi):
             for locale in self.locales
         }
 
-        self.preprocessing = app_def.preprocessing
+        self.data_enrichment = app_def.data_enrichment
 
         self.decision_engines: dict[str, CaseHandlingDecisionEngine] = {}
         for decision_engine_config in app_def.decision_engine_configs:

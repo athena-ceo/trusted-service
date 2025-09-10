@@ -25,7 +25,7 @@ class CaseField(BaseModel):
     default_value: Any
 
     # Fields required in UI
-    scope: Literal["CONTEXT", "USER"]
+    scope: Literal["CONTEXT", "REQUESTER"]
     show_in_ui: bool
     intention_ids: list[str]
 

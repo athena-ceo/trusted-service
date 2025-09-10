@@ -11,9 +11,9 @@ from src.backend.text_analysis.llm import Llm, LlmConfig
 class LlmOllama(Llm):
     def __init__(self, llm_config: LlmConfig) -> None:
         super().__init__(llm_config)
-        self.build_client(llm_config)
+        self.build_client()
 
-    def build_client(self, config) -> None:
+    def build_client(self) -> None:
         self.client = None
 
     def call_llm_with_json_schema(self,

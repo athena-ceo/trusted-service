@@ -7,12 +7,13 @@ import streamlit as st
 from pydantic import BaseModel
 from streamlit.delta_generator import DeltaGenerator
 
+from src.backend.rendering.md import build_markdown_table
 from src.client.api_client import ApiClient
 from src.client.client_localization import ClientLocalization, frontend_localizations
 from src.common.server_api import CaseHandlingRequest, CaseHandlingDetailedResponse, CaseHandlingDecisionInput, CaseHandlingDecisionOutput
 from src.common.case_model import CaseModel, Case, CaseField
 from src.common.config import SupportedLocale
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN_TABLE, KEY_ANALYSIS_RESULT, KEY_PROMPT, KEY_STATISTICS
 from src.common.logging import print_red, print_blue
 
 connection_to_api = "direct"
@@ -312,12 +313,8 @@ def main_testclient():
             on_change=app_selected_unselected
         )
 
-        print_red("1")
-
         if app_proxy is None:
             return
-
-        print_red("2")
 
         locale: SupportedLocale = st.pills(
             label="Locale",
@@ -348,7 +345,7 @@ def main_testclient():
             key="decision_engine_config_id",
             on_change=None,
         )
-        st.toggle("Details", value=False, key="show_details")
+        st.toggle("Show details", value=False, key="show_details")
 
         values_to_check = [locale, read_from_cache, llm_config_id, decision_engine_config_id]
         if [v for v in values_to_check if v is None]:
@@ -399,8 +396,20 @@ def main_testclient():
 
     if st.session_state.show_details:
         analysis_result_and_rendering = context.analysis_result_and_rendering
+        analysis_result = analysis_result_and_rendering[KEY_ANALYSIS_RESULT]
+
+        print(type(analysis_result))
+
+        print(json.dumps(analysis_result, indent=4))
+
         prompt = analysis_result_and_rendering[KEY_PROMPT]
         markdown_table = analysis_result_and_rendering[KEY_MARKDOWN_TABLE]
+        statistics: dict[str, Any] = analysis_result[KEY_STATISTICS]
+        statistics_table = build_markdown_table(
+            rows=statistics.items(),
+            column_names=["key", "value"],
+            producers=[lambda item: item[0], lambda item: item[1]])
+
         highlighted_text = analysis_result_and_rendering[KEY_HIGHLIGHTED_TEXT_AND_FEATURES]
 
         with expander_detail(l12n.label_text_analysis):
@@ -409,6 +418,8 @@ def main_testclient():
             tab_intents.write(markdown_table)
             tab_extraction.html(highlighted_text)
             with tab_misc:
+                st.markdown("Statistics")
+                st.markdown(statistics_table)
                 st.button(
                     label=l12n.label_save_to_cache,
                     on_click=save_cache,

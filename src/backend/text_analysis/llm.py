@@ -23,9 +23,9 @@ class Llm(ABC):
         # self.text_analysis_config = text_analysis_config
         self.llm_config: LlmConfig = llm_config
 
-    @abstractmethod
-    def build_client(self, llm_config: LlmConfig) -> None:
-        pass
+    # @abstractmethod
+    # def build_client(self, llm_config: LlmConfig) -> None:
+    #     pass
 
     @abstractmethod
     def call_llm_with_json_schema(self,

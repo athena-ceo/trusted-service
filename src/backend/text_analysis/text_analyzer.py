@@ -16,7 +16,7 @@ from typing import List, Type, Optional, Any, cast
 
 from pydantic import BaseModel, Field, create_model
 
-from src.backend.backend.paths import get_cache_file_path
+from src.backend.backend.paths import get_cache_file_path, short_hash
 from src.backend.rendering.html import build_html_highlighted_text_and_features
 from src.backend.rendering.md import build_markdown_table_intentions, build_markdown_table
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS, FIELD_NAME_SCORINGS, Intention, Definition
@@ -27,7 +27,7 @@ from src.backend.text_analysis.llm_scaleway import LlmScaleway
 from src.backend.text_analysis.text_analysis_localization import TextAnalysisLocalization, text_analysis_localizations
 from src.common.case_model import CaseModel
 from src.common.config import SupportedLocale, Config, load_config_from_workbook
-from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT
+from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_ANALYSIS_RESULT, KEY_MARKDOWN_TABLE, KEY_PROMPT, KEY_STATISTICS, KEY_HASH_CODE
 from src.common.logging import print_red
 
 
@@ -238,10 +238,12 @@ class TextAnalyzer:
         # Calling LLM
 
         # cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, system_prompt, text)
-        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
+        hash_code = short_hash(system_prompt, text)
+        print("hash_code", hash_code)
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, hash_code)
 
         if read_from_cache and not os.path.exists(cache_filename):
-            print_red(f"File {cache_filename} does not exist")
+            print_red(f"File {cache_filename} does not exist - Sending text to analyze to LLM")
             read_from_cache = False
 
         if read_from_cache:
@@ -273,6 +275,19 @@ class TextAnalyzer:
             print(f"{seconds:.2f}s")
 
             analysis_result: dict[str, Any] = _analysis_result.model_dump(mode="json")
+
+            statistics: dict[str, Any] = {
+                "LLM config": llm_config.id,
+                "LLM": llm_config.llm,
+                "LLM Model": llm_config.model,
+                "Prompt format": llm_config.prompt_format,
+                "Response time": f"{seconds:.2f}s",
+                "Prompt tokens": f"Not implemented yet",
+                "Completion tokens": f"Not implemented yet",
+            }
+
+            analysis_result[KEY_STATISTICS] = statistics
+            analysis_result[KEY_HASH_CODE] = hash_code
 
         # Joining with collection of intentions
         # intention_id => intention_label, intention_fields

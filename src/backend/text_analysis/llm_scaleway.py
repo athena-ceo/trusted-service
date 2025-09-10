@@ -12,9 +12,9 @@ from src.backend.text_analysis.llm import Llm, LlmConfig
 class LlmScaleway(Llm):
     def __init__(self, llm_config: LlmConfig) -> None:
         super().__init__(llm_config)
-        self.build_client(llm_config)
+        self.build_client()
 
-    def build_client(self, config) -> None:
+    def build_client(self) -> None:
         project_id = os.environ.get("SCW_PROJECT_ID")
         if not project_id:
             raise ValueError("SCW_PROJECT_ID environment variable is not set")

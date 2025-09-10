@@ -1,0 +1,65 @@
+{
+    "scorings": [
+        {
+            "intention_id": "billing_issues",
+            "score": 10,
+            "justification": "The user clearly states they received a bill with unexpected charges and is seeking clarification, demonstrating a direct concern with billing issues.",
+            "intention_label": "Billing Issues",
+            "intention_fields": [
+                "recently_changed_plan_or_added_services"
+            ]
+        },
+        {
+            "intention_id": "network_problems",
+            "score": 0,
+            "justification": "There is no mention of any network outages, poor signal, or similar issues.",
+            "intention_label": "Network Problems",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "plan_changes",
+            "score": 0,
+            "justification": "The request does not indicate any desire to change their subscription plan.",
+            "intention_label": "Plan Changes",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "sim_or_device_support",
+            "score": 0,
+            "justification": "There are no references to SIM or device issues present in the user's message.",
+            "intention_label": "SIM or Device Support",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "account_management",
+            "score": 0,
+            "justification": "While the user requests clarification regarding their charges, it does not pertain to changing personal information or resetting passwords.",
+            "intention_label": "Account Management",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "level_of_frustration": 4,
+    "fragments_level_of_frustration": {
+        "list": [
+            "that's just unacceptable",
+            "I am extremely nervous about this situation"
+        ]
+    },
+    "statistics": {
+        "LLM config": "tests",
+        "LLM": "openai",
+        "LLM Model": "gpt-4o-mini",
+        "Prompt format": "markdown",
+        "Response time": "7.72s",
+        "Prompt tokens": "Not implemented yet",
+        "Completion tokens": "Not implemented yet"
+    },
+    "hash_code": "WWPXWX"
+}

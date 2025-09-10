@@ -1,4 +1,5 @@
 import importlib
+import json
 from typing import Any, cast
 
 from pydantic import BaseModel, ValidationError
@@ -114,7 +115,12 @@ class LocalizedApp(ServerApi):
         return result
 
     def save_text_analysis_cache(self, app_id: str, locale: SupportedLocale, text_analysis_cache: str):
-        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale)
+        print_blue("SAVING")
+        print_blue(text_analysis_cache)
+        text_analysis_cache_dict = json.loads(text_analysis_cache)
+        print_blue()
+        hash_code = text_analysis_cache_dict["hash_code"]
+        cache_filename = get_cache_file_path(self.runtime_directory, self.app_id, self.locale, hash_code)
         with open(file=cache_filename, mode="w", encoding="utf-8") as f:
             f.write(text_analysis_cache)
 
@@ -135,9 +141,9 @@ class LocalizedApp(ServerApi):
 
     def handle_case(self, app_id: str, locale: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
 
-        # Preprocessing
-        if self.parent_app.preprocessing:
-            module_name, function_name = self.parent_app.preprocessing.rsplit(".", 1)
+        # Data enrichment
+        if self.parent_app.data_enrichment:
+            module_name, function_name = self.parent_app.data_enrichment.rsplit(".", 1)
             module = importlib.import_module(module_name)
             func = getattr(module, function_name)
             func(request.field_values)
