@@ -96,6 +96,7 @@
             numero_AGDREF: formData.Agdref,
             mention_de_risque_sur_l_emploi: false,
             refugie_ou_protege_subsidiaire: false,
+            date_expiration_api: '',
         };
     </script>
 
@@ -115,6 +116,12 @@
             if (!dateStr) return '';
             const [day, month, year] = dateStr.split('/');
             return `${year}-${month}-${day}`;
+        }
+
+        function convertISOtoDate(dateStr) {
+            if (!dateStr) return '';
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}/${year}`;
         }
 
         const analyseContainer = document.getElementById('analyse');
@@ -161,12 +168,16 @@
                 // Mise à jour des infos du demandeur
                 scoringsPositifs[index].intention_fields.forEach(champ => {
                     const valeur = document.getElementById(`intention-${index}-${champ}`).value;
-                    field_values[champ] = valeur;
+                    if (champ === 'date_expiration_api') {
+                        field_values[champ] = convertISOtoDate(valeur);
+                    } else {
+                        field_values[champ] = valeur;
+                    }
                 });
 
                 // Appeler le Web Service de décision
-                // fetch('http://localhost:8002/api/v1/process_request', {
-                fetch('/delphes-api/api/v1/process_request', {
+                fetch('http://localhost:8002/api/v1/process_request', {
+                    //fetch('/delphes-api/api/v1/process_request', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -213,7 +224,7 @@
 
         // Appeler le Web Service d'analyse de la demande
         fetch('http://localhost:8002/api/v1/analyze', {
-        // fetch('/delphes-api/api/v1/analyze', {
+            // fetch('/delphes-api/api/v1/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -229,6 +240,7 @@
                     numero_AGDREF: formData.Agdref,
                     mention_de_risque_sur_l_emploi: false,
                     refugie_ou_protege_subsidiaire: false,
+                    date_expiration_api: '',
                 },
                 text: formData.Message
             })
@@ -246,6 +258,9 @@
                 // Sauver le résultat pour l'appel au Web Service de décision
                 highlighted_text_and_features = data.highlighted_text_and_features;
 
+                // Sauver la date d'expiration de l'API
+                field_values.date_expiration_api = data.analysis_result.date_expiration_api;
+
                 // Retirer le spinner après la réponse
                 spinnerContainer.innerHTML = '';
                 analyseContainer.innerHTML = '';
@@ -256,6 +271,7 @@
                 }
                 // Filtrer les scorings avec un score > 0
                 scoringsPositifs = data.analysis_result.scorings.filter(item => item.score > 0);
+                console.log('Scorings positifs :', scoringsPositifs);
 
                 // Créer le radio button pour chaque intention
                 let radioIntentions = `<fieldset class="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
@@ -280,6 +296,23 @@
                 const champ_type = "text";
                 for (const [index, intention] of scoringsPositifs.entries()) {
                     if (intention.intention_fields.length > 0) {
+                        champsIntentions += `
+                            <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
+                                ${intention.intention_fields.map(champ => `
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="intention-${index}-${champ}">
+                                            ${champ} *
+                                            ${champ == 'date_expiration_api' ? '<span class="fr-hint-text">Format attendu : JJ/MM/AAAA</span>' : ''}
+                                        </label>
+                                        <input class="fr-input" aria-describedby="intention-${index}-${champ}-messages" id="intention-${index}-${champ}" 
+                                            name="intention-${index}-${champ}" type="${champ == 'date_expiration_api' ? 'date' : 'text'}" value="${champ == 'date_expiration_api' ? convertDateToISO(field_values.date_expiration_api) : ''}">
+                                        <div class="fr-messages-group" id="intention-${index}-${champ}-messages" aria-live="assertive"> </div>
+                                    </div>
+                                    `).join('')}
+                            </div>`;
+                    }
+                    oldCode = false
+                    if (oldCode && intention.intention_fields.length > 0) {
                         champsIntentions += `
                             <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
                                 ${intention.intention_fields.map(champ => `
