@@ -68,6 +68,10 @@
         const year = today.getFullYear();
         const date_demande = `${day}/${month}/${year}`;
 
+        const apiBaseUrl = (window.location.hostname === "apps.athenadecisions.com")
+            ? "/delphes-api"
+            : "http://localhost:8002";
+
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             const data = {};
@@ -176,8 +180,7 @@
                 });
 
                 // Appeler le Web Service de décision
-                fetch('http://localhost:8002/api/v1/process_request', {
-                    //fetch('/delphes-api/api/v1/process_request', {
+                fetch(`${apiBaseUrl}/api/v1/process_request`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -247,8 +250,7 @@
         }
 
         // Appeler le Web Service d'analyse de la demande
-        fetch('http://localhost:8002/api/v1/analyze', {
-            // fetch('/delphes-api/api/v1/analyze', {
+        fetch(`${apiBaseUrl}/api/v1/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
