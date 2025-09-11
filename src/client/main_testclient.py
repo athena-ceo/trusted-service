@@ -263,6 +263,37 @@ def reload_apps():
     api_client.reload_apps()
     populate_apps(api_client)
 
+@st.dialog("Trusted Services Assistant")
+def launch_assistant():
+
+    name = st.text_input("Application name")
+    description = st.text_input("Application description")
+
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = [{"role": "assistant", "content": "How many intents should I propose you?"}]
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # React to user input
+    if prompt := st.chat_input("Tell me"):
+        # Display user message in chat message container
+        st.chat_message("user").markdown(prompt)
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        response = f"I suggest: report_claim, claim_status, billing_issue, policy_change, policy_cancellation"
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response)
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+    if st.button("Submit"):
+        st.rerun()
 
 def main_testclient():
     # https://yt3.googleusercontent.com/egw_LrYaDpQ5dUxq_8O1Szx_cP2IqZv2_WlQbsJBoVC5TrqhWmYbVEwSW3qfNwnUlZ6CtesMC8s=s160-c-k-c0x00ffffff-no-rj
@@ -298,7 +329,7 @@ def main_testclient():
         columns[3].button(
             label="",
             help="Trusted Services Assistant",
-            on_click=None,
+            on_click=launch_assistant,
             icon=":material/robot_2:", )
 
         app_proxys: list[AppProxy] = st.session_state.app_proxys

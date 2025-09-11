@@ -128,7 +128,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         def rule_expiration_d_une_api_api_non_expiree(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "expiration_d_une_api" and (difference_in_days := jours_jusqu_a_expiration_api(input)) > 0:
-                output.details.append("rule_expiration_d_une_api_api_expiree")
+                output.details.append("rule_expiration_d_une_api_api_non_expiree")
 
                 if difference_in_days <= 30:
                     output.priority = "HIGH"
