@@ -206,8 +206,32 @@
 
                         if (data) {
                             analyseContainer.innerHTML = '';
+                            const ack = data.case_handling_response?.acknowledgement_to_requester;
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
-                                <p>${data.case_handling_decision_output.acknowledgement_to_requester}</p>`
+                                <p>${ack ? ack : ""}</p>
+                            `
+
+                            // Changer les boutons
+                            const buttonsContainer = document.getElementById('buttons-container');
+                            const buttonAgentView = `<button type="submit" id="vue-agent" class="fr-btn fr-mt-3w">Vue Agent</button>`
+
+                            buttonsContainer.innerHTML = `
+                                <p>&nbsp;</p>
+                                ${buttonAgentView}
+                                <a href="nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                            `;
+                            document.getElementById('vue-agent').addEventListener('click', function () {
+                                const agentView = data.case_handling_response?.case_handling_report[0];
+                                if (agentView) {
+                                    analyseContainer.innerHTML = `<h2>Vue agent</h2>${agentView}`;
+                                    acknowledgement.innerHTML = '';
+                                    buttonsContainer.innerHTML = `
+                                        <p>&nbsp;</p>
+                                        <a href="nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                                    `;
+                                }
+                            });
+
                         } else {
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
                                 <p>Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.</p>`;
@@ -271,7 +295,6 @@
                 }
                 // Filtrer les scorings avec un score > 0
                 scoringsPositifs = data.analysis_result.scorings.filter(item => item.score > 0);
-                console.log('Scorings positifs :', scoringsPositifs);
 
                 // Créer le radio button pour chaque intention
                 let radioIntentions = `<fieldset class="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
@@ -401,11 +424,10 @@
             });
     </script>
 
-    <div class="fr-container">
+    <div class="fr-container" id="buttons-container">
         <p>&nbsp;</p>
         <a href="nous-contacter.html" class="fr-btn">Retour au formulaire</a>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.module.min.js"></script>
 </body>
 
