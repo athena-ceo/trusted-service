@@ -217,6 +217,7 @@
                             // Changer les boutons
                             const buttonsContainer = document.getElementById('buttons-container');
                             const buttonAgentView = `<button type="submit" id="vue-agent" class="fr-btn fr-mt-3w">Vue Agent</button>`
+                            const buttonAnswer = `<button type="submit" id="vue-reponse" class="fr-btn fr-mt-3w">Générer Réponse</button>`
 
                             buttonsContainer.innerHTML = `
                                 <p>&nbsp;</p>
@@ -226,15 +227,27 @@
                             document.getElementById('vue-agent').addEventListener('click', function () {
                                 const agentView = data.case_handling_response?.case_handling_report[0];
                                 if (agentView) {
-                                    analyseContainer.innerHTML = `<h2>Vue agent</h2>${agentView}`;
                                     acknowledgement.innerHTML = '';
+                                    analyseContainer.innerHTML = `<hr/><h2>Vue agent</h2>${agentView}`;
                                     buttonsContainer.innerHTML = `
                                         <p>&nbsp;</p>
+                                        ${buttonAnswer}
                                         <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
                                     `;
+                                    document.getElementById('vue-reponse').addEventListener('click', function () {
+                                        let reponseView = data.case_handling_response?.case_handling_report[1];
+                                        console.log('Réponse générée :', reponseView);
+                                        if (!reponseView) {
+                                            reponseView = '<p>Aucune réponse générée pour le moment.</p>';
+                                        }
+                                        analyseContainer.innerHTML += `<hr/><h2>Réponse générée</h2>${reponseView}`;
+                                        buttonsContainer.innerHTML = `
+                                        <p>&nbsp;</p>
+                                        <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                                        `;
+                                    });
                                 }
                             });
-
                         } else {
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
                                 <p>Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.</p>`;
