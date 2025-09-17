@@ -35,7 +35,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.priority = "MEDIUM"
 
         rule_default(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
 
     def package_standard_priority(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -70,15 +70,15 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.priority = "VERY_HIGH"
 
         rule_standard_billing_issues(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
         rule_standard_network_problems(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
         rule_standard_plan_changes(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
         rule_standard_sim_or_device_support(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
         rule_standard_account_management(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
 
     def package_particular_cases(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -103,12 +103,19 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 increment_priority_level(output)
                 increment_priority_level(output)
 
+        def rule_high_cltv(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.field_values["customer_lifetime_value"] == "High":
+                trace_this_rule(output)
+
+                increment_priority_level(output)
+
         rule_frustration_3(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        rule_high_cltv(input, output)
+        
         rule_frustration_4(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
         rule_frustration_5(input, output)
-        CaseHandlingDecisionOutput.model_validate(output)
+        
 
     def package_alerts(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
@@ -122,19 +129,19 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         rule_high_cltv_and_frustrated(input, output)
 
     package_initialisations(input, output)
-    CaseHandlingDecisionOutput.model_validate(output)
+    
     package_standard_priority(input, output)
-    CaseHandlingDecisionOutput.model_validate(output)
+    
     package_particular_cases(input, output)
-    CaseHandlingDecisionOutput.model_validate(output)
+    
     package_alerts(input, output)
-    CaseHandlingDecisionOutput.model_validate(output)
+    
 
 
 class DecisionEngineConnexion(CaseHandlingDecisionEngine):
 
     def _decide(self, input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
-        # Random value that will be overwritten in the rules
+        # Random value that will be overwritten in rule_default
         output: CaseHandlingDecisionOutput = CaseHandlingDecisionOutput(
             handling="AUTOMATED",
             acknowledgement_to_requester="N/A",
@@ -144,10 +151,8 @@ class DecisionEngineConnexion(CaseHandlingDecisionEngine):
             notes=[],
             details=[])
 
-        CaseHandlingDecisionOutput.model_validate(output)
-
         ruleflow(input, output)
 
-        CaseHandlingDecisionOutput.model_validate(output)
+        
 
         return output
