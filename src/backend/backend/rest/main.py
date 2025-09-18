@@ -1,4 +1,5 @@
 import inspect
+import os
 import json
 from typing import Optional, Any
 
@@ -24,7 +25,21 @@ def log_function_call():
 class FastAPI2(FastAPI):
 
     def __init__(self):
-        super().__init__()
+        app_env = os.getenv("APP_ENV", "local")
+
+        if app_env == "prod":
+            super().__init__(
+                title="Trusted Services API",
+                docs_url="/docs",
+                openapi_url="/openapi.json",
+                root_path="/trusted-services-api"
+            )
+        else:  # local
+            super().__init__(
+                title="Trusted Services API",
+                docs_url="/docs",
+                openapi_url="/openapi.json"
+            )
         self.server_api: Optional[ServerApi] = None
 
     def init(self,
