@@ -27,7 +27,7 @@ class FastAPI2(FastAPI):
     def __init__(self):
         app_env = os.getenv("APP_ENV", "local")
 
-        if app_env == "prod":
+        if app_env == "production":
             super().__init__(
                 title="Trusted Services API",
                 docs_url="/docs",
