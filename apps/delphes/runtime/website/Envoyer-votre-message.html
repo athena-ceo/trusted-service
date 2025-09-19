@@ -89,6 +89,7 @@
         </div>`;
 
         const departement = '78';
+        const arrondissement = formData.arrondissement || '';
         let scoringsPositifs;
         let highlighted_text_and_features;
         let field_values = {
@@ -273,6 +274,7 @@
                 field_values: {
                     date_demande: date_demande,
                     departement: departement,
+                    arrondissement: arrondissement,
                     nom: formData.Nom,
                     prenom: formData.Prenom,
                     adresse_mail: formData.Email,

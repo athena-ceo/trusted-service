@@ -71,6 +71,10 @@
             if (email) {
                 email.value = randomNom.toLowerCase() + "." + randomPrenom.toLowerCase() + "@" + messageries[Math.floor(Math.random() * messageries.length)];
             }
+            var arrondissement = document.getElementsByName('Arrondissement')[0];
+            if (arrondissement) {
+                arrondissement.value = "VERS";
+            }
             var agdref = document.getElementsByName('Agdref')[0];
             if (agdref) {
                 agdref.value = "78" + Math.floor(Math.random() * 1000000000);
@@ -1271,42 +1275,6 @@ ${randomPrenom} ${randomNom}`;
                             </div>
                             <form id="contact-form" class="" action="Envoyer-votre-message.html" method="get">
                                 <p class="fr-text--heavy">* Champs obligatoires</p>
-                                <!-- <fieldset class="fr-fieldset"
-                                        aria-labelledby="service-destinataire-legend service-destinataire-messages"
-                                        role="group">
-                                        <legend class="fr-fieldset__legend fr-text--regular fr-sr-only"
-                                            id='service-destinataire-legend'>
-                                            service *
-                                        </legend>
-                                        <div class="fr-fieldset__element">
-                                            <div class="fr-select-group fr-mb-3w">
-                                                <label class="fr-label" for="service">
-                                                    Veuillez selectionner un service *
-                                                </label>
-                                                <select id="service" class="fr-select select-change-display"
-                                                    aria-describedby="select-messages" required="required"
-                                                    name=ContentObjectAttribute_ezstring_data_text_5938>
-                                                    <option selected disabled hidden value="">Choisissez un service
-                                                    </option>
-                                                    <option data-show-bool="0" data-show-target="form .my-calendar-dob"
-                                                        value=32328|0>Préfecture de Versailles - Service étrangers
-                                                        (titre de séjour)</option>
-                                                    <option data-show-bool="0" data-show-target="form .my-calendar-dob"
-                                                        value=32332|0>Sous-préfecture de Mantes-la-Jolie - service
-                                                        étrangers (titre de séjour)</option>
-                                                    <option data-show-bool="0" data-show-target="form .my-calendar-dob"
-                                                        value=32331|0>Sous-préfecture de Rambouillet - service
-                                                        étrangers (titre de séjour)</option>
-                                                    <option data-show-bool="0" data-show-target="form .my-calendar-dob"
-                                                        value=32330|0>Sous-préfecture de Saint-Germain-en-Laye - service
-                                                        étrangers (titre de séjour)</option>
-                                                </select>
-                                                <div class="fr-messages-group" id="select-messages-service"
-                                                    aria-live="polite">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset> -->
                                 <fieldset class="fr-fieldset"
                                     aria-labelledby="service-identification-legend service-identification-messages"
                                     role="group">
@@ -1387,7 +1355,77 @@ ${randomPrenom} ${randomNom}`;
                                                 <div class="fr-messages-group" id="telephone-service-input-messages" aria-live="polite">
                                                 </div>
                                             </div>
-                                        </div> -->
+                                    </div> -->
+                                    <div class="fr-fieldset__element">
+                                        <div class="fr-select-group fr-mb-3w">
+                                            <label class="fr-label" for="service">
+                                                Veuillez selectionner l'arrondissement de rattachement de votre commune
+                                                de résidence *
+                                                <span class="fr-hint-text"><a target="_blank"
+                                                        href="https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf">Cliquer
+                                                        ici pour consulter la liste des arrondissements de rattachement
+                                                        des communes des Yvelines.</a></span>
+                                            </label>
+                                            <select id="arrondissement" class="fr-select select-change-display"
+                                                aria-describedby="select-messages" required="required"
+                                                name=Arrondissement>
+                                                <option selected disabled hidden value="">Choisissez un arrondissement
+                                                </option>
+                                            </select>
+                                            <script>
+                                                // Variable département à 78
+                                                const departement = 78;
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    const apiBaseUrl = (window.location.hostname === "apps.athenadecisions.com")
+                                                        ? "/trusted-services-api"
+                                                        : "http://localhost:8002";
+
+                                                    fetch(`${apiBaseUrl}/trusted_services/v2/apps/delphes/fr/case_model`)
+                                                        .then(response => {
+                                                            if (!response.ok) throw new Error("Erreur lors de la récupération des arrondissements");
+                                                            return response.json();
+                                                        })
+                                                        .then(data => {
+                                                            // Chercher le case_field avec id 'arrondissement'
+                                                            const caseFields = data.case_fields || [];
+                                                            const arrondissementField = caseFields.find(f => f.id === 'arrondissement');
+                                                            if (!arrondissementField || !arrondissementField.allowed_values) return;
+                                                            const allowed = arrondissementField.allowed_values;
+                                                            // Filtrer selon la condition departement==78
+                                                            const filtered = allowed.filter(item => {
+                                                                try {
+                                                                    // La condition est dans item.condition_javascript, ex: '{departement} === 78'
+                                                                    const cond = item.condition_javascript.replace(/\{departement\}/g, departement);
+                                                                    // eslint-disable-next-line no-eval
+                                                                    return eval(cond);
+                                                                } catch (e) {
+                                                                    return false;
+                                                                }
+                                                            });
+                                                            const select = document.getElementById('arrondissement');
+                                                            select.options.length = 1;
+                                                            for (const item of filtered) {
+                                                                const option = document.createElement('option');
+                                                                option.value = item.id;
+                                                                option.textContent = item.label;
+                                                                select.appendChild(option);
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error(error);
+                                                            const select = document.getElementById('arrondissement');
+                                                            const opt = document.createElement('option');
+                                                            opt.value = "";
+                                                            opt.textContent = "Impossible de charger les arrondissements";
+                                                            select.appendChild(opt);
+                                                        });
+                                                });
+                                            </script>
+                                            <div class="fr-messages-group" id="select-messages-service"
+                                                aria-live="polite">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="fr-fieldset__element">
                                         <div id=e435d7c9fb2517fc52b9dda769494e5b2 class="fr-input-group"
                                             autocomplete="agdref">
