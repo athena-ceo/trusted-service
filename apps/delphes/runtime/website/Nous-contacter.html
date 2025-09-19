@@ -23,6 +23,11 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@Prefet78">
     <link rel="apple-touch-icon" href="extension/ide/design/ide_dsfr_design/images/favicon/apple-touch-icon.png">
+    <script>
+        if (window.location.hostname === "apps.athenadecisions.com") {
+            document.write('<base href="/delphes/">');
+        }
+    </script>
     <link rel="icon" href="extension/ide/design/ide_dsfr_design/images/favicon/favicon.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="extension/ide/design/ide_dsfr_design/images/favicon/favicon.ico"
         type="image/x-icon">
@@ -41,12 +46,8 @@
     <script type="text/javascript"
         src="var/ide_site/cache/public/javascript/a1372bdf52fb00c5ca83e41f02aec05b_1726837609.js"
         charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css"
-        href="var/ide_site/cache/public/stylesheets/decb8cd1f1dfd7a0325eb94aaf10c088_1726837610_screen.css"
-        media="screen" />
-    <link rel="stylesheet" type="text/css"
-        href="var/ide_site/cache/public/stylesheets/0ed3bf09485f272a15a119b85ef8d35f_1726837607_print.css"
-        media="print" />
+    <!-- DSFR officiel via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.min.css">
 
     <script type="text/javascript">
         const noms = ["Smith", "Jordan", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"];
