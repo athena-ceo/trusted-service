@@ -68,6 +68,10 @@
         const year = today.getFullYear();
         const date_demande = `${day}/${month}/${year}`;
 
+        const apiBaseUrl = (window.location.hostname === "apps.athenadecisions.com")
+            ? "/trusted-services-api"
+            : "http://localhost:8002";
+
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             const data = {};
@@ -85,6 +89,7 @@
         </div>`;
 
         const departement = '78';
+        const arrondissement = formData.arrondissement || '';
         let scoringsPositifs;
         let highlighted_text_and_features;
         let field_values = {
@@ -96,6 +101,7 @@
             numero_AGDREF: formData.Agdref,
             mention_de_risque_sur_l_emploi: false,
             refugie_ou_protege_subsidiaire: false,
+            date_expiration_api: '',
         };
     </script>
 
@@ -115,6 +121,12 @@
             if (!dateStr) return '';
             const [day, month, year] = dateStr.split('/');
             return `${year}-${month}-${day}`;
+        }
+
+        function convertISOtoDate(dateStr) {
+            if (!dateStr) return '';
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}/${year}`;
         }
 
         const analyseContainer = document.getElementById('analyse');
@@ -161,12 +173,15 @@
                 // Mise à jour des infos du demandeur
                 scoringsPositifs[index].intention_fields.forEach(champ => {
                     const valeur = document.getElementById(`intention-${index}-${champ}`).value;
-                    field_values[champ] = valeur;
+                    if (champ === 'date_expiration_api') {
+                        field_values[champ] = convertISOtoDate(valeur);
+                    } else {
+                        field_values[champ] = valeur;
+                    }
                 });
 
                 // Appeler le Web Service de décision
-                // fetch('http://localhost:8002/api/v1/process_request', {
-                fetch('/delphes-api/api/v1/process_request', {
+                fetch(`${apiBaseUrl}/api/v1/process_request`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -195,8 +210,45 @@
 
                         if (data) {
                             analyseContainer.innerHTML = '';
+                            const ack = data.case_handling_response?.acknowledgement_to_requester;
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
-                                <p>${data.case_handling_decision_output.acknowledgement_to_requester}</p>`
+                                <p>${ack ? ack : ""}</p>
+                            `
+
+                            // Changer les boutons
+                            const buttonsContainer = document.getElementById('buttons-container');
+                            const buttonAgentView = `<button type="submit" id="vue-agent" class="fr-btn fr-mt-3w">Vue Agent</button>`
+                            const buttonAnswer = `<button type="submit" id="vue-reponse" class="fr-btn fr-mt-3w">Générer Réponse</button>`
+
+                            buttonsContainer.innerHTML = `
+                                <p>&nbsp;</p>
+                                ${buttonAgentView}
+                                <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                            `;
+                            document.getElementById('vue-agent').addEventListener('click', function () {
+                                const agentView = data.case_handling_response?.case_handling_report[0];
+                                if (agentView) {
+                                    acknowledgement.innerHTML = '';
+                                    analyseContainer.innerHTML = `<hr/><h2>Vue agent</h2>${agentView}`;
+                                    buttonsContainer.innerHTML = `
+                                        <p>&nbsp;</p>
+                                        ${buttonAnswer}
+                                        <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                                    `;
+                                    document.getElementById('vue-reponse').addEventListener('click', function () {
+                                        let reponseView = data.case_handling_response?.case_handling_report[1];
+                                        console.log('Réponse générée :', reponseView);
+                                        if (!reponseView) {
+                                            reponseView = '<p>Aucune réponse générée pour le moment.</p>';
+                                        }
+                                        analyseContainer.innerHTML += `<hr/><h2>Réponse générée</h2>${reponseView}`;
+                                        buttonsContainer.innerHTML = `
+                                        <p>&nbsp;</p>
+                                        <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+                                        `;
+                                    });
+                                }
+                            });
                         } else {
                             acknowledgement.innerHTML = `<h3>Merci pour votre patience</h3>
                                 <p>Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.</p>`;
@@ -212,8 +264,7 @@
         }
 
         // Appeler le Web Service d'analyse de la demande
-        fetch('http://localhost:8002/api/v1/analyze', {
-        // fetch('/delphes-api/api/v1/analyze', {
+        fetch(`${apiBaseUrl}/api/v1/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -223,12 +274,14 @@
                 field_values: {
                     date_demande: date_demande,
                     departement: departement,
+                    arrondissement: arrondissement,
                     nom: formData.Nom,
                     prenom: formData.Prenom,
                     adresse_mail: formData.Email,
                     numero_AGDREF: formData.Agdref,
                     mention_de_risque_sur_l_emploi: false,
                     refugie_ou_protege_subsidiaire: false,
+                    date_expiration_api: '',
                 },
                 text: formData.Message
             })
@@ -245,6 +298,9 @@
 
                 // Sauver le résultat pour l'appel au Web Service de décision
                 highlighted_text_and_features = data.highlighted_text_and_features;
+
+                // Sauver la date d'expiration de l'API
+                field_values.date_expiration_api = data.analysis_result.date_expiration_api;
 
                 // Retirer le spinner après la réponse
                 spinnerContainer.innerHTML = '';
@@ -280,6 +336,23 @@
                 const champ_type = "text";
                 for (const [index, intention] of scoringsPositifs.entries()) {
                     if (intention.intention_fields.length > 0) {
+                        champsIntentions += `
+                            <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
+                                ${intention.intention_fields.map(champ => `
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="intention-${index}-${champ}">
+                                            ${champ} *
+                                            ${champ == 'date_expiration_api' ? '<span class="fr-hint-text">Format attendu : JJ/MM/AAAA</span>' : ''}
+                                        </label>
+                                        <input class="fr-input" aria-describedby="intention-${index}-${champ}-messages" id="intention-${index}-${champ}" 
+                                            name="intention-${index}-${champ}" type="${champ == 'date_expiration_api' ? 'date' : 'text'}" value="${champ == 'date_expiration_api' ? convertDateToISO(field_values.date_expiration_api) : ''}">
+                                        <div class="fr-messages-group" id="intention-${index}-${champ}-messages" aria-live="assertive"> </div>
+                                    </div>
+                                    `).join('')}
+                            </div>`;
+                    }
+                    oldCode = false
+                    if (oldCode && intention.intention_fields.length > 0) {
                         champsIntentions += `
                             <div id="champs-intention-${index}" style="display: none; margin-left: 20px; margin-bottom: 20px;">
                                 ${intention.intention_fields.map(champ => `
@@ -368,11 +441,10 @@
             });
     </script>
 
-    <div class="fr-container">
+    <div class="fr-container" id="buttons-container">
         <p>&nbsp;</p>
-        <a href="nous-contacter.html" class="fr-btn">Retour au formulaire</a>
+        <a href="Nous-contacter.html" class="fr-btn">Retour au formulaire</a>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.module.min.js"></script>
 </body>
 

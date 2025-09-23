@@ -30,3 +30,4 @@ venv/
 .streamlit/secrets.toml
 **/~$*.xlsx
 **/test.py
+.env
