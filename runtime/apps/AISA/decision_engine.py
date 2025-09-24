@@ -130,6 +130,7 @@ from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandli
 #     package_alerts(input, output)
 #     CaseHandlingDecisionOutput.model_validate(output)
 
+# https://www.hel.fi/en/urban-environment-and-traffic/plots-and-building-permits/contact-information-for-plot-and-permit-matters
 
 class DecisionEngineConnexion(CaseHandlingDecisionEngine):
 
