@@ -1,0 +1,78 @@
+{
+    "scorings": [
+        {
+            "intention_id": "city_plots_for_apartment_blocks_and_terraced_houses",
+            "score": 10,
+            "justification": "The user's text explicitly mentions 'city plots for an apartment block & a terraced building', indicating a clear interest in this category.",
+            "intention_label": "City plots for apartment blocks and terraced houses",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "city_plots_for_detached_houses",
+            "score": 0,
+            "justification": "There is no mention of detached houses in the user's request, therefore the score is absent.",
+            "intention_label": "City plots for detached houses",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "complimentary_construction_for_housing_cooperative_plots",
+            "score": 0,
+            "justification": "The text does not reference any cooperative plots or complimentary constructions, receiving a score of zero.",
+            "intention_label": "Complimentary construction for housing cooperative plots",
+            "intention_fields": [
+                "district"
+            ]
+        },
+        {
+            "intention_id": "city_plots_for_sports_and_sporting_activities",
+            "score": 0,
+            "justification": "The request does not pertain to sports or sporting activities; thus, the score is absent.",
+            "intention_label": "City plots for sports and sporting activities",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "city_plots_and_areas_for_purposes_other_than_construction",
+            "score": 0,
+            "justification": "The intention regarding areas for purposes other than construction is not relevant to the user's request.",
+            "intention_label": "City plots and areas for purposes other than construction",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "commercial_plots",
+            "score": 0,
+            "justification": "The user does not inquire about commercial plots, as their focus is solely on residential buildings.",
+            "intention_label": "Commercial plots",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "control_of_plots_rented_by_the_city_and_management_of_vacant_plots",
+            "score": 0,
+            "justification": "The request does not involve management or control of any plots rented by the city or vacant plots.",
+            "intention_label": "Control of plots rented by the city and management of vacant plots",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "level_of_frustration": 1,
+    "fragments_level_of_frustration": {
+        "list": [
+            "I am writing to you regarding city plots for an apartment block & a terraced building."
+        ]
+    },
+    "statistics": {
+        "LLM config": "tests",
+        "LLM": "openai",
+        "LLM Model": "gpt-4o-mini",
+        "Prompt format": "markdown",
+        "Response time": "9.91s",
+        "Prompt tokens": "Not implemented yet",
+        "Completion tokens": "Not implemented yet"
+    },
+    "hash_code": "e5lglz"
+}

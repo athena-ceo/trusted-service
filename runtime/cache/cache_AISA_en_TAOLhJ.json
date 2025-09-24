@@ -1,0 +1,72 @@
+{
+    "scorings": [
+        {
+            "intention_id": "city_plots_for_sports_and_sporting_activities",
+            "score": 10,
+            "justification": "The user's request for building a new gym directly aligns with the need for city plots for sports and sporting activities.",
+            "intention_label": "City plots for sports and sporting activities",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "commercial_plots",
+            "score": 10,
+            "justification": "The user's interest in acquiring a plot for a restaurant falls under the category of commercial plots required for business purposes.",
+            "intention_label": "Commercial plots",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "city_plots_for_apartment_blocks_and_terraced_houses",
+            "score": 0,
+            "justification": "There is no mention or indication of interest in apartment blocks or terraced houses.",
+            "intention_label": "City plots for apartment blocks and terraced houses",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "city_plots_for_detached_houses",
+            "score": 0,
+            "justification": "The request does not involve detached houses; the focus is solely on commercial properties.",
+            "intention_label": "City plots for detached houses",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "complimentary_construction_for_housing_cooperative_plots",
+            "score": 0,
+            "justification": "No reference to housing cooperative plots is made in the user's request.",
+            "intention_label": "Complimentary construction for housing cooperative plots",
+            "intention_fields": [
+                "district"
+            ]
+        },
+        {
+            "intention_id": "city_plots_and_areas_for_purposes_other_than_construction",
+            "score": 0,
+            "justification": "The user's inquiry is specific to construction-related requests and does not request plots for other purposes.",
+            "intention_label": "City plots and areas for purposes other than construction",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "control_of_plots_rented_by_the_city_and_management_of_vacant_plots",
+            "score": 0,
+            "justification": "There is no indication of interest in management or control of rented or vacant plots from city services.",
+            "intention_label": "Control of plots rented by the city and management of vacant plots",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "OTHER",
+            "intention_fields": []
+        }
+    ],
+    "statistics": {
+        "LLM config": "tests",
+        "LLM": "openai",
+        "LLM Model": "gpt-4o-mini",
+        "Prompt format": "markdown",
+        "Response time": "9.69s",
+        "Prompt tokens": "Not implemented yet",
+        "Completion tokens": "Not implemented yet"
+    },
+    "hash_code": "TAOLhJ"
+}
