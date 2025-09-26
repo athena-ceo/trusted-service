@@ -192,3 +192,32 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             print("Successfully sent email!")
         except Exception as e:
             print(f"Did not successfully send email!: {e}")
+
+
+
+# Ajout d'une fonction main pour tests unitaires d'envoi d'email
+if __name__ == "__main__":
+    # Config minimale pour test
+    email_config = DistributionEmailConfig(
+        hub_email_address="envoishibou78@gmail.com",
+        agent_email_address="j@milgram.fr",
+        password="bceo rdxm suuv orul",
+        smtp_server="smtp.gmail.com",
+        smtp_port=587,
+        send_email=True,  # mettre True pour tester l'envoi réel
+        case_field_email_address="adresse_mail",
+        email_templates=[
+            EmailTemplate(id="template1", subject="Sujet test", body="Bonjour {nom}, ceci est un test.")
+        ]
+    )
+
+    locale = "fr"
+    engine = CaseHandlingDistributionEngineEmail(email_config, locale)
+
+    email_to_agent: Email = Email(
+        from_email_address=email_config.hub_email_address,
+        to_email_address=email_config.agent_email_address,
+        subject=f"Test d'email",
+        body="Ceci est un test d'email envoyé par le moteur de distribution.")
+
+    engine.send_mail(email_config=email_config, email_to_send=email_to_agent, email_mail_to=None)
