@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import List, Optional
 
 from src.backend.decision.decision import CaseHandlingDecisionOutput
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
-from src.backend.distribution.distribution_email.distribution_email_config import EmailTemplate
+from src.backend.distribution.distribution_email.distribution_email_config import EmailTemplate, load_email_config_from_workbook
 from src.backend.distribution.distribution_email.distribution_email_localization import distribution_engine_email_localizations
 from src.backend.rendering.html import render_email, hilite_blue, standard_table_style, standard_back_ground_color
 from src.common.server_api import CaseHandlingRequest, CaseHandlingResponse
@@ -147,8 +147,12 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         body = "<html> <blockquote>" + body
 
         if email_mail_to is not None:
+            # Ensure email is a string (take the first if it's a list)
+            to_email = email_mail_to.to_email_address
+            if isinstance(to_email, list):
+                to_email = to_email[0] if to_email else ""
             mailto_link = self.create_mailto_link(
-                email=email_mail_to.to_email_address,
+                email=to_email,
                 subject=email_mail_to.subject,
                 body=email_mail_to.body,
             )
@@ -166,29 +170,57 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         smtp_server = email_config.smtp_server
         smtp_port = email_config.smtp_port
 
-        # Email content
-
-        # Create email
+        # Build MIME message
         message = MIMEMultipart()
         message["From"] = email_to_send.from_email_address
-        message["To"] = email_to_send.to_email_address
-        message["Subject"] = email_to_send.subject
 
+        # Normalize To header (accept str or list)
+        if isinstance(email_to_send.to_email_address, list):
+            message["To"] = ", ".join(email_to_send.to_email_address)
+        else:
+            message["To"] = email_to_send.to_email_address
+
+        # Subject
+        subject = email_to_send.subject
+        if isinstance(subject, str):
+            subject = subject.encode('utf-8').decode('utf-8')
+        message["Subject"] = subject
+
+        # Prepare body (HTML) using UTF-8
         body = self.build_body(body=email_to_send.body, email_mail_to=email_mail_to)
+        # Ensure body is properly encoded
+        if isinstance(body, str):
+            body = body.encode('utf-8').decode('utf-8')
+        message.attach(MIMEText(body, "html", "utf-8"))
 
-        # print("--- body ---")
-        # print(body)
-        # print("------------")
-
-        message.attach(MIMEText(body, "html"))
+        # Accept either `bcc` (new) or `bcc_email_address` (legacy) on Email model
+        bcc_list: List[str] | None = getattr(email_to_send, "bcc", None) or getattr(email_to_send, "bcc_email_address", None)
 
         try:
+            from email.utils import getaddresses
+
+            # Build recipients for SMTP envelope: include To and Bcc
+            address_strings: list[str] = []
+            if isinstance(email_to_send.to_email_address, list):
+                address_strings.extend(email_to_send.to_email_address)
+            else:
+                address_strings.append(email_to_send.to_email_address)
+
+            if bcc_list:
+                address_strings.extend(bcc_list)
+
+            parsed = getaddresses(address_strings)
+            recipients: List[str] = [addr for name, addr in parsed if addr]
+
             with smtplib.SMTP(smtp_server, smtp_port) as server:
-                server.starttls()  # Start TLS encryption
-                server.login(email_to_send.from_email_address, email_password)  # Login with secrets
-                server.sendmail(
-                    email_to_send.from_email_address, email_to_send.to_email_address, message.as_string()
-                )  # Send email
+                # Disable SMTP protocol debug output in production
+                server.set_debuglevel(0)
+                server.starttls()
+                server.login(email_to_send.from_email_address, email_password)
+
+                # Send as bytes to preserve UTF-8
+                server.sendmail(email_to_send.from_email_address, recipients, message.as_bytes())
+
             print("Successfully sent email!")
         except Exception as e:
             print(f"Did not successfully send email!: {e}")
@@ -197,27 +229,39 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
 # Ajout d'une fonction main pour tests unitaires d'envoi d'email
 if __name__ == "__main__":
-    # Config minimale pour test
-    email_config = DistributionEmailConfig(
-        hub_email_address="envoishibou78@gmail.com",
-        agent_email_address="j@milgram.fr",
-        password="bceo rdxm suuv orul",
-        smtp_server="smtp.gmail.com",
-        smtp_port=587,
-        send_email=True,  # mettre True pour tester l'envoi réel
-        case_field_email_address="adresse_mail",
-        email_templates=[
-            EmailTemplate(id="template1", subject="Sujet test", body="Bonjour {nom}, ceci est un test.")
-        ]
-    )
+    import os
 
     locale = "fr"
+    email_config: DistributionEmailConfig = load_email_config_from_workbook(
+        os.path.join(os.path.dirname(__file__), "../../../../runtime/apps/delphes/delphes.xlsx"),
+        locale)
+    
+    # Clean any problematic characters from config
+    def clean_string(s):
+        if isinstance(s, str):
+            # Replace non-breaking space and other problematic characters
+            return s.replace('\xa0', ' ').replace('\u00a0', ' ')
+        return s
+    
+    # Clean all string fields in config
+    email_config.hub_email_address = clean_string(email_config.hub_email_address)
+    print(f"email_config.hub_email_address: {email_config.hub_email_address}")
+    email_config.agent_email_address = clean_string(email_config.agent_email_address)
+    print(f"email_config.agent_email_address: {email_config.agent_email_address}")
+    email_config.password = clean_string(email_config.password)
+    print(f"email_config.password: {email_config.password}")
+    email_config.smtp_server = clean_string(email_config.smtp_server)
+    print(f"email_config.smtp_server: {email_config.smtp_server}")
+    
+    # Override agent email for testing
+    email_config.agent_email_address = "j@milgram.fr"
     engine = CaseHandlingDistributionEngineEmail(email_config, locale)
 
     email_to_agent: Email = Email(
         from_email_address=email_config.hub_email_address,
         to_email_address=email_config.agent_email_address,
-        subject=f"Test d'email",
-        body="Ceci est un test d'email envoyé par le moteur de distribution.")
+        bcc_email_address=["Joel Milgram <joel@athenadecisions.com>", "joel@milgram.fr"],
+        subject="Test d'email",
+        body="Ceci est un test d'email envoye par le moteur de distribution.")
 
     engine.send_mail(email_config=email_config, email_to_send=email_to_agent, email_mail_to=None)
