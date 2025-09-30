@@ -62,6 +62,20 @@ class LocalizedApp(ServerApi):
         self.case_handling_distribution_engine: CaseHandlingDistributionEngine | None = None
         if localized_app_config.distribution_engine == "email":
             email_config: DistributionEmailConfig = load_email_config_from_workbook(app_def_filename, locale)
+            
+            # Clean any problematic characters from config to avoid ASCII encoding errors
+            def clean_string(s):
+                if isinstance(s, str):
+                    # Replace non-breaking space and other problematic characters
+                    return s.replace('\xa0', ' ').replace('\u00a0', ' ')
+                return s
+            
+            # Clean all string fields in config
+            email_config.hub_email_address = clean_string(email_config.hub_email_address)
+            email_config.agent_email_address = clean_string(email_config.agent_email_address)
+            email_config.password = clean_string(email_config.password)
+            email_config.smtp_server = clean_string(email_config.smtp_server)
+            
             self.case_handling_distribution_engine = CaseHandlingDistributionEngineEmail(email_config, locale)
         else:  # Ticketing system, etc...
             pass
