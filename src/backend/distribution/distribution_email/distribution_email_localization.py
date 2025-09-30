@@ -22,5 +22,10 @@ distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngin
         label_intent="Intention",
         label_yes="oui",
         label_no="non",
-        label_notes="Eléments importants")
+        label_notes="Eléments importants"),
+    "fi": DistributionEngineEmaiLocalization(
+        label_intent="Intent",
+        label_yes="yes",
+        label_no="no",
+        label_notes="Important notes"),
 }

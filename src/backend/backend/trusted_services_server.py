@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -11,7 +12,14 @@ from src.common.server_api import ServerApi
 class TrustedServicesServer(ServerApi):
 
     def __init__(self, runtime_directory: str):
+        logging.basicConfig(filename="log_file.log",
+                            # level=logging.INFO,  # could be DEBUG, WARNING, ERROR
+                            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                            filemode='w')
+        logger = logging.getLogger("TrustedServicesServer")
+        logger.critical("TrustedServicesServer.__init__")
         print("TrustedServicesServer.__init__")
+
         self.runtime_directory = runtime_directory
 
         self.apps: dict[str, App] = {}  # To be ovedrriden in reload_apps

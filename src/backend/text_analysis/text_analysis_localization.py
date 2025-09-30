@@ -74,5 +74,28 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_definition="Définition",
         promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
 
-        label_intention_other="AUTRE")
+        label_intention_other="AUTRE"),
+
+    "fi": TextAnalysisLocalization(
+        docstring_scoring_for_one_intention="Model output for a single intention.",
+        docstring_scoring_for_one_intention_intention_id="Matches Intention.id",
+        docstring_scoring_for_one_intention_score="0 = absent, 10 = fully present",
+        docstring_scoring_for_one_intention_justification="Why the model chose this score",
+        docstring_scoring_for_multiple_intentions="List of the scorings for individual intentions",
+
+        promptstring_prompt_is_markdown="This prompt is written in Markdown format.",
+        promptstring_intent_id="Intent id",
+        promptstring_intent_description="Intent description",
+        promptstring_perform_the_2_tasks_below="Please perform the 2 tasks below",
+        promptstring_task="TASK",
+        promptstring_instructions_intentions="Given the *user's* text and the list of intentions below, rate each intention between 0 and 10 and justify the rating in one or two sentences.",
+        promptstring_list_of_intentions="List of intentions",
+        promptstring_instructions_extract_features="Extract the following features from the text",
+        promptstring_description_of_fragments_feature="If the text mentions {description_of_feature}, the list of string fragments that mention it",
+        promptstring_definitions="Definitions",
+        promptstring_term="Term",
+        promptstring_definition="Definition",
+        promptstring_return_only_json="Return ONLY valid JSON that matches this JSON Schema (no extra keys, no prose)",
+
+        label_intention_other="OTHER", ),
 }
