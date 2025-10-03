@@ -1,0 +1,46 @@
+{
+    "scorings": [
+        {
+            "intention_id": "city_plots_for_sports_and_sporting_activities",
+            "score": 10,
+            "justification": "Käyttäjä mainitsee selkeästi tarpeensa uuden kuntosalin rakentamiseen, mikä kuuluu liikunta- ja urheilutoimintaan, joten tämä aikomus saa täydet 10 pistettä.",
+            "intention_label": "Kaupungin tontit liikunta- ja urheilutoimintaan",
+            "intention_fields": [
+                "district"
+            ]
+        },
+        {
+            "intention_id": "commercial_plots",
+            "score": 10,
+            "justification": "Käyttäjä ilmoittaa tarvitsevansa tontin ravintolan rakentamiseen, mikä liittyy kaupallisiin tarkoituksiin ja täsmää täydellisesti tähän aikomukseen.",
+            "intention_label": "Toimitilatonttien rakentaminen",
+            "intention_fields": [
+                "district"
+            ]
+        },
+        {
+            "intention_id": "city_plots_for_apartment_blocks_and_terraced_houses",
+            "score": 10,
+            "justification": "Käyttäjän maininta kerrostaloasuinrakentamisesta suoraan yhdistää hänen tarpeensa kerros- ja rivitalotontteihin, mikä tekee tästä aikomuksesta erittäin relevantin.",
+            "intention_label": "Kaupungin kerros- ja rivitalotontit",
+            "intention_fields": []
+        },
+        {
+            "intention_id": "other",
+            "score": 1,
+            "justification": "Fallback",
+            "intention_label": "MUU",
+            "intention_fields": []
+        }
+    ],
+    "statistics": {
+        "LLM config": "tests",
+        "LLM": "openai",
+        "LLM Model": "gpt-4o-mini",
+        "Prompt format": "markdown",
+        "Response time": "5.84s",
+        "Prompt tokens": "Not implemented yet",
+        "Completion tokens": "Not implemented yet"
+    },
+    "hash_code": "A_Crct"
+}
