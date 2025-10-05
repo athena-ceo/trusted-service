@@ -31,3 +31,6 @@ venv/
 **/~$*.xlsx
 **/test.py
 .env
+.env.production
+.env.local
+.env.*.local

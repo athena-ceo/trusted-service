@@ -1,0 +1,41 @@
+ .fr-spinner {
+     display: block;
+     /* Assurez-vous que le spinner est visible */
+     margin: auto;
+     /* Centrez le spinner */
+ }
+
+ /* Spinner de base */
+ .fr-spinner {
+     border: 4px solid rgba(0, 0, 0, 0.1);
+     /* Bordure légère */
+     border-top: 4px solid #000091;
+     /* Couleur principale */
+     border-radius: 50%;
+     /* Cercle */
+     width: 40px;
+     /* Taille par défaut */
+     height: 40px;
+     animation: spin 1s linear infinite;
+     /* Animation de rotation */
+ }
+
+ /* Spinner de grande taille */
+ .fr-spinner--lg {
+     width: 60px;
+     /* Taille plus grande */
+     height: 60px;
+     border-width: 6px;
+     /* Bordure plus épaisse */
+ }
+
+ /* Animation de rotation */
+ @keyframes spin {
+     0% {
+         transform: rotate(0deg);
+     }
+
+     100% {
+         transform: rotate(360deg);
+     }
+ }
