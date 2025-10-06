@@ -14,32 +14,40 @@ export interface WatsonConfig {
  */
 export function getWatsonConfig(): WatsonConfig {
     // Récupération des variables d'environnement (avec placeholders pour le runtime)
-    const region = process.env.NEXT_PUBLIC_WATSON_REGION || '__NEXT_PUBLIC_WATSON_REGION__' || 'us-south';
+    const region = process.env.NEXT_PUBLIC_WATSON_REGION || '__NEXT_PUBLIC_WATSON_REGION__';
     const instanceId = process.env.NEXT_PUBLIC_WATSON_INSTANCE_ID || '__NEXT_PUBLIC_WATSON_INSTANCE_ID__';
     const integrationId = process.env.NEXT_PUBLIC_WATSON_INTEGRATION_ID || '__NEXT_PUBLIC_WATSON_INTEGRATION_ID__';
     const agentId = process.env.NEXT_PUBLIC_WATSON_AGENT_ID || '__NEXT_PUBLIC_WATSON_AGENT_ID__';
 
-    // Validation des variables requises (skip en production avec placeholders)
-    if (!instanceId || instanceId.startsWith('__NEXT_PUBLIC_')) {
-        console.warn('NEXT_PUBLIC_WATSON_INSTANCE_ID is not configured - Watson features may not work');
-    }
-    if (!integrationId || integrationId.startsWith('__NEXT_PUBLIC_')) {
-        console.warn('NEXT_PUBLIC_WATSON_INTEGRATION_ID is not configured - Watson features may not work');
-    }
-    if (!agentId || agentId.startsWith('__NEXT_PUBLIC_')) {
-        console.warn('NEXT_PUBLIC_WATSON_AGENT_ID is not configured - Watson features may not work');
+    // Si on a des placeholders, c'est qu'on est en mode runtime substitution
+    if (region?.includes('__NEXT_PUBLIC_') ||
+        instanceId?.includes('__NEXT_PUBLIC_') ||
+        integrationId?.includes('__NEXT_PUBLIC_') ||
+        agentId?.includes('__NEXT_PUBLIC_')) {
+
+        console.warn('Variables Watson en mode placeholder - en attente de substitution runtime');
+        // En mode runtime, on retourne des valeurs vides et on laisse le script faire la substitution
+        return {
+            orchestrationID: '',
+            hostURL: '',
+            agentId: '',
+            crn: ''
+        };
     }
 
-    // Construction des paramètres (avec gestion des placeholders)
+    // Mode normal avec vraies variables d'environnement
+    const finalRegion = region || 'us-south';
+
+    // Construction des paramètres
     const orchestrationID = `${instanceId}_${integrationId}`;
-    const hostURL = `https://${region}.watson-orchestrate.cloud.ibm.com`;
-    const crn = `crn:v1:bluemix:public:watsonx-orchestrate:${region}:a/${instanceId}:${integrationId}::`;
+    const hostURL = `https://${finalRegion}.watson-orchestrate.cloud.ibm.com`;
+    const crn = `crn:v1:bluemix:public:watsonx-orchestrate:${finalRegion}:a/${instanceId}:${integrationId}::`;
 
     return {
-        orchestrationID: orchestrationID.includes('__NEXT_PUBLIC_') ? '' : orchestrationID,
-        hostURL: hostURL.includes('__NEXT_PUBLIC_') ? '' : hostURL,
-        agentId: agentId?.startsWith('__NEXT_PUBLIC_') ? '' : agentId || '',
-        crn: crn.includes('__NEXT_PUBLIC_') ? '' : crn
+        orchestrationID,
+        hostURL,
+        agentId: agentId || '',
+        crn
     };
 }
 

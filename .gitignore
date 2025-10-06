@@ -34,3 +34,4 @@ venv/
 .env.production
 .env.local
 .env.*.local
+docker-compose.prod.yml.backup

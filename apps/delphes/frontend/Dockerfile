@@ -23,6 +23,13 @@ COPY . .
 # Décommenter la ligne suivante au cas où vous voulez désactiver la télémétrie pendant le build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Forcer les placeholders pour la substitution runtime
+ENV NEXT_PUBLIC_API_URL=__NEXT_PUBLIC_API_URL__
+ENV NEXT_PUBLIC_WATSON_REGION=__NEXT_PUBLIC_WATSON_REGION__
+ENV NEXT_PUBLIC_WATSON_INSTANCE_ID=__NEXT_PUBLIC_WATSON_INSTANCE_ID__
+ENV NEXT_PUBLIC_WATSON_INTEGRATION_ID=__NEXT_PUBLIC_WATSON_INTEGRATION_ID__
+ENV NEXT_PUBLIC_WATSON_AGENT_ID=__NEXT_PUBLIC_WATSON_AGENT_ID__
+
 RUN npm run build
 
 # Image de production, copier tous les fichiers et exécuter next

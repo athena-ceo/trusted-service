@@ -237,7 +237,7 @@ const wxOConfiguration = {
     rootElementID: "watson-chat-container", // ⚠️ Évite conflit avec React
     deploymentPlatform: "ibmcloud",
     chatOptions: {
-        agentId: "51e5378a-e601-44c4-b2af-4f574177bd6e"
+        agentId: "8d6b5494-1d0e-4170-aad5-a6dba46337f7"
     }
 };
 ```
