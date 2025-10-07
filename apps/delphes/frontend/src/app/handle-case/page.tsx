@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import { useWatsonExpandButton } from "@/hooks/useWatsonExpandButton";
 import { useWatsonOrchestrate } from "@/hooks/useWatsonOrchestrate";
 import { useWatsonConfig } from "@/config/watson";
+import { IbmWatsonxOrchestrate } from "@carbon/icons-react";
 import "@/app/spinner.css";
 
 function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, analyzeResult: any }) {
@@ -173,7 +174,22 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
-                                                __html: analyzeResult.highlighted_text_and_features
+                                                __html: `
+                                                    <style>
+                                                        .highlighted-content table td,
+                                                        .highlighted-content table th {
+                                                            padding: 1rem !important;
+                                                        }
+                                                        .highlighted-content table {
+                                                            border-collapse: separate;
+                                                            width: 100%;
+                                                            border-spacing: 0;
+                                                        }
+                                                    </style>
+                                                    <div class="highlighted-content">
+                                                        ${analyzeResult.highlighted_text_and_features}
+                                                    </div>
+                                                `
                                             }}
                                         />
                                     </div>
@@ -222,42 +238,35 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                             </div>
 
                             <div className="fr-grid-row fr-grid-row--gutters fr-mt-5w">
-                                <div className="fr-col-12">
-                                    <Link href="/" className="fr-btn fr-btn--secondary fr-mr-2w">
+                                <div className="fr-col-12" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Link href="/" className="fr-btn fr-btn--secondary">
                                         Retour à l'accueil
                                     </Link>
                                     {!watsonActivated && (
-                                        <button
-                                            onClick={() => setWatsonEnabled(true)}
-                                            className="fr-btn fr-btn--primary"
-                                        >
-                                            🤖 watsonx Orchestrate
-                                        </button>
+                                        <Button
+                                            hasIconOnly
+                                            isExpressive
+                                            kind="ghost"
+                                            renderIcon={() => <IbmWatsonxOrchestrate size={32} />}
+                                            size="xl"
+                                            tooltipAlignment="center"
+                                            tooltipDropShadow
+                                            tooltipHighContrast
+                                            tooltipPosition="bottom"
+                                            iconDescription="watsonx Orchestrate"
+                                            title="watsonx Orchestrate"
+                                            aria-label="watsonx Orchestrate"
+                                            onClick={() => setWatsonEnabled(true)} />
                                     )}
                                 </div>
-                                {watsonActivated && (
-                                    <span className="fr-badge fr-badge--success fr-mt-2w fr-ml-1w fr-p-1w">
-                                        🤖 watsonx Orchestrate activé
-                                    </span>
-                                )}
                             </div>
 
                             {/* Container pour Watson Orchestrate */}
-                            <div
-                                id="watson-chat-container"
-                                style={{
-                                    border: watsonEnabled ? '1px solid #ddd' : 'none',
-                                    borderRadius: '8px',
-                                    marginTop: '20px',
-                                    padding: watsonEnabled ? '10px' : '0px',
-                                    display: watsonEnabled ? 'block' : 'none'
-                                }}
-                            >
-                                {watsonEnabled && !watsonActivated && (
-                                    <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-                                        🤖 Chargement de Watson Orchestrate...
-                                    </div>
-                                )}
+                            <div id="watson-chat-container" style={watsonEnabled ? { display: 'block' } : { display: 'none' }} >
+                                <div style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '20px', textAlign: 'center', padding: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    <IbmWatsonxOrchestrate size={20} />
+                                    Chargement de watsonx Orchestrate...
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -269,6 +278,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
 }
 
 import Link from "next/link";
+import { Button } from "@carbon/react";
 
 export default function HandleCase() {
     const [analyzeResult, setAnalyzeResult] = useState<any>(null);

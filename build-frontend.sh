@@ -112,14 +112,9 @@ echo "   docker-compose -f docker-compose.prod.yml pull"
 echo "   docker-compose -f docker-compose.prod.yml down"
 echo "   docker-compose -f docker-compose.prod.yml up -d"
 echo ""
+echo "🧹 Nettoyage des images Docker..."
+echo "   docker image prune -f"
+echo ""
 
 success "🎉 Build terminé avec succès!"
-
-# Optionnel: Nettoyer les images locales anciennes
-read -p "Voulez-vous nettoyer les images Docker locales anciennes? (y/N): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    log "🧹 Nettoyage des images Docker..."
-    docker image prune -f
-    success "✅ Nettoyage terminé"
-fi
+echo ""

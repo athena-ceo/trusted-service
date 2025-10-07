@@ -106,17 +106,6 @@ export const useWatsonOrchestrate = ({
                                 // Déplacer en bas de la page
                                 document.body.appendChild(container);
 
-                                // Redimensionner à 1px x 1px et positionner
-                                container.style.position = 'fixed';
-                                container.style.bottom = '0px';
-                                container.style.right = '0px';
-                                container.style.width = '1px';
-                                container.style.height = '1px';
-                                container.style.overflow = 'hidden';
-                                container.style.border = 'none';
-                                container.style.padding = '0px';
-                                container.style.margin = '0px';
-
                                 // Callback pour configurer les boutons personnalisés
                                 onButtonSetup?.();
                             }
