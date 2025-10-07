@@ -35,3 +35,5 @@ venv/
 .env.local
 .env.*.local
 docker-compose.prod.yml.backup
+
+log_file.log

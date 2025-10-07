@@ -80,7 +80,12 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
             setAck(handleCaseResult.case_handling_response?.acknowledgement_to_requester)
 
             // Réponse
-            setAnswer(handleCaseResult.case_handling_response?.case_handling_report[1])
+            let answerText = handleCaseResult.case_handling_response?.case_handling_report[1];
+            if (answerText) {
+                // remplacer chaque saut de ligne par une balise &nbsp;<br /> pour l'affichage HTML
+                answerText = answerText.replace(/\n/g, '&nbsp;<br />');
+            }
+            setAnswer(answerText);
         } catch (error) {
             console.error('Erreur lors du traitement de la demande:', error);
             // alert('Une erreur est survenue lors du traitement de la demande. Veuillez réessayer.');
