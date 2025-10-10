@@ -443,7 +443,7 @@ export default function Accueil() {
         </div>
       </main >
 
-      <Footer />
+      <Footer displayWatson={true} />
     </>
   );
 }

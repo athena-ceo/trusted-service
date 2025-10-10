@@ -1,6 +1,32 @@
+import { Suspense, useEffect, useState } from "react";
+import { useWatsonExpandButton } from "@/hooks/useWatsonExpandButton";
+import { useWatsonOrchestrate } from "@/hooks/useWatsonOrchestrate";
+import { useWatsonConfig } from "@/config/watson";
+import { IbmWatsonxOrchestrate } from "@carbon/icons-react";
 import Link from "next/link";
+import { Button } from "@carbon/react";
 
-export default function Footer() {
+export default function Footer({ displayWatson = false }: { displayWatson?: boolean }) {
+    const [watsonEnabled, setWatsonEnabled] = useState(false);
+    const [watsonActivated, setWatsonActivated] = useState(false);
+
+    // Utilisation du hook pour créer le bouton d'expansion Watson
+    const { createExpandButton, setupWatsonButtonObserver } = useWatsonExpandButton();
+
+    // Configuration Watson à partir des variables d'environnement
+    const watsonConfig = useWatsonConfig();
+
+    // Utilisation du hook Watson Orchestrate
+    useWatsonOrchestrate({
+        enabled: watsonEnabled,
+        orchestrationID: watsonConfig.orchestrationID,
+        hostURL: watsonConfig.hostURL,
+        agentId: watsonConfig.agentId,
+        crn: watsonConfig.crn,
+        onActivated: () => setWatsonActivated(true),
+        onButtonSetup: () => setupWatsonButtonObserver(createExpandButton)
+    });
+
     return (
         <footer className="fr-footer" role="contentinfo" id="footer">
             <div className="fr-footer__top">
@@ -22,6 +48,7 @@ export default function Footer() {
                         <p className="fr-footer__content-desc">
                             Portail officiel des services de l&apos;État dans le département des Yvelines
                         </p>
+
                         <ul className="fr-footer__content-links">
                             <li className="fr-footer__content-item">
                                 <a className="fr-footer__content-link" href="https://info.gouv.fr" target="_blank" rel="noopener noreferrer">
@@ -46,6 +73,15 @@ export default function Footer() {
                         </ul>
                     </div>
                 </div>
+
+                {/* Container pour Watson Orchestrate */}
+                <div id="watson-chat-container" style={watsonEnabled ? { display: 'block' } : { display: 'none' }} >
+                    <div style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '20px', textAlign: 'center', padding: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        <IbmWatsonxOrchestrate size={20} />
+                        Loading Delphes Advisor...
+                    </div>
+                </div>
+
                 <div className="fr-footer__bottom">
                     <ul className="fr-footer__bottom-list">
                         <li className="fr-footer__bottom-item">
@@ -78,7 +114,26 @@ export default function Footer() {
                                 Gestion des cookies
                             </a>
                         </li>
+                        {displayWatson && !watsonActivated && (
+                            <li className="fr-footer__bottom-item">
+                                <Button
+                                    hasIconOnly
+                                    isExpressive
+                                    kind="ghost"
+                                    renderIcon={() => <IbmWatsonxOrchestrate size={16} />}
+                                    size="xs"
+                                    tooltipAlignment="center"
+                                    tooltipDropShadow
+                                    tooltipHighContrast
+                                    tooltipPosition="bottom"
+                                    iconDescription="Delphes Advisor"
+                                    title="Delphes Advisor"
+                                    aria-label="Delphes Advisor"
+                                    onClick={() => setWatsonEnabled(true)} />
+                            </li>
+                        )}
                     </ul>
+
                     <div className="fr-footer__bottom-copy">
                         <p>
                             Sauf mention contraire, tous les contenus de ce site sont sous{" "}

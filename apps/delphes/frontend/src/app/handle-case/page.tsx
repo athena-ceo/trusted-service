@@ -4,10 +4,6 @@ import { Suspense, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
-import { useWatsonExpandButton } from "@/hooks/useWatsonExpandButton";
-import { useWatsonOrchestrate } from "@/hooks/useWatsonOrchestrate";
-import { useWatsonConfig } from "@/config/watson";
-import { IbmWatsonxOrchestrate } from "@carbon/icons-react";
 import "@/app/spinner.css";
 
 function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, analyzeResult: any }) {
@@ -16,25 +12,6 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
     const [vueAgentReponse, setVueAgentReponse] = useState(false);
     const [answer, setAnswer] = useState<string | null>(null);
     const [ack, setAck] = useState<string | null>(null);
-    const [watsonEnabled, setWatsonEnabled] = useState(false);
-    const [watsonActivated, setWatsonActivated] = useState(false);
-
-    // Utilisation du hook pour créer le bouton d'expansion Watson
-    const { createExpandButton, setupWatsonButtonObserver } = useWatsonExpandButton();
-
-    // Configuration Watson à partir des variables d'environnement
-    const watsonConfig = useWatsonConfig();
-
-    // Utilisation du hook Watson Orchestrate
-    useWatsonOrchestrate({
-        enabled: watsonEnabled,
-        orchestrationID: watsonConfig.orchestrationID,
-        hostURL: watsonConfig.hostURL,
-        agentId: watsonConfig.agentId,
-        crn: watsonConfig.crn,
-        onActivated: () => setWatsonActivated(true),
-        onButtonSetup: () => setupWatsonButtonObserver(createExpandButton)
-    });
 
     const handleVueAgentReponseClick = () => {
         setVueAgentReponse(!vueAgentReponse);
@@ -106,10 +83,10 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
                         <div className={isLoading ? "fr-alert fr-alert--info fr-mb-4w" : "fr-alert fr-alert--success fr-mb-4w"}>
-                            <h1 className="fr-alert__title">{isLoading ? "Votre demande est en cours de traitement automatique" : "Votre demande a été analysée automatiquement"}</h1>
+                            <h1 className="fr-alert__title">{isLoading ? "Votre demande est en cours de réorientation vers le bon destinataire" : "Votre demande a été réorientée automatiquement vers le bon destinataire"}</h1>
                             <p>
                                 Merci {fieldValues.prenom} {fieldValues.nom}, nous avons bien reçu votre demande et notre système
-                                l'a analysée pour vous orienter vers le bon service.
+                                l'a analysée pour vous orienter vers le bon destinataire.
                             </p>
                         </div>
 
@@ -236,38 +213,6 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                     </div>
                                 )}
                             </div>
-
-                            <div className="fr-grid-row fr-grid-row--gutters fr-mt-5w">
-                                <div className="fr-col-12" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Link href="/" className="fr-btn fr-btn--secondary">
-                                        Retour à l'accueil
-                                    </Link>
-                                    {!watsonActivated && (
-                                        <Button
-                                            hasIconOnly
-                                            isExpressive
-                                            kind="ghost"
-                                            renderIcon={() => <IbmWatsonxOrchestrate size={32} />}
-                                            size="xl"
-                                            tooltipAlignment="center"
-                                            tooltipDropShadow
-                                            tooltipHighContrast
-                                            tooltipPosition="bottom"
-                                            iconDescription="watsonx Orchestrate"
-                                            title="watsonx Orchestrate"
-                                            aria-label="watsonx Orchestrate"
-                                            onClick={() => setWatsonEnabled(true)} />
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Container pour Watson Orchestrate */}
-                            <div id="watson-chat-container" style={watsonEnabled ? { display: 'block' } : { display: 'none' }} >
-                                <div style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '20px', textAlign: 'center', padding: '20px', color: '#666', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                    <IbmWatsonxOrchestrate size={20} />
-                                    Chargement de watsonx Orchestrate...
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -276,9 +221,6 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
         </>
     );
 }
-
-import Link from "next/link";
-import { Button } from "@carbon/react";
 
 export default function HandleCase() {
     const [analyzeResult, setAnalyzeResult] = useState<any>(null);
