@@ -73,8 +73,8 @@ export const useWatsonExpandButton = () => {
                     wxoFloat.dataset.originalTop = wxoFloat.style.top || getComputedStyle(wxoFloat).top;
                     wxoFloat.dataset.originalLeft = wxoFloat.style.left || getComputedStyle(wxoFloat).left;
 
-                    const maxWidth = Math.min(window.innerWidth * 0.9, 1600);
-                    const maxHeight = Math.min(window.innerHeight * 0.9, 900);
+                    const maxWidth = window.innerWidth * 0.95;
+                    const maxHeight = window.innerHeight * 0.95;
 
                     wxoFloat.style.setProperty('width', `${maxWidth}px`, 'important');
                     wxoFloat.style.setProperty('height', `${maxHeight}px`, 'important');
