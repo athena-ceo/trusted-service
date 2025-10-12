@@ -3,8 +3,11 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Accueil() {
+  const { t } = useLanguage();
+
   return (
     <>
       <Header />
@@ -15,8 +18,8 @@ export default function Accueil() {
           <div className="fr-container">
             <div className="fr-notice__body">
               <p className="fr-notice__title">
-                Information importante :
-                <span className="fr-text--medium"> Nouveau service d'accueil des étrangers avec assistance intelligente disponible</span>
+                {t('home.banner.title')} :
+                <span className="fr-text--medium"> {t('home.banner.message')}</span>
               </p>
             </div>
           </div>
@@ -25,17 +28,17 @@ export default function Accueil() {
         <div className="fr-container" id="main">
           {/* Section Démarches en ligne */}
           <section id="demarches" className="fr-mt-4w">
-            <h2 className="fr-h2 fr-mb-4w">Les démarches en ligne</h2>
+            <h2 className="fr-h2 fr-mb-4w">{t('home.procedures.title')}</h2>
 
             <div className="fr-grid-row fr-grid-row--right fr-mb-4v">
               <div className="fr-col-12 fr-col-md-4 fr-col-xl-3">
                 <a className="fr-link fr-link--icon-right fr-icon-arrow-right-line" href="https://www.yvelines.gouv.fr/Outils/Horaires-et-coordonnees/Horaires-et-coordonnees">
-                  Horaires et lieux d'accueil
+                  {t('home.procedures.hours')}
                 </a>
               </div>
               <div className="fr-col-12 fr-col-md-3 fr-col-xl-2">
                 <a className="fr-link fr-link--icon-right fr-icon-arrow-right-line" href="#">
-                  Toutes les démarches
+                  {t('home.procedures.all')}
                 </a>
               </div>
             </div>
@@ -48,7 +51,7 @@ export default function Accueil() {
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
                         <a className="fr-tile__link" href="#">
-                          Carte grise
+                          {t('home.procedures.carteGrise')}
                         </a>
                       </h3>
                     </div>
@@ -67,7 +70,7 @@ export default function Accueil() {
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
                         <a className="fr-tile__link" href="#">
-                          Permis de conduire
+                          {t('home.procedures.permis')}
                         </a>
                       </h3>
                     </div>
@@ -86,7 +89,7 @@ export default function Accueil() {
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
                         <a className="fr-tile__link" href="#">
-                          Carte d'identité
+                          {t('home.procedures.carteId')}
                         </a>
                       </h3>
                     </div>
@@ -105,7 +108,7 @@ export default function Accueil() {
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
                         <a className="fr-tile__link" href="#">
-                          Passeport
+                          {t('home.procedures.passeport')}
                         </a>
                       </h3>
                     </div>
@@ -123,8 +126,8 @@ export default function Accueil() {
                   <div className="fr-tile__body">
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
-                        <Link className="fr-tile__link" href="/accueil-etrangers" title="Accueil des étrangers">
-                          Accueil des étrangers
+                        <Link className="fr-tile__link" href="/accueil-etrangers" title={t('home.procedures.etrangers')}>
+                          {t('home.procedures.etrangers')}
                         </Link>
                       </h3>
                     </div>
@@ -142,18 +145,7 @@ export default function Accueil() {
           {/* Section principale avec actualités et accompagnement */}
           <div className="fr-grid-row fr-grid-row--gutters fr-mt-10w">
             <div className="fr-col-12 fr-col-lg-8">
-              <section aria-label="Consultez nos actualités">
-                <div className="fr-grid-row fr-mb-4w">
-                  <div className="fr-col-12 fr-col-md-7">
-                    <h2 className="fr-h2">Actualités</h2>
-                  </div>
-                  <div className="fr-col-12 fr-col-md-5 fr-col--middle" style={{ textAlign: 'right' }}>
-                    <a className="fr-link fr-link--icon-right fr-icon-arrow-right-line" href="#">
-                      Toutes les actualités
-                    </a>
-                  </div>
-                </div>
-
+              <section aria-label={t('home.news.ariaLabel')}>
                 {/* Actualité principale avec image */}
                 <div className="fr-grid-row fr-mb-4w">
                   <div className="fr-col-12">
@@ -162,13 +154,13 @@ export default function Accueil() {
                         <div className="fr-card__content">
                           <h3 className="fr-card__title">
                             <a href="#">
-                              Les Yvelines lancent leur premier Comité d'action économique locale
+                              {t('home.news.article1.title')}
                             </a>
                           </h3>
                           <div className="fr-card__end">
-                            <p className="fr-card__detail">Publié le 22/09/2025</p>
+                            <p className="fr-card__detail">{t('home.news.published')} 22/09/2025</p>
                             <a href="#" className="fr-link fr-link--icon-right fr-icon-arrow-right-line">
-                              Lire la suite
+                              {t('home.news.readMore')}
                             </a>
                           </div>
                         </div>
@@ -177,7 +169,7 @@ export default function Accueil() {
                         <div className="fr-card__img">
                           <img
                             src="/images/actualites/comite-action-economique.png"
-                            alt="Lancement du Comité d'action économique locale"
+                            alt={t('home.news.article1.title')}
                             style={{
                               width: '100%',
                               height: '200px',
@@ -198,7 +190,7 @@ export default function Accueil() {
                         <div className="fr-card__img">
                           <img
                             src="/images/actualites/risques-majeurs.jpg"
-                            alt="Se préparer aux risques majeurs : les Yvelines en situation d'entraînement"
+                            alt={t('home.news.article2.title')}
                             style={{
                               width: '100%',
                               height: '120px',
@@ -211,13 +203,13 @@ export default function Accueil() {
                         <div className="fr-card__content">
                           <h3 className="fr-card__title">
                             <a href="#">
-                              Se préparer aux risques majeurs : les Yvelines en (...)
+                              {t('home.news.article2.title')}
                             </a>
                           </h3>
                           <div className="fr-card__end">
-                            <p className="fr-card__detail">Publié le 29/09/2025</p>
+                            <p className="fr-card__detail">{t('home.news.published')} 29/09/2025</p>
                             <a href="#" className="fr-link fr-link--icon-right fr-icon-arrow-right-line">
-                              Lire la suite
+                              {t('home.news.readMore')}
                             </a>
                           </div>
                         </div>
@@ -231,7 +223,7 @@ export default function Accueil() {
                         <div className="fr-card__img">
                           <img
                             src="/images/actualites/lgbtqia-permanence.png"
-                            alt="Une permanence pour les victimes d'actes LGBTQIA+"
+                            alt={t('home.news.article3.title')}
                             style={{
                               width: '100%',
                               height: '120px',
@@ -244,13 +236,13 @@ export default function Accueil() {
                         <div className="fr-card__content">
                           <h3 className="fr-card__title">
                             <a href="#">
-                              Une permanence pour les victimes d'actes LGBTQIA+ (...)
+                              {t('home.news.article3.title')}
                             </a>
                           </h3>
                           <div className="fr-card__end">
-                            <p className="fr-card__detail">Publié le 23/09/2025</p>
+                            <p className="fr-card__detail">{t('home.news.published')} 23/09/2025</p>
                             <a href="#" className="fr-link fr-link--icon-right fr-icon-arrow-right-line">
-                              Lire la suite
+                              {t('home.news.readMore')}
                             </a>
                           </div>
                         </div>
@@ -281,14 +273,14 @@ export default function Accueil() {
                               lineHeight: '1.2',
                               marginBottom: '5px'
                             }}>
-                              La COP25 et les actions territoriales :
+                              {t('home.news.article4.line1')}
                             </div>
                             <div style={{
                               fontSize: '10px',
                               textAlign: 'center',
                               lineHeight: '1.3'
                             }}>
-                              de l'engagement global à la mobilisation locale
+                              {t('home.news.article4.line2')}
                             </div>
                             <div style={{
                               fontSize: '9px',
@@ -296,7 +288,7 @@ export default function Accueil() {
                               marginTop: '5px',
                               fontStyle: 'italic'
                             }}>
-                              dans les Yvelines
+                              {t('home.news.article4.line3')}
                             </div>
                             <div style={{
                               position: 'absolute',
@@ -321,13 +313,13 @@ export default function Accueil() {
                         <div className="fr-card__content">
                           <h3 className="fr-card__title">
                             <a href="#">
-                              COP25 : de l'engagement global à la mobilisation (...)
+                              {t('home.news.article4.title')}
                             </a>
                           </h3>
                           <div className="fr-card__end">
-                            <p className="fr-card__detail">Publié le 19/09/2025</p>
+                            <p className="fr-card__detail">{t('home.news.published')} 19/09/2025</p>
                             <a href="#" className="fr-link fr-link--icon-right fr-icon-arrow-right-line">
-                              Lire la suite
+                              {t('home.news.readMore')}
                             </a>
                           </div>
                         </div>
@@ -342,7 +334,7 @@ export default function Accueil() {
             <div className="fr-col-12 fr-col-lg-4">
               <div className="fr-grid-row fr-ml-md-4w fr-mt-1v">
                 <div className="fr-col-12 fr-mt-3v">
-                  <h2 className="fr-h4 fr-mb-2w fr-ml-md-2w">Vous accompagner</h2>
+                  <h2 className="fr-h4 fr-mb-2w fr-ml-md-2w">{t('home.sidebar.title')}</h2>
                 </div>
               </div>
               <div className="fr-grid-row fr-grid-row--gutters fr-ml-md-4w">
@@ -352,11 +344,11 @@ export default function Accueil() {
                       <div className="fr-tile__content">
                         <h3 className="fr-tile__title">
                           <Link className="fr-tile__link" href="/accueil-etrangers">
-                            Accueil des étrangers dans les Yvelines
+                            {t('home.sidebar.reception.title')}
                           </Link>
                         </h3>
                         <p className="fr-tile__desc">
-                          Nouveau service intelligent avec assistance IA pour faciliter vos démarches
+                          {t('home.sidebar.reception.desc')}
                         </p>
                       </div>
                     </div>
@@ -369,11 +361,11 @@ export default function Accueil() {
                       <div className="fr-tile__content">
                         <h3 className="fr-tile__title">
                           <a className="fr-tile__link" href="#">
-                            Horaires - coordonnées et accessibilité
+                            {t('home.sidebar.hours.title')}
                           </a>
                         </h3>
                         <p className="fr-tile__desc">
-                          Préfecture et Sous-Préfectures des Yvelines
+                          {t('home.sidebar.hours.desc')}
                         </p>
                       </div>
                     </div>
@@ -386,11 +378,11 @@ export default function Accueil() {
                       <div className="fr-tile__content">
                         <h3 className="fr-tile__title">
                           <a className="fr-tile__link" href="#">
-                            Foire aux questions
+                            {t('home.sidebar.faq.title')}
                           </a>
                         </h3>
                         <p className="fr-tile__desc">
-                          Trouvez rapidement des réponses à vos questions
+                          {t('home.sidebar.faq.desc')}
                         </p>
                       </div>
                     </div>
@@ -407,16 +399,16 @@ export default function Accueil() {
                 <div className="fr-col-12 fr-col-md-8">
                   <div className="fr-follow__newsletter">
                     <div>
-                      <h2 className="fr-h5 fr-follow__title">Abonnez-vous à notre lettre d'information</h2>
+                      <h2 className="fr-h5 fr-follow__title">{t('home.newsletter.title')}</h2>
                       <p className="fr-text--sm fr-follow__desc">
-                        Restez informé des dernières actualités et nouveautés des services de l'État dans les Yvelines
+                        {t('home.newsletter.desc')}
                       </p>
                     </div>
                     <div>
                       <ul className="fr-btns-group fr-btns-group--inline-md">
                         <li>
                           <a className="fr-btn fr-btn--secondary" href="#">
-                            S'abonner
+                            {t('home.newsletter.subscribe')}
                           </a>
                         </li>
                       </ul>
@@ -426,12 +418,12 @@ export default function Accueil() {
                 <div className="fr-col-12 fr-col-md-4">
                   <div className="fr-follow__social">
                     <h2 className="fr-h5 fr-mb-3v">
-                      Suivez-nous<br /> sur les réseaux sociaux
+                      {t('home.social.title')}<br /> {t('home.social.subtitle')}
                     </h2>
                     <ul className="fr-btns-group">
                       <li>
-                        <a className="fr-btn--twitter fr-btn" href="#" title="Twitter - nouvelle fenêtre">
-                          Twitter
+                        <a className="fr-btn--twitter fr-btn" href="#" title={t('home.social.twitter.title')}>
+                          {t('home.social.twitter')}
                         </a>
                       </li>
                     </ul>

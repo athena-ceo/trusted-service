@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormData {
   nom: string;
@@ -19,6 +20,7 @@ import "../globals.css";
 // import "./AccueilEtrangers.css"; // Fichier CSS supprimé temporairement pour le build
 
 export default function AccueilEtrangers() {
+  const { t } = useLanguage();
   const router = useRouter();
 
   const analyzeRequest = (formData: FormData) => {
@@ -54,41 +56,41 @@ export default function AccueilEtrangers() {
           {/* Fil d'Ariane */}
           <nav role="navigation" className="fr-breadcrumb" aria-label="vous êtes ici :">
             <button className="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
-              Voir le fil d'Ariane
+              {t('accueil.breadcrumb.show')}
             </button>
             <div className="fr-collapse" id="breadcrumb-1">
               <ol className="fr-breadcrumb__list">
                 <li>
-                  <a className="fr-breadcrumb__link" href="/">Accueil</a>
+                  <a className="fr-breadcrumb__link" href="/">{t('accueil.breadcrumb.home')}</a>
                 </li>
                 <li>
-                  <a className="fr-breadcrumb__link" aria-current="page">Accueil des étrangers</a>
+                  <a className="fr-breadcrumb__link" aria-current="page">{t('accueil.breadcrumb.current')}</a>
                 </li>
               </ol>
             </div>
           </nav>
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-12">
-              <h1 className="fr-h1">Accueil des étrangers</h1>
+              <h1 className="fr-h1">{t('accueil.title')}</h1>
 
               <p>
-                Vous souhaitez contacter les services d'accueil des étrangers dans le département des Yvelines.
+                {t('accueil.intro.line1')}
                 <br />
-                Nous vous invitons à utiliser le formulaire ci-dessous.
+                {t('accueil.intro.line2')}
                 <br />
-                Nos services mettront tout en œuvre pour vous répondre dans les meilleurs délais.
+                {t('accueil.intro.line3')}
               </p>
 
               <div className="fr-alert fr-alert--info fr-mb-4w">
-                <p className="fr-alert__title">Information importante</p>
+                <p className="fr-alert__title">{t('accueil.alert.info.title')}</p>
                 <p>
-                  <strong>Pour toute information concernant le suivi de votre demande de titre de séjour, indiquez impérativement votre numéro étranger/AGDREF (à 10 chiffres) si vous en avez un.</strong>
+                  <strong>{t('accueil.alert.info.message')}</strong>
                 </p>
               </div>
 
               <div className="fr-alert fr-alert--warning fr-mb-4w">
                 <p>
-                  <strong>Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture des Yvelines.</strong>
+                  <strong>{t('accueil.alert.warning')}</strong>
                 </p>
               </div>
             </div>
@@ -106,7 +108,7 @@ export default function AccueilEtrangers() {
               <nav className="fr-sidemenu fr-sidemenu--right fr-sidemenu--full-border" role="navigation" aria-label="secondaire">
                 <div className="fr-sidemenu__inner">
                   <button className="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper-right" aria-expanded="false">
-                    En complément
+                    {t('accueil.sidebar.title')}
                   </button>
                   <div className="fr-collapse fr-px-1w" id="fr-sidemenu-wrapper-right">
 
@@ -115,23 +117,23 @@ export default function AccueilEtrangers() {
                       <div className="fr-card__body">
                         <div className="fr-card__content">
                           <h2 className="fr-card__title">
-                            Sites officiels pour vos démarches
+                            {t('accueil.sidebar.sites.title')}
                           </h2>
                           <p className="fr-card__desc">
-                            Accédez directement aux sites officiels de l'administration française.
+                            {t('accueil.sidebar.sites.desc')}
                           </p>
                           <div className="fr-card__end">
                             <a className="fr-link fr-link--icon-right fr-icon-external-link-line fr-mb-1w"
                               href="https://www.service-public.fr"
                               target="_blank"
-                              title="Accéder à service-public.fr - Nouvelle fenêtre">
-                              service-public.fr
+                              title={t('accueil.sidebar.sites.servicePublic.title')}>
+                              {t('accueil.sidebar.sites.servicePublic')}
                             </a>
                             <a className="fr-link fr-link--icon-right fr-icon-external-link-line fr-mb-1w"
                               href="https://www.demarches.interieur.gouv.fr"
                               target="_blank"
-                              title="Accéder aux démarches du Ministère de l'Intérieur - Nouvelle fenêtre">
-                              Démarches du Ministère de l'Intérieur
+                              title={t('accueil.sidebar.sites.demarches.title')}>
+                              {t('accueil.sidebar.sites.demarches')}
                             </a>
                           </div>
                         </div>
@@ -143,18 +145,17 @@ export default function AccueilEtrangers() {
                       <div className="fr-card__body">
                         <div className="fr-card__content">
                           <h2 className="fr-card__title">
-                            ANEF
+                            {t('accueil.sidebar.anef.title')}
                           </h2>
                           <p className="fr-card__desc">
-                            L’administration numérique pour les étrangers en France (ANEF) a pour objectif de
-                            dématérialiser les démarches concernant le séjour des étrangers en France.
+                            {t('accueil.sidebar.anef.desc')}
                           </p>
                           <div className="fr-card__end">
                             <a className="fr-link fr-link--icon-right fr-icon-external-link-line fr-mb-3w"
                               href="https://administration-etrangers-en-france.interieur.gouv.fr/particuliers/#/"
                               target="_blank"
-                              title="Accéder à l'ANEF - Nouvelle fenêtre">
-                              Accédez à la plateforme
+                              title={t('accueil.sidebar.anef.linkTitle')}>
+                              {t('accueil.sidebar.anef.link')}
                             </a>
                           </div>
                         </div>
@@ -166,17 +167,17 @@ export default function AccueilEtrangers() {
                       <div className="fr-card__body">
                         <div className="fr-card__content">
                           <h2 className="fr-card__title">
-                            Les services de l'État
+                            {t('accueil.sidebar.services.title')}
                           </h2>
                           <p className="fr-card__desc">
-                            Vous pouvez saisir l'administration par voie électronique en adressant en ligne vos demandes d'information ou envoyer un dossier lié à une démarche administrative.
+                            {t('accueil.sidebar.services.desc')}
                           </p>
                           <div className="fr-card__end">
                             <a className="fr-link fr-link--icon-right fr-icon-external-link-line fr-mb-3w"
                               href="https://contacts-demarches.interieur.gouv.fr/"
                               target="_blank"
-                              title="Accéder à la plateforme les services de l'état https://contacts-demarches.interieur.gouv.fr/ - Nouvelle fenêtre">
-                              Accédez à la plateforme
+                              title={t('accueil.sidebar.services.linkTitle')}>
+                              {t('accueil.sidebar.services.link')}
                             </a>
                           </div>
                         </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense, useEffect, useState } from "react";
 import { useWatsonExpandButton } from "@/hooks/useWatsonExpandButton";
 import { useWatsonOrchestrate } from "@/hooks/useWatsonOrchestrate";
@@ -5,8 +7,10 @@ import { useWatsonConfig } from "@/config/watson";
 import { IbmWatsonxOrchestrate } from "@carbon/icons-react";
 import Link from "next/link";
 import { Button } from "@carbon/react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer({ displayWatson = false }: { displayWatson?: boolean }) {
+    const { t } = useLanguage();
     const [watsonEnabled, setWatsonEnabled] = useState(false);
     const [watsonActivated, setWatsonActivated] = useState(false);
 
@@ -38,7 +42,7 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
             <div className="fr-container">
                 <div className="fr-footer__body">
                     <div className="fr-footer__brand fr-enlarge-link">
-                        <Link href="/" title="Retour à l&apos;accueil du site - Les services de l&apos;État dans les Yvelines">
+                        <Link href="/" title={t('footer.home')}>
                             <p className="fr-logo">
                                 préfet<br />des Yvelines
                             </p>
@@ -46,7 +50,7 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
                     </div>
                     <div className="fr-footer__content">
                         <p className="fr-footer__content-desc">
-                            Portail officiel des services de l&apos;État dans le département des Yvelines
+                            {t('footer.description')}
                         </p>
 
                         <ul className="fr-footer__content-links">
@@ -86,17 +90,17 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
                     <ul className="fr-footer__bottom-list">
                         <li className="fr-footer__bottom-item">
                             <a className="fr-footer__bottom-link" href="/plan-du-site">
-                                Plan du site
+                                {t('footer.sitemap')}
                             </a>
                         </li>
                         <li className="fr-footer__bottom-item">
                             <a className="fr-footer__bottom-link" href="/accueil-etrangers">
-                                Nous contacter
+                                {t('footer.contact')}
                             </a>
                         </li>
                         <li className="fr-footer__bottom-item">
                             <a className="fr-footer__bottom-link" href="/accessibilite">
-                                Accessibilité : partiellement conforme
+                                {t('footer.accessibility')}
                             </a>
                         </li>
                         <li className="fr-footer__bottom-item">
@@ -136,9 +140,9 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
 
                     <div className="fr-footer__bottom-copy">
                         <p>
-                            Sauf mention contraire, tous les contenus de ce site sont sous{" "}
+                            {t('footer.license.text')}{" "}
                             <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank" rel="noopener noreferrer">
-                                licence etalab-2.0
+                                {t('footer.license.name')}
                             </a>
                         </p>
                     </div>

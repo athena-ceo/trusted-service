@@ -4,9 +4,11 @@ import { Suspense, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
+import { useLanguage } from "@/contexts/LanguageContext";
 import "@/app/spinner.css";
 
 function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, analyzeResult: any }) {
+    const { t, currentLang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
     const [vueAgent, setVueAgent] = useState(false);
     const [vueAgentReponse, setVueAgentReponse] = useState(false);
@@ -43,6 +45,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                         intention_id: selectedIntention,
                         field_values: fieldValues,
                         highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
+                        lang: currentLang || 'fr'
                     },
                 }),
             });
@@ -83,16 +86,15 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
                         <div className={isLoading ? "fr-alert fr-alert--info fr-mb-4w" : "fr-alert fr-alert--success fr-mb-4w"}>
-                            <h1 className="fr-alert__title">{isLoading ? "Votre demande est en cours de réorientation vers le bon destinataire" : "Votre demande a été réorientée automatiquement vers le bon destinataire"}</h1>
+                            <h1 className="fr-alert__title">{isLoading ? t('handleCase.alert.processing.title') : t('handleCase.alert.success.title')}</h1>
                             <p>
-                                Merci {fieldValues.prenom} {fieldValues.nom}, nous avons bien reçu votre demande et notre système
-                                l'a analysée pour vous orienter vers le bon destinataire.
+                                {t('handleCase.alert.greeting.start')} {fieldValues.prenom} {fieldValues.nom}, {t('handleCase.alert.greeting.end')}
                             </p>
                         </div>
 
                         <div className="fr-mb-4w">
                             <div className="fr-mt-1v">
-                                <p><strong>Votre message :</strong></p>
+                                <p><strong>{t('handleCase.yourMessage')}</strong></p>
                                 <div className="fr-text--sm" style={{
                                     fontStyle: 'italic',
                                     backgroundColor: '#f5f5fe',
@@ -115,7 +117,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 {/* Message d'accusé de réception */}
                                 {!isLoading && (
                                     <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">Merci de votre patience</h3>
+                                        <h3 className="fr-h6">{t('handleCase.thanks')}</h3>
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
@@ -126,12 +128,10 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                             <div className="fr-container">
                                                 <div className="fr-notice__body">
                                                     <p className="fr-notice__title fr-mr-3w">
-                                                        Prochaines étapes
+                                                        {t('handleCase.nextSteps.title')}
                                                     </p>
                                                     <p>
-                                                        Un agent du service concerné examinera votre demande et vous contactera
-                                                        si nécessaire à l'adresse email que vous avez fournie.
-                                                        En général, nous répondons sous 5 jours ouvrés.
+                                                        {t('handleCase.nextSteps.message')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -139,7 +139,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
 
                                         <hr />
                                         <button type="button" id="vue-agent" className="fr-btn fr-mt-3w" onClick={handleVueAgentClick}>
-                                            Vue Agent
+                                            {t('handleCase.agentView')}
                                         </button>
                                     </div>
                                 )}
@@ -147,7 +147,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 {/* Résumé de l'analyse */}
                                 {!isLoading && vueAgent && analyzeResult && analyzeResult.highlighted_text_and_features && (
                                     <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">Éléments identifiés dans votre message :</h3>
+                                        <h3 className="fr-h6">{t('handleCase.elementsIdentified')}</h3>
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
@@ -175,7 +175,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 {/* field values */}
                                 {!isLoading && vueAgent && fieldValues && (
                                     <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">Valeurs des champs :</h3>
+                                        <h3 className="fr-h6">{t('handleCase.fieldValues')}</h3>
                                         <ul className="fr-list">
                                             {Object.entries(fieldValues).map(([key, value]) => {
                                                 const displayValue = value === null || value === undefined
@@ -195,7 +195,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                         </ul>
                                         <hr />
                                         <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
-                                            Générer la réponse
+                                            {t('handleCase.generateResponse')}
                                         </button>
                                     </div>
                                 )}
@@ -203,11 +203,11 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 {/* Vue Réponse */}
                                 {!isLoading && vueAgentReponse && (
                                     <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">Réponse générée :</h3>
+                                        <h3 className="fr-h6">{t('handleCase.generatedResponse')}</h3>
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
-                                                __html: answer ? `<p>${answer}</p>` : "<p>Aucune réponse générée</p>"
+                                                __html: answer ? `<p>${answer}</p>` : `<p>${t('handleCase.noResponse')}</p>`
                                             }}
                                         />
                                     </div>
@@ -223,6 +223,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
 }
 
 export default function HandleCase() {
+    const { t } = useLanguage();
     const [analyzeResult, setAnalyzeResult] = useState<any>(null);
     const [selectedIntention, setSelectedIntention] = useState<any>(null);
     const [fieldValues, setFieldValues] = useState<any>(null);
@@ -261,11 +262,11 @@ export default function HandleCase() {
     }, []); // Se déclenche une seule fois au montage du composant
 
     if (!fieldValues || !selectedIntention || !analyzeResult) {
-        return <Loading message="Chargement des données de votre demande..." />;
+        return <Loading message={t('handleCase.loadingData')} />;
     }
     return (
         <Suspense fallback={
-            <Loading message="Chargement des données de votre demande..." />
+            <Loading message={t('handleCase.loadingData')} />
         }>
             <HandleCaseContent message={fieldValues.message} fieldValues={fieldValues} selectedIntention={selectedIntention} analyzeResult={analyzeResult} />
         </Suspense>

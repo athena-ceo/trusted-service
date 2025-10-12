@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
+import { useLanguage } from "@/contexts/LanguageContext";
 import "@/app/spinner.css";
 
 /**
@@ -57,6 +58,7 @@ function convertISOToDate(isoDateStr: string): string {
 
 function AnalysisContent({ fieldValues }: { fieldValues: any }) {
     const router = useRouter();
+    const { t, currentLang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
     const [scoringsPositifs, setScoringsPositifs] = useState<any[]>([]);
     const [selectedIntention, setSelectedIntention] = useState<string>('');
@@ -78,6 +80,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                 body: JSON.stringify({
                     field_values: fieldValues,
                     text: fieldValues.message,
+                    lang: currentLang || 'fr'
                 }),
             });
 
@@ -186,16 +189,15 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
                         <div className={isLoading ? "fr-alert fr-alert--info fr-mb-4w" : "fr-alert fr-alert--success fr-mb-4w"}>
-                            <h1 className="fr-alert__title">{isLoading ? "Votre demande est en cours de traitement automatique" : "Votre demande a été analysée automatiquement"}</h1>
+                            <h1 className="fr-alert__title">{isLoading ? t('analysis.alert.processing.title') : t('analysis.alert.success.title')}</h1>
                             <p>
-                                Merci {fieldValues.prenom} {fieldValues.nom}, nous avons bien reçu votre demande et notre système
-                                l'analyse pour vous orienter vers le bon service.
+                                {t('analysis.alert.greeting.start')} {fieldValues.prenom} {fieldValues.nom}, {t('analysis.alert.greeting.end')}
                             </p>
                         </div>
 
                         <div className="fr-mb-4w">
                             <div className="fr-mt-1v">
-                                <p><strong>Votre message :</strong></p>
+                                <p><strong>{t('analysis.yourMessage')}</strong></p>
                                 <div className="fr-text--sm" style={{
                                     fontStyle: 'italic',
                                     backgroundColor: '#f5f5fe',
@@ -218,10 +220,10 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                 {/* Formulaire pour le choix de l'intention */}
                                 {!isLoading && scoringsPositifs.length > 0 && (
                                     <form id="intentions-form" onSubmit={handleSubmit}>
-                                        <p><strong>Veuillez sélectionner le cas qui s'applique à votre situation.</strong></p>
+                                        <p><strong>{t('analysis.form.selectPrompt')}</strong></p>
                                         <fieldset className="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
                                             <legend className="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-intentions-legend">
-                                                L'IA a identifié {scoringsPositifs.length} cas correspondant à votre demande.<br />Votre sélection : *
+                                                {t('analysis.form.aiIdentified')} {scoringsPositifs.length} {t('analysis.form.cases')}<br />{t('analysis.form.yourSelection')} *
                                             </legend>
                                             {scoringsPositifs.map((intention, index) => (
                                                 <div className="fr-fieldset__element" key={index}>
@@ -249,10 +251,10 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                             intention.intention_fields.map((champ: string, index: number) => (
                                                                 <div className="fr-input-group fr-text--sm" key={index} style={{ marginLeft: '2em', backgroundColor: '#f6f6f6', padding: '1rem', borderRadius: '4px' }}>
                                                                     <label className="fr-label" htmlFor={champ}>
-                                                                        {champ === 'date_expiration_api' ? 'Date d\'expiration de l\'API' :
-                                                                            champ === 'refugie_ou_protege_subsidiaire' ? 'Réfugié ou protégé subsidiaire' :
+                                                                        {champ === 'date_expiration_api' ? t('analysis.form.fields.expirationDate') :
+                                                                            champ === 'refugie_ou_protege_subsidiaire' ? t('analysis.form.fields.refugee') :
                                                                                 champ} *
-                                                                        {champ === 'date_expiration_api' && <span className="fr-hint-text">Format attendu : JJ/MM/AAAA</span>}
+                                                                        {champ === 'date_expiration_api' && <span className="fr-hint-text">{t('analysis.form.fields.dateFormat')}</span>}
                                                                     </label>
 
                                                                     {/* Traitement spécial pour le champ booléen */}
@@ -270,7 +272,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                                         required
                                                                                     />
                                                                                     <label className="fr-label" htmlFor={`${champ}-oui`}>
-                                                                                        Oui
+                                                                                        {t('analysis.form.fields.yes')}
                                                                                     </label>
                                                                                 </div>
                                                                             </div>
@@ -286,7 +288,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                                         required
                                                                                     />
                                                                                     <label className="fr-label" htmlFor={`${champ}-non`}>
-                                                                                        Non
+                                                                                        {t('analysis.form.fields.no')}
                                                                                     </label>
                                                                                 </div>
                                                                             </div>
@@ -314,13 +316,13 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                             ))}
                                             <div className="fr-messages-group" id="radio-intentions-messages" aria-live="assertive" />
                                         </fieldset>
-                                        <button type="submit" id="bouton-valider" className="fr-btn fr-mt-3w">Valider</button>
+                                        <button type="submit" id="bouton-valider" className="fr-btn fr-mt-3w">{t('analysis.form.validate')}</button>
                                     </form>
                                 )}
                                 {!isLoading && scoringsPositifs.length === 0 && (
                                     <div className="fr-mt-3w">
-                                        <p><strong>Résultats de l'analyse automatique</strong></p>
-                                        <p>Notre système n'a pas pu identifier d'intention claire dans votre message. Veuillez reformuler votre demande.</p>
+                                        <p><strong>{t('analysis.noResults.title')}</strong></p>
+                                        <p>{t('analysis.noResults.message')}</p>
                                     </div>
                                 )}
                             </div>
@@ -329,7 +331,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                         <div className="fr-grid-row fr-grid-row--gutters">
                             <div className="fr-col-12">
                                 <Link href="/" className="fr-btn fr-btn--secondary">
-                                    Retour à l'accueil
+                                    {t('analysis.backToHome')}
                                 </Link>
                             </div>
                         </div>
@@ -344,6 +346,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
 import Link from "next/link";
 
 export default function Analysis() {
+    const { t } = useLanguage();
     const [fieldValues, setFieldValues] = useState<any>(null);
 
     useEffect(() => {
@@ -365,11 +368,11 @@ export default function Analysis() {
     }, []); // Se déclenche une seule fois au montage du composant
 
     if (!fieldValues) {
-        return <Loading message="Chargement des données de votre demande..." />;
+        return <Loading message={t('analysis.loadingData')} />;
     }
     return (
         <Suspense fallback={
-            <Loading message="Chargement des données de votre demande..." />
+            <Loading message={t('analysis.loadingData')} />
         }>
             <AnalysisContent fieldValues={fieldValues} />
         </Suspense>

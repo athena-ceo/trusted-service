@@ -36,6 +36,6 @@ venv/
 .env.*.local
 docker-compose.prod.yml.backup
 
-log_file.log
-server.log
-trusted-service-api.log
+**/log_file.log
+**/server.log
+**/trusted-service-api.log

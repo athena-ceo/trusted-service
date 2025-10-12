@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormData {
     nom: string;
@@ -33,17 +34,8 @@ const noms = ["Smith", "Jordan", "Williams", "Brown", "Jones", "Garcia", "Miller
 const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennifer", "Linda", "Elizabeth", "Patricia"];
 const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com"];
 
-const exempleMessage = `Bonjour,
-
-J'ai effectué la démarche en ligne sur ANEF pour le renouvellement de mon titre séjour - passeport talent le 09-08-2023. 
-J'ai reçu l'attestation de prolongation directement après l'expiration de mon titre de séjour. 
-Cette dernière à été renouvelée le 29-02-2024 et expirée le 28/05/2024.
-Mais jusqu'à ce jour je n'ai pas reçu une nouvelle API.
-Mon contrat de travail et suspendu et si ça continue, mon contrat de travail va être résilié.
-
-Cordialement,`;
-
 export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
+    const { t } = useLanguage();
     const [formData, setFormData] = useState<FormData>({
         nom: "",
         prenom: "",
@@ -111,7 +103,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
             email: randomEmail,
             arrondissement: "VERS",
             agdref: randomAgdref,
-            message: `${exempleMessage}\n\n${randomPrenom} ${randomNom}`,
+            message: `${t('form.message.example')}\n\n${randomPrenom} ${randomNom}`,
             acceptation: true,
         });
     };
@@ -119,17 +111,17 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
     const validateForm = (): boolean => {
         const newErrors: Partial<FormData> = {};
 
-        if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
-        if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
+        if (!formData.nom.trim()) newErrors.nom = t('form.error.lastName');
+        if (!formData.prenom.trim()) newErrors.prenom = t('form.error.firstName');
         if (!formData.email.trim()) {
-            newErrors.email = "L'email est requis";
+            newErrors.email = t('form.error.email.required');
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "L'email n'est pas valide";
+            newErrors.email = t('form.error.email.invalid');
         }
-        if (!formData.arrondissement) newErrors.arrondissement = "Veuillez sélectionner un arrondissement";
-        if (!formData.message.trim()) newErrors.message = "Le message est requis";
+        if (!formData.arrondissement) newErrors.arrondissement = t('form.error.arrondissement');
+        if (!formData.message.trim()) newErrors.message = t('form.error.message');
         if (!formData.acceptation) {
-            (newErrors as any).acceptation = "Vous devez accepter les conditions";
+            (newErrors as any).acceptation = t('form.error.acceptance');
         }
 
         setErrors(newErrors);
@@ -163,14 +155,14 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
         <form onSubmit={handleSubmit} className="fr-mb-6w">
             <div className="fr-grid-row fr-grid-row--gutters fr-mb-3w">
                 <div className="fr-col-12">
-                    <p className="fr-text--heavy">* Champs obligatoires</p>
+                    <p className="fr-text--heavy">{t('form.requiredFields')}</p>
                 </div>
             </div>
 
             <div className="fr-fieldset__element">
                 <div className={`fr-input-group ${errors.nom ? 'fr-input-group--error' : ''}`}>
                     <label htmlFor="nom-service" className="fr-label">
-                        Nom *
+                        {t('form.lastName')} *
                     </label>
                     <input className="fr-input" aria-describedby="nom-service-messages" type="text"
                         name="nom" id="nom-service" value={formData.nom} onChange={handleChange} autoComplete="family-name"
@@ -184,7 +176,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
             <div className="fr-fieldset__element">
                 <div className={`fr-input-group ${errors.prenom ? 'fr-input-group--error' : ''}`}>
                     <label htmlFor="prenom-service" className="fr-label">
-                        Prénom *
+                        {t('form.firstName')} *
                     </label>
                     <input className="fr-input" aria-describedby="prenom-service-messages"
                         type="text" name="prenom" id="prenom-service" value={formData.prenom}
@@ -199,8 +191,8 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
             <div className={`fr-fieldset__element ${errors.email ? 'fr-input-group--error' : ''}`}>
                 <div className="fr-input-group">
                     <label htmlFor="email-service" className="fr-label">
-                        Adresse électronique *
-                        <span className="fr-hint-text">Format attendu : nom@domaine.ext</span>
+                        {t('form.email')} *
+                        <span className="fr-hint-text">{t('form.emailFormat')}</span>
                     </label>
                     <input className="fr-input" autoComplete="email"
                         aria-describedby="email-service-messages" type="email" name="email"
@@ -214,11 +206,11 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
 
             <div className={`fr-select-group ${errors.arrondissement ? 'fr-input-group--error' : ''}`}>
                 <label className="fr-label" htmlFor="arrondissement">
-                    Veuillez sélectionner l'arrondissement de rattachement de votre commune de résidence *
+                    {t('form.arrondissement')} *
                     <span className="fr-hint-text">
                         <a target="_blank" rel="noopener noreferrer"
                             href="https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf">
-                            Cliquer ici pour consulter la liste des arrondissements de rattachement des communes des Yvelines.
+                            {t('form.arrondissementLink')}
                         </a>
                     </span>
                 </label>
@@ -230,7 +222,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                     onChange={handleChange}
                     required
                 >
-                    <option value="">Choisissez un arrondissement</option>
+                    <option value="">{t('form.selectArrondissement')}</option>
                     {arrondissements.map((arr) => (
                         <option key={arr.id} value={arr.id}>
                             {arr.label}
@@ -242,8 +234,8 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
 
             <div className={`fr-input-group ${errors.agdref ? 'fr-input-group--error' : ''}`}>
                 <label htmlFor="agdref-service" className="fr-label">
-                    N° AGDREF
-                    <span className="fr-hint-text">Format attendu : 78123456789</span>
+                    {t('form.agdref')}
+                    <span className="fr-hint-text">{t('form.agdrefFormat')}</span>
                 </label>
                 <input className="fr-input" autoComplete="agdref-national"
                     aria-describedby="agdref-service-input-messages" type="agdref"
@@ -257,7 +249,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
             <div className={`fr-input-group ${errors.message ? 'fr-input-group--error' : ''}`}>
                 <div className="fr-input-group">
                     <label htmlFor="votremessage-service" className="fr-label">
-                        Message *
+                        {t('form.message')} *
                     </label>
                     <textarea className="fr-input" aria-describedby="message-service-input-messages"
                         name="message" id="votremessage-service" value={formData.message} required rows={15}
@@ -274,9 +266,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                     <input type="checkbox" name="acceptation" id="reglement-service" required
                         className="fr-input" />
                     <label htmlFor="reglement-service" className="fr-label">
-                        En soumettant ce formulaire, j’accepte que les informations saisies
-                        soient utilisées pour permettre de me recontacter, répondre à ma
-                        demande. *
+                        {t('form.acceptance')} *
                     </label>
                     {(errors as any).acceptation && <p className="fr-error-text">{(errors as any).acceptation}</p>}
                 </div>
@@ -289,7 +279,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                         className={`fr-btn ${isLoading ? 'fr-btn--loading' : ''}`}
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Envoi en cours...' : 'Envoyer votre message'}
+                        {isLoading ? t('form.sending') : t('form.submit')}
                     </button>
 
                     <button
@@ -297,7 +287,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                         className="fr-btn fr-btn--secondary fr-ml-2w"
                         onClick={preremplirFormulaire}
                     >
-                        Préremplir le formulaire (test)
+                        {t('form.prefill')}
                     </button>
                 </div>
             </div>
