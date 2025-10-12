@@ -159,8 +159,10 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
     # Extract the message from the POST request body
     text: str = data.get("text", "")
 
+    lang: SupportedLocale = data.get("lang", "fr")
+
     print("********************************** analyser_demande **********************************")
-    return app.server_api.analyze(app_id="delphes", locale="fr", field_values=field_values, text=text, read_from_cache=False, llm_config_id="tests")
+    return app.server_api.analyze(app_id="delphes", locale=lang, field_values=field_values, text=text, read_from_cache=False, llm_config_id="tests")
 
 
 @app.post(f"{API_ROUTE}/process_request", tags=["Services"])
@@ -172,5 +174,7 @@ async def handle_case_v1(data: dict):
             case_request["decision_engine_config_id"] = "tests"
         case_request = CaseHandlingRequest(**case_request)
 
+    lang: SupportedLocale = data.get("lang", "fr")
+
     print("********************************** handle_case_v1 **********************************")
-    return app.server_api.handle_case(app_id="delphes", locale="fr", request=case_request)
+    return app.server_api.handle_case(app_id="delphes", locale=lang, request=case_request)
