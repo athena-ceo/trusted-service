@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
@@ -342,8 +343,6 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
         </>
     );
 }
-
-import Link from "next/link";
 
 export default function Analysis() {
     const { t } = useLanguage();

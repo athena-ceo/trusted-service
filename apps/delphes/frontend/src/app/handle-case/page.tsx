@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
@@ -12,6 +13,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
     const [isLoading, setIsLoading] = useState(true);
     const [vueAgent, setVueAgent] = useState(false);
     const [vueAgentReponse, setVueAgentReponse] = useState(false);
+    const [caseHandling, setCaseHandling] = useState<string | null>(null);
     const [answer, setAnswer] = useState<string | null>(null);
     const [ack, setAck] = useState<string | null>(null);
 
@@ -59,6 +61,9 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
 
             // Acknowledgement
             setAck(handleCaseResult.case_handling_response?.acknowledgement_to_requester)
+
+            // Case Handling response
+            setCaseHandling(handleCaseResult.case_handling_response?.case_handling_report[0]);
 
             // Réponse
             let answerText = handleCaseResult.case_handling_response?.case_handling_report[1];
@@ -145,9 +150,9 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 )}
 
                                 {/* Résumé de l'analyse */}
-                                {!isLoading && vueAgent && analyzeResult && analyzeResult.highlighted_text_and_features && (
+                                {!isLoading && vueAgent && (
                                     <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">{t('handleCase.elementsIdentified')}</h3>
+                                        <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues.prenom, fieldValues.nom, fieldValues.date_demande)}</h3>
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
@@ -155,7 +160,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                                     <style>
                                                         .highlighted-content table td,
                                                         .highlighted-content table th {
-                                                            padding: 1rem !important;
+                                                            padding: 0.1rem !important;
                                                         }
                                                         .highlighted-content table {
                                                             border-collapse: separate;
@@ -164,16 +169,20 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                                         }
                                                     </style>
                                                     <div class="highlighted-content">
-                                                        ${analyzeResult.highlighted_text_and_features}
+                                                        ${caseHandling}
                                                     </div>
                                                 `
                                             }}
                                         />
+                                        <hr />
+                                        <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
+                                            {t('handleCase.generateResponse')}
+                                        </button>
                                     </div>
                                 )}
 
                                 {/* field values */}
-                                {!isLoading && vueAgent && fieldValues && (
+                                {/* {!isLoading && vueAgent && fieldValues && (
                                     <div className="fr-mb-3w">
                                         <h3 className="fr-h6">{t('handleCase.fieldValues')}</h3>
                                         <ul className="fr-list">
@@ -193,12 +202,8 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                                 );
                                             })}
                                         </ul>
-                                        <hr />
-                                        <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
-                                            {t('handleCase.generateResponse')}
-                                        </button>
                                     </div>
-                                )}
+                                )} */}
 
                                 {/* Vue Réponse */}
                                 {!isLoading && vueAgentReponse && (
@@ -212,6 +217,14 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                         />
                                     </div>
                                 )}
+
+                                <div className="fr-grid-row fr-grid-row--gutters">
+                                    <div className="fr-col-12">
+                                        <Link href="/" className="fr-btn fr-btn--secondary">
+                                            {t('analysis.backToHome')}
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

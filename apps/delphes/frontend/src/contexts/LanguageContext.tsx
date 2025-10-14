@@ -7,7 +7,7 @@ type Language = 'FR' | 'EN';
 interface LanguageContextType {
     currentLang: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => string;
+    t: (key: string, ...params: (string | number)[]) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -149,12 +149,12 @@ const translations: Record<Language, Record<string, string>> = {
         'handleCase.nextSteps.title': 'Prochaines étapes',
         'handleCase.nextSteps.message': 'Un agent du service concerné examinera votre demande et vous contactera si nécessaire à l\'adresse email que vous avez fournie. En général, nous répondons sous 5 jours ouvrés.',
         'handleCase.agentView': 'Vue Agent',
-        'handleCase.elementsIdentified': 'Éléments identifiés dans votre message :',
         'handleCase.fieldValues': 'Valeurs des champs :',
         'handleCase.generateResponse': 'Générer la réponse',
         'handleCase.generatedResponse': 'Réponse générée :',
         'handleCase.noResponse': 'Aucune réponse générée',
         'handleCase.loadingData': 'Chargement des données de votre demande...',
+        'handleCase.analysisResult': 'Résultat de l\'analyse de la demande de $1 $2 du $3',
 
         // Contact Form
         'form.requiredFields': '* Champs obligatoires',
@@ -325,12 +325,12 @@ Cordialement,`,
         'handleCase.nextSteps.title': 'Next steps',
         'handleCase.nextSteps.message': 'An agent from the relevant service will review your request and contact you if necessary at the email address you provided. We usually respond within 5 business days.',
         'handleCase.agentView': 'Agent View',
-        'handleCase.elementsIdentified': 'Elements identified in your message:',
         'handleCase.fieldValues': 'Field values:',
         'handleCase.generateResponse': 'Generate response',
         'handleCase.generatedResponse': 'Generated response:',
         'handleCase.noResponse': 'No response generated',
         'handleCase.loadingData': 'Loading your request data...',
+        'handleCase.analysisResult': 'Analysis result of the request from $1 $2 dated $3',
 
         // Contact Form
         'form.requiredFields': '* Required fields',
@@ -388,8 +388,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const t = (key: string): string => {
-        return translations[currentLang][key] || key;
+    const t = (key: string, ...params: (string | number)[]): string => {
+        let translation = translations[currentLang][key] || key;
+
+        // Remplacer les paramètres $1, $2, $3, etc. par les valeurs fournies
+        params.forEach((param, index) => {
+            const placeholder = `$${index + 1}`;
+            translation = translation.replace(new RegExp(`\\${placeholder}`, 'g'), String(param));
+        });
+
+        return translation;
     };
 
     return (
