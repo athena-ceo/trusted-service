@@ -1,6 +1,7 @@
 import inspect
 import os
 import json
+from datetime import datetime
 from typing import Optional, Any
 
 from fastapi import FastAPI
@@ -161,8 +162,20 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
 
     lang: SupportedLocale = data.get("lang", "fr").lower()
 
+    # Print current date and time
     print("********************************** analyser_demande **********************************")
-    return app.server_api.analyze(app_id="delphes", locale=lang, field_values=field_values, text=text, read_from_cache=False, llm_config_id="tests")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - analyze_v1")
+
+    # Récupérer la variable d'environnement APP_ENV
+    app_env = os.getenv("APP_ENV", "local")
+    print(f"APP_ENV: {app_env}")
+
+    if app_env == "production":
+        llm_config_id="scaleway1"
+    else:
+        llm_config_id="openai1"
+
+    return app.server_api.analyze(app_id="delphes", locale=lang, field_values=field_values, text=text, read_from_cache=False, llm_config_id=llm_config_id)
 
 
 @app.post(f"{API_ROUTE}/process_request", tags=["Services"])

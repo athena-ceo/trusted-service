@@ -224,7 +224,9 @@ class TextAnalyzer:
         if llm_config.response_format_type == "json_object":
             system_prompt += f"{localization.promptstring_return_only_json}:{md_line_break}"
             schema: str = json.dumps(self.analysis_response_model.model_json_schema(), indent=2)
-            system_prompt += f"```{schema}```"
+            # Escape braces in JSON schema to avoid conflict with .format() placeholders
+            schema_escaped = schema.replace('{', '{{').replace('}', '}}')
+            system_prompt += f"```{schema_escaped}```"
 
         return system_prompt
 
