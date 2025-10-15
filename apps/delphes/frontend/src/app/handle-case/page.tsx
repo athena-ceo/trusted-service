@@ -126,7 +126,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
-                                                __html: `<p>${ack ? ack : ""}</p>`
+                                                __html: ack || ""
                                             }}
                                         />
                                         <div className="fr-notice fr-notice--info fr-mb-4w">
@@ -153,25 +153,21 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 {!isLoading && vueAgent && (
                                     <div className="fr-mb-3w">
                                         <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues.prenom, fieldValues.nom, fieldValues.date_demande)}</h3>
+                                        <style jsx>{`
+                                            .highlighted-content table td,
+                                            .highlighted-content table th {
+                                                padding: 0.1rem !important;
+                                            }
+                                            .highlighted-content table {
+                                                border-collapse: separate;
+                                                width: 100%;
+                                                border-spacing: 0;
+                                            }
+                                        `}</style>
                                         <div
-                                            className="fr-text--sm"
+                                            className="fr-text--sm highlighted-content"
                                             dangerouslySetInnerHTML={{
-                                                __html: `
-                                                    <style>
-                                                        .highlighted-content table td,
-                                                        .highlighted-content table th {
-                                                            padding: 0.1rem !important;
-                                                        }
-                                                        .highlighted-content table {
-                                                            border-collapse: separate;
-                                                            width: 100%;
-                                                            border-spacing: 0;
-                                                        }
-                                                    </style>
-                                                    <div class="highlighted-content">
-                                                        ${caseHandling}
-                                                    </div>
-                                                `
+                                                __html: caseHandling || ""
                                             }}
                                         />
                                         <hr />
@@ -212,7 +208,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                         <div
                                             className="fr-text--sm"
                                             dangerouslySetInnerHTML={{
-                                                __html: answer ? `<p>${answer}</p>` : `<p>${t('handleCase.noResponse')}</p>`
+                                                __html: answer || t('handleCase.noResponse')
                                             }}
                                         />
                                     </div>
