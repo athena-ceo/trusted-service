@@ -70,7 +70,23 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_instructions_intentions="Pour chaque intention, donner un score (0-10) et une justification courte.",
         promptstring_list_of_intentions="Liste des intentions",
         promptstring_instructions_extract_features="Extraire les éléments suivants du texte",
-        promptstring_description_of_fragments_feature="si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne",
+        promptstring_description_of_fragments_feature="""
+si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne. 
+S'il s'agit d'une date, voici quelques règles de conversion implicite :
+- "début du mois" = jour 01 du mois courant
+- "mi-[mois]" = jour 15 du mois indiqué
+- "fin du mois" = dernier jour du mois indiqué
+- "la semaine dernière" = 7 jours avant la date du jour
+- "hier" = 1 jour avant la date du jour
+- "avant-hier" = 2 jours avant la date du jour
+- "la semaine prochaine" = 7 jours après la date du jour
+Exemple :
+Texte = "L'événement est arrivé au début du mois."
+Aujourd'hui = 15/10/2025
+Sortie attendue :
+{"date_evenement": "01/10/2025", "fragments_date_evenement": {"list": ["au début du mois"]}}
+
+            """,
         promptstring_definitions="Définitions",
         promptstring_term="Terme",
         promptstring_definition="Définition",
