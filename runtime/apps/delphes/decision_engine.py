@@ -123,7 +123,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.details.append("rule_expiration_d_une_api_api_expiree")
 
                 output.priority = "VERY_HIGH"
-                output.notes.append(f"#API_EXPIREE_DEPUIS_X_JOURS,{difference_in_days}")
+                output.notes.append(f"#API_EXPIREE_DEPUIS_X_JOURS,{abs(difference_in_days)}")
 
         def rule_expiration_d_une_api_api_non_expiree(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
