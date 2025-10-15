@@ -25,8 +25,8 @@ llm_configs:
     llm: "scaleway"
     model: "mistral-small-3.1-24b-instruct-2503"
     response_format_type: "json_object"
-    prompt_format: "markdown"
-    temperature: 1
+    prompt_format: "text"
+    temperature: 0.5
 
 
 
