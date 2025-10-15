@@ -12,6 +12,7 @@ interface FormData {
   email: string;
   arrondissement: string;
   agdref: string;
+  statut: string;
   message: string;
   acceptation: boolean;
 }
@@ -36,6 +37,7 @@ export default function AccueilEtrangers() {
       adresse_mail: formData.email,
       arrondissement: formData.arrondissement,
       agdref: formData.agdref,
+      statut: formData.statut,
       message: formData.message,
     };
 
@@ -183,7 +185,6 @@ export default function AccueilEtrangers() {
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </nav>

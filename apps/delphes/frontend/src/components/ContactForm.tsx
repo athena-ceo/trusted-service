@@ -9,6 +9,7 @@ interface FormData {
     email: string;
     arrondissement: string;
     agdref: string;
+    statut: string;
     message: string;
     acceptation: boolean;
 }
@@ -16,17 +17,6 @@ interface FormData {
 interface ContactFormProps {
     onSubmit: (formData: FormData) => void;
     isLoading: boolean;
-}
-
-interface CaseModel {
-    case_fields?: Array<{
-        id: string;
-        allowed_values?: Array<{
-            id: string;
-            label: string;
-            condition_javascript?: string;
-        }>;
-    }>;
 }
 
 // Données pour le préremplissage automatique (pour les tests)
@@ -42,11 +32,13 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
         email: "",
         arrondissement: "",
         agdref: "",
+        statut: "",
         message: "",
         acceptation: false,
     });
 
     const [arrondissements, setArrondissements] = useState<Array<{ id: string, label: string }>>([]);
+    const [statuts, setStatuts] = useState<Array<{ id: string, label: string }>>([]);
     const [errors, setErrors] = useState<Partial<FormData>>({});
 
     // Charger les arrondissements depuis l'API
@@ -59,12 +51,13 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
 
         fetch(`${apiBaseUrl}/trusted_services/v2/apps/delphes/fr/case_model`)
             .then(response => {
-                if (!response.ok) throw new Error("Erreur lors de la récupération des arrondissements");
+                if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");
                 return response.json();
             })
             .then(data => {
-                // Chercher le case_field avec id 'arrondissement'
                 const caseFields = data.case_fields || [];
+
+                // Chercher le case_field avec id 'arrondissement'
                 const arrondissementField = caseFields.find((f: any) => f.id === 'arrondissement');
                 if (!arrondissementField || !arrondissementField.allowed_values) return;
 
@@ -83,10 +76,16 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                 });
 
                 setArrondissements(filtered);
+
+                // Chercher le case_field avec id 'statut'
+                const statutField = caseFields.find((f: any) => f.id === 'statut');
+                if (!statutField || !statutField.allowed_values) return;
+
+                setStatuts(statutField.allowed_values);
             })
             .catch(error => {
-                console.error('Erreur lors du chargement des arrondissements:', error);
-                setArrondissements([{ id: "", label: "Impossible de charger les arrondissements" }]);
+                console.error('Erreur lors du chargement des statuts et des arrondissements:', error);
+                setArrondissements([{ id: "", label: "Impossible de charger les statuts et les arrondissements" }]);
             });
     }, []);
 
@@ -103,6 +102,7 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
             email: randomEmail,
             arrondissement: "VERS",
             agdref: randomAgdref,
+            statut: "régulier",
             message: `${t('form.message.example')}\n\n${randomPrenom} ${randomNom}`,
             acceptation: true,
         });
@@ -204,50 +204,83 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                 </div>
             </div>
 
-            <div className={`fr-select-group ${errors.arrondissement ? 'fr-input-group--error' : ''}`}>
-                <label className="fr-label" htmlFor="arrondissement">
-                    {t('form.arrondissement')} *
-                    <span className="fr-hint-text">
-                        <a target="_blank" rel="noopener noreferrer"
-                            href="https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf">
-                            {t('form.arrondissementLink')}
-                        </a>
-                    </span>
-                </label>
-                <select
-                    className="fr-select"
-                    id="arrondissement"
-                    name="arrondissement"
-                    value={formData.arrondissement}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">{t('form.selectArrondissement')}</option>
-                    {arrondissements.map((arr) => (
-                        <option key={arr.id} value={arr.id}>
-                            {arr.label}
-                        </option>
-                    ))}
-                </select>
-                {errors.arrondissement && <p className="fr-error-text">{errors.arrondissement}</p>}
-            </div>
-
-            <div className={`fr-input-group ${errors.agdref ? 'fr-input-group--error' : ''}`}>
-                <label htmlFor="agdref-service" className="fr-label">
-                    {t('form.agdref')}
-                    <span className="fr-hint-text">{t('form.agdrefFormat')}</span>
-                </label>
-                <input className="fr-input" autoComplete="agdref-national"
-                    aria-describedby="agdref-service-input-messages" type="agdref"
-                    name="agdref" id="agdref-service" value={formData.agdref} onChange={handleChange} />
-                {errors.agdref && <p className="fr-error-text">{errors.agdref}</p>}
-                <div className="fr-messages-group" id="agdref-service-input-messages"
-                    aria-live="polite">
+            <div className="fr-fieldset__element">
+                <div className={`fr-select-group ${errors.arrondissement ? 'fr-input-group--error' : ''}`}>
+                    <label className="fr-label" htmlFor="arrondissement">
+                        {t('form.arrondissement')} *
+                    </label>
+                    <div className="fr-alert fr-alert--warning fr-mb-1w">
+                        <p>
+                            <a
+                                className="fr-link fr-icon-external-link-line fr-link--icon-right"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf">
+                                {t('form.arrondissementLink')}
+                            </a>
+                        </p>
+                    </div>
+                    <select
+                        className="fr-select"
+                        id="arrondissement"
+                        name="arrondissement"
+                        value={formData.arrondissement}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">{t('form.selectArrondissement')}</option>
+                        {arrondissements.map((arr) => (
+                            <option key={arr.id} value={arr.id}>
+                                {arr.label}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.arrondissement && <p className="fr-error-text">{errors.arrondissement}</p>}
                 </div>
             </div>
 
-            <div className={`fr-input-group ${errors.message ? 'fr-input-group--error' : ''}`}>
-                <div className="fr-input-group">
+            <div className="fr-fieldset__element">
+                <div className={`fr-input-group ${errors.agdref ? 'fr-input-group--error' : ''}`}>
+                    <label htmlFor="agdref-service" className="fr-label">
+                        {t('form.agdref')}
+                        <span className="fr-hint-text">{t('form.agdrefFormat')}</span>
+                    </label>
+                    <input className="fr-input"
+                        aria-describedby="agdref-service-input-messages" type="text"
+                        name="agdref" id="agdref-service" value={formData.agdref} onChange={handleChange} />
+                    {errors.agdref && <p className="fr-error-text">{errors.agdref}</p>}
+                    <div className="fr-messages-group" id="agdref-service-input-messages"
+                        aria-live="polite">
+                    </div>
+                </div>
+            </div>
+
+            <div className="fr-fieldset__element">
+                <div className={`fr-select-group ${errors.statut ? 'fr-input-group--error' : ''}`}>
+                    <label className="fr-label" htmlFor="statut">
+                        {t('form.statut')} *
+                    </label>
+                    <select
+                        className="fr-select"
+                        id="statut"
+                        name="statut"
+                        value={formData.statut}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">{t('form.selectStatut')}</option>
+                        {statuts.map((stat) => (
+                            <option key={stat.id} value={stat.id}>
+                                {stat.label}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.statut && <p className="fr-error-text">{errors.statut}</p>}
+                </div>
+            </div>
+
+            <div className="fr-fieldset__element">
+                <div className={`fr-input-group ${errors.message ? 'fr-input-group--error' : ''}`}>
                     <label htmlFor="votremessage-service" className="fr-label">
                         {t('form.message')} *
                     </label>
