@@ -84,7 +84,7 @@ Exemple :
 Texte = "L'événement est arrivé au début du mois."
 Aujourd'hui = 15/10/2025
 Sortie attendue :
-{"date_evenement": "01/10/2025", "fragments_date_evenement": {"list": ["au début du mois"]}}
+{{"date_evenement": "01/10/2025", "fragments_date_evenement": {{"list": ["au début du mois"]}}}}
 
             """,
         promptstring_definitions="Définitions",
