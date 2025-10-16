@@ -81,11 +81,9 @@ S'il s'agit d'une date, voici quelques règles de conversion implicite :
 - "avant-hier" = 2 jours avant la date du jour
 - "la semaine prochaine" = 7 jours après la date du jour
 Exemple :
-Texte = "L'événement est arrivé au début du mois."
-Aujourd'hui = 15/10/2025
-Sortie attendue :
-{{"date_evenement": "01/10/2025", "fragments_date_evenement": {{"list": ["au début du mois"]}}}}
-
+Fragment de texte = "L'événement est arrivé au début du mois."
+La date du jour est le 15/10/2025
+La date de l'événement est le 01/10/2025
             """,
         promptstring_definitions="Définitions",
         promptstring_term="Terme",
