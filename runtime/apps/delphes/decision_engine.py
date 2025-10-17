@@ -8,10 +8,12 @@ work_basket_generique = "generique"
 work_basket_pref_etrangers_aes_salarie = "pref-etrangers-aes-salarie"
 work_basket_reorientation = "reorientation"
 work_basket_sauf_conduits = "sauf-conduits"
+work_basket_atda = "atda"
 work_basket_ukraine = "ukraine"
 
 response_template_id_sauf_conduits = "sauf-conduits"
 response_template_id_api_a_renouveler = "api-a-renouveler"
+response_template_id_atda = "atda"
 
 
 def days_between(date_begin: str, date_end: str) -> int:
@@ -107,6 +109,17 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.work_basket = work_basket_sauf_conduits
                 output.priority = "HIGH"
 
+        def rule_expiration_d_une_atda(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+
+            if input.intention_id == "expiration_d_une_atda":
+                output.details.append("rule_expiration_d_une_atda")
+
+                output.handling = "AGENT"
+                output.acknowledgement_to_requester = "#ACK"
+                output.response_template_id = response_template_id_atda
+                output.work_basket = work_basket_atda
+                output.priority = "HIGH"
+
         def rule_expiration_d_une_api_cas_nominal(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
 
             if input.intention_id == "expiration_d_une_api":
@@ -142,6 +155,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         rule_depot_de_demande_d_asile_78(input, output)
         rule_refugie_ou_protege_subsidiaire(input, output)
+        rule_expiration_d_une_atda(input, output)
         rule_expiration_d_une_api_cas_nominal(input, output)
         rule_expiration_d_une_api_api_expiree(input, output)
         rule_expiration_d_une_api_api_non_expiree(input, output)
@@ -177,3 +191,113 @@ class DecisionEngineDelphes(CaseHandlingDecisionEngine):
         ruleflow(input, output)
 
         return output
+
+
+def visualize_ruleflow():
+    """Affiche la structure hiérarchique du ruleflow"""
+    import ast
+    import inspect
+    from pathlib import Path
+    
+    # Obtenir le code source de ce fichier
+    source_file = Path(__file__).resolve()
+    with open(source_file, 'r', encoding='utf-8') as f:
+        source_code = f.read()
+    
+    tree = ast.parse(source_code)
+    
+    # Trouver la fonction ruleflow
+    ruleflow_func = None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name == 'ruleflow':
+            ruleflow_func = node
+            break
+    
+    if not ruleflow_func:
+        print("❌ Fonction ruleflow non trouvée")
+        return
+    
+    # Extraire les packages et règles
+    packages = []
+    for stmt in ruleflow_func.body:
+        if isinstance(stmt, ast.FunctionDef) and stmt.name.startswith('package_'):
+            package_name = stmt.name
+            rules = []
+            for package_stmt in stmt.body:
+                if isinstance(package_stmt, ast.FunctionDef) and package_stmt.name.startswith('rule_'):
+                    rules.append(package_stmt.name)
+            packages.append((package_name, rules))
+    
+    # Extraire l'ordre d'exécution
+    execution_order = []
+    for stmt in ruleflow_func.body:
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
+            if isinstance(stmt.value.func, ast.Name):
+                execution_order.append(stmt.value.func.id)
+        elif isinstance(stmt, ast.If):
+            for if_stmt in stmt.body:
+                if isinstance(if_stmt, ast.Expr) and isinstance(if_stmt.value, ast.Call):
+                    if isinstance(if_stmt.value.func, ast.Name):
+                        func_name = if_stmt.value.func.id
+                        condition = ast.unparse(stmt.test) if hasattr(ast, 'unparse') else "condition"
+                        execution_order.append(f"{func_name} [if {condition}]")
+    
+    # Affichage
+    print("╔" + "═" * 78 + "╗")
+    print("║" + " " * 20 + " RULEFLOW - MOTEUR DE DÉCISION DELPHES" + " " * 20 + "║")
+    print("╚" + "═" * 78 + "╝")
+    print()
+    
+    print("┌─ 📋 STRUCTURE HIÉRARCHIQUE DES RÈGLES")
+    print("│")
+    
+    for i, (package_name, rules) in enumerate(packages):
+        is_last_package = (i == len(packages) - 1)
+        package_connector = "└──" if is_last_package else "├──"
+        
+        package_display = package_name.replace("package_", "").replace("_", " ").title()
+        print(f"│   {package_connector} 📦 {package_display}")
+        print(f"│   {'    ' if is_last_package else '│   '}    ({package_name})")
+        print(f"│   {'    ' if is_last_package else '│   '}")
+        
+        for j, rule in enumerate(rules):
+            is_last_rule = (j == len(rules) - 1)
+            rule_connector = "└──" if is_last_rule else "├──"
+            indent = "    " if is_last_package else "│   "
+            sub_indent = "    " if is_last_rule else "│   "
+            
+            rule_display = rule.replace("rule_", "").replace("_", " ").capitalize()
+            print(f"│   {indent}    {rule_connector} ⚙️  {rule_display}")
+            print(f"│   {indent}    {sub_indent}   ({rule})")
+            
+            if not is_last_rule:
+                print(f"│   {indent}    │")
+        
+        if not is_last_package:
+            print("│   │")
+    
+    print("│")
+    print("└" + "─" * 78)
+    print()
+    
+    print("┌─ 🔄 ORDRE D'EXÉCUTION DES PACKAGES")
+    print("│")
+    for i, package in enumerate(execution_order, 1):
+        print(f"│   {i}. {package}")
+    print("│")
+    print("└" + "─" * 78)
+    print()
+    
+    total_rules = sum(len(rules) for _, rules in packages)
+    print("┌─ 📊 STATISTIQUES")
+    print("│")
+    print(f"│   • Nombre de packages : {len(packages)}")
+    print(f"│   • Nombre total de règles : {total_rules}")
+    print(f"│   • Nombre d'étapes d'exécution : {len(execution_order)}")
+    print("│")
+    print("└" + "─" * 78)
+
+
+if __name__ == "__main__":
+    print("🔍 Visualisation du Ruleflow\n")
+    visualize_ruleflow()
