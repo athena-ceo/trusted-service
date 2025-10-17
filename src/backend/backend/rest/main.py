@@ -173,7 +173,7 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
     if app_env == "production":
         llm_config_id="scaleway1"
     else:
-        llm_config_id="openai1"
+        llm_config_id="scaleway1"
 
     return app.server_api.analyze(app_id="delphes", locale=lang, field_values=field_values, text=text, read_from_cache=False, llm_config_id=llm_config_id)
 
