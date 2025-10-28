@@ -296,8 +296,15 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
 
             <div className="fr-fieldset__element">
                 <div className={`fr-checkbox-group ${(errors as any).acceptation ? 'fr-input-group--error' : ''}`}>
-                    <input type="checkbox" name="acceptation" id="reglement-service" required
-                        className="fr-input" />
+                    <input
+                        type="checkbox"
+                        name="acceptation"
+                        id="reglement-service"
+                        required
+                        className="fr-input"
+                        checked={formData.acceptation}
+                        onChange={handleChange}
+                    />
                     <label htmlFor="reglement-service" className="fr-label">
                         {t('form.acceptance')} *
                     </label>
