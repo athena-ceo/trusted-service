@@ -1,4 +1,5 @@
 from typing import List, Optional
+import logging
 
 from src.backend.decision.decision import CaseHandlingDecisionOutput
 from src.backend.distribution.distribution import CaseHandlingDistributionEngine
@@ -35,8 +36,18 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         labels_and_values = [(self.localization.label_intent, intent_label)]
         for case_field_id, case_field_value in request.field_values.items():
-            case_field = case_model.get_field_by_id(case_field_id)
-            case_field_label = case_field.label
+            try:
+                case_field = case_model.get_field_by_id(case_field_id)
+                case_field_label = case_field.label
+            except ValueError:
+                # Defensive: if the case model does not define this field id,
+                # don't crash the whole request. Log a warning and use the
+                # field id as a fallback label so the email still contains the
+                # provided value.
+                logging.getLogger(__name__).warning(
+                    "Field id '%s' not found in case model; including raw value in email.", case_field_id
+                )
+                case_field_label = case_field_id
 
             case_field_value2 = case_field_value
             if isinstance(case_field_value, bool):

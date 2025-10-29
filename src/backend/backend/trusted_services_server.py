@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 from typing import Any
+import re
 
 from src.backend.backend.app import App
 from src.common.case_model import CaseModel
@@ -33,6 +34,43 @@ class TrustedServicesServer(ServerApi):
             app_id: App(self.runtime_directory, app_id, )
             for app_id in app_ids
         }
+
+        # Post-load validation: scan application Python sources for field ids
+        # referenced via request.field_values[...] and warn if any referenced
+        # id is not present in the case model. This helps catch typos between
+        # decision engine code and the workbook case_fields.
+        pattern = re.compile(r"field_values\s*\[\s*['\"]([^'\"]+)['\"]\s*\]")
+        for app_id, app in self.apps.items():
+            try:
+                # Collect all case field ids across locales for this app
+                defined_ids: set[str] = set()
+                for locale, localized in app.localized_apps.items():
+                    try:
+                        cf_ids = [f.id for f in localized.case_model.case_fields]
+                        defined_ids.update(cf_ids)
+                    except Exception:
+                        # if case_model not present for a locale, skip
+                        continue
+
+                # Scan python files under the app directory
+                app_dir = Path(self.runtime_directory) / "apps" / app_id
+                referenced_ids: set[str] = set()
+                for py in app_dir.rglob('*.py'):
+                    try:
+                        text = py.read_text(encoding='utf-8')
+                    except Exception:
+                        continue
+                    for m in pattern.finditer(text):
+                        referenced_ids.add(m.group(1))
+
+                missing = sorted(list(referenced_ids - defined_ids))
+                if missing:
+                    logging.getLogger(__name__).warning(
+                        "App '%s': referenced case field ids not found in case_fields: %s",
+                        app_id, missing
+                    )
+            except Exception as e:
+                logging.getLogger(__name__).exception("Error while validating case fields for app %s: %s", app_id, e)
 
     def get_app_ids(self) -> list[str]:
         return list(self.apps.keys())
