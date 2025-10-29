@@ -228,3 +228,16 @@ body {
 .fr-translate__language[aria-current="true"]:hover {
   background-color: #f6f6f6 !important;
 }
+
+.highlighted-content table {
+  border-collapse: separate;
+  width: 100%;
+  border-spacing: 0;
+  border: 0.01rem solid #808080 !important;
+
+  td,
+  th {
+    padding: 0.3rem !important;
+    border: 0.01rem solid #808080 !important;
+  }
+}

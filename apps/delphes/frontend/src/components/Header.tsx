@@ -27,7 +27,7 @@ export default function Header() {
     };
 
     return (
-        <header role="banner" className="fr-header">
+        <header role="banner" className="fr-header" suppressHydrationWarning>
             <div className="fr-header__body">
                 <div className="fr-container">
                     <div className="fr-header__body-row">

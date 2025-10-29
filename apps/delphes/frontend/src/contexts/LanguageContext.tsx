@@ -141,10 +141,10 @@ const translations: Record<Language, Record<string, string>> = {
         'analysis.loadingData': 'Chargement des données de votre demande...',
 
         // Handle Case Page
-        'handleCase.alert.processing.title': 'Votre demande est en cours de réorientation vers le bon destinataire',
-        'handleCase.alert.success.title': 'Votre demande a été réorientée automatiquement vers le bon destinataire',
+        'handleCase.alert.processing.title': 'Votre demande est en cours de traitement',
+        'handleCase.alert.success.title': 'Votre demande a été traitée',
         'handleCase.alert.greeting.start': 'Merci',
-        'handleCase.alert.greeting.end': 'nous avons bien reçu votre demande et notre système l\'a analysée pour vous orienter vers le bon destinataire.',
+        'handleCase.alert.greeting.end': 'nous avons bien reçu votre demande et notre système l\'a analysée pour vous apporter la meilleure réponse.',
         'handleCase.yourMessage': 'Votre message :',
         'handleCase.thanks': 'Merci de votre patience',
         'handleCase.nextSteps.title': 'Prochaines étapes',
@@ -320,10 +320,10 @@ Cordialement,`,
         'analysis.loadingData': 'Loading your request data...',
 
         // Handle Case Page
-        'handleCase.alert.processing.title': 'Your request is being routed to the correct recipient',
-        'handleCase.alert.success.title': 'Your request has been automatically routed to the correct recipient',
+        'handleCase.alert.processing.title': 'Your request is being processed.',
+        'handleCase.alert.success.title': 'Your request has been processed.',
         'handleCase.alert.greeting.start': 'Thank you',
-        'handleCase.alert.greeting.end': 'we have received your request and our system has analyzed it to direct you to the right recipient.',
+        'handleCase.alert.greeting.end': 'We have received your request and our system has analysed it to provide you with the best response.',
         'handleCase.yourMessage': 'Your message:',
         'handleCase.thanks': 'Thank you for your patience',
         'handleCase.nextSteps.title': 'Next steps',

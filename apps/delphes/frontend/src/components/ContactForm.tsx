@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormData {
@@ -41,14 +41,20 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
     const [statuts, setStatuts] = useState<Array<{ id: string, label: string }>>([]);
     const [errors, setErrors] = useState<Partial<FormData>>({});
 
+    const hasFetchedRef = useRef(false);
+
     // Charger les arrondissements depuis l'API
     useEffect(() => {
+        if (hasFetchedRef.current) return;
+        hasFetchedRef.current = true;
+
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
         if (!apiBaseUrl || apiBaseUrl.startsWith('__NEXT_PUBLIC_')) {
             console.warn('NEXT_PUBLIC_API_URL is not configured - API calls may not work');
             return;
         }
 
+        console.log('Fetching arrondissements and statuts from API');
         fetch(`${apiBaseUrl}/trusted_services/v2/apps/delphes/fr/case_model`)
             .then(response => {
                 if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");

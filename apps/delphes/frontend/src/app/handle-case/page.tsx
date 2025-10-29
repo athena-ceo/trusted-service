@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { marked } from 'marked';
 // Désactiver les options dépréciées de marked (headerIds et mangle) pour supprimer les warnings
 marked.setOptions({ headerIds: false, mangle: false });
@@ -12,7 +12,7 @@ import Loading from "@/components/Loading";
 import { useLanguage } from "@/contexts/LanguageContext";
 import "@/app/spinner.css";
 
-function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, analyzeResult: any }) {
+function HandleCaseContent({ message, fieldValues, selectedIntention, intentionLabel, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, intentionLabel: any, analyzeResult: any }) {
     const { t, currentLang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
     const [vueAgent, setVueAgent] = useState(false);
@@ -20,6 +20,8 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
     const [caseHandling, setCaseHandling] = useState<string | null>(null);
     const [answer, setAnswer] = useState<string | null>(null);
     const [ack, setAck] = useState<string | null>(null);
+
+    const hasFetchedRef = useRef(false);
 
     const handleVueAgentReponseClick = () => {
         setVueAgentReponse(!vueAgentReponse);
@@ -41,6 +43,14 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                 return;
             }
 
+            console.log('Sending process request with payload', {
+                case_request: {
+                    intention_id: selectedIntention,
+                    field_values: fieldValues,
+                    highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
+                    lang: currentLang || 'fr'
+                }
+            });
             const handleCaseResponse = await fetch(apiBaseUrl + '/api/v1/process_request', {
                 method: 'POST',
                 headers: {
@@ -115,6 +125,9 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
     };
 
     useEffect(() => {
+        if (hasFetchedRef.current) return;
+        hasFetchedRef.current = true;
+
         handleCase();
     }, []);
 
@@ -133,7 +146,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
 
                         <div className="fr-mb-4w">
                             <div className="fr-mt-1v">
-                                <p><strong>{t('handleCase.yourMessage')}</strong></p>
+                                <h3 className="fr-h6">{intentionLabel}</h3>
                                 <div className="fr-text--sm" style={{
                                     fontStyle: 'italic',
                                     backgroundColor: '#f5f5fe',
@@ -143,76 +156,66 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                 }}>
                                     {message}
                                 </div>
+                            </div>
+                        </div>
 
-                                {/* Spinner de chargement */}
-                                {isLoading && (
-                                    <div className="fr-grid-row fr-grid-row--center fr-mt-3w">
-                                        <div className="fr-col-auto">
-                                            <div className="fr-spinner fr-spinner--lg"></div>
+                        {/* Spinner de chargement */}
+                        {isLoading && (
+                            <div className="fr-grid-row fr-grid-row--center fr-mt-3w">
+                                <div className="fr-col-auto">
+                                    <div className="fr-spinner fr-spinner--lg"></div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Message d'accusé de réception */}
+                        {!isLoading && (
+                            <div className="fr-mb-3w">
+                                <div
+                                    className="fr-text--sm"
+                                    dangerouslySetInnerHTML={{
+                                        __html: ack || ""
+                                    }}
+                                />
+                                <div className="fr-notice fr-notice--info fr-mb-4w">
+                                    <div className="fr-container">
+                                        <div className="fr-notice__body">
+                                            <p className="fr-notice__title fr-mr-3w">
+                                                {t('handleCase.nextSteps.title')}
+                                            </p>
+                                            <p>
+                                                {t('handleCase.nextSteps.message')}
+                                            </p>
                                         </div>
                                     </div>
-                                )}
+                                </div>
 
-                                {/* Message d'accusé de réception */}
-                                {!isLoading && (
-                                    <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">{t('handleCase.thanks')}</h3>
-                                        <div
-                                            className="fr-text--sm"
-                                            dangerouslySetInnerHTML={{
-                                                __html: ack || ""
-                                            }}
-                                        />
-                                        <div className="fr-notice fr-notice--info fr-mb-4w">
-                                            <div className="fr-container">
-                                                <div className="fr-notice__body">
-                                                    <p className="fr-notice__title fr-mr-3w">
-                                                        {t('handleCase.nextSteps.title')}
-                                                    </p>
-                                                    <p>
-                                                        {t('handleCase.nextSteps.message')}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <hr />
+                                <button type="button" id="vue-agent" className="fr-btn fr-mt-3w" onClick={handleVueAgentClick}>
+                                    {t('handleCase.agentView')}
+                                </button>
+                            </div>
+                        )}
 
-                                        <hr />
-                                        <button type="button" id="vue-agent" className="fr-btn fr-mt-3w" onClick={handleVueAgentClick}>
-                                            {t('handleCase.agentView')}
-                                        </button>
-                                    </div>
-                                )}
+                        {/* Résumé de l'analyse */}
+                        {!isLoading && vueAgent && (
+                            <div className="fr-mb-3w">
+                                <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues.prenom, fieldValues.nom, fieldValues.date_demande)}</h3>
+                                <div
+                                    className="fr-text--sm highlighted-content"
+                                    dangerouslySetInnerHTML={{
+                                        __html: caseHandling || ""
+                                    }}
+                                />
+                                <hr />
+                                <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
+                                    {t('handleCase.generateResponse')}
+                                </button>
+                            </div>
+                        )}
 
-                                {/* Résumé de l'analyse */}
-                                {!isLoading && vueAgent && (
-                                    <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues.prenom, fieldValues.nom, fieldValues.date_demande)}</h3>
-                                        <style jsx>{`
-                                            .highlighted-content table td,
-                                            .highlighted-content table th {
-                                                padding: 0.1rem !important;
-                                            }
-                                            .highlighted-content table {
-                                                border-collapse: separate;
-                                                width: 100%;
-                                                border-spacing: 0;
-                                            }
-                                        `}</style>
-                                        <div
-                                            className="fr-text--sm highlighted-content"
-                                            dangerouslySetInnerHTML={{
-                                                __html: caseHandling || ""
-                                            }}
-                                        />
-                                        <hr />
-                                        <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
-                                            {t('handleCase.generateResponse')}
-                                        </button>
-                                    </div>
-                                )}
-
-                                {/* field values */}
-                                {/* {!isLoading && vueAgent && fieldValues && (
+                        {/* field values */}
+                        {/* {!isLoading && vueAgent && fieldValues && (
                                     <div className="fr-mb-3w">
                                         <h3 className="fr-h6">{t('handleCase.fieldValues')}</h3>
                                         <ul className="fr-list">
@@ -235,31 +238,29 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
                                     </div>
                                 )} */}
 
-                                {/* Vue Réponse */}
-                                {!isLoading && vueAgentReponse && (
-                                    <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">{t('handleCase.generatedResponse')}</h3>
-                                        <div
-                                            className="fr-text--sm"
-                                            dangerouslySetInnerHTML={{
-                                                __html: answer || t('handleCase.noResponse')
-                                            }}
-                                        />
-                                    </div>
-                                )}
+                        {/* Vue Réponse */}
+                        {!isLoading && vueAgentReponse && (
+                            <div className="fr-mb-3w">
+                                <h3 className="fr-h6">{t('handleCase.generatedResponse')}</h3>
+                                <div
+                                    className="fr-text--sm"
+                                    dangerouslySetInnerHTML={{
+                                        __html: answer || t('handleCase.noResponse')
+                                    }}
+                                />
+                            </div>
+                        )}
 
-                                <div className="fr-grid-row fr-grid-row--gutters">
-                                    <div className="fr-col-12">
-                                        <Link href="/" className="fr-btn fr-btn--secondary">
-                                            {t('analysis.backToHome')}
-                                        </Link>
-                                    </div>
-                                </div>
+                        <div className="fr-grid-row fr-grid-row--gutters">
+                            <div className="fr-col-12">
+                                <Link href="/" className="fr-btn fr-btn--secondary">
+                                    {t('analysis.backToHome')}
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </main >
             <Footer />
         </>
     );
@@ -269,6 +270,7 @@ export default function HandleCase() {
     const { t } = useLanguage();
     const [analyzeResult, setAnalyzeResult] = useState<any>(null);
     const [selectedIntention, setSelectedIntention] = useState<any>(null);
+    const [intentionLabel, setIntentionLabel] = useState<any>(null);
     const [fieldValues, setFieldValues] = useState<any>(null);
 
     useEffect(() => {
@@ -289,10 +291,13 @@ export default function HandleCase() {
         const storedData2 = localStorage.getItem('selectedIntention');
         setSelectedIntention(storedData2)
 
-        const storedData3 = localStorage.getItem('fieldValues');
-        if (storedData3) {
+        const storedData3 = localStorage.getItem('intentionLabel');
+        setIntentionLabel(storedData3)
+
+        const storedData4 = localStorage.getItem('fieldValues');
+        if (storedData4) {
             try {
-                const parsedData = JSON.parse(storedData3);
+                const parsedData = JSON.parse(storedData4);
                 setFieldValues(parsedData);
 
                 // Optionnel : nettoyer le localStorage après récupération
@@ -311,7 +316,7 @@ export default function HandleCase() {
         <Suspense fallback={
             <Loading message={t('handleCase.loadingData')} />
         }>
-            <HandleCaseContent message={fieldValues.message} fieldValues={fieldValues} selectedIntention={selectedIntention} analyzeResult={analyzeResult} />
+            <HandleCaseContent message={fieldValues.message} fieldValues={fieldValues} selectedIntention={selectedIntention} intentionLabel={intentionLabel} analyzeResult={analyzeResult} />
         </Suspense>
     );
 }

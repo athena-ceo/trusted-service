@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -65,6 +65,8 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
     const [selectedIntention, setSelectedIntention] = useState<string>('');
     const [fieldInputValues, setFieldInputValues] = useState<Record<string, string>>({});
 
+    const hasFetchedRef = useRef(false);
+
     const analyzeRequest = async () => {
         try {
             const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
@@ -73,6 +75,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                 return;
             }
 
+            console.log('Sending analysis request with payload', fieldValues)
             const analyzeResponse = await fetch(apiBaseUrl + '/api/v1/analyze', {
                 method: 'POST',
                 headers: {
@@ -111,6 +114,9 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
     };
 
     useEffect(() => {
+        if (hasFetchedRef.current) return;
+        hasFetchedRef.current = true;
+
         analyzeRequest();
     }, []);
 
@@ -144,8 +150,8 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
         }
 
         // Sauvegarder l'intention choisie
-        console.log('Intention choisie:', selectedIntentionValue.toString());
         localStorage.setItem('selectedIntention', selectedIntentionValue.toString());
+        localStorage.setItem('intentionLabel', scoringsPositifs.find(item => item.intention_id === selectedIntentionValue)?.intention_label || '');
         localStorage.setItem('fieldValues', JSON.stringify(fieldValues));
 
         // Rediriger vers la page de confirmation
