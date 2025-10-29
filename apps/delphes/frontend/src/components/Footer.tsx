@@ -70,7 +70,7 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
                                 </a>
                             </li>
                             <li className="fr-footer__content-item">
-                                <a className="fr-footer__content-link" href="https://data.gouv.fr" target="_blank" rel="noopener noreferrer">
+                                <a className="fr-footer__content-link" href="https://data.gouv.fr" target="_blank">
                                     data.gouv.fr
                                 </a>
                             </li>

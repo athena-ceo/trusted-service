@@ -1,6 +1,10 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import { marked } from 'marked';
+// Désactiver les options dépréciées de marked (headerIds et mangle) pour supprimer les warnings
+marked.setOptions({ headerIds: false, mangle: false });
+import DOMPurify from 'dompurify';
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -59,8 +63,36 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
             const handleCaseResult = await handleCaseResponse.json();
             console.log('Résultat du handle case:', handleCaseResult);
 
-            // Acknowledgement
-            setAck(handleCaseResult.case_handling_response?.acknowledgement_to_requester)
+            // Acknowledgement (Markdown -> sanitized HTML)
+            const rawAck = handleCaseResult.case_handling_response?.acknowledgement_to_requester;
+            let ackHtml: string | null = null;
+            if (rawAck) {
+                const html = marked.parse(String(rawAck));
+                // parse HTML and add DSFR classes to links
+                try {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const anchors = Array.from(doc.querySelectorAll('a'));
+                    anchors.forEach(a => {
+                        a.classList.add('fr-link', 'fr-link--icon-right', 'fr-icon-external-link-line', 'fr-mb-1w');
+                        // always open links in a new tab and ensure safety attributes
+                        a.setAttribute('target', '_blank');
+                        const rel = a.getAttribute('rel') || '';
+                        // ensure noopener and noreferrer are present
+                        const relParts = new Set(rel.split(/\s+/).filter(Boolean));
+                        relParts.add('noopener');
+                        relParts.add('noreferrer');
+                        a.setAttribute('rel', Array.from(relParts).join(' ').trim());
+                    });
+                    const modified = doc.body.innerHTML;
+                    // Allow keeping target attribute (DOMPurify strips some attributes by default)
+                    ackHtml = DOMPurify.sanitize(modified, { ADD_ATTR: ['target'] });
+                } catch (e) {
+                    // fallback: sanitize original HTML
+                    ackHtml = DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
+                }
+            }
+            setAck(ackHtml);
 
             // Case Handling response
             setCaseHandling(handleCaseResult.case_handling_response?.case_handling_report[0]);
@@ -70,6 +102,8 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, analyzeRes
             if (answerText) {
                 // remplacer chaque saut de ligne par une balise &nbsp;<br /> pour l'affichage HTML
                 answerText = answerText.replace(/\n/g, '&nbsp;<br />');
+                // sanitize HTML to avoid XSS; allow keeping target attribute on links
+                answerText = DOMPurify.sanitize(answerText, { ADD_ATTR: ['target'] });
             }
             setAnswer(answerText);
         } catch (error) {

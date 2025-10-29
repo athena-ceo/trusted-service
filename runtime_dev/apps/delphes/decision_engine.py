@@ -56,6 +56,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.work_basket = work_basket_generique
             output.priority = "MEDIUM"
 
+        print(f"------- 📦 Executing package_initialisations")
         rule_decision_par_defaut(input, output)
 
     def package_regles_nationales(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
@@ -82,6 +83,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.response_template_id = ""
                 output.work_basket = work_basket_reorientation
                 output.priority = "MEDIUM"
+
+        print(f"------- 📦 Executing package_regles_nationales")
 
         rule_depot_de_demande_d_asile_regle_nationale(input, output)
         rule_ou_en_est_ma_demande_d_asile_en_cours(input, output)
@@ -155,6 +158,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 else:
                     output.priority = "LOW"
 
+        print(f"------- 📦 Executing package_cas_nominal_78")
+
         rule_depot_de_demande_d_asile_78(input, output)
         rule_refugie_ou_protege_subsidiaire(input, output)
         rule_expiration_d_une_atda(input, output)
@@ -172,7 +177,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             if input.intention_id == "difficulte_prise_rdv":
                 output.details.append("rule_difficulte_prise_rdv")
                 output.handling = "DEFLECTION"
-                output.acknowledgement_to_requester = f"#ACCUEIL"
+                output.acknowledgement_to_requester = "#ACCUEIL"
                 output.response_template_id = ""
                 output.work_basket = work_basket_accueil
                 output.priority = "LOW"
@@ -190,8 +195,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         def rule_rdv_remise_de_titre(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_remise_de_titre":
-                text = "Page de prise de rdv de la préfecture"
-                url = ""
+                text = "Prendre un rendez-vous - Les services de l'État dans les Yvelines"
+                url = "https://www.yvelines.gouv.fr/Prendre-un-rendez-vous"
                 output.details.append("rule_rdv_remise_de_titre")
                 output.handling = "DEFLECTION"
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
@@ -199,11 +204,15 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.work_basket = work_basket_reorientation
                 output.priority = "LOW"
 
+        print(f"------- 📦 Executing package_reajustements_78")
 
         rule_risque_sur_l_emploi(input, output)
         rule_difficulte_prise_rdv(input, output)
         rule_rdv_sauf_conduit(input, output)
         rule_rdv_remise_de_titre(input, output)
+
+
+    print(f"----- Entering ruleflow")
 
     package_initialisations(input, output)
     package_regles_nationales(input, output)
@@ -225,6 +234,7 @@ class DecisionEngineDelphes(CaseHandlingDecisionEngine):
             notes=[],
             details=[])
 
+        print(f"----- 🔍 Executing Delphes decision engine ruleflow for intention_id='{input.intention_id}'")
         ruleflow(input, output)
 
         return output

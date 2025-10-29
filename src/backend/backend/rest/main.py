@@ -1,6 +1,8 @@
 import inspect
 import os
 import json
+import sys
+import types
 from datetime import datetime
 from typing import Optional, Any
 
@@ -63,10 +65,59 @@ class FastAPI2(FastAPI):
             allow_headers=["*"],
         )
 
+        # Ensure the runtime directory can be imported as the 'runtime' package.
+        # Some app config/workbook values reference modules under the logical
+        # package name 'runtime' (for example 'runtime.apps.delphes...'). When
+        # running under uvicorn --reload the child process may not have the
+        # same import context, so create a lightweight package module named
+        # 'runtime' that points to the runtime_directory on disk.
+        try:
+            if 'runtime' not in sys.modules:
+                runtime_pkg = types.ModuleType('runtime')
+                # __path__ tells importlib where to look for subpackages/modules
+                runtime_pkg.__path__ = [runtime_directory]
+                sys.modules['runtime'] = runtime_pkg
+        except Exception:
+            # Don't fail initialization just because we couldn't create the alias;
+            # importlib may still find modules depending on sys.path. We swallow
+            # errors here and let downstream imports raise if needed (they'll be
+            # caught by the outer try/except and printed for debugging).
+            pass
+
         self.server_api: ServerApi = TrustedServicesServer(runtime_directory)
 
 
 app: FastAPI2 = FastAPI2()
+
+
+# If the launcher set an environment variable with the runtime directory, initialize the
+# app at import time so Uvicorn's reload mode (which imports by string) can start with a
+# properly initialized application.
+try:
+    runtime_dir_env = os.getenv("TRUSTED_SERVICES_RUNTIME_DIR")
+    if runtime_dir_env:
+        from src.common.connection_config import ConnectionConfig
+
+        config_connection_filename = runtime_dir_env + "/" + "config_connection.yaml"
+        connection_config = ConnectionConfig.load_from_yaml_file(config_connection_filename)
+        # Only initialize if not already initialized
+        if getattr(app, "server_api", None) is None:
+            app.init(connection_config, runtime_dir_env)
+except Exception as e:
+    # Log the exception so it's visible when Uvicorn imports the module in reload mode.
+    import traceback
+
+    print("Failed to auto-initialize app during import (TRUSTED_SERVICES_RUNTIME_DIR may be missing or invalid):")
+    traceback.print_exc()
+
+else:
+    # Informational message when module auto-initializes the app due to
+    # TRUSTED_SERVICES_RUNTIME_DIR being present. Helpful when running
+    # under uvicorn --reload so logs show what runtime directory is used.
+    try:
+        print(f"Initialized app during import using TRUSTED_SERVICES_RUNTIME_DIR={runtime_dir_env}")
+    except Exception:
+        pass
 
 
 @app.get("/")

@@ -92,6 +92,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
             fieldValues.date_expiration_api = analyzeResult.analysis_result.date_expiration_api;
             fieldValues.refugie_ou_protege_subsidiaire = analyzeResult.analysis_result.refugie_ou_protege_subsidiaire === true;
             fieldValues.mention_de_risque_sur_l_emploi = analyzeResult.analysis_result.mention_de_risque_sur_l_emploi === true;
+            fieldValues.motif_deces = analyzeResult.analysis_result.motif_deces === true;
 
             // Stocker les résultats pour la page de confirmation
             localStorage.setItem('analyzeResult', JSON.stringify({
@@ -134,7 +135,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                 // Sauvegarder la valeur dans fieldValues
                 if (champ === 'date_expiration_api') {
                     fieldValues[champ] = convertISOToDate(fieldValue.toString());
-                } else if (champ === 'refugie_ou_protege_subsidiaire') {
+                } else if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') {
                     fieldValues[champ] = fieldValue === 'true';
                 } else {
                     fieldValues[champ] = fieldValue;
@@ -164,7 +165,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
 
     const getFieldValue = (champ: string): string => {
         // Si on a déjà une valeur saisie, l'utiliser
-        if (champ === 'refugie_ou_protege_subsidiaire') {
+        if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') {
             console.log(`Valeur du champ booléen avant retour: ${fieldInputValues[champ]}`);
         }
         if (fieldInputValues[champ] !== undefined) {
@@ -176,6 +177,8 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
             return convertDateToISO(fieldValues.date_expiration_api);
         } else if (champ === 'refugie_ou_protege_subsidiaire') {
             return fieldValues.refugie_ou_protege_subsidiaire ? 'true' : 'false';
+        } else if (champ === 'motif_deces') {
+            return fieldValues.motif_deces ? 'true' : 'false';
         } else if (fieldValues[champ]) {
             return fieldValues[champ];
         }
@@ -254,12 +257,13 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                     <label className="fr-label" htmlFor={champ}>
                                                                         {champ === 'date_expiration_api' ? t('analysis.form.fields.expirationDate') :
                                                                             champ === 'refugie_ou_protege_subsidiaire' ? t('analysis.form.fields.refugee') :
-                                                                                champ} *
+                                                                                champ === 'motif_deces' ? t('analysis.form.fields.motifDeces') :
+                                                                                    champ} *
                                                                         {champ === 'date_expiration_api' && <span className="fr-hint-text">{t('analysis.form.fields.dateFormat')}</span>}
                                                                     </label>
 
                                                                     {/* Traitement spécial pour le champ booléen */}
-                                                                    {champ === 'refugie_ou_protege_subsidiaire' ? (
+                                                                    {(champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') ? (
                                                                         <fieldset className="fr-fieldset">
                                                                             <div className="fr-fieldset__element">
                                                                                 <div className="fr-radio-group">

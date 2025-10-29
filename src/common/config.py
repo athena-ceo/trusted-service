@@ -15,7 +15,7 @@ class Config(BaseModel):
     pass
 
 
-def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[str, Any]]:
+def load_dicts_from_worksheet(worksheet, locale: SupportedLocale, include_row: bool = False) -> list[dict[str, Any]] | list[tuple[int, dict[str, Any]]]:
     dicts: list[dict[str, Any]] = []
 
     title_row_hit = False
@@ -39,7 +39,11 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale) -> list[dict[s
         data: dict[str, Any] = {}
         for label, number in column_labels_and_numbers.items():
             data[label] = row[number - 1].value
-        dicts.append(data)
+        if include_row:
+            # include the actual Excel row number to help with diagnostics
+            dicts.append((row[0].row, data))
+        else:
+            dicts.append(data)
     return dicts
 
 
