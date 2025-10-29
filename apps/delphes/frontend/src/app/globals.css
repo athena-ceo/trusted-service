@@ -241,3 +241,8 @@ body {
     border: 0.01rem solid #808080 !important;
   }
 }
+
+.ack-bold p {
+  font-weight: bold;
+  font-size: larger;
+}

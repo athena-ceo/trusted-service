@@ -2,8 +2,6 @@
 
 import { Suspense, useEffect, useState, useRef } from "react";
 import { marked } from 'marked';
-// Désactiver les options dépréciées de marked (headerIds et mangle) pour supprimer les warnings
-marked.setOptions({ headerIds: false, mangle: false });
 import DOMPurify from 'dompurify';
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -77,7 +75,8 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
             const rawAck = handleCaseResult.case_handling_response?.acknowledgement_to_requester;
             let ackHtml: string | null = null;
             if (rawAck) {
-                const html = marked.parse(String(rawAck));
+                // Utilisation de marked.parse (synchrone) pour garantir un retour string
+                const html: string = marked.parse(String(rawAck), { async: false }) as string;
                 // parse HTML and add DSFR classes to links
                 try {
                     const parser = new DOMParser();
@@ -171,12 +170,14 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                         {/* Message d'accusé de réception */}
                         {!isLoading && (
                             <div className="fr-mb-3w">
-                                <div
-                                    className="fr-text--sm"
-                                    dangerouslySetInnerHTML={{
-                                        __html: ack || ""
-                                    }}
-                                />
+                                <div className="fr-alert fr-alert--info fr-mb-4w">
+                                    <div
+                                        className="ack-bold"
+                                        dangerouslySetInnerHTML={{
+                                            __html: ack || ""
+                                        }}
+                                    />
+                                </div>
                                 <div className="fr-notice fr-notice--info fr-mb-4w">
                                     <div className="fr-container">
                                         <div className="fr-notice__body">
@@ -213,30 +214,6 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                                 </button>
                             </div>
                         )}
-
-                        {/* field values */}
-                        {/* {!isLoading && vueAgent && fieldValues && (
-                                    <div className="fr-mb-3w">
-                                        <h3 className="fr-h6">{t('handleCase.fieldValues')}</h3>
-                                        <ul className="fr-list">
-                                            {Object.entries(fieldValues).map(([key, value]) => {
-                                                const displayValue = value === null || value === undefined
-                                                    ? 'null'
-                                                    : typeof value === 'boolean'
-                                                        ? value ? 'true' : 'false'
-                                                        : typeof value === 'object'
-                                                            ? JSON.stringify(value)
-                                                            : String(value);
-
-                                                return (
-                                                    <li key={key} className="fr-mb-1w">
-                                                        <strong>{key}:</strong> {displayValue}
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-                                )} */}
 
                         {/* Vue Réponse */}
                         {!isLoading && vueAgentReponse && (
