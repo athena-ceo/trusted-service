@@ -64,6 +64,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
     const [scoringsPositifs, setScoringsPositifs] = useState<any[]>([]);
     const [selectedIntention, setSelectedIntention] = useState<string>('');
     const [fieldInputValues, setFieldInputValues] = useState<Record<string, string>>({});
+    const [statusOptions, setStatusOptions] = useState<Array<{ id: string, label: string }>>([]);
 
     const hasFetchedRef = useRef(false);
 
@@ -98,6 +99,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
             fieldValues.refugie_ou_protege_subsidiaire = analyzeResult.analysis_result.refugie_ou_protege_subsidiaire === true;
             fieldValues.mention_de_risque_sur_l_emploi = analyzeResult.analysis_result.mention_de_risque_sur_l_emploi === true;
             fieldValues.motif_deces = analyzeResult.analysis_result.motif_deces === true;
+            fieldValues.demandeur_d_asile = analyzeResult.analysis_result.demandeur_d_asile === true;
 
             // Stocker les résultats pour la page de confirmation
             localStorage.setItem('analyzeResult', JSON.stringify({
@@ -116,6 +118,19 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
     };
 
     useEffect(() => {
+        const stored = localStorage.getItem('status');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.allowed_values) {
+                    setStatusOptions(parsed.allowed_values);
+                }
+            } catch (e) {
+                // Optionnel : log d’erreur
+                console.warn("Erreur lors de la lecture du localStorage status", e);
+            }
+        }
+
         if (hasFetchedRef.current) return;
         hasFetchedRef.current = true;
 
@@ -143,7 +158,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                 // Sauvegarder la valeur dans fieldValues
                 if (champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') {
                     fieldValues[champ] = convertISOToDate(fieldValue.toString());
-                } else if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') {
+                } else if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces' || champ === 'demandeur_d_asile') {
                     fieldValues[champ] = fieldValue === 'true';
                 } else {
                     fieldValues[champ] = fieldValue;
@@ -173,7 +188,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
 
     const getFieldValue = (champ: string): string => {
         // Si on a déjà une valeur saisie, l'utiliser
-        if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') {
+        if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces' || champ === 'demandeur_d_asile') {
             console.log(`Valeur du champ booléen avant retour: ${fieldInputValues[champ]}`);
         }
         if (fieldInputValues[champ] !== undefined) {
@@ -191,6 +206,8 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
             return fieldValues.refugie_ou_protege_subsidiaire ? 'true' : 'false';
         } else if (champ === 'motif_deces') {
             return fieldValues.motif_deces ? 'true' : 'false';
+        } else if (champ === 'demandeur_d_asile') {
+            return fieldValues.demandeur_d_asile ? 'true' : 'false';
         } else if (fieldValues[champ]) {
             return fieldValues[champ];
         }
@@ -267,17 +284,12 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                             intention.intention_fields.map((champ: string, index: number) => (
                                                                 <div className="fr-input-group fr-text--sm" key={index} style={{ marginLeft: '2em', backgroundColor: '#f6f6f6', padding: '1rem', borderRadius: '4px' }}>
                                                                     <label className="fr-label" htmlFor={champ}>
-                                                                        {champ === 'date_expiration_api' ? t('analysis.form.fields.expirationDate') :
-                                                                            champ === 'date_expiration_recepisse' ? t('analysis.form.fields.recepisseExpirationDate') :
-                                                                                champ === 'date_expiration_titre_sejour' ? t('analysis.form.fields.titreSejourExpirationDate') :
-                                                                                    champ === 'refugie_ou_protege_subsidiaire' ? t('analysis.form.fields.refugee') :
-                                                                                        champ === 'motif_deces' ? t('analysis.form.fields.motifDeces') :
-                                                                                            champ} *
+                                                                        {t('analysis.form.fields.' + champ)} *
                                                                         {(champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') && <span className="fr-hint-text">{t('analysis.form.fields.dateFormat')}</span>}
                                                                     </label>
 
                                                                     {/* Traitement spécial pour le champ booléen */}
-                                                                    {(champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') ? (
+                                                                    {(champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces' || champ === 'demandeur_d_asile') ? (
                                                                         <fieldset className="fr-fieldset">
                                                                             <div className="fr-fieldset__element">
                                                                                 <div className="fr-radio-group">
@@ -312,6 +324,24 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                                 </div>
                                                                             </div>
                                                                         </fieldset>
+                                                                    ) : (champ === 'statut') ? (
+                                                                        /* Champ statut (ex: dropdown) - à personnaliser selon les besoins */
+                                                                        <select
+                                                                            className="fr-select"
+                                                                            aria-describedby={`${champ}-messages`}
+                                                                            id={champ}
+                                                                            name={champ}
+                                                                            value={getFieldValue(champ)}
+                                                                            onChange={(e) => handleFieldChange(champ, e.target.value)}
+                                                                            required
+                                                                        >
+                                                                            <option value="">{t('analysis.form.fields.selectOption')}</option>
+                                                                            {statusOptions.map((option) => (
+                                                                                <option key={option.id} value={option.id}>
+                                                                                    {option.label}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
                                                                     ) : (
                                                                         /* Champs normaux (texte ou date) */
                                                                         <input

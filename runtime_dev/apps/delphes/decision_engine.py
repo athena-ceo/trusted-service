@@ -3,19 +3,21 @@ from typing import Literal
 
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 
-work_basket_api_a_renouveler = "api-a-renouveler"
-work_basket_generique = "generique"
+work_basket_accueil = "accueil"
 work_basket_pref_etrangers_aes_salarie = "pref-etrangers-aes-salarie"
+work_basket_api_a_renouveler = "api-a-renouveler"
+work_basket_asile_priorite = "asile-priorite"
+work_basket_atda = "atda"
+work_basket_generique = "generique"
+work_basket_dublin = "dublin"
 work_basket_reorientation = "reorientation"
 work_basket_sauf_conduits = "sauf-conduits"
-work_basket_asile_priorite = "asile-priorite"
-work_basket_accueil = "accueil"
-work_basket_atda = "atda"
 work_basket_ukraine = "ukraine"
 
-response_template_id_sauf_conduits = "sauf-conduits"
 response_template_id_api_a_renouveler = "api-a-renouveler"
 response_template_id_atda = "atda"
+response_template_id_dublin = "dublin"
+response_template_id_sauf_conduits = "sauf-conduits"
 
 
 def days_between(date_begin: str, date_end: str) -> int:
@@ -74,10 +76,55 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.details.append("ou_en_est_ma_dem_asile_en_cours")
                 output.acknowledgement_to_requester = "#CONTACT_OFPRA"
 
+        def rule_rdv_premiere_demande_titre_sejour(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "rdv_premiere_demande_titre_sejour":
+                output.details.append("rule_rdv_premiere_demande_titre_sejour")
+                text = "**Demande de rendez-vous** - Admission exceptionnelle au séjour"
+                url = "https://www.demarches-simplifiees.fr/commencer/demande-de-rendez-vous-admission-exceptionnelle-au-sejour"
+                output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.priority = "LOW"
+
+        def rule_asile_hebergement_urgence(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "asile_hebergement_urgence":
+                output.details.append("rule_asile_hebergement_urgence")
+                output.handling = "DEFLECTION"
+                output.work_basket = work_basket_reorientation
+                output.priority = "HIGH"
+                if input.field_values.get("demandeur_d_asile"):
+                    text = "Le site de **l’Office Français de l’Immigration et de l’Intégration**"
+                    url = "https://www.ofii.fr/"
+                    output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                else:
+                    output.acknowledgement_to_requester = "#APPEL_115"
+
+        def rule_aide_financiere_demandeur_asile(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "aide_financiere_demandeur_asile":
+                output.details.append("rule_aide_financiere_demandeur_asile")
+                output.handling = "DEFLECTION"
+                output.work_basket = work_basket_reorientation
+                output.priority = "HIGH"
+                if input.field_values.get("demandeur_d_asile"):
+                    text = "Le site de **l’Office Français de l’Immigration et de l’Intégration**"
+                    url = "https://www.ofii.fr/"
+                    output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                else:
+                    output.acknowledgement_to_requester = "#AUCUNE_SOLUTION"
+
+        def rule_duplicata(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "duplicata":
+                output.details.append("rule_duplicata")
+                text = "**Administration numérique pour les étrangers en France**"
+                url = "https://administration-etrangers-en-france.interieur.gouv.fr"
+                output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+
         print(f"------- 📦 Executing package_regles_nationales")
 
         rule_depot_de_demande_d_asile_regle_nationale(input, output)
         rule_ou_en_est_ma_demande_d_asile_en_cours(input, output)
+        rule_rdv_premiere_demande_titre_sejour(input, output)
+        rule_asile_hebergement_urgence(input, output)
+        rule_aide_financiere_demandeur_asile(input, output)
+        rule_duplicata(input, output)
 
 
 
@@ -147,6 +194,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         def rule_rdv_sauf_conduit(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_sauf_conduit":
                 output.details.append("rule_rdv_sauf_conduit")
+                output.response_template_id = response_template_id_sauf_conduits
                 if input.field_values["motif_deces"]:
                     output.priority = "HIGH"
                     output.work_basket = work_basket_asile_priorite
@@ -156,7 +204,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         def rule_rdv_remise_de_titre(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_remise_de_titre":
-                text = "Prendre un rendez-vous - Les services de l'État dans les Yvelines"
+                text = "**Prendre un rendez-vous** - Les services de l'État dans les Yvelines"
                 url = "https://www.yvelines.gouv.fr/Prendre-un-rendez-vous"
                 output.details.append("rule_rdv_remise_de_titre")
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
@@ -170,7 +218,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.notes.append(f"#RECEPISSE_VA_EXPIRER_DANS_X_JOURS,{difference_in_days}")
 
                 if difference_in_days > 30:
-                    text = "Demande de renouvellement de récépissé - Saisine des services de l'Etat par voie électronique - Etrangers"
+                    text = "**Demande de renouvellement de récépissé** - Saisine des services de l'Etat par voie électronique - Etrangers"
                     url = "https://contacts-demarches.interieur.gouv.fr/etrangers/renouvellement-recepisse/"
                     output.priority = "MEDIUM"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
@@ -179,9 +227,9 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                     output.acknowledgement_to_requester = "#ACCUEIL"
                     output.work_basket = work_basket_accueil
 
-        def rdv_renouvellement_titre_sejour_hors_anef(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+        def rule_rdv_renouvellement_titre_sejour_hors_anef(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_renouvellement_titre_sejour_hors_anef":
-                output.details.append("rdv_renouvellement_titre_sejour_hors_anef")
+                output.details.append("rule_rdv_renouvellement_titre_sejour_hors_anef")
 
                 difference_in_days: int = jours_jusqu_a_date(input, "date_expiration_titre_sejour")
                 if difference_in_days <= 0:
@@ -193,11 +241,11 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                     output.notes.append(f"#STATUT, {input.field_values['statut']}")
                     output.notes.append("#RELEVE_DE_L_ANEF")
                     output.priority = "MEDIUM"
-                    text = "Administration numérique pour les étrangers en France"
+                    text = "**Administration numérique pour les étrangers en France**"
                     url = "https://administration-etrangers-en-france.interieur.gouv.fr"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
                 elif difference_in_days > 60:
-                    text = "Prendre un rendez-vous - Les services de l'État dans les Yvelines"
+                    text = "**Prendre un rendez-vous** - Les services de l'État dans les Yvelines"
                     url = "https://www.yvelines.gouv.fr/Prendre-un-rendez-vous"
                     output.priority = "MEDIUM"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
@@ -206,13 +254,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                     output.acknowledgement_to_requester = "#ACCUEIL"
                     output.work_basket = work_basket_accueil
 
-        def rule_rdv_premiere_demande_titre_sejour(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-            if input.intention_id == "rdv_premiere_demande_titre_sejour":
-                output.details.append("rule_rdv_premiere_demande_titre_sejour")
-                text = " Demande de rendez-vous - Admission exceptionnelle au séjour"
-                url = "https://www.demarches-simplifiees.fr/commencer/demande-de-rendez-vous-admission-exceptionnelle-au-sejour"
-                output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
-                output.priority = "LOW"
+        def rule_dem_en_rapport_dublin_en_cours(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "dem_en_rapport_dublin_en_cours":
+                output.details.append("rule_dem_en_rapport_dublin_en_cours")
+                output.acknowledgement_to_requester = "#ACK"
+                output.work_basket = work_basket_dublin
+                output.priority = "HIGH"
+                output.response_template_id = response_template_id_dublin
 
         print(f"------- 📦 Executing package_cas_nominal_78")
 
@@ -226,8 +274,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         rule_rdv_sauf_conduit(input, output)
         rule_rdv_remise_de_titre(input, output)
         rule_rdv_renouvellement_recepisse(input, output)
-        rdv_renouvellement_titre_sejour_hors_anef(input, output)
-        rule_rdv_premiere_demande_titre_sejour(input, output)
+        rule_rdv_renouvellement_titre_sejour_hors_anef(input, output)
+        rule_dem_en_rapport_dublin_en_cours(input, output)
 
 
 

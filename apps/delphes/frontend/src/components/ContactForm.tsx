@@ -97,6 +97,10 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
 
                 setStatuts(statutField.allowed_values);
 
+                // Stocker les résultats pour la page d'analyse
+                localStorage.setItem('status', JSON.stringify({
+                    allowed_values: statutField.allowed_values,
+                }));
 
                 // Réinitialiser les valeurs si l'usager avait déjà rempli le formulaire
                 const stored = localStorage.getItem('accueilEtrangers');
