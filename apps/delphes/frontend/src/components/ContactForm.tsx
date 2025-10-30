@@ -20,8 +20,16 @@ interface ContactFormProps {
 }
 
 // Données pour le préremplissage automatique (pour les tests)
-const noms = ["Smith", "Jordan", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"];
-const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennifer", "Linda", "Elizabeth", "Patricia"];
+const noms = ["Smith", "Jordan", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez",
+    "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White",
+    "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres",
+    "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts"];
+
+const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennifer", "Linda", "Elizabeth", "Patricia", "Barbara",
+    "Susan", "Jessica", "Sarah", "Karen", "Nancy", "Lisa", "Margaret", "Sandra", "Ashley", "Kimberly", "Emily", "Donna", "Michelle",
+    "Dorothy", "Carol", "Amanda", "Melissa", "Deborah", "Stephanie", "Rebecca", "Sharon", "Laura", "Cynthia", "Kathleen", "Amy",
+    "Shirley", "Angela", "Helen", "Anna", "Brenda", "Pamela", "Nicole", "Samantha", "Katherine", "Emma", "Ruth", "Christine"];
+
 const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com"];
 
 export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
@@ -88,6 +96,26 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                 if (!statutField || !statutField.allowed_values) return;
 
                 setStatuts(statutField.allowed_values);
+
+
+                // Réinitialiser les valeurs si l'usager avait déjà rempli le formulaire
+                const stored = localStorage.getItem('accueilEtrangers');
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        if (parsed.fieldValues) {
+                            setFormData((prev) => ({
+                                ...prev,
+                                ...parsed.fieldValues
+                            }));
+                            formData.email = parsed.fieldValues.adresse_mail || "";
+                            formData.acceptation = true; // Forcer l'acceptation des CGU
+                        }
+                    } catch (e) {
+                        // Optionnel : log d’erreur
+                        console.warn("Erreur lors de la lecture du localStorage accueilEtrangers", e);
+                    }
+                }
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des statuts et des arrondissements:', error);
