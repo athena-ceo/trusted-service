@@ -91,8 +91,10 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
             const analyzeResult = await analyzeResponse.json();
             console.log('Résultat de l\'analyse:', analyzeResult);
 
-            // Sauver la date d'expiration de l'API
+            // Sauver les champs supplémentaires retournés par l'API
             fieldValues.date_expiration_api = analyzeResult.analysis_result.date_expiration_api;
+            fieldValues.date_expiration_recepisse = analyzeResult.analysis_result.date_expiration_recepisse;
+            fieldValues.date_expiration_titre_sejour = analyzeResult.analysis_result.date_expiration_titre_sejour;
             fieldValues.refugie_ou_protege_subsidiaire = analyzeResult.analysis_result.refugie_ou_protege_subsidiaire === true;
             fieldValues.mention_de_risque_sur_l_emploi = analyzeResult.analysis_result.mention_de_risque_sur_l_emploi === true;
             fieldValues.motif_deces = analyzeResult.analysis_result.motif_deces === true;
@@ -139,7 +141,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                     return;
                 }
                 // Sauvegarder la valeur dans fieldValues
-                if (champ === 'date_expiration_api') {
+                if (champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') {
                     fieldValues[champ] = convertISOToDate(fieldValue.toString());
                 } else if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces') {
                     fieldValues[champ] = fieldValue === 'true';
@@ -181,6 +183,10 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
         // Sinon, utiliser la valeur par défaut si disponible
         if (champ === 'date_expiration_api' && fieldValues.date_expiration_api) {
             return convertDateToISO(fieldValues.date_expiration_api);
+        } else if (champ === 'date_expiration_recepisse' && fieldValues.date_expiration_recepisse) {
+            return convertDateToISO(fieldValues.date_expiration_recepisse);
+        } else if (champ === 'date_expiration_titre_sejour' && fieldValues.date_expiration_titre_sejour) {
+            return convertDateToISO(fieldValues.date_expiration_titre_sejour);
         } else if (champ === 'refugie_ou_protege_subsidiaire') {
             return fieldValues.refugie_ou_protege_subsidiaire ? 'true' : 'false';
         } else if (champ === 'motif_deces') {
@@ -262,10 +268,12 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                 <div className="fr-input-group fr-text--sm" key={index} style={{ marginLeft: '2em', backgroundColor: '#f6f6f6', padding: '1rem', borderRadius: '4px' }}>
                                                                     <label className="fr-label" htmlFor={champ}>
                                                                         {champ === 'date_expiration_api' ? t('analysis.form.fields.expirationDate') :
-                                                                            champ === 'refugie_ou_protege_subsidiaire' ? t('analysis.form.fields.refugee') :
-                                                                                champ === 'motif_deces' ? t('analysis.form.fields.motifDeces') :
-                                                                                    champ} *
-                                                                        {champ === 'date_expiration_api' && <span className="fr-hint-text">{t('analysis.form.fields.dateFormat')}</span>}
+                                                                            champ === 'date_expiration_recepisse' ? t('analysis.form.fields.recepisseExpirationDate') :
+                                                                                champ === 'date_expiration_titre_sejour' ? t('analysis.form.fields.titreSejourExpirationDate') :
+                                                                                    champ === 'refugie_ou_protege_subsidiaire' ? t('analysis.form.fields.refugee') :
+                                                                                        champ === 'motif_deces' ? t('analysis.form.fields.motifDeces') :
+                                                                                            champ} *
+                                                                        {(champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') && <span className="fr-hint-text">{t('analysis.form.fields.dateFormat')}</span>}
                                                                     </label>
 
                                                                     {/* Traitement spécial pour le champ booléen */}
@@ -311,7 +319,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
                                                                             aria-describedby={`${champ}-messages`}
                                                                             id={champ}
                                                                             name={champ}
-                                                                            type={champ === 'date_expiration_api' ? 'date' : 'text'}
+                                                                            type={(champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') ? 'date' : 'text'}
                                                                             value={getFieldValue(champ)}
                                                                             onChange={(e) => handleFieldChange(champ, e.target.value)}
                                                                             required
