@@ -3,7 +3,7 @@
 services:
   # Frontend Next.js - Serveur unique - Architecture AMD64
   frontend:
-    image: athenadecisionsystems/delphes-frontend:20251031-005553
+    image: athenadecisionsystems/delphes-frontend:20251031-013614
     container_name: delphes-frontend-prod
     env_file:
       - .env.production
