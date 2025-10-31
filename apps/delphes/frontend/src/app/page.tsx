@@ -8,6 +8,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export default function Accueil() {
   const { t } = useLanguage();
 
+  // Fonction appelée lors du clic sur le lien "Accueil des étrangers"
+  const handleAccueilEtrangersClick = () => {
+    console.log('Nettoyage du localStorage à l\'accueil');
+    // Vider le localStorage
+    localStorage.removeItem('analyzeResult');
+    localStorage.removeItem('selectedIntention');
+    localStorage.removeItem('intentionLabel');
+    localStorage.removeItem('fieldValues');
+    localStorage.removeItem('accueilEtrangers');
+    localStorage.removeItem('status');
+  };
+
   return (
     <>
       <Header />
@@ -126,7 +138,12 @@ export default function Accueil() {
                   <div className="fr-tile__body">
                     <div className="fr-tile__content">
                       <h3 className="fr-tile__title">
-                        <Link className="fr-tile__link" href="/accueil-etrangers" title={t('home.procedures.etrangers')}>
+                        <Link
+                          className="fr-tile__link"
+                          href="/accueil-etrangers"
+                          title={t('home.procedures.etrangers')}
+                          onClick={handleAccueilEtrangersClick}
+                        >
                           {t('home.procedures.etrangers')}
                         </Link>
                       </h3>
