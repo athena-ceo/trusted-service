@@ -1,0 +1,62 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run integration tests daily at 2 AM UTC
+    - cron: "0 2 * * *"
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx playwright pytest-playwright
+          playwright install chromium
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose -f docker-compose.dev.yml up -d
+          sleep 20
+
+      - name: Wait for services to be healthy
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:8002/api/health; do sleep 2; done'
+
+      - name: Run integration tests
+        run: |
+          pytest tests/integration/ -v --tb=long
+        env:
+          API_BASE_URL: http://localhost:8002
+          FRONTEND_BASE_URL: http://localhost:3000
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          docker-compose -f docker-compose.dev.yml logs > integration-logs.txt
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-logs
+          path: integration-logs.txt
+
+      - name: Stop services
+        if: always()
+        run: |
+          docker-compose -f docker-compose.dev.yml down -v

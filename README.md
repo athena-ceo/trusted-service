@@ -40,6 +40,7 @@ The pilot project modernizes the reception of foreigners at the prefecture with:
 - [🛠️ Installation](#️-installation)
 - [⚙️ Configuration](#️-configuration)
 - [🔧 API and Backend](#-api-and-backend)
+- [🧪 Testing](#-testing)
 - [📦 Deployment](#-deployment)
 - [🌐 Localization](#-localization)
 - [🔍 Debugging](#-debugging)
@@ -420,6 +421,93 @@ curl -X POST "http://localhost:8002/api/handle_case" \
     },
     "selected_intention": "renouvellement_titre_sejour"
   }'
+```
+
+---
+
+## 🧪 Testing
+
+### Quick Start
+
+```bash
+# Install test dependencies
+pip install -r tests/requirements.txt
+playwright install chromium
+
+# Run smoke tests
+python run_tests.py smoke
+
+# Run all tests
+python run_tests.py all
+```
+
+### Test Types
+
+#### 1. **Smoke Tests** - Critical functionality verification
+```bash
+# Backend API tests
+python run_tests.py smoke --backend
+
+# Frontend UI tests  
+python run_tests.py smoke --frontend
+
+# All smoke tests
+make test-smoke
+```
+
+#### 2. **Unit Tests** - Individual component testing
+```bash
+# Run with coverage
+pytest tests/unit/ --cov=src --cov-report=html
+
+# Quick run
+make test-unit
+```
+
+#### 3. **Integration Tests** - End-to-end workflows
+```bash
+# Full integration suite
+pytest tests/integration/ -v
+
+# Using make
+make test-integration
+```
+
+### Using Make Commands
+
+```bash
+# See all available commands
+make help
+
+# Common commands
+make test              # Run all tests
+make test-smoke        # Smoke tests only
+make lint              # Code quality checks
+make ci-all            # Full CI pipeline locally
+```
+
+### CI/CD Pipeline
+
+The project includes comprehensive GitHub Actions workflows:
+
+- **Backend CI**: Linting, unit tests, smoke tests, security scans
+- **Frontend CI**: ESLint, TypeScript checks, build verification
+- **Integration Tests**: Full workflow testing
+- **Deployment**: Automated deployment to staging/production
+
+### Documentation
+
+- 📖 **[Complete Testing Guide](TESTING.md)** - Detailed documentation
+- 🚀 **[Quick Start Guide](tests/QUICKSTART.md)** - Get started in 30 seconds
+- 📝 **[Test Examples](tests/unit/test_example.py)** - Example test patterns
+
+### Pre-Commit Checklist
+
+```bash
+# Before committing, ensure:
+make lint           # ✓ No linting errors
+make test-unit      # ✓ Unit tests pass
+make test-smoke     # ✓ Smoke tests pass
 ```
 
 ---
