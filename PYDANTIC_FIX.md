@@ -126,7 +126,7 @@ If you prefer not to manage dependencies:
 
 ```bash
 # Use Docker Compose (manages all dependencies)
-docker-compose -f docker-compose.dev.yml up
+docker compose -f docker compose.dev.yml up
 ```
 
 Docker images will have the correct Pydantic version pre-installed.

@@ -170,25 +170,25 @@ build-frontend:
 
 docker-build:
 	@echo "Building Docker images..."
-	docker-compose -f docker-compose.dev.yml build
+	docker compose -f docker-compose.dev.yml build
 
 docker-up:
 	@echo "Starting services with Docker Compose..."
-	docker-compose -f docker-compose.dev.yml up -d
+	docker compose -f docker-compose.dev.yml up -d
 	@echo "Services started:"
 	@echo "  Backend: http://localhost:8002"
 	@echo "  Frontend: http://localhost:3000"
 
 docker-down:
 	@echo "Stopping Docker services..."
-	docker-compose -f docker-compose.dev.yml down
+	docker compose -f docker-compose.dev.yml down
 
 docker-logs:
-	docker-compose -f docker-compose.dev.yml logs -f
+	docker compose -f docker-compose.dev.yml logs -f
 
 docker-clean:
 	@echo "Cleaning Docker resources..."
-	docker-compose -f docker-compose.dev.yml down -v
+	docker compose -f docker-compose.dev.yml down -v
 	docker system prune -f
 
 # ============================================================================

@@ -118,14 +118,14 @@ The deployment workflow (`.github/workflows/deploy.yml`) has been updated to:
 
 ### Option 1: Docker Compose (Recommended)
 
-Use the provided `docker-compose.dev.yml` or `docker-compose.prod.yml`:
+Use the provided `docker compose.dev.yml` or `docker compose.prod.yml`:
 
 ```bash
 # Development
-docker-compose -f docker-compose.dev.yml up --build
+docker compose -f docker compose.dev.yml up --build
 
 # Production
-docker-compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker compose.prod.yml up -d --build
 ```
 
 ### Option 2: Build Individual Images
@@ -335,7 +335,7 @@ docker pull ghcr.io/athena-ceo/trusted-service/frontend:latest
 
 3. **Test locally**:
    ```bash
-   docker-compose -f docker-compose.dev.yml up --build
+   docker compose -f docker compose.dev.yml up --build
    ```
 
 4. **Push changes**:

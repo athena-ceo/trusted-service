@@ -30,7 +30,7 @@ jobs:
 
       - name: Start services with Docker Compose
         run: |
-          docker-compose -f docker-compose.dev.yml up -d
+          docker compose -f docker-compose.dev.yml up -d
           sleep 20
 
       - name: Wait for services to be healthy
@@ -47,7 +47,7 @@ jobs:
       - name: Collect logs on failure
         if: failure()
         run: |
-          docker-compose -f docker-compose.dev.yml logs > integration-logs.txt
+          docker compose -f docker-compose.dev.yml logs > integration-logs.txt
 
       - name: Upload logs
         if: failure()
@@ -59,4 +59,4 @@ jobs:
       - name: Stop services
         if: always()
         run: |
-          docker-compose -f docker-compose.dev.yml down -v
+          docker compose -f docker-compose.dev.yml down -v
