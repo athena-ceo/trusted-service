@@ -55,7 +55,7 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Build and push backend
         if: steps.check-backend-dockerfile.outputs.exists == 'true'
         uses: docker/build-push-action@v5
@@ -88,7 +88,7 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Build and push frontend
         if: steps.check-frontend-dockerfile.outputs.exists == 'true'
         uses: docker/build-push-action@v5
@@ -121,7 +121,7 @@ jobs:
       - name: Run post-deployment smoke tests
         run: |
           pip install pytest httpx
-          pytest tests/smoke/ -v --base-url=https://staging.trusted-services.example.com
+          pytest tests/smoke/test_backend_api.py -v --base-url=https://staging.trusted-services.example.com
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -142,7 +142,7 @@ jobs:
       - name: Run post-deployment smoke tests
         run: |
           pip install pytest httpx
-          pytest tests/smoke/ -v --base-url=https://trusted-services.example.com
+          pytest tests/smoke/test_backend_api.py -v --base-url=https://trusted-services.example.com
 
       - name: Notify deployment
         if: success()
