@@ -1,0 +1,79 @@
+# Docker ignore file for Trusted Services
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+tsvenv/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+test-results/
+playwright-report/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation (not needed in container)
+*.md
+docs/
+
+# Development files
+Makefile
+docker-compose*.yml
+
+# Cache and temporary files
+runtime/cache/*
+*.tmp
+*.temp
+.tmp/
+
+# Test files (optional - uncomment if you don't want tests in image)
+# tests/
+# **/test_*.py
+# **/*_test.py
+
+# CI/CD
+.github/
+
+# Misc
+LICENSE
+

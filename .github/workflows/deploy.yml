@@ -47,7 +47,17 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
 
+      - name: Check if Dockerfile.backend exists
+        id: check-backend-dockerfile
+        run: |
+          if [ -f "Dockerfile.backend" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Build and push backend
+        if: steps.check-backend-dockerfile.outputs.exists == 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -70,7 +80,17 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
 
+      - name: Check if frontend Dockerfile exists
+        id: check-frontend-dockerfile
+        run: |
+          if [ -f "apps/delphes/frontend/Dockerfile" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Build and push frontend
+        if: steps.check-frontend-dockerfile.outputs.exists == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./apps/delphes/frontend
