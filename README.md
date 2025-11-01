@@ -1,4 +1,4 @@
-# Trusted Services - Plateforme IA pour Services Publics
+# Trusted Services - AI Platform for Public Services
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.4-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.1.0-blue)](https://reactjs.org/)
@@ -7,85 +7,85 @@
 [![DSFR](https://img.shields.io/badge/DSFR-1.14.2-blue)](https://www.systeme-de-design.gouv.fr/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)](https://typescriptlang.org/)
 
-> 🏛️ **Plateforme intelligente pour l'automatisation et l'amélioration des services publics français**
+> 🏛️ **Intelligent platform for automation and improvement of French public services**
 
-Une solution complète combinant intelligence artificielle et design system gouvernemental pour moderniser l'accueil et le traitement des demandes citoyennes.
+A comprehensive solution combining artificial intelligence and government design system to modernize citizen reception and request processing.
 
-## 🚀 Aperçu du Projet
+## 🚀 Project Overview
 
-**Trusted Services** est une plateforme innovante qui transforme l'expérience des services publics en intégrant :
+**Trusted Services** is an innovative platform that transforms the public services experience by integrating:
 
-- **🤖 IA conversationnelle** avec Watson Orchestrate pour l'assistance citoyenne
-- **📋 Analyse automatique** des demandes avec détection d'intentions
-- **🎨 Interface moderne** conforme DSFR (Design System de l'État)
-- **⚡ Performance optimisée** avec Next.js 15 et React 19
-- **♿ Accessibilité RGAA** respectant les standards gouvernementaux
+- **🤖 Conversational AI** with Watson Orchestrate for citizen assistance
+- **📋 Automatic analysis** of requests with intent detection
+- **🎨 Modern interface** compliant with DSFR (French Government Design System)
+- **⚡ Optimized performance** with Next.js 15 and React 19
+- **♿ RGAA accessibility** respecting government standards
 
-### 🎯 Cas d'usage : Préfecture des Yvelines (Delphes)
+### 🎯 Use Case: Yvelines Prefecture (Delphes)
 
-Le projet pilote modernise l'accueil des étrangers en préfecture avec :
-- Formulaire intelligent de prise de rendez-vous
-- Traitement automatique des demandes complexes
-- Interface responsive multilingue (FR/EN)
-- Intégration complète avec les systèmes existants
+The pilot project modernizes the reception of foreigners at the prefecture with:
+- Intelligent appointment booking form
+- Automatic processing of complex requests
+- Responsive multilingual interface (FR/EN)
+- Complete integration with existing systems
 
 ---
 
-## 📋 Table des Matières
+## 📋 Table of Contents
 
-- [🚀 Démarrage Rapide](#-démarrage-rapide)
+- [🚀 Quick Start](#-quick-start)
 - [🏗️ Architecture](#️-architecture)
-- [💻 Frontend Next.js](#-frontend-nextjs)
-- [🤖 Intégration IA](#-intégration-ia)
+- [💻 Next.js Frontend](#-nextjs-frontend)
+- [🤖 AI Integration](#-ai-integration)
 - [🛠️ Installation](#️-installation)
 - [⚙️ Configuration](#️-configuration)
-- [🔧 API et Backend](#-api-et-backend)
-- [📦 Déploiement](#-déploiement)
-- [🌐 Localisation](#-localisation)
-- [🔍 Débogage](#-débogage)
+- [🔧 API and Backend](#-api-and-backend)
+- [📦 Deployment](#-deployment)
+- [🌐 Localization](#-localization)
+- [🔍 Debugging](#-debugging)
 - [📚 Documentation](#-documentation)
 
 ---
 
-## 🚀 Démarrage Rapide
+## 🚀 Quick Start
 
-### Mode Développement Complet
+### Full Development Mode
 
 ```bash
-# 1. Cloner et installer
+# 1. Clone and install
 git clone <repository-url>
 cd trusted-service
 
-# 2. Backend Python
+# 2. Python Backend
 python -m venv .venv
-source .venv/bin/activate  # ou .venv\Scripts\activate sur Windows
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
 
-# 3. Frontend Next.js
+# 3. Next.js Frontend
 cd apps/delphes/frontend
 npm install
 
-# 4. Lancer en parallèle
-# Terminal 1 - API Backend
+# 4. Launch in parallel
+# Terminal 1 - Backend API
 python launcher_api.py ./runtime
 
-# Terminal 2 - Frontend Next.js
+# Terminal 2 - Next.js Frontend
 cd apps/delphes/frontend
 npm run dev
 ```
 
-🌐 **Accès** :
-- Frontend : http://localhost:3000
-- API Backend : http://localhost:8002
-- Documentation API : http://localhost:8002/docs
+🌐 **Access**:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8002
+- API Documentation: http://localhost:8002/docs
 
-### Mode Demo Streamlit (Legacy)
+### Streamlit Demo Mode (Legacy)
 
 ```bash
-# Demo intégrée (client + serveur)
+# Integrated demo (client + server)
 streamlit run launcher_testclient.py ./runtime direct
 
-# Ou mode API REST
+# Or REST API mode
 python launcher_api.py ./runtime
 streamlit run launcher_testclient.py ./runtime rest
 ```
@@ -121,83 +121,83 @@ graph TB
     F --> J
 ```
 
-### Structure du Projet
+### Project Structure
 
 ```
 trusted-service/
-├── 🎨 apps/delphes/frontend/     # Frontend Next.js moderne
-│   ├── src/app/                  # Pages et composants React
-│   ├── public/                   # Assets statiques
-│   └── package.json              # Dépendances Node.js
-├── 🔧 src/                       # Backend Python
-│   ├── backend/                  # API FastAPI
-│   ├── client/                   # Clients API
-│   ├── common/                   # Utilitaires partagés
-│   └── text_analysis/            # Moteur IA
-├── 🗃️ runtime/                   # Configuration et données
-│   ├── config_*.yaml            # Configurations serveur
-│   ├── apps/                     # Apps métier (AISA, Delphes...)
-│   └── cache/                    # Cache des analyses
-└── 📋 requirements.txt           # Dépendances Python
+├── 🎨 apps/delphes/frontend/     # Modern Next.js frontend
+│   ├── src/app/                  # React pages and components
+│   ├── public/                   # Static assets
+│   └── package.json              # Node.js dependencies
+├── 🔧 src/                       # Python backend
+│   ├── backend/                  # FastAPI API
+│   ├── client/                   # API clients
+│   ├── common/                   # Shared utilities
+│   └── text_analysis/            # AI engine
+├── 🗃️ runtime/                   # Configuration and data
+│   ├── config_*.yaml            # Server configurations
+│   ├── apps/                     # Business apps (AISA, Delphes...)
+│   └── cache/                    # Analysis cache
+└── 📋 requirements.txt           # Python dependencies
 ```
 ---
 
-## 💻 Frontend Next.js
+## 💻 Next.js Frontend
 
-### 🎨 Interface Moderne DSFR
+### 🎨 Modern DSFR Interface
 
-Le frontend Next.js offre une expérience utilisateur moderne tout en respectant les standards gouvernementaux français.
+The Next.js frontend offers a modern user experience while respecting French government standards.
 
 #### 🔧 Technologies
 
-- **Framework** : Next.js 15.5.4 avec Turbopack
-- **UI Library** : React 19.1.0 avec TypeScript 5.0+
-- **Design System** : DSFR 1.14.2 (@gouvfr/dsfr)
-- **Composants** : @codegouvfr/react-dsfr 1.28.0
-- **HTTP Client** : Axios 1.12.2 avec SWR 2.3.6
-- **Styles** : TailwindCSS 4.0+ intégré
+- **Framework**: Next.js 15.5.4 with Turbopack
+- **UI Library**: React 19.1.0 with TypeScript 5.0+
+- **Design System**: DSFR 1.14.2 (@gouvfr/dsfr)
+- **Components**: @codegouvfr/react-dsfr 1.28.0
+- **HTTP Client**: Axios 1.12.2 with SWR 2.3.6
+- **Styles**: TailwindCSS 4.0+ integrated
 
-#### 🚀 Fonctionnalités Clés
+#### 🚀 Key Features
 
-- ✅ **Formulaire intelligent** avec validation temps réel
-- ✅ **Analyse IA des demandes** avec détection d'intentions automatique
-- ✅ **Champs conditionnels** qui s'adaptent selon le type de demande
-- ✅ **Conversion de dates** française (JJ/MM/AAAA) ↔ ISO (AAAA-MM-JJ)
-- ✅ **Interface responsive** optimisée mobile/desktop
-- ✅ **Watson Orchestrate** intégré pour assistance IA
-- ✅ **Accessibilité RGAA** conforme standards gouvernementaux
-- ✅ **Gestion d'état** localStorage pour flux multi-pages
-- ✅ **API Proxy** transparent vers backend Python
+- ✅ **Intelligent form** with real-time validation
+- ✅ **AI request analysis** with automatic intent detection
+- ✅ **Conditional fields** that adapt according to request type
+- ✅ **Date conversion** French (DD/MM/YYYY) ↔ ISO (YYYY-MM-DD)
+- ✅ **Responsive interface** optimized for mobile/desktop
+- ✅ **Watson Orchestrate** integrated for AI assistance
+- ✅ **RGAA accessibility** compliant with government standards
+- ✅ **State management** localStorage for multi-page flows
+- ✅ **API Proxy** transparent to Python backend
 
-#### 📁 Structure Frontend
+#### 📁 Frontend Structure
 
 ```
 apps/delphes/frontend/src/
 ├── app/
-│   ├── page.tsx                    # 🏠 Page d'accueil avec redirection
+│   ├── page.tsx                    # 🏠 Home page with redirect
 │   ├── accueil-etrangers/
-│   │   └── page.tsx               # 📝 Formulaire de contact principal
+│   │   └── page.tsx               # 📝 Main contact form
 │   ├── analysis/
-│   │   └── page.tsx               # 🤖 Page d'analyse IA avec champs dynamiques
+│   │   └── page.tsx               # 🤖 AI analysis page with dynamic fields
 │   ├── handle-case/
-│   │   └── page.tsx               # 💼 Traitement du dossier + Watson Orchestrate
+│   │   └── page.tsx               # 💼 Case processing + Watson Orchestrate
 │   ├── confirmation/
-│   │   └── page.tsx               # ✅ Page de confirmation
+│   │   └── page.tsx               # ✅ Confirmation page
 │   ├── api/[...path]/
-│   │   └── route.ts               # 🔗 Proxy API vers backend Python
-│   ├── globals.css                # 🎨 Styles globaux DSFR
-│   └── layout.tsx                 # 📐 Layout principal de l'application
+│   │   └── route.ts               # 🔗 API proxy to Python backend
+│   ├── globals.css                # 🎨 Global DSFR styles
+│   └── layout.tsx                 # 📐 Main application layout
 ├── components/
-│   ├── ContactForm.tsx            # 📋 Composant formulaire réutilisable
-│   ├── Header.tsx                 # 🎯 En-tête gouvernemental DSFR
-│   ├── Footer.tsx                 # 📄 Pied de page avec liens utiles
-│   └── Spinner.css               # ⏳ Animation de chargement
+│   ├── ContactForm.tsx            # 📋 Reusable form component
+│   ├── Header.tsx                 # 🎯 Government DSFR header
+│   ├── Footer.tsx                 # 📄 Footer with useful links
+│   └── Spinner.css               # ⏳ Loading animation
 └── utils/
-    ├── convertDateToISO.ts        # 🗓️ Conversion date FR → ISO
-    └── convertISOToDate.ts        # 🗓️ Conversion date ISO → FR
+    ├── convertDateToISO.ts        # 🗓️ Date conversion FR → ISO
+    └── convertISOToDate.ts        # 🗓️ Date conversion ISO → FR
 ```
 
-#### 🔄 Flux de Données
+#### 🔄 Data Flow
 
 ```mermaid
 sequenceDiagram
@@ -208,33 +208,33 @@ sequenceDiagram
     participant Watson as Watson Orchestrate
     participant HandleCase as Handle Case
 
-    User->>Form: Remplit le formulaire
+    User->>Form: Fills out form
     Form->>Analysis: localStorage + navigation
     Analysis->>API: POST /analyze_request
-    API-->>Analysis: intentions + champs requis
-    User->>Analysis: Sélectionne intention + remplit champs
+    API-->>Analysis: intentions + required fields
+    User->>Analysis: Selects intention + fills fields
     Analysis->>HandleCase: localStorage + navigation
     HandleCase->>API: POST /handle_case
-    HandleCase->>Watson: Charge assistant IA
-    Watson-->>User: Assistance conversationnelle
+    HandleCase->>Watson: Loads AI assistant
+    Watson-->>User: Conversational assistance
 ```
 
 ---
 
-## 🤖 Intégration IA
+## 🤖 AI Integration
 
 ### Watson Orchestrate
 
-Le chatbot Watson Orchestrate est intégré dans la page `handle-case` pour fournir une assistance IA contextuelle.
+The Watson Orchestrate chatbot is integrated in the `handle-case` page to provide contextual AI assistance.
 
 #### Configuration
 
 ```typescript
-// Configuration Watson dans handle-case/page.tsx
+// Watson configuration in handle-case/page.tsx
 const wxOConfiguration = {
     orchestrationID: "0781f29958be4f588e177e1250f85e99_b50c4815-0abc-4da6-a4e0-c6371abd1ebc",
     hostURL: "https://us-south.watson-orchestrate.cloud.ibm.com",
-    rootElementID: "watson-chat-container", // ⚠️ Évite conflit avec React
+    rootElementID: "watson-chat-container", // ⚠️ Avoids conflict with React
     deploymentPlatform: "ibmcloud",
     chatOptions: {
         agentId: "8d6b5494-1d0e-4170-aad5-a6dba46337f7"
@@ -242,72 +242,72 @@ const wxOConfiguration = {
 };
 ```
 
-#### Fonctionnalités IA
+#### AI Features
 
-- **🎯 Détection d'intentions** : Classification automatique des demandes
-- **📝 Champs dynamiques** : Génération de formulaires adaptatifs
-- **🗓️ Parsing de dates** : Reconnaissance intelligente de formats temporels
-- **✅ Validation contextuelle** : Vérification des données selon l'intention
-- **💬 Assistance conversationnelle** : Support utilisateur en temps réel
+- **🎯 Intent detection**: Automatic classification of requests
+- **📝 Dynamic fields**: Adaptive form generation
+- **🗓️ Date parsing**: Intelligent recognition of temporal formats
+- **✅ Contextual validation**: Data verification according to intent
+- **💬 Conversational assistance**: Real-time user support
 
 ### Backend Text Analysis
 
 ```python
-# Moteur d'analyse dans src/text_analysis/
-├── llm_ollama.py          # Interface Ollama locale
-├── llm_openai.py          # Interface OpenAI/Azure
-├── base_models.py         # Modèles de données
-└── text_analysis_localization.py  # Support multilingue
+# Analysis engine in src/text_analysis/
+├── llm_ollama.py          # Local Ollama interface
+├── llm_openai.py          # OpenAI/Azure interface
+├── base_models.py         # Data models
+└── text_analysis_localization.py  # Multilingual support
 ```
 
 ---
 
 ## 🛠️ Installation
 
-### Prérequis
+### Prerequisites
 
-- **Python** 3.11+ avec pip
-- **Node.js** 18+ avec npm
-- **Git** pour le versioning
+- **Python** 3.11+ with pip
+- **Node.js** 18+ with npm
+- **Git** for versioning
 
-### Installation Backend
+### Backend Installation
 
 ```bash
-# Environnement virtuel Python
+# Python virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Linux/macOS
 # .venv\Scripts\activate   # Windows
 
-# Dépendances Python
+# Python dependencies
 pip install -r requirements.txt
 
-# Vérification
+# Verification
 python -c "import fastapi, uvicorn; print('✅ Backend ready')"
 ```
 
-### Installation Frontend
+### Frontend Installation
 
 ```bash
-# Navigation vers frontend
+# Navigate to frontend
 cd apps/delphes/frontend
 
-# Installation dépendances
+# Install dependencies
 npm install
 
-# Vérification
+# Verification
 npm run build
 echo "✅ Frontend ready"
 ```
 
-### Variables d'Environnement
+### Environment Variables
 
-Créer `.env.local` dans `apps/delphes/frontend/` :
+Create `.env.local` in `apps/delphes/frontend/`:
 
 ```env
 # API Configuration
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8002
 
-# Watson Orchestrate (optionnel)
+# Watson Orchestrate (optional)
 NEXT_PUBLIC_WATSON_ORCHESTRATION_ID=your_orchestration_id
 NEXT_PUBLIC_WATSON_HOST_URL=https://us-south.watson-orchestrate.cloud.ibm.com
 
@@ -319,9 +319,9 @@ NODE_ENV=development
 
 ## ⚙️ Configuration
 
-### Configuration Runtime
+### Runtime Configuration
 
-Le système utilise des fichiers YAML pour la configuration :
+The system uses YAML files for configuration:
 
 ```yaml
 # runtime/config_server.yaml
@@ -340,65 +340,65 @@ llm_providers:
     model: "llama2"
 ```
 
-### Configuration Applications
+### Application Configuration
 
-Chaque application a sa configuration Excel dans `runtime/apps/` :
+Each application has its Excel configuration in `runtime/apps/`:
 
 ```
 runtime/apps/
 ├── delphes/
-│   ├── delphes.xlsx        # Configuration métier
-│   ├── data_enrichment.py  # Enrichissement données
-│   └── decision_engine.py  # Moteur de décision
+│   ├── delphes.xlsx        # Business configuration
+│   ├── data_enrichment.py  # Data enrichment
+│   └── decision_engine.py  # Decision engine
 ├── AISA/
-│   └── AISA.xlsx          # Application AISA
+│   └── AISA.xlsx          # AISA application
 └── conneXion/
-    └── conneXion.xlsx     # Application ConneXion
+    └── conneXion.xlsx     # ConneXion application
 ```
 
-### Structure Excel
+### Excel Structure
 
-Les fichiers Excel définissent :
-- **Intentions** : Types de demandes supportées
-- **Champs** : Données requises par intention
-- **Localisations** : Traductions FR/EN
-- **Workflows** : Processus de traitement
-- **Emails** : Templates de notification
+Excel files define:
+- **Intentions**: Supported request types
+- **Fields**: Required data per intention
+- **Localizations**: FR/EN translations
+- **Workflows**: Processing flows
+- **Emails**: Notification templates
 
 ---
 
-## 🔧 API et Backend
+## 🔧 API and Backend
 
-### Architecture FastAPI
+### FastAPI Architecture
 
 ```python
-# src/backend/app.py - Point d'entrée principal
+# src/backend/app.py - Main entry point
 from fastapi import FastAPI
 from src.backend.rest import router
 
 app = FastAPI(
     title="Trusted Services API",
-    description="API pour services publics intelligents",
+    description="API for intelligent public services",
     version="1.0.0"
 )
 
 app.include_router(router, prefix="/api")
 ```
 
-### Endpoints Principaux
+### Main Endpoints
 
-| Endpoint | Méthode | Description |
-|----------|---------|-------------|
-| `/api/analyze_request` | POST | Analyse IA d'une demande |
-| `/api/handle_case` | POST | Traitement complet d'un dossier |
-| `/api/get_intentions` | GET | Liste des intentions disponibles |
-| `/api/health` | GET | Statut de l'API |
-| `/docs` | GET | Documentation Swagger |
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/analyze_request` | POST | AI analysis of a request |
+| `/api/handle_case` | POST | Complete case processing |
+| `/api/get_intentions` | GET | List of available intentions |
+| `/api/health` | GET | API status |
+| `/docs` | GET | Swagger documentation |
 
-### Exemples d'utilisation
+### Usage Examples
 
 ```bash
-# Analyse d'une demande
+# Request analysis
 curl -X POST "http://localhost:8002/api/analyze_request" \
   -H "Content-Type: application/json" \
   -d '{
@@ -407,7 +407,7 @@ curl -X POST "http://localhost:8002/api/analyze_request" \
     "message": "Je souhaite renouveler mon titre de séjour"
   }'
 
-# Traitement d'un dossier
+# Case processing
 curl -X POST "http://localhost:8002/api/handle_case" \
   -H "Content-Type: application/json" \
   -d '{
@@ -424,9 +424,9 @@ curl -X POST "http://localhost:8002/api/handle_case" \
 
 ---
 
-## 📦 Déploiement
+## 📦 Deployment
 
-### Mode Production
+### Production Mode
 
 ```bash
 # Build Frontend
@@ -441,7 +441,7 @@ uvicorn src.backend.app:app \
   --workers 4
 ```
 
-### Docker (Recommandé)
+### Docker (Recommended)
 
 ```dockerfile
 # Dockerfile.frontend
@@ -515,7 +515,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    # Assets statiques
+    # Static assets
     location /static/ {
         alias /var/www/trusted-services/static/;
         expires 1y;
@@ -526,47 +526,47 @@ server {
 
 ---
 
-## 🌐 Localisation
+## 🌐 Localization
 
-### Support Multilingue
+### Multilingual Support
 
-Le système supporte actuellement :
-- 🇫🇷 **Français** (`fr`) - Langue principale
-- 🇬🇧 **Anglais** (`en`) - Traduction complète
+The system currently supports:
+- 🇫🇷 **French** (`fr`) - Main language
+- 🇬🇧 **English** (`en`) - Complete translation
 
-### Ajouter une Nouvelle Langue
+### Adding a New Language
 
-Pour ajouter le support d'une nouvelle langue (ex: `es` pour l'espagnol) :
+To add support for a new language (e.g., `es` for Spanish):
 
-#### 1. Mise à jour du code Python
+#### 1. Update Python Code
 
 ```python
 # src/common/configuration.py
 class SupportedLocale(str, Enum):
     fr = "fr"
     en = "en"
-    es = "es"  # ← Ajouter ici
+    es = "es"  # ← Add here
 
 # src/backend/text_analysis/text_analysis_localization.py
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
 # Add here support for new languages
-SUPPORTED_LOCALES = ["fr", "en", "es"]  # ← Ajouter ici
+SUPPORTED_LOCALES = ["fr", "en", "es"]  # ← Add here
 ```
 
-#### 2. Configuration Excel
+#### 2. Excel Configuration
 
-Dans `runtime/apps/delphes/delphes.xlsx` :
-- Dupliquer les colonnes `*_fr` en `*_es`
-- Traduire le contenu avec un LLM
-- Conserver les noms officiels sans traduction
+In `runtime/apps/delphes/delphes.xlsx`:
+- Duplicate `*_fr` columns to `*_es`
+- Translate content with an LLM
+- Keep official names without translation
 
-#### 3. Frontend Next.js
+#### 3. Next.js Frontend
 
 ```typescript
 // src/app/layout.tsx
-const locales = ['fr', 'en', 'es'];  // ← Ajouter ici
+const locales = ['fr', 'en', 'es'];  // ← Add here
 
-// Créer les fichiers de traduction
+// Create translation files
 // locales/es.json
 {
   "contact_form": {
@@ -576,52 +576,52 @@ const locales = ['fr', 'en', 'es'];  // ← Ajouter ici
 }
 ```
 
-### Bonnes Pratiques
+### Best Practices
 
-- ✅ Utiliser un LLM pour les traductions avec contexte métier
-- ✅ Conserver les termes officiels (ex: "AES: admission exceptionnelle au séjour")
-- ✅ Tester chaque langue sur tous les parcours utilisateur
-- ✅ Éviter les underscores dans les codes langue
+- ✅ Use an LLM for translations with business context
+- ✅ Keep official terms (e.g., "AES: admission exceptionnelle au séjour")
+- ✅ Test each language on all user journeys
+- ✅ Avoid underscores in language codes
 
 ---
 
-## 🔍 Débogage
+## 🔍 Debugging
 
-### Logs et Monitoring
+### Logs and Monitoring
 
 ```bash
-# Logs Backend détaillés
+# Detailed Backend logs
 python launcher_api.py ./runtime --log-level debug
 
-# Logs Frontend Next.js
+# Next.js Frontend logs
 cd apps/delphes/frontend
-npm run dev  # Mode verbose automatique
+npm run dev  # Verbose mode automatic
 
-# Logs Watson Orchestrate
-# Vérifier la console navigateur pour les erreurs de script
+# Watson Orchestrate logs
+# Check browser console for script errors
 ```
 
-### Problèmes Courants
+### Common Issues
 
-#### 🚨 Erreur "Minified React error #321"
+#### 🚨 Error "Minified React error #321"
 
-**Cause** : Conflit d'ID entre React et Watson Orchestrate
+**Cause**: ID conflict between React and Watson Orchestrate
 
-**Solution** : Vérifier que `rootElementID` dans Watson config utilise un ID unique (pas "root")
+**Solution**: Verify that `rootElementID` in Watson config uses a unique ID (not "root")
 
 ```typescript
 // ❌ Incorrect
-rootElementID: "root"  // Conflit avec React
+rootElementID: "root"  // Conflicts with React
 
 // ✅ Correct  
 rootElementID: "watson-chat-container"
 ```
 
-#### 🚨 CORS Error sur API
+#### 🚨 CORS Error on API
 
-**Cause** : Configuration CORS manquante
+**Cause**: Missing CORS configuration
 
-**Solution** : Vérifier la configuration FastAPI
+**Solution**: Check FastAPI configuration
 
 ```python
 # src/backend/app.py
@@ -635,14 +635,14 @@ app.add_middleware(
 )
 ```
 
-#### 🚨 Champs de formulaire non remplis
+#### 🚨 Form fields not populated
 
-**Cause** : Mismatch entre noms de champs backend/frontend
+**Cause**: Mismatch between backend/frontend field names
 
-**Solution** : Vérifier la correspondance dans `ContactForm.tsx`
+**Solution**: Check correspondence in `ContactForm.tsx`
 
 ```typescript
-// Mapping des noms de champs
+// Field name mapping
 const fieldMapping = {
   'date_naissance': 'dateNaissance',
   'situation_familiale': 'situationFamiliale',
@@ -650,33 +650,33 @@ const fieldMapping = {
 };
 ```
 
-#### 🚨 Watson Orchestrate ne se charge pas
+#### 🚨 Watson Orchestrate doesn't load
 
-**Causes possibles** :
-- Script bloqué par politique CSP
-- ID container introuvable
-- Configuration incorrecte
+**Possible causes**:
+- Script blocked by CSP policy
+- Container ID not found
+- Incorrect configuration
 
-**Diagnostic** :
+**Diagnosis**:
 ```javascript
-// Console navigateur
+// Browser console
 console.log(window.wxOConfiguration);
 console.log(document.getElementById('watson-chat-container'));
 ```
 
-### Outils de Debug
+### Debug Tools
 
 ```bash
-# Vérification de l'état des services
+# Check service status
 curl http://localhost:8002/api/health
 curl http://localhost:3000/api/health
 
-# Test des endpoints API
+# Test API endpoints
 curl -X POST http://localhost:8002/api/analyze_request \
   -H "Content-Type: application/json" \
   -d '{"app_name":"delphes","locale":"fr","message":"test"}'
 
-# Validation des configurations
+# Validate configurations
 python -c "
 import yaml
 with open('runtime/config_server.yaml') as f:
@@ -688,93 +688,93 @@ with open('runtime/config_server.yaml') as f:
 
 ## 📚 Documentation
 
-### Ressources Supplémentaires
+### Additional Resources
 
-- **[Frontend README](apps/delphes/frontend/README.md)** - Documentation Next.js spécifique
-- **[Delphes README](apps/delphes/README.md)** - Documentation application métier
-- **[ODM README](src/backend/decision/decision_odm/README.md)** - Moteur de décision
+- **[Frontend README](apps/delphes/frontend/README.md)** - Specific Next.js documentation
+- **[Delphes README](apps/delphes/README.md)** - Business application documentation
+- **[ODM README](src/backend/decision/decision_odm/README.md)** - Decision engine
 
-### Standards et Références
+### Standards and References
 
-- **[DSFR Documentation](https://www.systeme-de-design.gouv.fr/)** - Design System gouvernemental
-- **[RGAA Guidelines](https://accessibilite.numerique.gouv.fr/)** - Accessibilité numérique
-- **[Next.js Docs](https://nextjs.org/docs)** - Framework React
-- **[FastAPI Docs](https://fastapi.tiangolo.com/)** - API Python moderne
+- **[DSFR Documentation](https://www.systeme-de-design.gouv.fr/)** - Government design system
+- **[RGAA Guidelines](https://accessibilite.numerique.gouv.fr/)** - Digital accessibility
+- **[Next.js Docs](https://nextjs.org/docs)** - React framework
+- **[FastAPI Docs](https://fastapi.tiangolo.com/)** - Modern Python API
 
-### APIs Externes
+### External APIs
 
-- **[Watson Orchestrate](https://www.ibm.com/cloud/watson-orchestrate)** - Plateforme IA IBM
-- **[OpenAI API](https://platform.openai.com/docs)** - Modèles de langage
-- **[Ollama](https://ollama.ai/)** - LLM local
+- **[Watson Orchestrate](https://www.ibm.com/cloud/watson-orchestrate)** - IBM AI platform
+- **[OpenAI API](https://platform.openai.com/docs)** - Language models
+- **[Ollama](https://ollama.ai/)** - Local LLM
 
 ---
 
-## 👥 Contribution
+## 👥 Contributing
 
-### Workflow Git
+### Git Workflow
 
 ```bash
-# Créer une branche feature
-git checkout -b feature/nouvelle-fonctionnalite
+# Create feature branch
+git checkout -b feature/new-feature
 
-# Développement avec commits atomiques
+# Development with atomic commits
 git add .
-git commit -m "feat: ajouter fonction X"
+git commit -m "feat: add function X"
 
-# Push et Pull Request
-git push origin feature/nouvelle-fonctionnalite
-# Créer PR sur GitHub
+# Push and Pull Request
+git push origin feature/new-feature
+# Create PR on GitHub
 ```
 
-### Standards de Code
+### Code Standards
 
-- **Python** : Black, isort, mypy
-- **TypeScript** : ESLint, Prettier
-- **Commits** : Convention [Conventional Commits](https://conventionalcommits.org/)
+- **Python**: Black, isort, mypy
+- **TypeScript**: ESLint, Prettier
+- **Commits**: [Conventional Commits](https://conventionalcommits.org/) convention
 
 ### Tests
 
 ```bash
-# Tests Backend
+# Backend tests
 python -m pytest src/tests/
 
-# Tests Frontend  
+# Frontend tests  
 cd apps/delphes/frontend
 npm run test
 
-# Tests E2E
+# E2E tests
 npm run test:e2e
 ```
 
 ---
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est sous licence propriétaire Athena. Tous droits réservés.
+This project is under Athena proprietary license. All rights reserved.
 
 ---
 
 ## 📞 Support
 
-Pour toute question ou problème :
+For any questions or issues:
 
-1. **Issues GitHub** : Créer un ticket détaillé
-2. **Documentation** : Consulter les README spécifiques
-3. **Logs** : Joindre les logs d'erreur complets
-4. **Contact** : équipe-dev@athena.fr
+1. **GitHub Issues**: Create a detailed ticket
+2. **Documentation**: Consult specific READMEs
+3. **Logs**: Attach complete error logs
+4. **Contact**: équipe-dev@athena.fr
 
 ---
 
-*Dernière mise à jour : 3 octobre 2025*
+*Last updated: October 3, 2025*
 
-#### Avantages vs ancien site statique
-- **Maintenabilité** : Code modulaire TypeScript vs HTML mélangé
-- **Performance** : Rendu optimisé Next.js vs pages statiques lourdes  
-- **UX** : Validation temps réel vs validation côté serveur uniquement
-- **Évolutivité** : Composants réutilisables vs code dupliqué
-- **Tests** : Structure testable vs difficilement testable
+#### Advantages vs old static site
+- **Maintainability**: Modular TypeScript code vs mixed HTML
+- **Performance**: Optimized Next.js rendering vs heavy static pages  
+- **UX**: Real-time validation vs server-side validation only
+- **Scalability**: Reusable components vs duplicated code
+- **Tests**: Testable structure vs difficult to test
 
-Pour plus de détails, consultez le [README frontend](apps/delphes/frontend/README.md).
+For more details, see the [frontend README](apps/delphes/frontend/README.md).
 
 ## What is Trusted Services?
 
@@ -787,7 +787,7 @@ Trusted Services app follow a well defined flow:
 - The requester is describing his situation and need in natural language
 - A **LLM-based text analyzer** is determining the intent among a list of predefined ones, and is extracting structured
   information from the natural language message
-- Ths user is confirming the intent and extracted data
+- The user is confirming the intent and extracted data
 - A **rule-based decision engine** is determining the case priority and where to route the case
 - A **distribution component** (e-mail, ticketing, case management) is posting the case along with insight to help the
   agent process the case
@@ -799,10 +799,10 @@ Defining a new application requires defining the application model and the decis
    Excel-based approach.
 2. The rules implement the following decisions:
 
-- The (localized) messages to showw to the requester
+- The (localized) messages to show to the requester
 - The priority attached to a new case
 - The basket where to route it
-- The alerts that must be brpought to the agent attention
+- The alerts that must be brought to the agent attention
 - A recommended response that the agent can amend
 
 ------
@@ -857,23 +857,23 @@ python3.12 -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 🆕 Installation du frontend moderne (optionnel)
+### 🆕 Modern frontend installation (optional)
 
-Pour utiliser la nouvelle interface React/Next.js pour Delphes :
+To use the new React/Next.js interface for Delphes:
 
 ```bash
 cd apps/delphes/frontend
 npm install
 
-# Développement
-npm run dev  # Frontend sur http://localhost:3000
+# Development
+npm run dev  # Frontend on http://localhost:3000
 
 # Production  
 npm run build
 npm start
 ```
 
-**Prérequis** : Node.js 18+ et npm/yarn
+**Prerequisites**: Node.js 18+ and npm/yarn
 
 ### Download and install Docker Desktop and the Official IBM Operational Decision Manager for Developers image if you need to use the ODM Decision Engine
 
@@ -924,7 +924,7 @@ or
 ```
 ps -ef|grep python
 ```
-(Be carefull, we're running Python in a shared system. Another Athenian may be running another Python process at the moment.)
+(Be careful, we're running Python in a shared system. Another Athenian may be running another Python process at the moment.)
 
 ## Configuration
 
@@ -933,7 +933,7 @@ where fields are either self-explanatory or explained in a comment cell.
 
 ### Configure how the test client accesses the API
 
-- The Streamlist test client can either connect to the API through function calls or through REST calls
+- The Streamlit test client can either connect to the API through function calls or through REST calls
 - To configure how the test client accesses the API, switch the Excel file to tab `frontend`. Field `connection_to_api`
   has two possible values
     - `direct`: Direct access through Python function
@@ -944,7 +944,7 @@ where fields are either self-explanatory or explained in a comment cell.
 
 - The API either connects to ODM, Drools or a hardcoded engine (in the case of Delphes:
   `apps.delphes.src.app_delphes.CaseHandlingDecisionEngineDelphesPython`)
-- To configure hwhat Decision Engine the API connects to, switch the Excel file to tab `backend`. Field
+- To configure what Decision Engine the API connects to, switch the Excel file to tab `backend`. Field
   `decision_engine` has three possible values
     - `odm`: Connect to an ODM Decision Service. In that case, you will need to launch the ODM Docker image (see below)
       and to configure the `odm` tab
@@ -956,29 +956,29 @@ where fields are either self-explanatory or explained in a comment cell.
 
 Proceed in the following order:
 
-### Option A: Frontend moderne Next.js (Recommandé pour Delphes)
+### Option A: Modern Next.js Frontend (Recommended for Delphes)
 
-1. **Lancer l'API backend Python**
+1. **Launch Python Backend API**
    ```bash
    python launcher_api.py ./runtime
-   # API disponible sur http://localhost:8002
+   # API available on http://localhost:8002
    ```
 
-2. **Lancer le frontend React/Next.js** 
+2. **Launch React/Next.js Frontend** 
    ```bash
    cd apps/delphes/frontend
    npm run dev
-   # Frontend disponible sur http://localhost:3000
+   # Frontend available on http://localhost:3000
    ```
 
-3. **Tester l'application**
-   - Aller sur http://localhost:3000
-   - Utiliser le bouton "Préremplir le formulaire" pour un test rapide
-   - Vérifier que la soumission fonctionne avec l'API backend
+3. **Test the application**
+   - Go to http://localhost:3000
+   - Use "Pre-fill form" button for quick testing
+   - Verify submission works with backend API
 
-### Option B: Interface traditionnelle Streamlit
+### Option B: Traditional Streamlit Interface
 
-Si vous préférez utiliser l'interface Streamlit existante :
+If you prefer using the existing Streamlit interface:
 
 ### If you configured the Decision Engine to be ODM, launch the ODM Docker image
 
@@ -986,7 +986,7 @@ Si vous préférez utiliser l'interface Streamlit existante :
 > **1. ODM Decision Center database persistence locale**
 >
 > A given instance of the ODM Decision Center database has a native locale and cannot host rules with a different
-> persitence locale.
+> persistence locale.
 >
 > To set the locale (en_US by default):
 >> - launch the ODM Docker image
@@ -1029,7 +1029,7 @@ You should see a message such as:
 Click the link to launch the app in your default browser.
 
 **Warning** If you need to run the Streamlit test client (or any other http client) on another port than 8501, update
-cell `common > client_url` in the configuration xlsxx file.
+cell `common > client_url` in the configuration xlsx file.
 
 ## Common tasks
 
@@ -1069,7 +1069,7 @@ If you need to add support for a new language, for instance `fi` (Finnish):
 
 ### Best practices for localizing an existing application
 
-- Copy-paste the configuation from a language your application already support
+- Copy-paste the configuration from a language your application already support
 - Use a LLM
 - No _ in locale
 
@@ -1078,4 +1078,3 @@ If you need to add support for a new language, for instance `fi` (Finnish):
 - If you are not receiving the emails as you would expect, check `send_email` in tab `email_configuration` of the Excel
   Configuration File
 - If you get an empty page on the test client, make sure the left-hand side panel is open
-
