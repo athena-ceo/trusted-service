@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
@@ -63,7 +64,7 @@ export default function AccueilEtrangers() {
             <div className="fr-collapse" id="breadcrumb-1">
               <ol className="fr-breadcrumb__list">
                 <li>
-                  <a className="fr-breadcrumb__link" href="/">{t('accueil.breadcrumb.home')}</a>
+                  <Link className="fr-breadcrumb__link" href="/">{t('accueil.breadcrumb.home')}</Link>
                 </li>
                 <li>
                   <a className="fr-breadcrumb__link" aria-current="page">{t('accueil.breadcrumb.current')}</a>

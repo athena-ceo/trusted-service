@@ -1,0 +1,201 @@
+id,split,text
+expiration_d_une_api,train,Mon récépissé de séjour arrive à terme le mois prochain et je ne sais pas comment prolonger ma situation.
+expiration_d_une_api,train,La vignette provisoire que j’ai reçue se termine bientôt ; pourriez‑vous m’indiquer la marche à suivre pour éviter une rupture de droit ?
+expiration_d_une_api,train,"Je viens de constater que mon autorisation temporaire ne sera plus valide dans dix jours, que dois‑je faire ?"
+expiration_d_une_api,train,"Mon document provisoire pour le titre de séjour expire très bientôt, j’ai peur d’être en situation irrégulière."
+expiration_d_une_api,train,Le papier qui prolongeait mon instruction va expirer ; comment déposer une demande de renouvellement ?
+expiration_d_une_api,test,"Ma preuve de dépôt délivrée par vos services arrive à échéance la semaine prochaine, je souhaite savoir comment la faire prolonger."
+expiration_d_une_api,test,La date de validité de mon récépissé touche à sa fin et je n’ai pas encore reçu le titre définitif ; quelles démarches entreprendre ?
+expiration_d_une_api,test,"Je suis encore dans l’attente de la carte, mais le document provisoire va se périmer, pouvez‑vous m’aider ?"
+expiration_d_une_api,test,Dans quinze jours mon attestation arrive à son terme et je n’arrive pas à prendre rendez‑vous pour la prolonger.
+expiration_d_une_api,test,Merci de m’indiquer la procédure lorsque la pièce provisoire de séjour va devenir caduque.
+depot_de_demande_d_asile,train,Je viens d’arriver en France et je souhaite introduire une demande de protection internationale auprès de vos services.
+depot_de_demande_d_asile,train,Pourriez‑vous m’orienter sur la façon d’enregistrer ma requête de refuge ?
+depot_de_demande_d_asile,train,Je cherche à obtenir un rendez‑vous afin de formaliser ma requête de sécurité sur le territoire.
+depot_de_demande_d_asile,train,Je voudrais savoir quel formulaire remplir pour solliciter la protection de la France.
+depot_de_demande_d_asile,train,Quelle est la procédure actuelle pour déposer une demande de statut de réfugié ?
+depot_de_demande_d_asile,test,Merci de me communiquer la liste des pièces nécessaires pour déposer ma requête d’asile.
+depot_de_demande_d_asile,test,Existe‑t‑il un créneau en ligne pour enregistrer ma demande de secours international ?
+depot_de_demande_d_asile,test,Je souhaiterais déposer ma première demande de protection et j’ignore où me présenter.
+depot_de_demande_d_asile,test,Pouvez‑vous m’indiquer le service compétent pour créer mon dossier de protection?
+depot_de_demande_d_asile,test,"J’aimerais entamer la démarche pour être reconnu réfugié, quelles sont les étapes ?"
+ou_en_est_ma_demande_d_asile_en_cours,train,Je n’ai pas de nouvelles concernant le traitement de ma requête d’asile déposée en février ; pouvez‑vous m’informer sur l’avancement ?
+ou_en_est_ma_demande_d_asile_en_cours,train,J’aimerais connaître le statut de mon dossier de protection introduit il y a six mois.
+ou_en_est_ma_demande_d_asile_en_cours,train,Pouvez‑vous me dire si une décision a été prise concernant ma demande introduite le 12 janvier ?
+ou_en_est_ma_demande_d_asile_en_cours,train,Je vous écris pour savoir où en est l’instruction de mon dossier de refuge.
+ou_en_est_ma_demande_d_asile_en_cours,train,"Depuis mon entretien à l’OFII je n’ai reçu aucune notification, pourriez‑vous vérifier l’état de mon dossier ?"
+ou_en_est_ma_demande_d_asile_en_cours,test,Merci de me renseigner sur le délai restant avant la décision pour ma requête de protection.
+ou_en_est_ma_demande_d_asile_en_cours,test,Mon avocat m’indique que la procédure devrait être terminée ; auriez‑vous des informations actualisées sur mon dossier ?
+ou_en_est_ma_demande_d_asile_en_cours,test,Je souhaite connaître le point d’avancement du traitement de ma demande de statut de réfugié.
+ou_en_est_ma_demande_d_asile_en_cours,test,Pouvez‑vous confirmer si mon dossier est toujours en cours ou déjà transféré à l’OFPRA ?
+ou_en_est_ma_demande_d_asile_en_cours,test,"Je n’arrive pas à consulter mon état de dossier en ligne, pourriez‑vous me transmettre un résumé de son avancée ?"
+expiration_d_une_atda,train,Mon attestation de demandeur d’asile arrive à expiration et je crains de ne plus pouvoir justifier mon séjour.
+expiration_d_une_atda,train,"La carte qui m’a été remise lors du dépôt expire bientôt, comment la prolonger ?"
+expiration_d_une_atda,train,"Mon document ATDA n’est valable que jusqu’au 30 juin, quelles démarches pour le renouveler ?"
+expiration_d_une_atda,train,"Je constate que mon attestation d’enregistrement arrive au terme de sa validité, merci de m’indiquer la suite."
+expiration_d_une_atda,train,"L’autorisation liée à ma demande d’asile va périmer, puis‑je la faire prolonger sans rendez‑vous ?"
+expiration_d_une_atda,test,Ma preuve de dépôt pour l’asile arrive à son terme et je n’ai pas encore reçu de convocation pour la suite.
+expiration_d_une_atda,test,Que dois‑je faire lorsque l’attestation fournie par la préfecture n’est plus valide ?
+expiration_d_une_atda,test,"L’ATDA que je détiens est sur le point de se périmer, j’aimerais connaître la procédure de renouvellement."
+expiration_d_une_atda,test,Je crains de me retrouver sans justificatif car ma carte de demandeur d’asile expire sous peu.
+expiration_d_une_atda,test,Pouvez‑vous m’informer sur les documents à fournir pour prolonger mon attestation d’enregistrement ?
+mise_a_jour_infos_atda,train,J’ai déménagé récemment et je veux signaler ma nouvelle adresse pour mon attestation de demande d’asile.
+mise_a_jour_infos_atda,train,"Mon numéro de téléphone a changé, comment puis‑je mettre à jour mes coordonnées dans mon dossier ATDA ?"
+mise_a_jour_infos_atda,train,Je souhaite ajouter le nom de mon enfant né récemment à mon dossier d’asile.
+mise_a_jour_infos_atda,train,Pouvez‑vous actualiser les informations de mon attestation avec mon nouvel e‑mail ?
+mise_a_jour_infos_atda,train,"Je dois corriger une erreur d’état civil sur mon document de demandeur d’asile, quelle est la marche à suivre ?"
+mise_a_jour_infos_atda,test,Je viens de changer de logement et je dois le signaler pour ma carte de demandeur d’asile.
+mise_a_jour_infos_atda,test,Comment transmettre la copie de mon nouveau passeport pour que mon dossier soit à jour ?
+mise_a_jour_infos_atda,test,"Mon état civil a été rectifié par mon ambassade, pouvez‑vous mettre mon attestation en conformité ?"
+mise_a_jour_infos_atda,test,Je souhaite notifier la naissance de mon bébé afin qu’il figure dans mon dossier de protection.
+mise_a_jour_infos_atda,test,Merci de me dire comment modifier mes coordonnées bancaires liées à mon allocation de demandeur d’asile.
+demande_en_rapport_avec_procedure_dublin_en_cours,train,J’ai reçu une notification indiquant que mon dossier dépend d’un autre pays européen ; que signifie cela ?
+demande_en_rapport_avec_procedure_dublin_en_cours,train,"On m’a parlé d’un éventuel transfert vers l’Allemagne, pouvez‑vous clarifier ma situation ?"
+demande_en_rapport_avec_procedure_dublin_en_cours,train,"Je suis convoqué pour des empreintes dans le cadre de la procédure européenne, pourriez‑vous m’expliquer les étapes ?"
+demande_en_rapport_avec_procedure_dublin_en_cours,train,Le courrier que j’ai reçu mentionne le règlement Dublin ; j’aimerais comprendre le calendrier de décision.
+demande_en_rapport_avec_procedure_dublin_en_cours,train,Je souhaite savoir si la France a déjà demandé l’accord de l’Espagne pour reprendre ma demande.
+demande_en_rapport_avec_procedure_dublin_en_cours,test,"On me dit que ma demande d’asile est sous le règlement UE 604/2013, pourriez‑vous m’en dire plus ?"
+demande_en_rapport_avec_procedure_dublin_en_cours,test,Je voudrais savoir combien de temps dure la phase d’attente avant un éventuel transfert vers l’Italie.
+demande_en_rapport_avec_procedure_dublin_en_cours,test,"La préfecture m’a remis un document sur la procédure Dublin, et je ne comprends pas les délais de fuite."
+demande_en_rapport_avec_procedure_dublin_en_cours,test,Avez‑vous des informations sur la réponse de la Belgique concernant mon dossier européen ?
+demande_en_rapport_avec_procedure_dublin_en_cours,test,Puis‑je déposer à nouveau une demande en France si le transfert n’aboutit pas ?
+ressortissant_ukrainien_demande_un_nouveau_titre,train,Je suis arrivé d’Ukraine récemment et je souhaite savoir comment obtenir une autorisation de séjour temporaire.
+ressortissant_ukrainien_demande_un_nouveau_titre,train,"En tant que déplacé ukrainien, quelle est la procédure pour demander la protection en France ?"
+ressortissant_ukrainien_demande_un_nouveau_titre,train,Je n’ai encore aucun document français ; pourriez‑vous m’indiquer comment solliciter un permis provisoire ?
+ressortissant_ukrainien_demande_un_nouveau_titre,train,Je viens chercher des informations sur l’obtention d’un document de résidence en raison de la guerre dans mon pays.
+ressortissant_ukrainien_demande_un_nouveau_titre,train,Quelles pièces dois‑je présenter pour bénéficier du dispositif d’accueil réservé aux ressortissants ukrainiens ?
+ressortissant_ukrainien_demande_un_nouveau_titre,test,Je suis Ukrainien sans titre en France et j’ai besoin d’un document pour régulariser ma situation.
+ressortissant_ukrainien_demande_un_nouveau_titre,test,Ma famille et moi arrivons d’Odessa ; vers quel service devons‑nous nous tourner pour demander la protection temporaire ?
+ressortissant_ukrainien_demande_un_nouveau_titre,test,Je recherche un rendez‑vous pour déposer un dossier de séjour en tant que réfugié de la crise ukrainienne.
+ressortissant_ukrainien_demande_un_nouveau_titre,test,Pouvez‑vous m’indiquer la démarche pour recevoir l’autorisation de résidence prévue pour les personnes fuyant l’Ukraine ?
+ressortissant_ukrainien_demande_un_nouveau_titre,test,Je voudrais connaître les délais pour recevoir la carte de séjour temporaire réservée aux Ukrainiens.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,train,"Mon titre de séjour temporaire délivré en mars dernier arrive bientôt à expiration, comment le prolonger ?"
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,train,Je bénéficie du dispositif protection ukrainienne et j’aimerais renouveler ma carte avant qu’elle se termine.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,train,Quelle est la procédure pour reconduire la validité de mon autorisation liée à la guerre en Ukraine ?
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,train,Je souhaite prendre rendez‑vous pour prolonger le document qui m’a été délivré l’an passé.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,train,Merci de m’indiquer les pièces requises pour renouveler ma carte de protection temporaire.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,test,"La durée de validité de mon titre pour ressortissants ukrainiens touche à sa fin, comment puis‑je l’étendre ?"
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,test,Mon épouse et moi avons des cartes temporaires qui expirent bientôt ; quelles démarches pour les reconduire ?
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,test,Je crains de perdre mes droits car mon document de séjour ukrainien arrive à échéance.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,test,Je voudrais connaître les délais de traitement pour le renouvellement de la protection accordée aux réfugiés d’Ukraine.
+ressortissant_ukrainien_demande_renouvellement_de_son_titre,test,Pouvez‑vous confirmer si le renouvellement se fait en ligne ou à la préfecture pour les bénéficiaires ukrainiens ?
+ressortissant_ukrainien_autre_demande,train,Je suis Ukrainien en France et j’ai besoin d’un document de voyage pour me rendre à un mariage familial.
+ressortissant_ukrainien_autre_demande,train,Puis‑je obtenir une attestation pour faire venir ma mère restée en Pologne ?
+ressortissant_ukrainien_autre_demande,train,J’aimerais savoir si je peux passer le permis de conduire avec ma protection temporaire.
+ressortissant_ukrainien_autre_demande,train,Je souhaite changer l’adresse inscrite sur mon document ukrainien délivré par vos services.
+ressortissant_ukrainien_autre_demande,train,Est‑il possible d’obtenir un duplicata de ma carte temporaire qui a été égarée ?
+ressortissant_ukrainien_autre_demande,test,Ma fille ukrainienne a besoin d’être scolarisée ; quelles démarches avec la préfecture ?
+ressortissant_ukrainien_autre_demande,test,"Je désire ajouter mon nouveau‑né sur mon statut de protection temporaire, comment faire ?"
+ressortissant_ukrainien_autre_demande,test,J’ai trouvé un emploi et j’ai besoin d’un numéro de sécurité sociale ; la préfecture peut‑elle m’aider ?
+ressortissant_ukrainien_autre_demande,test,Quelles conditions pour quitter la France quelques jours sans perdre ma protection ukrainienne ?
+ressortissant_ukrainien_autre_demande,test,Je dois renouveler mon passeport ukrainien ; quelle incidence sur mon titre français ?
+demande_d_un_etudiant_en_programme_de_mobilite,train,Je participe à un échange universitaire de six mois et je souhaite connaître les démarches de séjour.
+demande_d_un_etudiant_en_programme_de_mobilite,train,"Dans le cadre d’Erasmus+, quel titre dois‑je demander pour étudier en Île‑de‑France ?"
+demande_d_un_etudiant_en_programme_de_mobilite,train,Mon université d’origine m’envoie à Versailles pour un semestre ; comment régulariser ma situation ?
+demande_d_un_etudiant_en_programme_de_mobilite,train,Quelles pièces sont nécessaires au dépôt de dossier pour un étudiant en mobilité encadrée ?
+demande_d_un_etudiant_en_programme_de_mobilite,train,Pouvez‑vous m’indiquer la durée de validité du visa pour un programme d’échange académique ?
+demande_d_un_etudiant_en_programme_de_mobilite,test,Je suis inscrit dans une formation conjointe entre deux universités et je cherche à obtenir la carte de séjour adaptée.
+demande_d_un_etudiant_en_programme_de_mobilite,test,Existe‑t‑il un guichet spécifique pour les étudiants en mobilité courte ?
+demande_d_un_etudiant_en_programme_de_mobilite,test,Je viens pour un double diplôme et j’aimerais savoir si un récépissé est délivré pendant l’instruction.
+demande_d_un_etudiant_en_programme_de_mobilite,test,Comment prolonger mon titre si mon projet d’études se poursuit un semestre de plus ?
+demande_d_un_etudiant_en_programme_de_mobilite,test,Merci de préciser les frais pour un étudiant sous accord de coopération internationale.
+demande_d_un_stagiaire_associe_en_profession_medicale,train,Je suis médecin étranger stagiaire associé et j’ai besoin d’un titre pour effectuer mon stage à l’hôpital.
+demande_d_un_stagiaire_associe_en_profession_medicale,train,Quelles démarches pour obtenir l’autorisation de pratique en tant que stagiaire associé en chirurgie ?
+demande_d_un_stagiaire_associe_en_profession_medicale,train,L’établissement qui m’accueille me demande un justificatif de séjour pour commencer mon internat.
+demande_d_un_stagiaire_associe_en_profession_medicale,train,Je dois renouveler mon statut de stagiaire ; quelles pièces fournir à la préfecture ?
+demande_d_un_stagiaire_associe_en_profession_medicale,train,Pouvez‑vous me confirmer la durée du titre délivré aux stagiaires associés en santé ?
+demande_d_un_stagiaire_associe_en_profession_medicale,test,Je suis sage‑femme étrangère en stage d’observation ; comment régulariser mon séjour ?
+demande_d_un_stagiaire_associe_en_profession_medicale,test,Mon hospitable de rattachement me demande de prouver la reconnaissance de mon statut de stagiaire associé.
+demande_d_un_stagiaire_associe_en_profession_medicale,test,Je souhaite savoir si la carte de séjour pour stagiaire médical peut être renouvelée plus d’une fois.
+demande_d_un_stagiaire_associe_en_profession_medicale,test,"Mon visa arrive à terme avant la fin de mon stage hospitalier, que dois‑je faire ?"
+demande_d_un_stagiaire_associe_en_profession_medicale,test,Existe‑t‑il un délai spécifique pour déposer la demande avant le début de la formation ?
+difficultes_avec_le_site_de_l_anef,train,"Le portail en ligne ne charge pas la page d’identification, comment puis‑je poursuivre ma demande ?"
+difficultes_avec_le_site_de_l_anef,train,Impossible d’accéder à mon tableau de bord ANEF ; le site me renvoie une erreur technique.
+difficultes_avec_le_site_de_l_anef,train,Je n’arrive pas à déposer mes pièces jointes ; le téléchargement reste bloqué à 0 %.
+difficultes_avec_le_site_de_l_anef,train,"Le bouton de validation ne fonctionne pas quand je remplis le formulaire, que faire ?"
+difficultes_avec_le_site_de_l_anef,train,"Lorsque j’essaie de me connecter, le système indique « compte introuvable » alors que je suis inscrit."
+difficultes_avec_le_site_de_l_anef,test,"Après la création de mon profil, je reçois sans cesse le message « service indisponible »."
+difficultes_avec_le_site_de_l_anef,test,Le site plante systématiquement à l’étape du paiement ; pouvez‑vous m’aider ?
+difficultes_avec_le_site_de_l_anef,test,Je ne reçois pas le courriel de confirmation pour activer mon compte ANEF.
+difficultes_avec_le_site_de_l_anef,test,"Mon numéro étranger n’est pas reconnu par la plateforme, alors qu’il figure sur mon titre."
+difficultes_avec_le_site_de_l_anef,test,"Un message d’erreur 504 apparaît dès que je tente d’ouvrir une session, comment contourner ce bug ?"
+changement_statut_etudiant_a_salarie,train,Je termine mon master et j’ai un contrat de travail ; comment passer du statut étudiant à celui de salarié ?
+changement_statut_etudiant_a_salarie,train,Quelles pièces faut‑il pour transformer mon titre étudiant en autorisation de travail à temps plein ?
+changement_statut_etudiant_a_salarie,train,J’ai signé un CDI ; dois‑je déposer une demande spécifique pour changer de catégorie de séjour ?
+changement_statut_etudiant_a_salarie,train,Je souhaite savoir les délais pour obtenir la carte salariée après mes études.
+changement_statut_etudiant_a_salarie,train,Merci de m’indiquer la procédure pour basculer vers le permis de travail salarié.
+changement_statut_etudiant_a_salarie,test,Mon employeur me demande un document attestant que je peux travailler à plein temps ; comment l’obtenir ?
+changement_statut_etudiant_a_salarie,test,Faut‑il refaire des biométries pour passer du titre étudiant au titre salarié ?
+changement_statut_etudiant_a_salarie,test,"Je dispose encore de quelques mois de validité sur mon titre étudiant, puis‑je déjà entamer la transition vers salarié ?"
+changement_statut_etudiant_a_salarie,test,Mon futur contrat démarre en septembre ; quand déposer ma demande de changement de statut ?
+changement_statut_etudiant_a_salarie,test,J’aimerais connaître les taxes applicables pour l’obtention de la carte salariée.
+changement_statut_etudiant_a_recherche_d_emploi,train,Après mon diplôme je souhaite rester pour rechercher un travail ; comment obtenir l’autorisation correspondante ?
+changement_statut_etudiant_a_recherche_d_emploi,train,Quelles sont les conditions pour passer d’une carte d’étudiant à celle de recherche d’emploi/création d’entreprise ?
+changement_statut_etudiant_a_recherche_d_emploi,train,Je n’ai pas encore trouvé de poste et mon titre expire bientôt ; puis‑je demander un séjour recherche d’emploi ?
+changement_statut_etudiant_a_recherche_d_emploi,train,"Mon école m’a parlé d’un visa permettant de chercher du travail, comment l’activer ?"
+changement_statut_etudiant_a_recherche_d_emploi,train,Pouvez‑vous me donner la liste des justificatifs pour la carte recherche d’emploi après études ?
+changement_statut_etudiant_a_recherche_d_emploi,test,Le passage au statut recherche d’emploi nécessite‑t‑il un entretien en préfecture ?
+changement_statut_etudiant_a_recherche_d_emploi,test,Combien de temps puis‑je rester avec la carte recherche d’emploi une fois obtenue ?
+changement_statut_etudiant_a_recherche_d_emploi,test,Je prépare un projet de start‑up ; ce statut est‑il adapté ?
+changement_statut_etudiant_a_recherche_d_emploi,test,Faut‑il prouver un certain montant de ressources pour ce titre ?
+changement_statut_etudiant_a_recherche_d_emploi,test,Peut‑on basculer directement de recherche d’emploi à salarié sans revenir à la case départ ?
+sollicitation_titre_vie_privee_et_familiale_hors_anef,train,Je vis en concubinage avec un Français et je souhaite demander un titre fondé sur nos liens familiaux.
+sollicitation_titre_vie_privee_et_familiale_hors_anef,train,"En tant que parent d’un enfant français, quelles démarches pour obtenir la carte vie privée familiale ?"
+sollicitation_titre_vie_privee_et_familiale_hors_anef,train,"Je suis marié religieusement, puis‑je solliciter un titre sur la base de notre vie commune hors ANEF ?"
+sollicitation_titre_vie_privee_et_familiale_hors_anef,train,"La plateforme en ligne ne propose pas ma situation, comment déposer une demande lié à ma famille ?"
+sollicitation_titre_vie_privee_et_familiale_hors_anef,train,Merci de m’expliquer la démarche pour un titre accordé pour raisons familiales quand on ne peut pas passer par ANEF.
+sollicitation_titre_vie_privee_et_familiale_hors_anef,test,Mon épouse est ressortissante française et je souhaite régulariser ma situation pour rester auprès d’elle.
+sollicitation_titre_vie_privee_et_familiale_hors_anef,test,Je subviens aux besoins de mon enfant né en France ; pourrais‑je obtenir une carte de séjour adaptée ?
+sollicitation_titre_vie_privee_et_familiale_hors_anef,test,Le téléservice ne couvre pas ma situation de partenaire Pacsé ; que propose la préfecture ?
+sollicitation_titre_vie_privee_et_familiale_hors_anef,test,Je voudrais savoir si je peux déposer un dossier papier pour vie privée et familiale.
+sollicitation_titre_vie_privee_et_familiale_hors_anef,test,Quels documents prouveraient la stabilité de notre couple pour ce type de titre ?
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,train,"Chaque tentative pour ouvrir un profil sur la plateforme échoue, je ne peux donc pas déposer ma demande de carte."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,train,"Lorsque je saisis mon adresse mail pour créer le compte, le site tourne en boucle."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,train,"Le code d’activation n’arrive jamais sur ma boîte mail, je suis bloqué avant même de commencer ma demande."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,train,"Mon identifiant étranger n’est pas accepté à l’étape de création de compte, comment procéder ?"
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,train,Le site affiche « erreur technique » dès que je clique sur « créer un compte ».
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,test,"Je n’arrive pas à finaliser l’inscription sur ANEF, sans compte je ne peux pas lancer la procédure de titre."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,test,"À chaque inscription, la page se recharge sans me laisser passer à l’étape suivante."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,test,"Le lien de validation reçu est invalide, je ne peux pas activer mon nouveau compte."
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,test,"Mon passeport n’est pas reconnu par le module d’inscription, comment régler ce souci ?"
+depot_d_une_demande_de_titre_et_je_n_arrive_pas_a_creer_mon_compte_anef,test,"Impossible de générer mon profil utilisateur, le site indique que mes informations ne correspondent pas."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,train,"La plateforme refuse de valider ma photo numérique, je ne peux pas poursuivre le dépôt de mon dossier."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,train,"Le paiement en ligne ne passe pas, bien que ma carte bancaire fonctionne ailleurs."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,train,Je reçois un message « format de fichier incorrect » alors que mes pièces sont en PDF.
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,train,"Le site me déconnecte systématiquement avant la dernière étape, annulant toute ma saisie."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,train,Le calendrier en ligne n’affiche aucun créneau pour finaliser ma demande.
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,test,Je suis bloqué à l’étape « adresse postale » ; le formulaire reste grisé.
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,test,"Après avoir rempli le formulaire, l’étape de signature électronique ne s’affiche pas."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,test,"Lorsque je valide, la page devient blanche et mon dossier n’est pas créé."
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,test,"Je ne peux pas sélectionner mon département dans la liste déroulante, que faire ?"
+depot_d_une_demande_de_titre_et_autre_blocage_sur_le_site_de_l_anef,test,"Le numéro de timbre fiscal est refusé par le module ANEF, je suis bloqué."
+depot_d_une_demande_de_titre_et_autre_probleme_anef,train,Je ne retrouve plus le brouillon de ma demande que j’avais sauvegardé hier.
+depot_d_une_demande_de_titre_et_autre_probleme_anef,train,"Le suivi de dossier ne s’actualise pas, impossible de savoir si mes pièces ont été acceptées."
+depot_d_une_demande_de_titre_et_autre_probleme_anef,train,"J’ai payé la taxe mais le site ne me fournit pas le justificatif, comment l’obtenir ?"
+depot_d_une_demande_de_titre_et_autre_probleme_anef,train,Mon tableau de bord est vide alors que j’ai finalisé la demande la semaine dernière.
+depot_d_une_demande_de_titre_et_autre_probleme_anef,train,Je reçois des notifications en double concernant des demandes que je n’ai jamais effectuées.
+depot_d_une_demande_de_titre_et_autre_probleme_anef,test,"Le site m’indique que mon dossier est clos sans explication, comment réagir ?"
+depot_d_une_demande_de_titre_et_autre_probleme_anef,test,Impossible d’imprimer la confirmation de dépôt pour ma demande.
+depot_d_une_demande_de_titre_et_autre_probleme_anef,test,Je n’ai pas reçu l’email avec le récépissé alors que le site dit que le document est disponible.
+depot_d_une_demande_de_titre_et_autre_probleme_anef,test,"Le système m’attribue un mauvais type de titre, comment corriger cette erreur ?"
+depot_d_une_demande_de_titre_et_autre_probleme_anef,test,"Quand j’essaie de contacter l’assistance via le formulaire, j’ai un message d’erreur interne."
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,train,"Je dois rentrer d’urgence pour assister aux funérailles d’un proche, comment obtenir une autorisation de sortie ?"
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,train,Ma mère est gravement malade à l’étranger et j’ai besoin d’un laissez‑passer temporaire.
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,train,Je souhaiterais me rendre dans mon pays pour des examens médicaux imprévus ; quelle est la procédure ?
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,train,"Je dois participer à un procès familial dans mon pays d’origine, puis‑je voyager sans perdre ma procédure en France ?"
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,train,Pouvez‑vous m’indiquer les démarches pour obtenir une autorisation de déplacement exceptionnelle ?
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,test,"Je suis demandeur d’asile et je dois assister au mariage de ma sœur, est‑il possible de sortir du territoire ?"
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,test,"En cas de décès soudain d’un membre proche, que fait‑on pour avoir l’autorisation de voyager ?"
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,test,Je dois récupérer des documents officiels dans mon pays ; comment faire valoir ce motif exceptionnel ?
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,test,Combien de temps prend la délivrance d’un retour temporaire pour causes humanitaires ?
+je_veux_retourner_dans_mon_pays_pour_motif_exceptionnel,test,Quels justificatifs fournir pour quitter la France sans compromettre ma demande en cours ?
+autres,train,Je souhaite être mis en relation avec l’association qui accompagne les personnes étrangères dans le département.
+autres,train,"J’ai reçu un courrier que je ne comprends pas, pourriez‑vous m’aider à l’interpréter ?"
+autres,train,Je cherche une attestation prouvant mon adresse pour inscrire mes enfants à l’école.
+autres,train,Je voudrais simplement confirmer vos horaires d’ouverture au public cette semaine.
+autres,train,Ma question concerne la possibilité de récupérer un passeport transmis à vos services il y a plusieurs mois.
+autres,test,Pouvez‑vous me dire à quel guichet retirer un document que j’ai laissé lors de mon dernier passage ?
+autres,test,Je souhaite savoir si vous proposez un service de traduction pour les documents officiels.
+autres,test,"Mon nom est mal orthographié sur un courrier, vers qui dois‑je me tourner ?"
+autres,test,Je souhaite obtenir un duplicata de la convocation perdue pour une visite médicale.
+autres,test,Je me demande si je peux me faire représenter par une tierce personne pour récupérer mon titre.

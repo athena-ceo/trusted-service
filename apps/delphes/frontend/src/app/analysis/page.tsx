@@ -9,6 +9,18 @@ import Loading from "@/components/Loading";
 import { useLanguage } from "@/contexts/LanguageContext";
 import "@/app/spinner.css";
 
+// TypeScript interfaces for better type safety
+interface FieldValues {
+    [key: string]: string | number | boolean | undefined;
+}
+
+interface Scoring {
+    intention_id: string;
+    intention_label: string;
+    intention_scoring: number;
+    extracted_info?: Record<string, unknown>;
+}
+
 /**
  * Convertit une date au format français (JJ/MM/AAAA) vers le format ISO (AAAA-MM-JJ)
  * @param dateStr - Date au format "JJ/MM/AAAA"
@@ -57,11 +69,11 @@ function convertISOToDate(isoDateStr: string): string {
     return `${paddedDay}/${paddedMonth}/${year}`;
 }
 
-function AnalysisContent({ fieldValues }: { fieldValues: any }) {
+function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
     const router = useRouter();
     const { t, currentLang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
-    const [scoringsPositifs, setScoringsPositifs] = useState<any[]>([]);
+    const [scoringsPositifs, setScoringsPositifs] = useState<Scoring[]>([]);
     const [selectedIntention, setSelectedIntention] = useState<string>('');
     const [fieldInputValues, setFieldInputValues] = useState<Record<string, string>>({});
     const [statusOptions, setStatusOptions] = useState<Array<{ id: string, label: string }>>([]);
@@ -135,6 +147,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
         hasFetchedRef.current = true;
 
         analyzeRequest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSubmit = (event: React.FormEvent) => {
@@ -394,7 +407,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: any }) {
 
 export default function Analysis() {
     const { t } = useLanguage();
-    const [fieldValues, setFieldValues] = useState<any>(null);
+    const [fieldValues, setFieldValues] = useState<FieldValues | null>(null);
 
     useEffect(() => {
         // Récupération des données au chargement de la page

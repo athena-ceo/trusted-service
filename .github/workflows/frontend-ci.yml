@@ -80,12 +80,12 @@ jobs:
             echo "⚠️ No test script found in package.json - skipping tests"
           fi
         continue-on-error: true
-      
+
       - name: Run unit tests
         if: steps.check-test-script.outputs.exists == 'true'
         run: npm test -- --coverage --watchAll=false
         continue-on-error: true
-      
+
       - name: Upload coverage
         if: steps.check-test-script.outputs.exists == 'true'
         uses: codecov/codecov-action@v4
@@ -145,7 +145,7 @@ jobs:
         run: |
           pip install pytest pytest-playwright playwright
           playwright install chromium
-      
+
       - name: Run frontend smoke tests
         run: |
           pytest tests/smoke/test_frontend.py -v

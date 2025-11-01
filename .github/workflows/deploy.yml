@@ -121,9 +121,7 @@ jobs:
       - name: Run post-deployment smoke tests
         run: |
           pip install pytest httpx
-          export API_BASE_URL=https://staging.trusted-services.example.com
-          pytest tests/smoke/test_backend_api.py -v
-        continue-on-error: true  # Allow to fail since example.com doesn't exist
+          pytest tests/smoke/ -v --base-url=https://staging.trusted-services.example.com
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -144,9 +142,7 @@ jobs:
       - name: Run post-deployment smoke tests
         run: |
           pip install pytest httpx
-          export API_BASE_URL=https://trusted-services.example.com
-          pytest tests/smoke/test_backend_api.py -v
-        continue-on-error: true  # Allow to fail since example.com doesn't exist
+          pytest tests/smoke/ -v --base-url=https://trusted-services.example.com
 
       - name: Notify deployment
         if: success()

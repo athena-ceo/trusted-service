@@ -10,7 +10,37 @@ import Loading from "@/components/Loading";
 import { useLanguage } from "@/contexts/LanguageContext";
 import "@/app/spinner.css";
 
-function HandleCaseContent({ message, fieldValues, selectedIntention, intentionLabel, analyzeResult }: { message: string | null, fieldValues: any, selectedIntention: any, intentionLabel: any, analyzeResult: any }) {
+// TypeScript interfaces for better type safety
+interface FieldValues {
+    [key: string]: string | number | boolean | undefined;
+}
+
+interface AnalyzeResult {
+    text_analysis_response?: {
+        user_intention?: {
+            intention_id?: string;
+            intention_label?: string;
+            intention_scoring?: number;
+        }[];
+        case_info?: Record<string, unknown>;
+    };
+}
+
+interface SelectedIntention {
+    intention_id?: string;
+    intention_label?: string;
+    intention_scoring?: number;
+}
+
+interface HandleCaseContentProps {
+    message: string | null;
+    fieldValues: FieldValues | null;
+    selectedIntention: SelectedIntention | null;
+    intentionLabel: string | null;
+    analyzeResult: AnalyzeResult | null;
+}
+
+function HandleCaseContent({ message, fieldValues, selectedIntention, intentionLabel, analyzeResult }: HandleCaseContentProps) {
     const { t, currentLang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
     const [vueAgent, setVueAgent] = useState(false);
@@ -96,7 +126,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                     const modified = doc.body.innerHTML;
                     // Allow keeping target attribute (DOMPurify strips some attributes by default)
                     ackHtml = DOMPurify.sanitize(modified, { ADD_ATTR: ['target'] });
-                } catch (e) {
+                } catch {
                     // fallback: sanitize original HTML
                     ackHtml = DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
                 }
@@ -128,6 +158,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
         hasFetchedRef.current = true;
 
         handleCase();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -245,10 +276,10 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
 export default function HandleCase() {
     const { t } = useLanguage();
-    const [analyzeResult, setAnalyzeResult] = useState<any>(null);
-    const [selectedIntention, setSelectedIntention] = useState<any>(null);
-    const [intentionLabel, setIntentionLabel] = useState<any>(null);
-    const [fieldValues, setFieldValues] = useState<any>(null);
+    const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(null);
+    const [selectedIntention, setSelectedIntention] = useState<SelectedIntention | null>(null);
+    const [intentionLabel, setIntentionLabel] = useState<string | null>(null);
+    const [fieldValues, setFieldValues] = useState<FieldValues | null>(null);
 
     useEffect(() => {
         // Récupération des données au chargement de la page
