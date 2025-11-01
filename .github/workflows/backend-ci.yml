@@ -109,9 +109,9 @@ jobs:
         env:
           TESTING: true
 
-      - name: Run smoke tests
+      - name: Run backend smoke tests only
         run: |
-          pytest tests/smoke/ -v --tb=short
+          pytest tests/smoke/test_backend_api.py -v --tb=short
 
       - name: Stop backend server
         if: always()

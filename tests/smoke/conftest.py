@@ -2,7 +2,13 @@
 Pytest configuration for smoke tests
 """
 import pytest
-from playwright.sync_api import sync_playwright
+
+# Import Playwright only if available (needed for frontend tests only)
+try:
+    from playwright.sync_api import sync_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
 
 
 @pytest.fixture(scope="session")
@@ -17,6 +23,9 @@ def browser_context_args():
 @pytest.fixture(scope="function")
 def page(browser_context_args):
     """Create a new browser page for each test"""
+    if not PLAYWRIGHT_AVAILABLE:
+        pytest.skip("Playwright not installed - skipping frontend tests")
+    
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(**browser_context_args)

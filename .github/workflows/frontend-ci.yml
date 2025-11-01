@@ -127,11 +127,11 @@ jobs:
         env:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8002
 
-      - name: Install Playwright
+      - name: Install Playwright and test dependencies
         run: |
-          npm install -g playwright
+          pip install pytest pytest-playwright playwright
           playwright install chromium
-
+      
       - name: Run frontend smoke tests
         run: |
           pytest tests/smoke/test_frontend.py -v
