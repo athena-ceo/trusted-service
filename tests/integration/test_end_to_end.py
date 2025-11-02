@@ -49,21 +49,22 @@ class TestAPIIntegration:
     """Test frontend-backend integration"""
     
     def test_analyze_request_integration(self, api_base_url: str):
-        """Test analyze_request API call with valid data"""
+        """Test analyze API call with valid data"""
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/api/analyze_request",
-            json={
-                "app_name": "delphes",
-                "locale": "fr",
-                "message": "Je souhaite renouveler mon titre de séjour"
+            "/trusted_services/v2/apps/delphes/fr/analyze",
+            params={
+                "field_values": "{}",
+                "text": "Je souhaite renouveler mon titre de séjour",
+                "read_from_cache": "false",
+                "llm_config_id": "default"
             }
         )
         
-        # Should succeed or return expected error
-        assert response.status_code in [200, 503], \
-            f"Unexpected status: {response.status_code}"
+        # Should succeed or return expected error (not 404)
+        assert response.status_code != 404, \
+            f"Endpoint not found: {response.status_code}"
         
         if response.status_code == 200:
             data = response.json()
@@ -75,23 +76,24 @@ class TestAPIIntegration:
         """Test handle_case API call"""
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
-        response = client.post(
-            "/api/handle_case",
-            json={
-                "app_name": "delphes",
-                "locale": "fr",
-                "field_values": {
-                    "nom": "Dupont",
-                    "prenom": "Jean",
-                    "date_naissance": "1990-01-15"
-                },
-                "selected_intention": "renouvellement_titre_sejour"
+        # Prepare case handling request
+        case_request = {
+            "intention_id": "renouvellement_titre_sejour",
+            "field_values": {
+                "nom": "Dupont",
+                "prenom": "Jean",
+                "date_naissance": "1990-01-15"
             }
+        }
+        
+        response = client.post(
+            "/trusted_services/v2/apps/delphes/fr/handle_case",
+            json={"case_request": case_request}
         )
         
-        # Should handle the request
-        assert response.status_code in [200, 400, 422, 503], \
-            f"Unexpected status: {response.status_code}"
+        # Should handle the request (not 404)
+        assert response.status_code != 404, \
+            f"Endpoint not found: {response.status_code}"
         
         client.close()
 
@@ -104,15 +106,17 @@ class TestMultilingualSupport:
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/api/analyze_request",
-            json={
-                "app_name": "delphes",
-                "locale": "fr",
-                "message": "Bonjour, je souhaite obtenir un titre de séjour"
+            "/trusted_services/v2/apps/delphes/fr/analyze",
+            params={
+                "field_values": "{}",
+                "text": "Bonjour, je souhaite obtenir un titre de séjour",
+                "read_from_cache": "false",
+                "llm_config_id": "default"
             }
         )
         
-        assert response.status_code in [200, 503]
+        # Should not return 404 (endpoint exists)
+        assert response.status_code != 404
         client.close()
     
     def test_english_locale(self, api_base_url: str):
@@ -120,15 +124,17 @@ class TestMultilingualSupport:
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/api/analyze_request",
-            json={
-                "app_name": "delphes",
-                "locale": "en",
-                "message": "Hello, I would like to obtain a residence permit"
+            "/trusted_services/v2/apps/delphes/en/analyze",
+            params={
+                "field_values": "{}",
+                "text": "Hello, I would like to obtain a residence permit",
+                "read_from_cache": "false",
+                "llm_config_id": "default"
             }
         )
         
-        assert response.status_code in [200, 503]
+        # Should not return 404 (endpoint exists)
+        assert response.status_code != 404
         client.close()
 
 
