@@ -80,6 +80,55 @@ npm run dev
 - Backend API: http://localhost:8002
 - API Documentation: http://localhost:8002/docs
 
+### Docker Quick Start (Recommended)
+
+```bash
+# Start all services with Docker Compose
+./docker-manage.sh start
+
+# Check status
+./docker-manage.sh status
+
+# View logs
+./docker-manage.sh logs
+
+# Stop services
+./docker-manage.sh stop
+```
+
+🌐 **Services**:
+- Backend: http://localhost:8002
+- Frontend: http://localhost:3000
+- Health Check: http://localhost:8002/api/health
+
+**Available Commands:**
+```bash
+./docker-manage.sh [command] [environment]
+
+Commands:
+  start       Start services
+  stop        Stop services  
+  restart     Restart services
+  status      Show service status
+  logs        View logs (Ctrl+C to exit)
+  build       Build Docker images
+  rebuild     Rebuild from scratch (no cache)
+  clean       Remove containers + volumes
+  shell       Open backend shell
+
+Environments:
+  dev         Development (default)
+  prod        Production
+```
+
+**Examples:**
+```bash
+./docker-manage.sh start          # Start dev
+./docker-manage.sh start prod     # Start production
+./docker-manage.sh rebuild        # Clean rebuild
+./docker-manage.sh shell          # Access backend
+```
+
 ### Streamlit Demo Mode (Legacy)
 
 ```bash
