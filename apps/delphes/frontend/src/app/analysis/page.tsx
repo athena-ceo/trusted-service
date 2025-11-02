@@ -165,6 +165,12 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
             alert('Veuillez sélectionner une intention avant de valider.');
             return;
         }
+
+        if (!fieldValues) {
+            console.error('No field values available');
+            return;
+        }
+
         // Si l'intention avait des champs, vérifier qu'ils sont tous remplis
         const intentionDetails = scoringsPositifs.find(item => item.intention_id === selectedIntentionValue);
         if (intentionDetails && intentionDetails.intention_fields) {
