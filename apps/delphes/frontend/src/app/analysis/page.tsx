@@ -88,6 +88,11 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                 return;
             }
 
+            if (!fieldValues) {
+                console.error('No field values provided');
+                return;
+            }
+
             console.log('Sending analysis request with payload', fieldValues)
             const analyzeResponse = await fetch(apiBaseUrl + '/api/v1/analyze', {
                 method: 'POST',
@@ -208,6 +213,11 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
             return fieldInputValues[champ];
         }
 
+        // Guard against null fieldValues
+        if (!fieldValues) {
+            return '';
+        }
+
         // Sinon, utiliser la valeur par défaut si disponible
         if (champ === 'date_expiration_api' && fieldValues.date_expiration_api) {
             return convertDateToISO(fieldValues.date_expiration_api);
@@ -237,7 +247,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                         <div className={isLoading ? "fr-alert fr-alert--info fr-mb-4w" : "fr-alert fr-alert--success fr-mb-4w"}>
                             <h1 className="fr-alert__title">{isLoading ? t('analysis.alert.processing.title') : t('analysis.alert.success.title')}</h1>
                             <p>
-                                {t('analysis.alert.greeting.start')} {fieldValues.prenom} {fieldValues.nom}, {t('analysis.alert.greeting.end')}
+                                {t('analysis.alert.greeting.start')} {fieldValues?.prenom} {fieldValues?.nom}, {t('analysis.alert.greeting.end')}
                             </p>
                         </div>
 
@@ -251,7 +261,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                                     borderRadius: '4px',
                                     whiteSpace: 'pre-wrap'
                                 }}>
-                                    {fieldValues.message}
+                                    {fieldValues?.message}
                                 </div>
 
                                 {/* Spinner de chargement */}

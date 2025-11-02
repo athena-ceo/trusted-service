@@ -61,6 +61,11 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
     const handleCase = async () => {
         try {
+            if (!fieldValues) {
+                console.error('No field values provided');
+                return;
+            }
+
             fieldValues.numero_AGDREF = fieldValues.agdref || null;
             delete fieldValues.agdref;
             delete fieldValues.message;
@@ -170,7 +175,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                         <div className={isLoading ? "fr-alert fr-alert--info fr-mb-4w" : "fr-alert fr-alert--success fr-mb-4w"}>
                             <h1 className="fr-alert__title">{isLoading ? t('handleCase.alert.processing.title') : t('handleCase.alert.success.title')}</h1>
                             <p>
-                                {t('handleCase.alert.greeting.start')} {fieldValues.prenom} {fieldValues.nom}, {t('handleCase.alert.greeting.end')}
+                                {t('handleCase.alert.greeting.start')} {fieldValues?.prenom} {fieldValues?.nom}, {t('handleCase.alert.greeting.end')}
                             </p>
                         </div>
 
@@ -232,7 +237,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                         {/* Résumé de l'analyse */}
                         {!isLoading && vueAgent && (
                             <div className="fr-mb-3w">
-                                <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues.prenom, fieldValues.nom, fieldValues.date_demande)}</h3>
+                                <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues?.prenom, fieldValues?.nom, fieldValues?.date_demande)}</h3>
                                 <div
                                     className="fr-text--sm highlighted-content"
                                     dangerouslySetInnerHTML={{
