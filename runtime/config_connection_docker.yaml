@@ -1,0 +1,4 @@
+client_url: "http://localhost:8501" # Used for defining the CORS middleware
+rest_api_host: "0.0.0.0"  # Bind to all interfaces for Docker
+rest_api_port: 8002
+

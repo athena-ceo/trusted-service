@@ -19,10 +19,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 COPY launcher_api.py .
+COPY docker-entrypoint.sh .
 COPY runtime/ ./runtime/
 
-# Create cache directory
-RUN mkdir -p runtime/cache
+# Create cache directory and make entrypoint executable
+RUN mkdir -p runtime/cache && \
+    chmod +x docker-entrypoint.sh
 
 # Expose backend port
 EXPOSE 8002
@@ -35,6 +37,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
-# Run the application
-CMD ["python", "launcher_api.py", "./runtime"]
+# Use entrypoint script to handle Docker-specific setup
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["./runtime"]
 
