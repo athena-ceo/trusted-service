@@ -229,19 +229,19 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
         // Sinon, utiliser la valeur par défaut si disponible
         if (champ === 'date_expiration_api' && fieldValues.date_expiration_api) {
-            return convertDateToISO(fieldValues.date_expiration_api);
+            return convertDateToISO(String(fieldValues.date_expiration_api));
         } else if (champ === 'date_expiration_recepisse' && fieldValues.date_expiration_recepisse) {
-            return convertDateToISO(fieldValues.date_expiration_recepisse);
+            return convertDateToISO(String(fieldValues.date_expiration_recepisse));
         } else if (champ === 'date_expiration_titre_sejour' && fieldValues.date_expiration_titre_sejour) {
-            return convertDateToISO(fieldValues.date_expiration_titre_sejour);
+            return convertDateToISO(String(fieldValues.date_expiration_titre_sejour));
         } else if (champ === 'refugie_ou_protege_subsidiaire') {
             return fieldValues.refugie_ou_protege_subsidiaire ? 'true' : 'false';
         } else if (champ === 'motif_deces') {
             return fieldValues.motif_deces ? 'true' : 'false';
         } else if (champ === 'demandeur_d_asile') {
             return fieldValues.demandeur_d_asile ? 'true' : 'false';
-        } else if (fieldValues[champ]) {
-            return fieldValues[champ];
+        } else if (fieldValues[champ] !== undefined) {
+            return String(fieldValues[champ]);
         }
 
         return '';
