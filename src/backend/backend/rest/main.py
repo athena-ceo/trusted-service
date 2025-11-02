@@ -224,10 +224,10 @@ async def analyze_v1(data: dict) -> dict[str, Any]:
     lang: SupportedLocale = data.get("lang", "fr").lower()
 
     # Print current date and time
-    print("********************************** analyser_demande **********************************")
+    print("********************************** analyze_request **********************************")
     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - analyze_v1")
 
-    # Récupérer la variable d'environnement APP_ENV
+    # Get the APP_ENV environment variable
     app_env = os.getenv("APP_ENV", "local")
     print(f"APP_ENV: {app_env}")
 

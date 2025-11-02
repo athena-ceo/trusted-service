@@ -65,7 +65,7 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_intent_description="Description de l'intention",
         promptstring_perform_the_2_tasks_below="Merci d'exécuter les 2 tâches suivantes",
         promptstring_task="TACHE",
-        # Modification pour adapter le prompt à Mistral (Joel)
+        # Modified to adapt the prompt to Mistral (Joel)
         # promptstring_instructions_intentions="Pour un texte donné fourni par *l'utilisateur* et la liste d'intentions ci-dessous, calculer un score entre 0 et 10 pour chaque intention et justifier le score en une ou deux phrases.",
         promptstring_instructions_intentions="Pour chaque intention, donner un score (0-10) et une justification courte.",
         promptstring_list_of_intentions="Liste des intentions",
@@ -88,7 +88,7 @@ La date de l'événement est le 01/10/2025
         promptstring_definitions="Définitions",
         promptstring_term="Terme",
         promptstring_definition="Définition",
-        # Modification pour adapter le prompt à Mistral (Joel)
+        # Modified to adapt the prompt to Mistral (Joel)
         # promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
         promptstring_return_only_json="Retourne uniquement un objet JSON valide et conforme au schéma ci-dessous. (pas de clés supplémentaires, pas de prose, pas de commentaires)",
 
