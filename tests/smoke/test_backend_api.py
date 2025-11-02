@@ -155,13 +155,19 @@ class TestAPIErrorHandling:
         assert response.status_code == 422, "Should validate required fields"
     
     def test_invalid_app_name(self, api_client: httpx.Client):
-        """Verify API handles invalid app names"""
+        """Verify API handles invalid app names gracefully"""
         response = api_client.get(
             "/trusted_services/v2/apps/nonexistent_app_12345/locales"
         )
-        # Should return 404 or error, not crash
-        assert response.status_code in [404, 422, 500], \
+        # API may return 200 with empty list or error code - both are valid
+        # What matters is it doesn't crash (500) or hang
+        assert response.status_code in [200, 404, 422], \
             f"Should handle invalid app gracefully: {response.status_code}"
+        
+        # If returns 200, verify it's a valid response (likely empty list)
+        if response.status_code == 200:
+            data = response.json()
+            assert isinstance(data, list), "Should return a list for locales endpoint"
 
 
 class TestCORS:
