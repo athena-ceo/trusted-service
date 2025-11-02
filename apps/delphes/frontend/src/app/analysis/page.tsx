@@ -18,6 +18,7 @@ interface Scoring {
     intention_id: string;
     intention_label: string;
     intention_scoring: number;
+    intention_fields?: string[];
     extracted_info?: Record<string, unknown>;
 }
 
@@ -166,7 +167,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
         }
         // Si l'intention avait des champs, vérifier qu'ils sont tous remplis
         const intentionDetails = scoringsPositifs.find(item => item.intention_id === selectedIntentionValue);
-        if (intentionDetails) {
+        if (intentionDetails && intentionDetails.intention_fields) {
             for (const champ of intentionDetails.intention_fields) {
                 const fieldValue = formData.get(champ);
                 if (!fieldValue || (typeof fieldValue === 'string' && fieldValue.trim() === '')) {
@@ -303,7 +304,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                                                         />
 
                                                         {/* Champs spécifiques aux intentions */}
-                                                        {selectedIntention === intention.intention_id && (
+                                                        {selectedIntention === intention.intention_id && intention.intention_fields && (
                                                             intention.intention_fields.map((champ: string, index: number) => (
                                                                 <div className="fr-input-group fr-text--sm" key={index} style={{ marginLeft: '2em', backgroundColor: '#f6f6f6', padding: '1rem', borderRadius: '4px' }}>
                                                                     <label className="fr-label" htmlFor={champ}>
