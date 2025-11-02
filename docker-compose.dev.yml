@@ -22,9 +22,11 @@ services:
       start_period: 30s
     restart: unless-stopped
 
-  # Frontend Next.js - Serveur unique - Architecture AMD64
+  # Frontend Next.js - Built locally for compatibility with ARM64 and AMD64
   frontend:
-    image: athenadecisionsystems/delphes-frontend:20251015-134519
+    build:
+      context: ./apps/delphes/frontend
+      dockerfile: Dockerfile
     container_name: delphes-frontend-dev
     env_file:
       - .env
