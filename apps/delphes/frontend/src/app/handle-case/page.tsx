@@ -24,6 +24,7 @@ interface AnalyzeResult {
         }[];
         case_info?: Record<string, unknown>;
     };
+    highlighted_text_and_features?: unknown;
 }
 
 interface SelectedIntention {
@@ -242,7 +243,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                         {/* Résumé de l'analyse */}
                         {!isLoading && vueAgent && (
                             <div className="fr-mb-3w">
-                                <h3 className="fr-h6">{t('handleCase.analysisResult', fieldValues?.prenom, fieldValues?.nom, fieldValues?.date_demande)}</h3>
+                                <h3 className="fr-h6">{t('handleCase.analysisResult', String(fieldValues?.prenom || ''), String(fieldValues?.nom || ''), String(fieldValues?.date_demande || ''))}</h3>
                                 <div
                                     className="fr-text--sm highlighted-content"
                                     dangerouslySetInnerHTML={{
@@ -307,7 +308,14 @@ export default function HandleCase() {
         }
 
         const storedData2 = localStorage.getItem('selectedIntention');
-        setSelectedIntention(storedData2)
+        if (storedData2) {
+            try {
+                const parsedData = JSON.parse(storedData2);
+                setSelectedIntention(parsedData);
+            } catch (error) {
+                console.error('Erreur lors de la lecture de selectedIntention:', error);
+            }
+        }
 
         const storedData3 = localStorage.getItem('intentionLabel');
         setIntentionLabel(storedData3)
@@ -334,7 +342,13 @@ export default function HandleCase() {
         <Suspense fallback={
             <Loading message={t('handleCase.loadingData')} />
         }>
-            <HandleCaseContent message={fieldValues.message} fieldValues={fieldValues} selectedIntention={selectedIntention} intentionLabel={intentionLabel} analyzeResult={analyzeResult} />
+            <HandleCaseContent 
+                message={typeof fieldValues.message === 'string' ? fieldValues.message : null} 
+                fieldValues={fieldValues} 
+                selectedIntention={selectedIntention} 
+                intentionLabel={intentionLabel} 
+                analyzeResult={analyzeResult} 
+            />
         </Suspense>
     );
 }
