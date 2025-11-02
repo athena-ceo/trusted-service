@@ -125,6 +125,16 @@ async def root():
     return {"message": "Hello"}
 
 
+@app.get("/api/health")
+async def health_check():
+    """Health check endpoint for Docker healthcheck and monitoring"""
+    return {
+        "status": "healthy",
+        "service": "trusted-services-backend",
+        "timestamp": datetime.now().isoformat()
+    }
+
+
 @app.post(API_ROUTE_V2 + "/reload_apps")
 async def reload_apps():
     print_red("*** reload_apps ***")
