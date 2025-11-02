@@ -1,0 +1,6 @@
+smartgov/rest/model/MyResponse.class
+smartgov/rest/HandlingService.class
+smartgov/rest/model/MyRequest.class
+smartgov/rest/FruitResource.class
+smartgov/rest/model/Fruit.class
+smartgov/rest/model/CustomerCase.class

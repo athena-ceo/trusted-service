@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:included0="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0CDBB51E-5965-4836-8C06-755D560BB31D" name="HandlingNational" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_DFB4B6B0-4D88-417C-9F48-7776A6266EA0">
+  <import id="_74033A08-3A6C-4603-90EE-6273EA53E30D" name="DataTypes" namespace="https://kie.org/dmn/_A8CA9047-CF92-4F7E-8536-1C355FEC1656" locationURI="./DataTypes.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"></import>
+  <inputData id="_2029D04B-BE3C-41E8-8287-02FBD328E3DE" name="the request">
+    <variable id="_10C01B54-8F5A-4075-A319-F36AA5EDD7E2" name="the request" typeRef="DataTypes.CaseHandlingDecisionInput"></variable>
+  </inputData>
+  <decision id="_B9A11787-37A8-4483-ACB5-41CD25B98DF6" name="HandlingDecision">
+    <variable id="_5E0B67B7-B5A8-4D77-AEDF-4BE2720B704F" name="HandlingDecision" typeRef="DataTypes.CaseHandlingDecisionOutput"></variable>
+    <informationRequirement id="_DF0D8F18-9A0E-4BCB-AE1B-5A2BA16D6E08">
+      <requiredDecision href="#_4DE253C6-0AED-4D3F-AB93-02F7994079C6"></requiredDecision>
+    </informationRequirement>
+    <informationRequirement id="_DD3EDC24-0CF2-4D64-9A4B-A03C70D3D7AB">
+      <requiredDecision href="#_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA"></requiredDecision>
+    </informationRequirement>
+    <informationRequirement id="_852B7F99-7BD2-4343-8688-BD715CD2330B">
+      <requiredDecision href="#_1325C96D-7403-4A6E-A221-2E0BDBB36EF6"></requiredDecision>
+    </informationRequirement>
+    <informationRequirement id="_353D63F7-36C5-47E0-91A5-DCCF076014C7">
+      <requiredDecision href="#_57D94780-679F-4493-AFC6-9B142F556345"></requiredDecision>
+    </informationRequirement>
+    <informationRequirement id="_E99EC59E-7EBC-43AC-B6CD-60764D91F47D">
+      <requiredDecision href="#_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0"></requiredDecision>
+    </informationRequirement>
+  </decision>
+  <decision id="_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" name="Handling">
+    <variable id="_B9758B47-415F-4568-9AAF-7F3739CDD331" name="Handling" typeRef="string"></variable>
+    <informationRequirement id="_B620030F-16F8-4423-AD65-655BA779A292">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE"></requiredInput>
+    </informationRequirement>
+  </decision>
+  <decision id="_4DE253C6-0AED-4D3F-AB93-02F7994079C6" name="WorkBasket">
+    <variable id="_FC78F7AE-F694-4288-9CDC-A62C804F7BAC" name="WorkBasket" typeRef="string"></variable>
+    <informationRequirement id="_479D4C9D-B910-4740-812C-4D37F14AC30E">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE"></requiredInput>
+    </informationRequirement>
+  </decision>
+  <decision id="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA" name="EmailTemplate">
+    <variable id="_784BF48F-5924-4DF9-9120-B4A38F339A03" name="EmailTemplate" typeRef="string"></variable>
+    <informationRequirement id="_1DA1B50C-A195-446B-B1E8-DEB2865E5F4E">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE"></requiredInput>
+    </informationRequirement>
+  </decision>
+  <decision id="_57D94780-679F-4493-AFC6-9B142F556345" name="AckMessage">
+    <variable id="_211B2FB6-3368-4091-9EB3-8A0E599C457B" name="AckMessage" typeRef="string"></variable>
+    <informationRequirement id="_D4EF0700-4BEC-437B-909B-8790E95DF519">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE"></requiredInput>
+    </informationRequirement>
+  </decision>
+  <decision id="_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0" name="Priority">
+    <variable id="_5DE79614-B638-45B6-A455-3FC3248B3ABB" name="Priority" typeRef="string"></variable>
+    <informationRequirement id="_6CED6C4D-167F-4163-826D-F07EB90D8F16">
+      <requiredInput href="#_2029D04B-BE3C-41E8-8287-02FBD328E3DE"></requiredInput>
+    </informationRequirement>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_31F80F7D-F70E-491C-A977-845B5915A2E2" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension></di:extension>
+      <dmndi:DMNShape id="_38E78031-1C82-412A-816A-7662BC665A26" dmnElementRef="_2029D04B-BE3C-41E8-8287-02FBD328E3DE" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="640" y="500" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6" dmnElementRef="_B9A11787-37A8-4483-ACB5-41CD25B98DF6" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="640" y="0" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" dmnElementRef="_1325C96D-7403-4A6E-A221-2E0BDBB36EF6" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="420" y="200" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_F439E7DF-2A01-4E88-9A18-3E68509D7499" dmnElementRef="_B620030F-16F8-4423-AD65-655BA779A292" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9">
+        <di:waypoint x="720" y="540"></di:waypoint>
+        <di:waypoint x="500" y="280"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_3D876CE1-5428-4139-AA22-D514AE727B2B" dmnElementRef="_4DE253C6-0AED-4D3F-AB93-02F7994079C6" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="640" y="200" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_31D97B0F-C1C7-4758-B582-123F6C528EAB" dmnElementRef="_479D4C9D-B910-4740-812C-4D37F14AC30E" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_3D876CE1-5428-4139-AA22-D514AE727B2B">
+        <di:waypoint x="720" y="540"></di:waypoint>
+        <di:waypoint x="720" y="280"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_617E3563-8B3C-481B-89DA-BD0C7EBCA9D3" dmnElementRef="_DF0D8F18-9A0E-4BCB-AE1B-5A2BA16D6E08" sourceElement="_3D876CE1-5428-4139-AA22-D514AE727B2B" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="720" y="240"></di:waypoint>
+        <di:waypoint x="720" y="80"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_542DD9ED-539C-472A-9132-5CD3765ED70D" dmnElementRef="_6A426569-E9D9-4ED3-ADE4-D2BE13E215CA" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="880" y="200" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_E427EAA2-E99B-4D68-B526-DAFE7AE17DA4" dmnElementRef="_1DA1B50C-A195-446B-B1E8-DEB2865E5F4E" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_542DD9ED-539C-472A-9132-5CD3765ED70D">
+        <di:waypoint x="720" y="540"></di:waypoint>
+        <di:waypoint x="960" y="280"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_82652066-4FEE-4674-AE60-BDC66180425C" dmnElementRef="_57D94780-679F-4493-AFC6-9B142F556345" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="1100" y="200" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_BFA5AAFF-B034-4485-B5BF-441DCE9E4406" dmnElementRef="_D4EF0700-4BEC-437B-909B-8790E95DF519" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_82652066-4FEE-4674-AE60-BDC66180425C">
+        <di:waypoint x="720" y="540"></di:waypoint>
+        <di:waypoint x="1180" y="280"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_3F147EA7-023D-4360-9E61-A4DF35ABC4BC" dmnElementRef="_DD3EDC24-0CF2-4D64-9A4B-A03C70D3D7AB" sourceElement="_542DD9ED-539C-472A-9132-5CD3765ED70D" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="960" y="240"></di:waypoint>
+        <di:waypoint x="720" y="40"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_EFDE4FE4-A004-4EDF-BEEA-1DDD88916108" dmnElementRef="_852B7F99-7BD2-4343-8688-BD715CD2330B" sourceElement="_A74735E4-F24D-4E45-BE7D-F4AA1B7E58B9" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="500" y="240"></di:waypoint>
+        <di:waypoint x="720" y="40"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_52918FF5-D8A2-4D19-8933-71424DCC8A40" dmnElementRef="_353D63F7-36C5-47E0-91A5-DCCF076014C7" sourceElement="_82652066-4FEE-4674-AE60-BDC66180425C" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="1180" y="240"></di:waypoint>
+        <di:waypoint x="720" y="40"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_BDA7E140-A34D-4492-AB5B-929C8AC876EC" dmnElementRef="_3E9C1288-981B-4DC0-987D-1E06AE8BDFE0" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="180" y="200" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_27B2702A-C7CD-4A9E-B467-DCE7EA0C31AB" dmnElementRef="_6CED6C4D-167F-4163-826D-F07EB90D8F16" sourceElement="_38E78031-1C82-412A-816A-7662BC665A26" targetElement="_BDA7E140-A34D-4492-AB5B-929C8AC876EC">
+        <di:waypoint x="720" y="540"></di:waypoint>
+        <di:waypoint x="260" y="280"></di:waypoint>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_02ED424E-4C7C-4DE7-B04D-8D19CE31F39C" dmnElementRef="_E99EC59E-7EBC-43AC-B6CD-60764D91F47D" sourceElement="_BDA7E140-A34D-4492-AB5B-929C8AC876EC" targetElement="_A1CE289A-D0E1-4885-BCF6-1D483211F1C6">
+        <di:waypoint x="260" y="240"></di:waypoint>
+        <di:waypoint x="720" y="40"></di:waypoint>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
