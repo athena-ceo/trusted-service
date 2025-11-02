@@ -101,7 +101,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                 },
                 body: JSON.stringify({
                     field_values: fieldValues,
-                    text: fieldValues.message,
+                    text: fieldValues.message || '',
                     lang: currentLang || 'fr'
                 }),
             });

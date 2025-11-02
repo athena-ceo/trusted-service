@@ -28,6 +28,11 @@ jobs:
           pip install pytest pytest-asyncio httpx playwright pytest-playwright
           playwright install chromium
 
+      - name: Create .env file for Docker Compose
+        run: |
+          touch .env
+          echo "# CI Environment variables" >> .env
+
       - name: Start services with Docker Compose
         run: |
           docker compose -f docker-compose.dev.yml up -d
