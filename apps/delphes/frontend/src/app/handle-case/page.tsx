@@ -66,6 +66,11 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                 return;
             }
 
+            if (!analyzeResult) {
+                console.error('No analyze result available');
+                return;
+            }
+
             fieldValues.numero_AGDREF = fieldValues.agdref || undefined;
             delete fieldValues.agdref;
             delete fieldValues.message;
