@@ -66,7 +66,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                 return;
             }
 
-            fieldValues.numero_AGDREF = fieldValues.agdref || null;
+            fieldValues.numero_AGDREF = fieldValues.agdref || undefined;
             delete fieldValues.agdref;
             delete fieldValues.message;
 
