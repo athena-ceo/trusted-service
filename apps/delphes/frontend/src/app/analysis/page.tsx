@@ -181,12 +181,14 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                     return;
                 }
                 // Sauvegarder la valeur dans fieldValues
+                // Convert FormData value to string (FormData.get returns string | File | null)
+                const fieldValueStr = fieldValue.toString();
                 if (champ === 'date_expiration_api' || champ === 'date_expiration_recepisse' || champ === 'date_expiration_titre_sejour') {
-                    fieldValues[champ] = convertISOToDate(fieldValue.toString());
+                    fieldValues[champ] = convertISOToDate(fieldValueStr);
                 } else if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces' || champ === 'demandeur_d_asile') {
-                    fieldValues[champ] = fieldValue === 'true';
+                    fieldValues[champ] = fieldValueStr === 'true';
                 } else {
-                    fieldValues[champ] = fieldValue;
+                    fieldValues[champ] = fieldValueStr;
                 }
             }
         }
