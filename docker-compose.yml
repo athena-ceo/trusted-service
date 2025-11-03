@@ -1,0 +1,24 @@
+# Trusted Services Framework - Backend Only
+# Use this for framework development or when connecting to remote frontends
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: trusted-services-backend
+    ports:
+      - "8002:8002"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./runtime:/app/runtime
+      - ./runtime_dev:/app/runtime_dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+

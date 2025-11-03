@@ -1,0 +1,29 @@
+# Delphes Application - Production Frontend
+# Connects to separately deployed Trusted Services backend
+# Backend URL configured via environment variables
+
+services:
+  # Delphes Custom Frontend (Next.js)
+  delphes-frontend:
+    image: athenadecisionsystems/delphes-frontend:latest
+    container_name: delphes-frontend-prod
+    env_file:
+      - ../../.env.production
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_TELEMETRY_DISABLED=1
+      # NEXT_PUBLIC_API_URL should be set in .env.production to point to backend
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+

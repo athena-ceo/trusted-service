@@ -1,47 +1,30 @@
-# Docker Compose for development and integration testing
+# Trusted Services Framework - Development with Generic Test Client
+# Use this for framework development and testing with the Streamlit test client
 
 services:
-  # Backend FastAPI service
+  # Backend - extends from base docker-compose.yml
   backend:
+    extends:
+      file: docker-compose.yml
+      service: backend
+    container_name: trusted-services-backend-dev
+
+  # Generic Streamlit Test Client
+  streamlit-client:
     build:
       context: .
-      dockerfile: Dockerfile.backend
-    container_name: trusted-services-backend-dev
+      dockerfile: Dockerfile.streamlit
+    container_name: trusted-services-test-client-dev
     ports:
-      - "8002:8002"
+      - "8501:8501"
     environment:
       - PYTHONUNBUFFERED=1
-    volumes:
-      - ./runtime:/app/runtime
-      - ./runtime_dev:/app/runtime_dev
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    restart: unless-stopped
-
-  # Frontend Next.js - Built locally for compatibility with ARM64 and AMD64
-  frontend:
-    build:
-      context: ./apps/delphes/frontend
-      dockerfile: Dockerfile
-    container_name: delphes-frontend-dev
-    env_file:
-      - .env
-    ports:
-      - "3000:3000"  # Exposition directe du port Next.js
-    environment:
-      - NEXT_TELEMETRY_DISABLED=1
-      - NEXT_PUBLIC_API_URL=http://backend:8002
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_PORT=8501
     depends_on:
       backend:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    volumes:
+      - ./runtime:/app/runtime
+      - ./runtime_dev:/app/runtime_dev
     restart: unless-stopped

@@ -1,20 +1,29 @@
-# Docker Compose pour la production - Version simplifiée AMD64
+# Trusted Services Framework - Production Backend
+# Use this to deploy the framework backend in production
+# Applications connect to this backend service
 
 services:
-  # Frontend Next.js - Serveur unique - Architecture AMD64
-  frontend:
-    image: athenadecisionsystems/delphes-frontend:20251031-013614
-    container_name: delphes-frontend-prod
+  backend:
+    image: trusted-services-backend:latest
+    container_name: trusted-services-backend-prod
+    ports:
+      - "8002:8002"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - APP_ENV=production
     env_file:
       - .env.production
-    ports:
-      - "3006:3000"  # Exposition directe du port Next.js
-    environment:
-      - NEXT_TELEMETRY_DISABLED=1
+    volumes:
+      - ./runtime:/app/runtime
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

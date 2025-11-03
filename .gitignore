@@ -115,3 +115,7 @@ docker-compose.override.yml
 *.swp
 *~
 
+
+# Excel temporary files
+~$*.xlsx
+~$*.xls

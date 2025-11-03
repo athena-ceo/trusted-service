@@ -1,0 +1,38 @@
+# Delphes Application - Development Stack
+# Full stack: Trusted Services backend + Delphes custom frontend
+
+services:
+  # Backend - Trusted Services framework
+  backend:
+    extends:
+      file: ../../docker-compose.yml
+      service: backend
+    container_name: delphes-backend-dev
+    volumes:
+      - ../../runtime:/app/runtime
+      - ../../runtime_dev:/app/runtime_dev
+
+  # Delphes Custom Frontend (Next.js)
+  delphes-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: delphes-frontend-dev
+    env_file:
+      - ../../.env
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_API_URL=http://backend:8002
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
