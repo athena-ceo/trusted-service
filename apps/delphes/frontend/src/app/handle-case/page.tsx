@@ -27,16 +27,10 @@ interface AnalyzeResult {
     highlighted_text_and_features?: unknown;
 }
 
-interface SelectedIntention {
-    intention_id?: string;
-    intention_label?: string;
-    intention_scoring?: number;
-}
-
 interface HandleCaseContentProps {
     message: string | null;
     fieldValues: FieldValues | null;
-    selectedIntention: SelectedIntention | null;
+    selectedIntention: string | null;
     intentionLabel: string | null;
     analyzeResult: AnalyzeResult | null;
 }
@@ -288,7 +282,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 export default function HandleCase() {
     const { t } = useLanguage();
     const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(null);
-    const [selectedIntention, setSelectedIntention] = useState<SelectedIntention | null>(null);
+    const [selectedIntention, setSelectedIntention] = useState<string | null>(null);
     const [intentionLabel, setIntentionLabel] = useState<string | null>(null);
     const [fieldValues, setFieldValues] = useState<FieldValues | null>(null);
 
@@ -309,12 +303,8 @@ export default function HandleCase() {
 
         const storedData2 = localStorage.getItem('selectedIntention');
         if (storedData2) {
-            try {
-                const parsedData = JSON.parse(storedData2);
-                setSelectedIntention(parsedData);
-            } catch (error) {
-                console.error('Erreur lors de la lecture de selectedIntention:', error);
-            }
+            // selectedIntention is stored as a plain string, not JSON
+            setSelectedIntention(storedData2);
         }
 
         const storedData3 = localStorage.getItem('intentionLabel');

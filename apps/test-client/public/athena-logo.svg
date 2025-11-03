@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+  <!-- Owl with gear -->
+  <g fill="#2B2D42">
+    <!-- Owl outline and body -->
+    <path d="M160 180c-10-15-20-30-20-30s10 15 20 30c15 20 25 45 25 70v50c0 30-15 55-35 70l-15 15c-5 5-5 10 0 15l15 15c20 15 35 40 35 70v50c0 25-10 50-25 70-10 15-20 30-20 30s10-15 20-30v-260z"/>
+    <path d="M340 180c10-15 20-30 20-30s-10 15-20 30c-15 20-25 45-25 70v50c0 30 15 55 35 70l15 15c5 5 5 10 0 15l-15 15c-20 15-35 40-35 70v50c0 25 10 50 25 70 10 15 20 30 20 30s-10-15-20-30v-260z"/>
+    
+    <!-- Owl head -->
+    <ellipse cx="200" cy="280" rx="70" ry="80"/>
+    <ellipse cx="300" cy="280" rx="70" ry="80"/>
+    
+    <!-- Eyes -->
+    <circle cx="200" cy="280" r="35" fill="white"/>
+    <circle cx="300" cy="280" r="35" fill="white"/>
+    <circle cx="210" cy="270" r="25" fill="#2B2D42"/>
+    <circle cx="310" cy="270" r="25" fill="#2B2D42"/>
+    <circle cx="215" cy="265" r="10" fill="white"/>
+    <circle cx="315" cy="265" r="10" fill="white"/>
+    
+    <!-- Beak -->
+    <path d="M240 310 L250 330 L260 310 Z"/>
+    
+    <!-- Eyebrows -->
+    <path d="M165 240 L180 230 L200 235" stroke="#2B2D42" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M335 240 L320 230 L300 235" stroke="#2B2D42" stroke-width="8" fill="none" stroke-linecap="round"/>
+    
+    <!-- Branch -->
+    <path d="M40 560 L460 560" stroke="#2B2D42" stroke-width="12" stroke-linecap="round"/>
+    <path d="M120 560 L100 530 L80 545" stroke="#2B2D42" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M380 560 L400 530 L420 545" stroke="#2B2D42" stroke-width="6" fill="none" stroke-linecap="round"/>
+    
+    <!-- Feet -->
+    <g transform="translate(200, 520)">
+      <rect x="-15" y="0" width="8" height="40" rx="4"/>
+      <rect x="-5" y="0" width="8" height="40" rx="4"/>
+      <rect x="5" y="0" width="8" height="40" rx="4"/>
+      <circle cx="-11" cy="40" r="8"/>
+      <circle cx="-1" cy="40" r="8"/>
+      <circle cx="9" cy="40" r="8"/>
+    </g>
+    
+    <g transform="translate(300, 520)">
+      <rect x="-15" y="0" width="8" height="40" rx="4"/>
+      <rect x="-5" y="0" width="8" height="40" rx="4"/>
+      <rect x="5" y="0" width="8" height="40" rx="4"/>
+      <circle cx="-11" cy="40" r="8"/>
+      <circle cx="-1" cy="40" r="8"/>
+      <circle cx="9" cy="40" r="8"/>
+    </g>
+    
+    <!-- Gear on chest -->
+    <g transform="translate(160, 380)">
+      <circle cx="0" cy="0" r="45"/>
+      <circle cx="0" cy="0" r="25" fill="white"/>
+      <circle cx="0" cy="0" r="12" fill="#2B2D42"/>
+      <!-- Gear teeth -->
+      <rect x="-8" y="-50" width="16" height="10" rx="2"/>
+      <rect x="-8" y="40" width="16" height="10" rx="2"/>
+      <rect x="-50" y="-8" width="10" height="16" rx="2"/>
+      <rect x="40" y="-8" width="10" height="16" rx="2"/>
+      <g transform="rotate(45)">
+        <rect x="-8" y="-50" width="16" height="10" rx="2"/>
+        <rect x="-8" y="40" width="16" height="10" rx="2"/>
+        <rect x="-50" y="-8" width="10" height="16" rx="2"/>
+        <rect x="40" y="-8" width="10" height="16" rx="2"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Text: Athena -->
+  <text x="500" y="420" font-family="serif" font-size="180" font-weight="bold" fill="#2B2D42">Athena</text>
+  
+  <!-- Text: DECISION SYSTEMS -->
+  <text x="500" y="520" font-family="sans-serif" font-size="70" letter-spacing="8" fill="#2B2D42">DECISION SYSTEMS</text>
+</svg>
+
