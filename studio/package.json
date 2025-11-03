@@ -1,7 +1,7 @@
 {
-  "name": "test-client",
-  "version": "2.0.0",
-  "description": "Modern React test client for Trusted Services Framework",
+  "name": "trusted-services-studio",
+  "version": "1.0.0",
+  "description": "Comprehensive UI for Trusted Services Framework - Testing, Configuration & Management",
   "author": "Athena Decision Systems",
   "license": "SEE LICENSE IN LICENSE",
   "private": true,

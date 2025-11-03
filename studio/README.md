@@ -1,33 +1,45 @@
-# Trusted Services Test Client (React)
+# Trusted Services Studio
 
-Modern React-based test client for the Trusted Services **framework**. This is framework infrastructure that provides testing and configuration capabilities for all applications. It replaces the Streamlit test client with a beautiful, responsive UI built with Next.js, TypeScript, and Tailwind CSS.
+The comprehensive UI for the Trusted Services **framework**. Studio provides testing, configuration, and management capabilities for all applications built on the framework. Built with Next.js, TypeScript, and Tailwind CSS, it replaces the legacy Streamlit test client with a modern, extensible interface.
 
-**Note**: This is framework-level UI, not an application. It resides at the root level alongside `src/`, `apps/`, and `runtime/`.
+**Note**: Studio is framework-level infrastructure, not an application. It resides at the root level alongside `src/`, `apps/`, and `runtime/`.
 
 **Copyright © 2025 Athena Decision Systems. All rights reserved.**
 
 ## Features
 
+### Current (v1.0 - Testing)
 - ✅ **Full API Coverage**: Connects to all Trusted Services v2 endpoints
 - 🎨 **Modern UI**: Built with Next.js 15, React 19, Tailwind CSS
 - 📱 **Responsive Design**: Works on desktop, tablet, and mobile
 - 🔄 **Real-time Updates**: React Query for efficient data fetching
 - 🎯 **Type-Safe**: Full TypeScript support matching backend models
 - 🚀 **Fast & Efficient**: Optimized performance with caching
+- 🦉 **Athena Branding**: Professional UI with company logo and favicon
+
+### Planned (Future)
+- 🔧 **Configuration UI**: Visual editor for application settings
+- 📊 **Analytics Dashboard**: Performance and usage metrics
+- 👥 **User Management**: Access control and permissions
+- 🔌 **Plugin System**: Extensible architecture for custom tools
 
 ## Architecture
 
 ```
-┌─────────────────────┐
-│  React Test Client  │  Port 3001
-│  (Next.js App)      │
-└──────────┬──────────┘
+┌──────────────────────────┐
+│  Trusted Services Studio │  Port 3001
+│  (Framework UI)          │
+└──────────┬───────────────┘
            │ REST API
            ▼
-┌─────────────────────┐
-│  FastAPI Backend    │  Port 8002
-│  (Trusted Services) │
-└─────────────────────┘
+┌──────────────────────────┐
+│  FastAPI Backend         │  Port 8002
+│  (Framework Core)        │
+└──────────┬───────────────┘
+           │
+           ├─► Delphes (French prefecture)
+           ├─► AISA (Finnish municipalities)
+           └─► conneXion (Asylum seekers)
 ```
 
 ## Tech Stack
@@ -63,7 +75,7 @@ open http://localhost:3000
 
 ```bash
 # From project root
-docker compose -f test-client/docker-compose.dev.yml up -d
+docker compose -f studio/docker-compose.dev.yml up -d
 
 # Access at http://localhost:3001
 ```
@@ -78,7 +90,7 @@ docker compose -f test-client/docker-compose.dev.yml up -d
 ## Project Structure
 
 ```
-test-client/  # Framework UI (not an application)
+studio/  # Framework UI (Testing + Configuration + Management)
 ├── app/                      # Next.js app directory
 │   ├── layout.tsx           # Root layout
 │   ├── page.tsx             # Home page

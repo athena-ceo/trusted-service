@@ -38,11 +38,11 @@ export default function Home() {
   // Update document title when app is selected
   useEffect(() => {
     if (appNameData) {
-      document.title = `${appNameData} | Trusted Services Test Client`;
+      document.title = `${appNameData} | Trusted Services Studio`;
     } else if (selectedAppId) {
-      document.title = `${selectedAppId} | Trusted Services Test Client`;
+      document.title = `${selectedAppId} | Trusted Services Studio`;
     } else {
-      document.title = "Trusted Services Test Client";
+      document.title = "Trusted Services Studio";
     }
   }, [appNameData, selectedAppId]);
 
@@ -64,7 +64,7 @@ export default function Home() {
               <div className="border-l-2 border-gray-300 pl-4">
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-gray-900">
-                    Trusted Services Test Client
+                    Trusted Services Studio
                   </h1>
                   {selectedAppId && (
                     <>

@@ -6,8 +6,8 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Trusted Services Test Client",
-  description: "Modern test client for Trusted Services framework",
+  title: "Trusted Services Studio",
+  description: "Comprehensive UI for Trusted Services Framework - Testing, Configuration & Management",
 };
 
 export default function RootLayout({
