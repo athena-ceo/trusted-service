@@ -1,6 +1,8 @@
 # Trusted Services Test Client (React)
 
-Modern React-based test client for the Trusted Services framework. This application replaces the Streamlit test client with a beautiful, responsive UI built with Next.js, TypeScript, and Tailwind CSS.
+Modern React-based test client for the Trusted Services **framework**. This is framework infrastructure that provides testing and configuration capabilities for all applications. It replaces the Streamlit test client with a beautiful, responsive UI built with Next.js, TypeScript, and Tailwind CSS.
+
+**Note**: This is framework-level UI, not an application. It resides at the root level alongside `src/`, `apps/`, and `runtime/`.
 
 **Copyright © 2025 Athena Decision Systems. All rights reserved.**
 
@@ -61,7 +63,7 @@ open http://localhost:3000
 
 ```bash
 # From project root
-docker compose -f apps/test-client/docker-compose.dev.yml up -d
+docker compose -f test-client/docker-compose.dev.yml up -d
 
 # Access at http://localhost:3001
 ```
@@ -76,7 +78,7 @@ docker compose -f apps/test-client/docker-compose.dev.yml up -d
 ## Project Structure
 
 ```
-apps/test-client/
+test-client/  # Framework UI (not an application)
 ├── app/                      # Next.js app directory
 │   ├── layout.tsx           # Root layout
 │   ├── page.tsx             # Home page
