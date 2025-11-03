@@ -8,6 +8,16 @@ from playwright.sync_api import Page, expect
 import os
 
 
+def is_frontend_available() -> bool:
+    """Check if Delphes frontend is available"""
+    frontend_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
+    try:
+        response = httpx.get(f"{frontend_url}/", timeout=5.0)
+        return response.status_code in [200, 301, 302]
+    except Exception:
+        return False
+
+
 @pytest.fixture
 def api_base_url() -> str:
     return os.getenv("API_BASE_URL", "http://localhost:8002")
@@ -21,8 +31,14 @@ def frontend_base_url() -> str:
 class TestCompleteUserJourney:
     """Test complete user workflow from form to submission"""
     
+    @pytest.mark.skipif(not is_frontend_available(), reason="Delphes frontend not available (framework-only tests)")
     def test_delphes_contact_flow(self, page: Page, frontend_base_url: str, api_base_url: str):
-        """Test complete Delphes contact form workflow"""
+        """Test complete Delphes contact form workflow
+        
+        Note: Requires Delphes frontend to be running.
+        Skipped in framework-only integration tests.
+        Tested separately in frontend-ci.yml workflow with Playwright.
+        """
         # Step 1: Navigate to contact form
         page.goto(f"{frontend_base_url}/accueil-etrangers", wait_until="networkidle")
         
