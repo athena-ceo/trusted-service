@@ -1,5 +1,9 @@
 name: Integration Tests
 
+# Tests the Trusted Services framework with the generic test client
+# Validates framework backend + Streamlit test client integration
+# Does NOT test application-specific custom frontends (those tested separately)
+
 on:
   push:
     branches: [main]
@@ -11,6 +15,7 @@ on:
 
 jobs:
   integration-test:
+    name: Framework Integration Tests
     runs-on: ubuntu-latest
 
     steps:

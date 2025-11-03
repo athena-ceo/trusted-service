@@ -595,6 +595,342 @@ pytest-watch
 
 ---
 
+## Application-Specific Testing
+
+### Testing the Framework
+
+Test framework functionality independently of applications:
+
+```bash
+# Start framework with generic test client
+./docker-manage.sh start framework
+
+# Run backend smoke tests
+pytest tests/smoke/test_backend_api.py -v
+
+# Access test client UI for manual testing
+# Navigate to: http://localhost:8501
+# - Select different applications from dropdown
+# - Test intent detection
+# - Verify decision engine responses
+```
+
+### Testing Applications
+
+#### Delphes Application
+
+**Full stack testing**:
+```bash
+# Start Delphes (backend + custom frontend)
+./docker-manage.sh start delphes
+
+# Run Delphes-specific tests
+pytest tests/smoke/test_backend_api.py -v --app=delphes
+pytest tests/smoke/test_frontend.py -v
+
+# Manual testing
+# - Frontend: http://localhost:3000
+# - Test user flow: contact form → analysis → case handling → confirmation
+```
+
+**Frontend-only testing**:
+```bash
+cd apps/delphes/frontend
+
+# Linting
+npm run lint
+
+# Build verification
+npm run build
+
+# Type checking
+npx tsc --noEmit
+
+# Run tests (if configured)
+npm test
+```
+
+**Configuration testing**:
+```bash
+# Test with generic client (validates config without custom UI)
+./docker-manage.sh start framework
+
+# In test client:
+# 1. Select "delphes" application
+# 2. Choose "fr" or "en" locale
+# 3. Enter test messages
+# 4. Verify intents are detected correctly
+# 5. Check all required fields appear
+```
+
+#### AISA Application
+
+**Testing AISA configuration**:
+```bash
+# Start AISA with generic client
+./docker-manage.sh start aisa
+
+# Verify AISA configuration
+pytest tests/smoke/test_backend_api.py -v
+# Manually test at: http://localhost:8501
+
+# Test both locales
+# - Finnish (fi): Test Finnish-language intents
+# - English (en): Test English translations
+```
+
+**Configuration validation**:
+```bash
+# Check AISA config files exist
+ls -la runtime/apps/AISA/
+
+# Verify Excel config structure
+python -c "import pandas as pd; df = pd.read_excel('runtime/apps/AISA/AISA.xlsx', sheet_name='intentions'); print(df.head())"
+
+# Test decision engine
+python -c "from runtime.apps.AISA.decision_engine import *; print('Decision engine loads successfully')"
+```
+
+#### conneXion Application
+
+**Testing conneXion**:
+```bash
+# Start conneXion
+./docker-manage.sh start connexion
+
+# Access at: http://localhost:8501
+# Test telecom-specific scenarios
+```
+
+### Multi-Application Testing
+
+**Test multiple applications in sequence**:
+```bash
+#!/bin/bash
+# test-all-apps.sh
+
+apps=("delphes" "aisa" "connexion")
+
+for app in "${apps[@]}"; do
+    echo "Testing $app..."
+    ./docker-manage.sh stop
+    ./docker-manage.sh start $app
+    sleep 10  # Wait for services to be ready
+    
+    # Run tests for this app
+    pytest tests/smoke/ -v --app=$app
+    
+    if [ $? -ne 0 ]; then
+        echo "❌ $app tests failed"
+        exit 1
+    fi
+    
+    echo "✅ $app tests passed"
+done
+
+./docker-manage.sh stop
+echo "✅ All applications tested successfully"
+```
+
+### Testing Configuration Changes
+
+**After updating application configuration**:
+
+```bash
+# 1. Clear cache (important!)
+rm -rf runtime/cache/*
+
+# 2. Rebuild Docker images if needed
+./docker-manage.sh rebuild framework
+
+# 3. Test with generic client first
+./docker-manage.sh start framework
+# Manually verify changes at http://localhost:8501
+
+# 4. Run automated tests
+pytest tests/smoke/ -v
+
+# 5. Test custom frontend (if applicable)
+./docker-manage.sh start delphes
+pytest tests/smoke/test_frontend.py -v
+```
+
+### Testing Intent Detection
+
+**Validate intent detection for each application**:
+
+```python
+# test_custom_intents.py
+import pytest
+import httpx
+
+@pytest.mark.parametrize("app,locale,text,expected_intent", [
+    ("delphes", "fr", "Je veux renouveler mon titre de séjour", "renouvellement_titre_sejour"),
+    ("AISA", "fi", "Haluan tilata jätekortin", "waste_card_request"),
+    ("conneXion", "en", "I need help with my bill", "billing_inquiry"),
+])
+def test_intent_detection(app, locale, text, expected_intent):
+    """Test intent detection for different applications"""
+    client = httpx.Client(base_url="http://localhost:8002", timeout=30.0)
+    
+    response = client.post(
+        f"/trusted_services/v2/apps/{app}/{locale}/analyze",
+        params={
+            "field_values": "{}",
+            "text": text,
+            "read_from_cache": "false",
+            "llm_config_id": "default"
+        }
+    )
+    
+    assert response.status_code == 200
+    data = response.json()
+    
+    # Check if expected intent is in top results
+    intents = data.get('text_analysis_response', {}).get('user_intention', [])
+    intent_ids = [i['intention_id'] for i in intents]
+    
+    assert expected_intent in intent_ids, \
+        f"Expected intent '{expected_intent}' not found in {intent_ids}"
+    
+    client.close()
+```
+
+Run with:
+```bash
+# Start framework
+./docker-manage.sh start framework
+
+# Run intent tests
+pytest test_custom_intents.py -v
+```
+
+### Integration Testing Across Applications
+
+**Test framework serves multiple apps correctly**:
+
+```python
+# test_multi_app_integration.py
+import pytest
+import httpx
+
+def test_all_apps_available():
+    """Verify all applications are registered"""
+    client = httpx.Client(base_url="http://localhost:8002")
+    
+    response = client.get("/trusted_services/v2/app_ids")
+    assert response.status_code == 200
+    
+    apps = response.json()
+    assert "delphes" in apps
+    assert "AISA" in apps
+    assert "conneXion" in apps
+    
+    client.close()
+
+def test_app_locales():
+    """Verify each app has correct locales"""
+    client = httpx.Client(base_url="http://localhost:8002")
+    
+    expected_locales = {
+        "delphes": ["fr", "en"],
+        "AISA": ["fi", "en"],
+        "conneXion": ["en"]
+    }
+    
+    for app, expected in expected_locales.items():
+        response = client.get(f"/trusted_services/v2/apps/{app}/locales")
+        assert response.status_code == 200
+        
+        locales = response.json()
+        for locale in expected:
+            assert locale in locales, \
+                f"Expected locale '{locale}' not found for app '{app}'"
+    
+    client.close()
+```
+
+### Performance Testing
+
+**Test application response times**:
+
+```bash
+# Install Apache Bench
+# macOS: brew install httpd
+# Ubuntu: apt-get install apache2-utils
+
+# Test backend performance
+ab -n 1000 -c 10 http://localhost:8002/api/health
+
+# Test analyze endpoint (requires valid JSON)
+ab -n 100 -c 5 -p analyze_payload.json -T application/json \
+   http://localhost:8002/trusted_services/v2/apps/delphes/fr/analyze
+```
+
+### Load Testing
+
+```python
+# test_load.py
+import httpx
+import asyncio
+import time
+
+async def call_analyze(client, app, locale, text):
+    """Single analyze API call"""
+    response = await client.post(
+        f"/trusted_services/v2/apps/{app}/{locale}/analyze",
+        params={
+            "field_values": "{}",
+            "text": text,
+            "read_from_cache": "false"
+        }
+    )
+    return response.status_code
+
+async def load_test():
+    """Simulate multiple concurrent users"""
+    async with httpx.AsyncClient(base_url="http://localhost:8002", timeout=60.0) as client:
+        # Simulate 50 concurrent requests
+        tasks = [
+            call_analyze(client, "delphes", "fr", f"Test message {i}")
+            for i in range(50)
+        ]
+        
+        start = time.time()
+        results = await asyncio.gather(*tasks)
+        end = time.time()
+        
+        success_count = sum(1 for r in results if r == 200)
+        print(f"Completed {len(results)} requests in {end-start:.2f}s")
+        print(f"Success rate: {success_count}/{len(results)}")
+
+if __name__ == "__main__":
+    asyncio.run(load_test())
+```
+
+### Docker Image Testing
+
+**Verify Docker images build and run correctly**:
+
+```bash
+# Test framework backend image
+docker build -t test-backend -f Dockerfile.backend .
+docker run --rm -p 8002:8002 test-backend &
+sleep 10
+curl http://localhost:8002/api/health
+docker stop $(docker ps -q --filter ancestor=test-backend)
+
+# Test Delphes frontend image
+cd apps/delphes/frontend
+docker build -t test-delphes-frontend .
+docker run --rm -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8002 test-delphes-frontend &
+sleep 15
+curl http://localhost:3000/
+docker stop $(docker ps -q --filter ancestor=test-delphes-frontend)
+```
+
+---
+
 ## Best Practices
 
 ### ✅ DO

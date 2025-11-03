@@ -1,42 +1,78 @@
-# Trusted Services - AI Platform for Public Services
+# Trusted Services - AI Framework for Public Services
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.5.4-black)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.1.0-blue)](https://reactjs.org/)
 [![Python](https://img.shields.io/badge/Python-3.11+-green)](https://python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.11-009688)](https://fastapi.tiangolo.com/)
-[![DSFR](https://img.shields.io/badge/DSFR-1.14.2-blue)](https://www.systeme-de-design.gouv.fr/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)](https://typescriptlang.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.39+-red)](https://streamlit.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://docker.com/)
 
-> 🏛️ **Intelligent platform for automation and improvement of French public services**
+> 🏛️ **Generic AI framework for building intelligent public service applications**
 
-A comprehensive solution combining artificial intelligence and government design system to modernize citizen reception and request processing.
+## 🌟 What is Trusted Services?
 
-## 🚀 Project Overview
+**Trusted Services** is a **generic framework** that enables rapid development of AI-powered public service applications. It combines:
 
-**Trusted Services** is an innovative platform that transforms the public services experience by integrating:
+- **🤖 AI-Powered Intent Detection**: Analyze user requests and automatically determine their intent
+- **📋 Intelligent Case Handling**: Route and process cases using configurable business rules
+- **🔧 Decision Engine Integration**: Support for ODM, DMN, and Python-based decision engines
+- **🌍 Multi-language Support**: Built-in localization for English, French, Finnish, and more
+- **🎯 Application-Agnostic**: Build any public service application on top of the framework
 
-- **🤖 Conversational AI** with Watson Orchestrate for citizen assistance
-- **📋 Automatic analysis** of requests with intent detection
-- **🎨 Modern interface** compliant with DSFR (French Government Design System)
-- **⚡ Optimized performance** with Next.js 15 and React 19
-- **♿ RGAA accessibility** respecting government standards
+### Framework vs Applications
 
-### 🎯 Use Case: Yvelines Prefecture (Delphes)
+```
+┌─────────────────────────────────────────────┐
+│      Trusted Services Framework             │
+│  (Backend + Generic Test Client)            │
+│  - Intent detection                         │
+│  - Case handling                            │
+│  - Decision engine integration              │
+│  - Multi-language support                   │
+└─────────────────────────────────────────────┘
+                    ▲
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+    ┌───▼───┐   ┌───▼───┐   ┌──▼────┐
+    │Delphes│   │ AISA  │   │conneX.│
+    │🇫🇷     │   │ 🇫🇮    │   │ 🧪    │
+    └───────┘   └───────┘   └───────┘
+   Prefecture   Helsinki    Telecom
+     System      Services   Test App
+```
 
-The pilot project modernizes the reception of foreigners at the prefecture with:
-- Intelligent appointment booking form
-- Automatic processing of complex requests
-- Responsive multilingual interface (FR/EN)
-- Complete integration with existing systems
+## 📦 Applications Built on Trusted Services
+
+### 🇫🇷 Delphes - French Prefecture System
+**Production application** modernizing reception at French prefectures
+- Custom Next.js frontend (French design system compliant)
+- Handles foreign nationals' residence permit requests
+- Multilingual support (French/English)
+- [See Delphes Documentation](apps/delphes/README.md)
+
+### 🇫🇮 AISA - Helsinki City Services
+**In development** for Helsinki city government
+- Uses generic Streamlit test client (custom frontend planned)
+- Finnish and English language support
+- [See APPLICATIONS.md](APPLICATIONS.md) for details
+
+### 🧪 conneXion - Telecom Test Application
+**Test application** for fictional telecom operator customer service
+- Uses generic test client
+- Validates framework capabilities
+- [See APPLICATIONS.md](APPLICATIONS.md) for details
+
+**Want to build your own application?** See [APPLICATIONS.md](APPLICATIONS.md) for the application catalog and development guide.
 
 ---
 
 ## 📋 Table of Contents
 
 - [🚀 Quick Start](#-quick-start)
+  - [Framework Development](#framework-development-docker-recommended)
+  - [Running Applications](#running-applications)
+  - [Manual Setup](#manual-setup-no-docker)
 - [🏗️ Architecture](#️-architecture)
-- [💻 Next.js Frontend](#-nextjs-frontend)
-- [🤖 AI Integration](#-ai-integration)
+- [📦 Applications](#-applications)
 - [🛠️ Installation](#️-installation)
 - [⚙️ Configuration](#️-configuration)
 - [🔧 API and Backend](#-api-and-backend)
@@ -50,151 +86,315 @@ The pilot project modernizes the reception of foreigners at the prefecture with:
 
 ## 🚀 Quick Start
 
-### Full Development Mode
+Choose your path: develop the framework, run an existing application, or build a new one.
+
+### Framework Development (Docker - Recommended)
+
+**Start the framework with generic test client:**
 
 ```bash
-# 1. Clone and install
+# Clone repository
 git clone <repository-url>
 cd trusted-service
 
-# 2. Python Backend
-python -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
+# Start framework with Streamlit test client
+./docker-manage.sh start framework
 
-# 3. Next.js Frontend
-cd apps/delphes/frontend
-npm install
-
-# 4. Launch in parallel
-# Terminal 1 - Backend API
-python launcher_api.py ./runtime
-
-# Terminal 2 - Next.js Frontend
-cd apps/delphes/frontend
-npm run dev
+# Or just the backend
+./docker-manage.sh start framework prod
 ```
 
 🌐 **Access**:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8002
-- API Documentation: http://localhost:8002/docs
+- **Backend API**: http://localhost:8002
+- **Generic Test Client**: http://localhost:8501  
+- **API Docs**: http://localhost:8002/docs
+- **Health Check**: http://localhost:8002/api/health
 
-### Docker Quick Start (Recommended)
+**Test all applications:**
+The generic test client lets you test any application (Delphes, AISA, conneXion) without needing their custom frontends.
 
+### Running Applications
+
+#### Option 1: Delphes Application (French Prefecture)
 ```bash
-# Start all services with Docker Compose
-./docker-manage.sh start
+# Full Delphes stack: Backend + Custom Next.js Frontend
+./docker-manage.sh start delphes
 
-# Check status
-./docker-manage.sh status
-
-# View logs
-./docker-manage.sh logs
-
-# Stop services
-./docker-manage.sh stop
+# Access at:
+#  - Frontend: http://localhost:3000
+#  - Backend:  http://localhost:8002
 ```
 
-🌐 **Services**:
-- Backend: http://localhost:8002
-- Frontend: http://localhost:3000
-- Health Check: http://localhost:8002/api/health
-
-**Available Commands:**
+#### Option 2: AISA Application (Helsinki City)
 ```bash
-./docker-manage.sh [command] [environment]
+# AISA uses the framework test client (for now)
+./docker-manage.sh start aisa
 
-Commands:
-  start       Start services
-  stop        Stop services  
-  restart     Restart services
-  status      Show service status
-  logs        View logs (Ctrl+C to exit)
-  build       Build Docker images
-  rebuild     Rebuild from scratch (no cache)
-  clean       Remove containers + volumes
-  shell       Open backend shell
+# Access at:
+#  - Test Client: http://localhost:8501
+#  - Backend:     http://localhost:8002
+```
 
-Environments:
-  dev         Development (default)
-  prod        Production
+#### Option 3: conneXion (Telecom Test App)
+```bash
+# Test application for validation
+./docker-manage.sh start connexion
+
+# Access at:
+#  - Test Client: http://localhost:8501
+#  - Backend:     http://localhost:8002
+```
+
+**List all available applications:**
+```bash
+./docker-manage.sh list-apps
+```
+
+### Docker Commands Reference
+
+```bash
+# Basic commands
+./docker-manage.sh start [app] [env]    # Start services
+./docker-manage.sh stop [app]           # Stop services
+./docker-manage.sh status [app]         # Check status
+./docker-manage.sh logs [app]           # View logs
+./docker-manage.sh shell [app]          # Backend shell
+
+# Build commands
+./docker-manage.sh build [app]          # Build images
+./docker-manage.sh rebuild [app]        # Rebuild from scratch
+./docker-manage.sh clean [app]          # Remove all (⚠️ includes volumes)
+
+# Targets: framework, delphes, aisa, connexion
+# Environments: dev (default), prod
 ```
 
 **Examples:**
 ```bash
-./docker-manage.sh start          # Start dev
-./docker-manage.sh start prod     # Start production
-./docker-manage.sh rebuild        # Clean rebuild
-./docker-manage.sh shell          # Access backend
+./docker-manage.sh start framework      # Framework + test client
+./docker-manage.sh start delphes        # Delphes full stack
+./docker-manage.sh logs delphes         # View Delphes logs
+./docker-manage.sh rebuild framework    # Clean framework rebuild
 ```
 
-### Streamlit Demo Mode (Legacy)
+### Manual Setup (No Docker)
 
+**Framework Backend:**
 ```bash
-# Integrated demo (client + server)
-streamlit run launcher_testclient.py ./runtime direct
+# 1. Setup Python environment
+python -m venv tsvenv
+source tsvenv/bin/activate  # Windows: tsvenv\Scripts\activate
+pip install -r requirements.txt
 
-# Or REST API mode
+# 2. Start backend
 python launcher_api.py ./runtime
-streamlit run launcher_testclient.py ./runtime rest
+
+# Backend runs at: http://localhost:8002
 ```
+
+**Generic Test Client:**
+```bash
+# With backend running, in another terminal:
+source tsvenv/bin/activate
+streamlit run launcher_testclient.py ./runtime rest
+
+# Test client at: http://localhost:8501
+```
+
+**Delphes Frontend (separate):**
+```bash
+# 1. Install Node dependencies
+cd apps/delphes/frontend
+npm install
+
+# 2. Start Next.js dev server
+npm run dev
+
+# Frontend at: http://localhost:3000
+```
+
+### What to Run?
+
+| **Goal** | **Command** | **What You Get** |
+|----------|-------------|------------------|
+| Test framework features | `./docker-manage.sh start framework` | Backend + Generic test client |
+| Run Delphes in production-like mode | `./docker-manage.sh start delphes` | Full Delphes stack |
+| Develop on AISA | `./docker-manage.sh start aisa` | Backend + Test client for AISA |
+| Framework backend only | `./docker-manage.sh start framework prod` | Just backend (for remote frontends) |
+| Build new application | See [APPLICATIONS.md](APPLICATIONS.md) | Development guide |
 
 ---
 
 ## 🏗️ Architecture
 
+### Framework Architecture
+
+The Trusted Services framework provides the core infrastructure that applications extend:
+
 ```mermaid
 graph TB
-    subgraph "Frontend Layer"
-        A[Next.js App] --> B[React Components]
-        B --> C[DSFR Design System]
+    subgraph "Application Layer (Pluggable)"
+        APP[Application Config]
+        APP_RULES[Business Rules]
+        APP_UI[Custom UI or Generic Client]
     end
     
-    subgraph "API Layer"
-        D[FastAPI Server] --> E[REST Endpoints]
-        E --> F[Python Backend]
+    subgraph "Framework Core"
+        API[FastAPI REST API]
+        INTENT[Intent Detection]
+        CASE[Case Handler]
+        DECISION[Decision Engine]
+        RENDER[Response Renderer]
     end
     
-    subgraph "AI Layer"
-        G[Watson Orchestrate] --> H[LLM Analysis]
-        H --> I[Intent Detection]
+    subgraph "AI Services"
+        LLM[LLM Provider]
+        OLLAMA[Ollama]
+        OPENAI[OpenAI]
+        SCALEWAY[Scaleway]
     end
     
-    subgraph "Data Layer"
-        J[Excel Config] --> K[Cache System]
-        K --> L[Email Integration]
+    subgraph "Decision Engines"
+        PYTHON[Python Rules]
+        ODM[IBM ODM]
+        DMN[DMN Engine]
     end
     
-    A --> D
-    F --> G
-    F --> J
+    APP_UI --> API
+    API --> INTENT
+    INTENT --> LLM
+    INTENT --> CASE
+    CASE --> DECISION
+    DECISION --> PYTHON
+    DECISION --> ODM
+    DECISION --> DMN
+    CASE --> RENDER
+    RENDER --> APP_UI
+    
+    APP -.configures.-> INTENT
+    APP -.configures.-> CASE
+    APP_RULES -.loaded by.-> DECISION
 ```
 
 ### Project Structure
 
 ```
 trusted-service/
-├── 🎨 apps/delphes/frontend/     # Modern Next.js frontend
-│   ├── src/app/                  # React pages and components
-│   ├── public/                   # Static assets
-│   └── package.json              # Node.js dependencies
-├── 🔧 src/                       # Python backend
-│   ├── backend/                  # FastAPI API
-│   ├── client/                   # API clients
-│   ├── common/                   # Shared utilities
-│   └── text_analysis/            # AI engine
-├── 🗃️ runtime/                   # Configuration and data
-│   ├── config_*.yaml            # Server configurations
-│   ├── apps/                     # Business apps (AISA, Delphes...)
-│   └── cache/                    # Analysis cache
-└── 📋 requirements.txt           # Python dependencies
+├── 📁 src/                       # ⭐ FRAMEWORK CODE
+│   ├── backend/
+│   │   ├── backend/
+│   │   │   ├── app.py           # Core FastAPI application
+│   │   │   ├── rest/            # REST API endpoints
+│   │   │   ├── localized_app.py # Localized app manager
+│   │   │   └── server_config.py # Configuration loader
+│   │   ├── decision/            # Decision engine integrations
+│   │   │   ├── decision.py      # Base decision interface
+│   │   │   ├── decision_dmoe/   # Python-based rules
+│   │   │   └── decision_odm/    # IBM ODM integration
+│   │   ├── distribution/        # Output distribution (email, etc.)
+│   │   ├── rendering/           # Response rendering (HTML, MD)
+│   │   └── text_analysis/       # AI/LLM integration
+│   ├── client/                  # API client libraries
+│   └── common/                  # Shared utilities
+│
+├── 📁 apps/                      # ⭐ APPLICATIONS
+│   ├── delphes/                 # French Prefecture app
+│   │   ├── frontend/            # Custom Next.js UI
+│   │   ├── docker-compose.dev.yml
+│   │   └── docker-compose.prod.yml
+│   ├── (future: aisa/, connexion/)
+│
+├── 📁 runtime/                   # ⭐ RUNTIME CONFIGURATION
+│   ├── apps/                    # Application-specific configs
+│   │   ├── AISA/               # Helsinki city services
+│   │   │   ├── AISA.xlsx       # Intent/field definitions
+│   │   │   └── decision_engine.py
+│   │   ├── delphes/            # Prefecture config
+│   │   │   ├── delphes.xlsx
+│   │   │   └── decision_engine.py
+│   │   └── conneXion/          # Telecom test app
+│   ├── cache/                  # LLM response cache
+│   ├── config_server.yaml      # Server settings
+│   └── config_connection.yaml  # API connection settings
+│
+├── 📁 tests/                     # Test suites
+│   ├── smoke/                   # Smoke tests
+│   ├── integration/             # Integration tests
+│   └── unit/                    # Unit tests
+│
+├── 📁 .github/workflows/         # CI/CD pipelines
+│
+├── 🐳 Docker files (Framework)
+│   ├── Dockerfile.backend       # Backend container
+│   ├── Dockerfile.streamlit     # Generic test client
+│   ├── docker-compose.yml       # Backend only
+│   ├── docker-compose.dev.yml   # Backend + test client
+│   └── docker-compose.prod.yml  # Production backend
+│
+├── 🔧 Management scripts
+│   ├── docker-manage.sh         # Multi-app Docker manager
+│   ├── launcher_api.py          # Backend launcher
+│   └── launcher_testclient.py   # Streamlit test client
+│
+└── 📋 Configuration
+    ├── requirements.txt         # Python dependencies
+    ├── Makefile                 # Development commands
+    └── TODO.md                  # Project roadmap
 ```
+
+### Key Design Principles
+
+1. **Framework is Application-Agnostic**: Core code in `src/` has zero application-specific logic
+2. **Applications are Pluggable**: Each app in `runtime/apps/` is self-contained with its config
+3. **Flexible UI**: Apps can use the generic test client or build custom frontends
+4. **Multiple Decision Engines**: Support Python, ODM, DMN based on app needs
+5. **Easy Testing**: Generic client allows testing any app without custom UI
+
 ---
 
-## 💻 Next.js Frontend
+## 📦 Applications
+
+The Trusted Services framework powers multiple public service applications. Each application is self-contained with its own configuration, business rules, and optionally a custom frontend.
+
+### Current Applications
+
+| Application | Status | Frontend | Description | Documentation |
+|-------------|--------|----------|-------------|---------------|
+| **Delphes 🇫🇷** | Production | Custom Next.js | French prefecture reception system | [apps/delphes/README.md](apps/delphes/README.md) |
+| **AISA 🇫🇮** | In Development | Generic Test Client | Helsinki city government services | [APPLICATIONS.md](APPLICATIONS.md) |
+| **conneXion 🧪** | Test/Demo | Generic Test Client | Telecom operator customer service | [APPLICATIONS.md](APPLICATIONS.md) |
+
+### Application Structure
+
+Each application consists of:
+
+```
+runtime/apps/{app_name}/
+├── {app_name}.xlsx         # Intent definitions and fields
+├── decision_engine.py      # Business rules (Python)
+└── (optional) other configs
+
+apps/{app_name}/            # Optional: custom frontend
+├── frontend/
+├── docker-compose.dev.yml
+└── docker-compose.prod.yml
+```
+
+### Building Your Own Application
+
+See [APPLICATIONS.md](APPLICATIONS.md) for:
+- Complete application catalog
+- Development guide for new applications
+- API integration examples
+- Configuration reference
+
+---
+
+## 💻 Delphes Frontend (Example Application)
 
 ### 🎨 Modern DSFR Interface
+
+**Note**: This section describes the Delphes-specific Next.js frontend. Other applications (AISA, conneXion) currently use the generic Streamlit test client.
 
 The Next.js frontend offers a modern user experience while respecting French government standards.
 

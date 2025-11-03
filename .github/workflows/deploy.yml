@@ -1,5 +1,10 @@
 name: Deploy
 
+# Deploys the Trusted Services framework backend and application frontends
+# - Framework Backend: Core API server (serves all applications)
+# - Delphes Frontend: Custom Next.js UI for French prefecture app
+# - Other application deployments can be added as separate jobs
+
 on:
   push:
     branches: [main]
@@ -17,6 +22,7 @@ on:
 
 jobs:
   build-and-push:
+    name: Build & Push Framework Images
     runs-on: ubuntu-latest
     permissions:
       contents: read

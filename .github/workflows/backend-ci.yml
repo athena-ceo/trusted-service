@@ -1,5 +1,9 @@
 name: Backend CI
 
+# Tests the Trusted Services framework backend (application-agnostic core)
+# Tests: Linting, Unit tests, Backend smoke tests, Security checks
+# Scope: src/, requirements.txt, tests/
+
 on:
   push:
     branches: [main, develop]

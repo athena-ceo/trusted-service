@@ -2,7 +2,7 @@
 
 ## 📋 Current Tasks
 
-### Docker & Architecture Restructuring (IN PROGRESS)
+### Docker & Architecture Restructuring (COMPLETED ✅)
 - [x] Phase 1: Framework Docker Infrastructure
   - [x] Create docker-compose.yml (framework backend only)
   - [x] Create Dockerfile.streamlit (generic test client)
@@ -15,16 +15,18 @@
   - [x] Support dev/prod environments
   - [x] Add list-apps command
   - [x] Update help documentation
-- [ ] Phase 3: Documentation Restructuring
-  - [ ] Update README.md (framework vs applications)
-  - [ ] Create APPLICATIONS.md
-  - [ ] Create apps/delphes/README.md
-  - [ ] Update TESTING.md
-- [ ] Phase 4: CI/CD Updates
-  - [ ] Update workflow descriptions
-  - [ ] Test framework and applications separately
-- [ ] Phase 5: Future Planning Documentation
-  - [ ] Create FUTURE_REFACTORING.md
+- [x] Phase 3: Documentation Restructuring
+  - [x] Update README.md (framework vs applications, new Quick Start)
+  - [x] Create APPLICATIONS.md (complete application catalog + dev guide)
+  - [x] Create apps/delphes/README.md (Delphes-specific documentation)
+  - [x] Update TESTING.md (application-specific testing sections)
+- [x] Phase 4: CI/CD Updates
+  - [x] Update integration-tests.yml (clarify framework testing)
+  - [x] Update deploy.yml (clarify deployment targets)
+  - [x] Update backend-ci.yml (add scope comments)
+  - [x] Update frontend-ci.yml (clarify Delphes-specific)
+- [x] Phase 5: Future Planning Documentation
+  - [x] Create FUTURE_REFACTORING.md (comprehensive roadmap)
 
 ---
 
@@ -252,15 +254,15 @@ aisa/                       # AISA repository
 
 ## 📚 Related Documentation
 
-- `README.md` - Main project documentation
-- `APPLICATIONS.md` - Application catalog (to be created)
-- `TESTING.md` - Testing guide
-- `INTEGRATION_TESTS.md` - Integration testing guide
-- `FUTURE_REFACTORING.md` - Detailed refactoring plans (to be created)
-- `apps/delphes/README.md` - Delphes documentation (to be created)
+- `README.md` - Main project documentation (framework-first structure) ✅
+- `APPLICATIONS.md` - Application catalog and development guide ✅
+- `TESTING.md` - Testing guide with application-specific sections ✅
+- `INTEGRATION_TESTS.md` - Integration testing guide ✅
+- `FUTURE_REFACTORING.md` - Comprehensive refactoring roadmap ✅
+- `apps/delphes/README.md` - Delphes-specific documentation ✅
 
 ---
 
 **Last Updated**: November 2024  
-**Current Phase**: Docker & Architecture Restructuring (Phases 1-2 complete)  
-**Next Phase**: Documentation (Phase 3)
+**Current Phase**: Docker & Architecture Restructuring (Phases 1-5 COMPLETE ✅)  
+**Next Phase**: Future Refactoring - Phase A (React Test Client)

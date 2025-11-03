@@ -1,5 +1,10 @@
 name: Frontend CI
 
+# Tests the Delphes application's custom Next.js frontend
+# Scope: apps/delphes/frontend/ only
+# Tests: Linting, TypeScript, Build verification, Playwright smoke tests
+# Note: Other applications (AISA, conneXion) use generic test client (no custom frontend CI needed)
+
 on:
   push:
     branches: [main, develop]
