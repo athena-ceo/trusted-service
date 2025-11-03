@@ -1,0 +1,38 @@
+# Docker Compose for Integration Testing
+# Includes: Backend + Delphes Frontend
+# Purpose: Full end-to-end integration tests including UI workflows
+
+services:
+  backend:
+    extends:
+      file: ./docker-compose.yml
+      service: backend
+    container_name: trusted-services-backend-integration
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  delphes-frontend:
+    build:
+      context: ./apps/delphes/frontend
+      dockerfile: Dockerfile
+    container_name: delphes-frontend-integration
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_API_URL=http://backend:8002
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+

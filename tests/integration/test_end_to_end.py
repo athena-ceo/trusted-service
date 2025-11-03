@@ -1,21 +1,14 @@
 """
 Integration tests for end-to-end workflows
 Tests complete user journeys through the application
+
+Note: These tests require both backend and Delphes frontend to be running.
+Use docker-compose.integration.yml to start the full stack for testing.
 """
 import pytest
 import httpx
 from playwright.sync_api import Page, expect
 import os
-
-
-def is_frontend_available() -> bool:
-    """Check if Delphes frontend is available"""
-    frontend_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
-    try:
-        response = httpx.get(f"{frontend_url}/", timeout=5.0)
-        return response.status_code in [200, 301, 302]
-    except Exception:
-        return False
 
 
 @pytest.fixture
@@ -29,15 +22,20 @@ def frontend_base_url() -> str:
 
 
 class TestCompleteUserJourney:
-    """Test complete user workflow from form to submission"""
+    """Test complete user workflow from form to submission
     
-    @pytest.mark.skipif(not is_frontend_available(), reason="Delphes frontend not available (framework-only tests)")
+    Note: Playwright/Chromium tests may fail on macOS Sequoia due to
+    known Chromium sandbox issues. Tests run successfully in CI (Linux).
+    """
+    
     def test_delphes_contact_flow(self, page: Page, frontend_base_url: str, api_base_url: str):
         """Test complete Delphes contact form workflow
         
-        Note: Requires Delphes frontend to be running.
-        Skipped in framework-only integration tests.
-        Tested separately in frontend-ci.yml workflow with Playwright.
+        Tests the full user journey through the Delphes UI.
+        Requires both backend and frontend to be running (via docker-compose.integration.yml).
+        
+        Note: May fail locally on macOS due to Chromium headless sandboxing issue.
+        Works correctly in GitHub Actions (Linux).
         """
         # Step 1: Navigate to contact form
         page.goto(f"{frontend_base_url}/accueil-etrangers", wait_until="networkidle")

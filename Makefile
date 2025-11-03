@@ -177,7 +177,7 @@ docker-up:
 	docker compose -f docker-compose.dev.yml up -d
 	@echo "Services started:"
 	@echo "  Backend: http://localhost:8002"
-	@echo "  Frontend: http://localhost:3000"
+	@echo "  Test Client: http://localhost:8501"
 
 docker-down:
 	@echo "Stopping Docker services..."
@@ -190,6 +190,30 @@ docker-clean:
 	@echo "Cleaning Docker resources..."
 	docker compose -f docker-compose.dev.yml down -v
 	docker system prune -f
+
+# Integration testing with full stack
+docker-integration-up:
+	@echo "Starting integration test stack (backend + Delphes frontend)..."
+	docker compose -f docker-compose.integration.yml up -d
+	@echo "Integration stack started:"
+	@echo "  Backend: http://localhost:8002"
+	@echo "  Delphes Frontend: http://localhost:3000"
+	@echo "  API Health: http://localhost:8002/api/health"
+
+docker-integration-down:
+	@echo "Stopping integration test stack..."
+	docker compose -f docker-compose.integration.yml down
+
+docker-integration-test:
+	@echo "Running integration tests..."
+	@$(MAKE) docker-integration-up
+	@sleep 15
+	@echo "Waiting for services to be healthy..."
+	@timeout 90 bash -c 'until curl -f http://localhost:8002/api/health; do sleep 3; done' || (echo "Backend failed to start" && $(MAKE) docker-integration-down && exit 1)
+	@timeout 90 bash -c 'until curl -f http://localhost:3000/; do sleep 3; done' || (echo "Frontend failed to start" && $(MAKE) docker-integration-down && exit 1)
+	@echo "✓ Services healthy, running tests..."
+	@API_BASE_URL=http://localhost:8002 FRONTEND_BASE_URL=http://localhost:3000 pytest tests/integration/ -v --tb=short
+	@$(MAKE) docker-integration-down
 
 # ============================================================================
 # Cleanup
