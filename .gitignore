@@ -72,6 +72,7 @@ out/
 .env.local
 .env*.local
 *.env
+.env.production
 
 # Cache
 runtime/cache/
@@ -86,6 +87,7 @@ runtime/cache/
 *.pyo
 *.pyd
 .Python
+**/*.bin
 
 # Security reports
 bandit-report.json
@@ -119,3 +121,32 @@ docker-compose.override.yml
 # Excel temporary files
 ~$*.xlsx
 ~$*.xls
+
+
+# ODM
+**/.metadata/
+**/.syncEntries
+**/output/
+**/target/
+**/sortie/
+**/reports/
+**/rapports/
+**/resdb.lock.db
+**/rtsdb.lock.db
+**/resdb.mv.db.bak
+**/rtsdb.mv.db.bak
+**/*.class
+**/*.zip
+**/.settings/
+**/.classpath
+
+
+.streamlit/secrets.toml
+**/~$*.xlsx
+**/test.py
+
+**/*.backup
+
+**/log_file.log
+**/server.log
+**/trusted-service-api.log
