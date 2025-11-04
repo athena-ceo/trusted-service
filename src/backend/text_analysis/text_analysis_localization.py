@@ -65,32 +65,14 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_intent_description="Description de l'intention",
         promptstring_perform_the_2_tasks_below="Merci d'exécuter les 2 tâches suivantes",
         promptstring_task="TACHE",
-        # Modified to adapt the prompt to Mistral (Joel)
-        # promptstring_instructions_intentions="Pour un texte donné fourni par *l'utilisateur* et la liste d'intentions ci-dessous, calculer un score entre 0 et 10 pour chaque intention et justifier le score en une ou deux phrases.",
-        promptstring_instructions_intentions="Pour chaque intention, donner un score (0-10) et une justification courte.",
+        promptstring_instructions_intentions="Pour un texte donné fourni par *l'utilisateur* et la liste d'intentions ci-dessous, calculer un score entre 0 et 10 pour chaque intention et justifier le score en une ou deux phrases.",
         promptstring_list_of_intentions="Liste des intentions",
         promptstring_instructions_extract_features="Extraire les éléments suivants du texte",
-        promptstring_description_of_fragments_feature="""
-si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne. 
-S'il s'agit d'une date, voici quelques règles de conversion implicite :
-- "début du mois" = jour 01 du mois courant
-- "mi-[mois]" = jour 15 du mois indiqué
-- "fin du mois" = dernier jour du mois indiqué
-- "la semaine dernière" = 7 jours avant la date du jour
-- "hier" = 1 jour avant la date du jour
-- "avant-hier" = 2 jours avant la date du jour
-- "la semaine prochaine" = 7 jours après la date du jour
-Exemple :
-Fragment de texte = "L'événement est arrivé au début du mois."
-La date du jour est le 15/10/2025
-La date de l'événement est le 01/10/2025
-            """,
+        promptstring_description_of_fragments_feature="si le texte mentionne {description_of_feature}, la liste des fragments de ce texte qui le mentionne",
         promptstring_definitions="Définitions",
         promptstring_term="Terme",
         promptstring_definition="Définition",
-        # Modified to adapt the prompt to Mistral (Joel)
-        # promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
-        promptstring_return_only_json="Retourne uniquement un objet JSON valide et conforme au schéma ci-dessous. (pas de clés supplémentaires, pas de prose, pas de commentaires)",
+        promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
 
         label_intention_other="AUTRE"),
 
@@ -108,7 +90,7 @@ La date de l'événement est le 01/10/2025
         promptstring_instructions_intentions="Perustuen *käyttäjän* antamaan tekstiin ja alla olevaan listaan aikomuksista luokittele jokainen aikomus nollasta kymmeneen ja perustele luokittelu yhdellä tai kahdella lauseella.",
         promptstring_list_of_intentions="Lista aikomuksista",
         promptstring_instructions_extract_features="Poimi seuraavat ominaisuudet tekstistä",
-        promptstring_description_of_fragments_feature="Jos tekstissä mainitaan {ominaisuuden kuvaus}, lista merkkijonon osista, joissa se mainitaan",
+        promptstring_description_of_fragments_feature="Jos tekstissä mainitaan {description_of_feature}, lista merkkijonon osista, joissa se mainitaan",
         promptstring_definitions="Määritelmät",
         promptstring_term="Termi",
         promptstring_definition="Määritelmä",

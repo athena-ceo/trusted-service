@@ -86,6 +86,9 @@
 
 ## 🚀 Quick Start
 
+The simplest option to check the framework is the integrated demo (client + in-process server) which runs the test/demo client and the Trusted Services server in the same process.
+`streamlit run launcher_testclient.py ./runtime direct`
+
 Choose your path: develop the framework, run an existing application, or build a new one.
 
 ### Framework Development (Docker - Recommended)
