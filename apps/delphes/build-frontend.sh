@@ -8,8 +8,8 @@ set -e  # Arrêter en cas d'erreur
 # Configuration
 DOCKER_ORG="athenadecisionsystems"
 IMAGE_NAME="delphes-frontend"
-DOCKERFILE_PATH="apps/delphes/frontend/Dockerfile"
-BUILD_CONTEXT="apps/delphes/frontend/"
+DOCKERFILE_PATH="frontend/Dockerfile"
+BUILD_CONTEXT="frontend/"
 PLATFORM="linux/amd64"
 
 # Couleurs pour les logs

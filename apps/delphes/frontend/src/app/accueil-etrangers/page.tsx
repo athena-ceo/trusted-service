@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,7 +22,7 @@ interface FormData {
 import "../globals.css";
 // import "./AccueilEtrangers.css"; // Fichier CSS supprimé temporairement pour le build
 
-export default function AccueilEtrangers() {
+function AccueilEtrangersContent() {
   const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -199,5 +200,13 @@ export default function AccueilEtrangers() {
       </main>
       <Footer departement={departement} />
     </>
+  );
+}
+
+export default function AccueilEtrangers() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccueilEtrangersContent />
+    </Suspense>
   );
 }
