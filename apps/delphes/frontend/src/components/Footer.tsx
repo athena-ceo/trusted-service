@@ -9,10 +9,23 @@ import Link from "next/link";
 import { Button } from "@carbon/react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function Footer({ departement = '78', displayWatson = false }: { departement?: string, displayWatson?: boolean }) {
+export default function Footer({ departement = '', displayWatson = false }: { departement?: string, displayWatson?: boolean }) {
     const { t } = useLanguage();
     const [watsonEnabled, setWatsonEnabled] = useState(false);
     const [watsonActivated, setWatsonActivated] = useState(false);
+    const [departementLabel, setDepartementLabel] = useState('');
+
+    useEffect(() => {
+        if (departement === '78') {
+            setDepartementLabel('des Yvelines');
+        } else if (departement === '91') {
+            setDepartementLabel('de l\'Essonne');
+        } else if (departement === '92') {
+            setDepartementLabel('des Hauts de Seine');
+        } else if (departement === '94') {
+            setDepartementLabel('du Val de Marne');
+        }
+    }, [departement]);
 
     // Utilisation du hook pour créer le bouton d'expansion Watson
     const { createExpandButton, setupWatsonButtonObserver } = useWatsonExpandButton();
@@ -44,7 +57,9 @@ export default function Footer({ departement = '78', displayWatson = false }: { 
                     <div className="fr-footer__brand fr-enlarge-link">
                         <Link href="/" title={t('footer.home')}>
                             <p className="fr-logo">
-                                préfet<br />des Yvelines
+                                préfet
+                                <br />
+                                {departementLabel}
                             </p>
                         </Link>
                     </div>

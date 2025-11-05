@@ -166,7 +166,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
     return (
         <>
-            <Header />
+            <Header departement={"" + fieldValues?.departement} />
             <main role="main" id="main" className="fr-container fr-py-6w">
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
@@ -272,7 +272,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                     </div>
                 </div>
             </main >
-            <Footer />
+            <Footer departement={"" + fieldValues?.departement} />
         </>
     );
 }

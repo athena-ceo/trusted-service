@@ -52,7 +52,18 @@ cp runtime_dev/apps/delphes/delphes.xlsx runtime/apps/delphes/delphes.xlsx
 | **smtp_port**                | `587`                                                                                                                                                  |
 | **send_email**               | `True`                                                                                                                                                 |
 
-### 1.3 🔄 Synchronisation Git
+### 1.3 ⚙️ Règles de décision
+
+Copiez les règles du runtime_dev vers le runtime :
+
+```bash
+# Depuis <wherever>/trusted-service
+diff runtime/apps/delphes/decision_engine.py runtime_dev/apps/delphes/decision_engine.py
+# Si différents :
+cp runtime_dev/apps/delphes/decision_engine.py runtime/apps/delphes/decision_engine.py
+```
+
+### 1.4 🔄 Synchronisation Git
 
 Poussez toutes les modifications vers le repository :
 
@@ -121,6 +132,14 @@ sudo systemctl restart trusted-services-api
 ```
 
 **ℹ️ Note :** Cette étape n'est nécessaire que si le code backend ou si des configurations ont été modifiés.
+
+### 3.2 📊 Relancer le client test Streamlit
+
+Si le code Python a changé, il faut redémarrer le service Test client :
+
+```bash
+sudo systemctl restart trusted-demo
+```
 
 ---
 

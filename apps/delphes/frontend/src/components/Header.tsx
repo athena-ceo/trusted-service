@@ -8,7 +8,6 @@ export default function Header({ departement = '' }: { departement?: string }) {
     const { currentLang, setLanguage, t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMenuMobileOpen, setIsMenuMobileOpen] = useState(false);
-
     const [departementLabel, setDepartementLabel] = useState('');
 
     useEffect(() => {
@@ -21,7 +20,6 @@ export default function Header({ departement = '' }: { departement?: string }) {
         } else if (departement === '94') {
             setDepartementLabel('du Val de Marne');
         }
-
     }, [departement]);
 
     const handleLanguageChange = (lang: 'FR' | 'EN', isMobile: boolean = false) => {
