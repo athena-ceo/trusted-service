@@ -1,13 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function Header() {
+export default function Header({ departement = '' }: { departement?: string }) {
     const { currentLang, setLanguage, t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMenuMobileOpen, setIsMenuMobileOpen] = useState(false);
+
+    const [departementLabel, setDepartementLabel] = useState('');
+
+    useEffect(() => {
+        if (departement === '78') {
+            setDepartementLabel('des Yvelines');
+        } else if (departement === '91') {
+            setDepartementLabel('de l\'Essonne');
+        } else if (departement === '92') {
+            setDepartementLabel('des Hauts de Seine');
+        } else if (departement === '94') {
+            setDepartementLabel('du Val de Marne');
+        }
+
+    }, [departement]);
 
     const handleLanguageChange = (lang: 'FR' | 'EN', isMobile: boolean = false) => {
         setLanguage(lang);
@@ -35,33 +50,35 @@ export default function Header() {
                             <div className="fr-header__brand-top">
                                 <div className="fr-header__logo">
                                     <p className="fr-logo">
-                                        préfet<br />des Yvelines
+                                        préfet
+                                        <br />
+                                        {departementLabel}
                                     </p>
                                 </div>
                                 <div className="fr-header__navbar">
-                                    <button className="fr-btn--search fr-btn"
+                                    {/* <button className="fr-btn--search fr-btn"
                                         aria-controls="modal-372"
                                         id="button-373"
                                         title={t('header.search')}>
                                         {t('header.search')}
-                                    </button>
-                                    <button className="fr-btn--menu fr-btn"
+                                    </button> */}
+                                    {/* <button className="fr-btn--menu fr-btn"
                                         aria-controls="modal-398"
                                         aria-haspopup="menu"
                                         id="button-399"
                                         title={t('header.menu')}>
                                         {t('header.menu')}
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                             <div className="fr-header__service">
-                                <Link href="/" title={t('service.home')}>
+                                <Link href="/" title={t('service.home' + "." + departement)} className="fr-header__service-link">
                                     <p className="fr-header__service-title">
-                                        {t('service.title')}
+                                        {t('service.title' + "." + departement)}
                                     </p>
                                 </Link>
                                 <p className="fr-header__service-tagline">
-                                    {t('service.tagline')}
+                                    {t('service.tagline' + "." + departement)}
                                 </p>
                             </div>
                         </div>
@@ -103,232 +120,17 @@ export default function Header() {
                                             </div>
                                         </button>
                                     </li>
-                                    <li className="contact-li">
-                                        <a className="fr-btn fr-icon-mail-line" href="/accueil-etrangers" title={t('header.contact.title')}>
-                                            {t('header.contact')}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <button className="fr-btn fr-icon-theme-fill fr-link--icon-left"
-                                            aria-controls="fr-theme-modal">
-                                            {t('header.display')}
-                                        </button>
-                                    </li>
+                                    {departement && (
+                                        <li className="contact-li">
+                                            <a className="fr-btn fr-icon-mail-line" href={`/accueil-etrangers${departement ? `?departement=${departement}` : ''}`} title={t('header.contact.title')}>
+                                                {t('header.contact')}
+                                            </a>
+                                        </li>
+                                    )}
                                 </ul>
-                            </div>
-                            <div className="fr-header__search fr-modal"
-                                id="modal-372"
-                                aria-labelledby="button-373">
-                                <div className="fr-container fr-container-lg--fluid">
-                                    <button className="fr-link--close fr-link"
-                                        aria-controls="modal-372">
-                                        {t('header.close')}
-                                    </button>
-                                    <form className="search-container loupe autocomplete" role="search">
-                                        <div className="fr-search-bar"
-                                            id="search-371"
-                                            role="search">
-                                            <label className="fr-label" htmlFor="search-371-input">{t('header.search')}</label>
-                                            <input className="fr-input searchh autocomplete"
-                                                placeholder={t('header.search')}
-                                                type="search"
-                                                id="search-371-input"
-                                                name="SearchText"
-                                                required />
-                                            <button className="fr-btn"
-                                                title={t('header.search')}>
-                                                {t('header.search')}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="fr-header__menu fr-modal"
-                id="modal-398"
-                aria-labelledby="button-399">
-                <div className="fr-container">
-                    <button className="fr-btn fr-btn--close"
-                        aria-controls="modal-398"
-                        title={t('header.closeMenu')}>
-                        {t('header.closeMenu')}
-                    </button>
-                    <div className="fr-header__menu-links">
-                        <ul className="fr-btns-group">
-                            <li className="contact-li">
-                                <a className="fr-btn fr-icon-mail-line" href="/accueil-etrangers" title={t('header.contact.title')}>
-                                    {t('header.contact')}
-                                </a>
-                            </li>
-                            <li>
-                                <button className="fr-btn fr-icon-theme-fill fr-link--icon-left" aria-controls="fr-theme-modal">
-                                    {t('header.display')}
-                                </button>
-                            </li>
-                            <li className="fr-translate fr-nav">
-                                <button
-                                    aria-controls="translate-menu-mobile"
-                                    aria-expanded={isMenuMobileOpen}
-                                    title={t('header.language.select')}
-                                    className="fr-btn fr-icon-translate-2 fr-btn--tertiary-no-outline fr-translate"
-                                    onClick={() => toggleMenu(true)}>
-                                    <div>
-                                        <span className="short-label">{currentLang}</span>
-                                        <span className="fr-hidden-lg"> {currentLang} - {currentLang === 'FR' ? t('header.language.fr').split(' - ')[1] : t('header.language.en').split(' - ')[1]}</span>
-                                    </div>
-                                    <div
-                                        className={`fr-collapse fr-translate__menu fr-menu ${isMenuMobileOpen ? 'fr-collapse--expanded' : ''}`}
-                                        id="translate-menu-mobile">
-                                        <ul className="fr-menu__list">
-                                            <li>
-                                                <a className="fr-translate__language fr-nav__link"
-                                                    href="/"
-                                                    hrefLang="fr"
-                                                    lang="fr"
-                                                    aria-current={currentLang === 'FR' ? 'true' : 'false'}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handleLanguageChange('FR', true);
-                                                    }}>
-                                                    {t('header.language.fr')}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a className="fr-translate__language fr-nav__link"
-                                                    href="/"
-                                                    hrefLang="en"
-                                                    lang="en"
-                                                    aria-current={currentLang === 'EN' ? 'true' : 'false'}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handleLanguageChange('EN', true);
-                                                    }}>
-                                                    {t('header.language.en')}
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                    <nav className="fr-nav" id="nav-main" role="navigation" aria-label="Menu principal">
-                        <ul className="fr-nav__list">
-                            <li className="fr-nav__item">
-                                <button className="fr-nav__btn" aria-expanded="false" aria-controls="menu-actualites">
-                                    {t('nav.news')}
-                                </button>
-                                <div className="fr-collapse fr-mega-menu" id="menu-actualites">
-                                    <div className="fr-container fr-container--fluid">
-                                        <div className="fr-grid-row">
-                                            <div className="fr-col-12">
-                                                <button className="fr-btn--close fr-btn" aria-controls="menu-actualites">
-                                                    {t('nav.close.news')}
-                                                </button>
-                                                <div className="fr-mega-menu__leader">
-                                                    <h4 className="fr-h4">{t('nav.news')}</h4>
-                                                    <Link className="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="https://www.yvelines.gouv.fr/Actualites">
-                                                        {t('nav.seeAll')}
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="fr-nav__item">
-                                <button className="fr-nav__btn" aria-expanded="false" aria-controls="menu-actions">
-                                    {t('nav.actions')}
-                                </button>
-                                <div className="fr-collapse fr-mega-menu" id="menu-actions">
-                                    <div className="fr-container fr-container--fluid">
-                                        <div className="fr-grid-row">
-                                            <div className="fr-col-12">
-                                                <button className="fr-btn--close fr-btn" aria-controls="menu-actions">
-                                                    {t('nav.close.actions')}
-                                                </button>
-                                                <div className="fr-mega-menu__leader">
-                                                    <h4 className="fr-h4">{t('nav.actions')}</h4>
-                                                    <Link className="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="https://www.yvelines.gouv.fr/Actions-de-l-Etat">
-                                                        {t('nav.seeAll')}
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="fr-nav__item">
-                                <button className="fr-nav__btn" aria-expanded="false" aria-controls="menu-services">
-                                    {t('nav.services')}
-                                </button>
-                                <div className="fr-collapse fr-mega-menu" id="menu-services">
-                                    <div className="fr-container fr-container--fluid">
-                                        <div className="fr-grid-row">
-                                            <div className="fr-col-12">
-                                                <button className="fr-btn--close fr-btn" aria-controls="menu-services">
-                                                    {t('nav.close.services')}
-                                                </button>
-                                                <div className="fr-mega-menu__leader">
-                                                    <h4 className="fr-h4">{t('nav.services')}</h4>
-                                                    <Link className="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="https://www.yvelines.gouv.fr/Services-de-l-Etat">
-                                                        {t('nav.seeAll')}
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="fr-nav__item">
-                                <button className="fr-nav__btn" aria-expanded="false" aria-controls="menu-publications">
-                                    {t('nav.publications')}
-                                </button>
-                                <div className="fr-collapse fr-mega-menu" id="menu-publications">
-                                    <div className="fr-container fr-container--fluid">
-                                        <div className="fr-grid-row">
-                                            <div className="fr-col-12">
-                                                <button className="fr-btn--close fr-btn" aria-controls="menu-publications">
-                                                    {t('nav.close.publications')}
-                                                </button>
-                                                <div className="fr-mega-menu__leader">
-                                                    <h4 className="fr-h4">{t('nav.publications')}</h4>
-                                                    <Link className="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="https://www.yvelines.gouv.fr/Publications">
-                                                        {t('nav.seeAll')}
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="fr-nav__item">
-                                <button className="fr-nav__btn" aria-expanded="false" aria-controls="menu-demarches">
-                                    {t('nav.procedures')}
-                                </button>
-                                <div className="fr-collapse fr-mega-menu" id="menu-demarches">
-                                    <div className="fr-container fr-container--fluid">
-                                        <div className="fr-grid-row">
-                                            <div className="fr-col-12">
-                                                <button className="fr-btn--close fr-btn" aria-controls="menu-demarches">
-                                                    {t('nav.close.procedures')}
-                                                </button>
-                                                <div className="fr-mega-menu__leader">
-                                                    <h4 className="fr-h4">{t('nav.procedures')}</h4>
-                                                    <Link className="fr-link fr-icon-arrow-right-line fr-link--icon-right" href="https://www.yvelines.gouv.fr/Demarches">
-                                                        {t('nav.seeAll')}
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </header>

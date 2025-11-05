@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -24,6 +24,10 @@ import "../globals.css";
 export default function AccueilEtrangers() {
   const { t } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Récupérer le département depuis l'URL, valeur par défaut '78'
+  const departement = searchParams.get('departement') || '78';
 
   const analyzeRequest = (formData: FormData) => {
     // Préparer les données pour l'API
@@ -32,7 +36,7 @@ export default function AccueilEtrangers() {
 
     const fieldValues = {
       date_demande: dateString,
-      departement: '78',
+      departement: departement,
       nom: formData.nom,
       prenom: formData.prenom,
       adresse_mail: formData.email,
@@ -53,7 +57,7 @@ export default function AccueilEtrangers() {
 
   return (
     <>
-      <Header />
+      <Header departement={departement} />
       <main role="main" id="content">
         <div className="fr-container">
           {/* Fil d'Ariane */}
@@ -77,7 +81,7 @@ export default function AccueilEtrangers() {
               <h1 className="fr-h1">{t('accueil.title')}</h1>
 
               <p>
-                {t('accueil.intro.line1')}
+                {t('accueil.intro.line1' + "." + departement)}
                 <br />
                 {t('accueil.intro.line2')}
                 <br />
@@ -93,7 +97,7 @@ export default function AccueilEtrangers() {
 
               <div className="fr-alert fr-alert--warning fr-mb-4w">
                 <p>
-                  <strong>{t('accueil.alert.warning')}</strong>
+                  <strong>{t('accueil.alert.warning' + "." + departement)}</strong>
                 </p>
               </div>
             </div>
@@ -103,7 +107,7 @@ export default function AccueilEtrangers() {
           <div className="fr-grid-row fr-grid-row--gutters fr-mb-6w">
             {/* Formulaire principal */}
             <div className="fr-col-12 fr-col-md-8">
-              <ContactForm onSubmit={analyzeRequest} isLoading={false} />
+              <ContactForm onSubmit={analyzeRequest} isLoading={false} departement={departement} />
             </div>
 
             {/* Sidebar informative */}
@@ -193,7 +197,7 @@ export default function AccueilEtrangers() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer departement={departement} />
     </>
   );
 }

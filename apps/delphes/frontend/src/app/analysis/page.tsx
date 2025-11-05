@@ -153,7 +153,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
         hasFetchedRef.current = true;
 
         analyzeRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSubmit = (event: React.FormEvent) => {
@@ -249,7 +249,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
     return (
         <>
-            <Header />
+            <Header departement={"" + fieldValues?.departement} />
             <main role="main" id="main" className="fr-container fr-py-6w">
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
@@ -419,7 +419,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                     </div>
                 </div>
             </main>
-            <Footer />
+            <Footer departement={"" + fieldValues?.departement} />
         </>
     );
 }

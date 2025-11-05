@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Button } from "@carbon/react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function Footer({ displayWatson = false }: { displayWatson?: boolean }) {
+export default function Footer({ departement = '78', displayWatson = false }: { departement?: string, displayWatson?: boolean }) {
     const { t } = useLanguage();
     const [watsonEnabled, setWatsonEnabled] = useState(false);
     const [watsonActivated, setWatsonActivated] = useState(false);
@@ -94,7 +94,7 @@ export default function Footer({ displayWatson = false }: { displayWatson?: bool
                             </a>
                         </li>
                         <li className="fr-footer__bottom-item">
-                            <a className="fr-footer__bottom-link" href="/accueil-etrangers">
+                            <a className="fr-footer__bottom-link" href={`/accueil-etrangers${departement ? `?departement=${departement}` : ''}`}>
                                 {t('footer.contact')}
                             </a>
                         </li>

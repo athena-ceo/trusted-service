@@ -17,6 +17,7 @@ interface FormData {
 interface ContactFormProps {
     onSubmit: (formData: FormData) => void;
     isLoading: boolean;
+    departement?: string;
 }
 
 // Données pour le préremplissage automatique (pour les tests)
@@ -32,7 +33,7 @@ const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennif
 
 const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com"];
 
-export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
+export default function ContactForm({ onSubmit, isLoading, departement = '78' }: ContactFormProps) {
     const { t } = useLanguage();
     const [formData, setFormData] = useState<FormData>({
         nom: "",
@@ -48,11 +49,22 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
     const [arrondissements, setArrondissements] = useState<Array<{ id: string, label: string }>>([]);
     const [statuts, setStatuts] = useState<Array<{ id: string, label: string }>>([]);
     const [errors, setErrors] = useState<Partial<FormData>>({});
+    const [urlArrondissement, setUrlArrondissement] = useState<string>("");
 
     const hasFetchedRef = useRef(false);
 
     // Charger les arrondissements depuis l'API
     useEffect(() => {
+        if (departement === "78") {
+            setUrlArrondissement("https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf");
+        } else if (departement === "91") {
+            setUrlArrondissement("https://www.essonne.gouv.fr/contenu/telechargement/18579/158914/file/communes-arrondissements.pdf");
+        } else if (departement === "92") {
+            setUrlArrondissement("https://www.hauts-de-seine.gouv.fr/layout/set/print/Services-de-l-Etat/Prefecture-et-Sous-Prefectures/Arrondissements");
+        } else if (departement === "94") {
+            setUrlArrondissement("https://www.val-de-marne.gouv.fr/contenu/telechargement/14051/100949/file/Liste+des+communes.pdf");
+        }
+
         if (hasFetchedRef.current) return;
         hasFetchedRef.current = true;
 
@@ -76,13 +88,13 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                 if (!arrondissementField || !arrondissementField.allowed_values) return;
 
                 const allowed = arrondissementField.allowed_values;
-                const departement = 78;
+                const departementNumber = parseInt(departement);
 
                 // Filtrer selon la condition departement==78
                 const filtered = allowed.filter((item: any) => {
                     try {
                         if (!item.condition_javascript) return true;
-                        const cond = item.condition_javascript.replace(/\{departement\}/g, departement.toString());
+                        const cond = item.condition_javascript.replace(/\{departement\}/g, departementNumber.toString());
                         return eval(cond);
                     } catch (e) {
                         return false;
@@ -132,13 +144,13 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
         const randomNom = noms[Math.floor(Math.random() * noms.length)];
         const randomPrenom = prenoms[Math.floor(Math.random() * prenoms.length)];
         const randomEmail = `${randomNom.toLowerCase()}.${randomPrenom.toLowerCase()}@${messageries[Math.floor(Math.random() * messageries.length)]}`;
-        const randomAgdref = "78" + Math.floor(Math.random() * 1000000000);
+        const randomAgdref = departement + Math.floor(Math.random() * 100000000);
 
         setFormData({
             nom: randomNom,
             prenom: randomPrenom,
             email: randomEmail,
-            arrondissement: "VERS",
+            arrondissement: arrondissements.length > 0 ? arrondissements[0].id : "",
             agdref: randomAgdref,
             statut: "régulier",
             message: `${t('form.message.example')}\n\n${randomPrenom} ${randomNom}`,
@@ -253,8 +265,8 @@ export default function ContactForm({ onSubmit, isLoading }: ContactFormProps) {
                                 className="fr-link fr-icon-external-link-line fr-link--icon-right"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf">
-                                {t('form.arrondissementLink')}
+                                href={urlArrondissement}>
+                                {t('form.arrondissementLink' + "." + departement)}
                             </a>
                         </p>
                     </div>
