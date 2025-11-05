@@ -1,4 +1,4 @@
-API_ROUTE_V2 = "/trusted_services/v2"
+API_ROUTE_V2 = "/api/v2"
 
 KEY_ANALYSIS_RESULT = "analysis_result"
 KEY_PROMPT = "prompt"

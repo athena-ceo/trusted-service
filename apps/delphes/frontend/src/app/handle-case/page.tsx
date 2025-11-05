@@ -84,19 +84,17 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                     lang: currentLang || 'fr'
                 }
             });
-            const handleCaseResponse = await fetch(apiBaseUrl + '/api/v1/process_request', {
+            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    case_request: {
-                        intention_id: selectedIntention,
-                        field_values: fieldValues,
-                        highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
-                        lang: currentLang || 'fr'
-                    },
-                }),
+                    intention_id: selectedIntention,
+                    field_values: fieldValues,
+                    highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
+                    decision_engine_config_id: "tests" // ce qui signigie qu'on utilise le moteur de décision en Python
+                })
             });
 
             // if (!handleCaseResponse.ok) {
@@ -163,7 +161,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
         hasFetchedRef.current = true;
 
         handleCase();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -332,12 +330,12 @@ export default function HandleCase() {
         <Suspense fallback={
             <Loading message={t('handleCase.loadingData')} />
         }>
-            <HandleCaseContent 
-                message={typeof fieldValues.message === 'string' ? fieldValues.message : null} 
-                fieldValues={fieldValues} 
-                selectedIntention={selectedIntention} 
-                intentionLabel={intentionLabel} 
-                analyzeResult={analyzeResult} 
+            <HandleCaseContent
+                message={typeof fieldValues.message === 'string' ? fieldValues.message : null}
+                fieldValues={fieldValues}
+                selectedIntention={selectedIntention}
+                intentionLabel={intentionLabel}
+                analyzeResult={analyzeResult}
             />
         </Suspense>
     );

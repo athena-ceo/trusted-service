@@ -95,7 +95,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
             }
 
             console.log('Sending analysis request with payload', fieldValues)
-            const analyzeResponse = await fetch(apiBaseUrl + '/api/v1/analyze', {
+            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || 'fr'}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,10 +103,10 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                 body: JSON.stringify({
                     field_values: fieldValues,
                     text: fieldValues.message || '',
-                    lang: currentLang || 'fr'
+                    read_from_cache: false,
+                    llm_config_id: "scaleway1"
                 }),
             });
-
             const analyzeResult = await analyzeResponse.json();
             console.log('Résultat de l\'analyse:', analyzeResult);
 

@@ -34,7 +34,7 @@ const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennif
 const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com"];
 
 export default function ContactForm({ onSubmit, isLoading, departement = '78' }: ContactFormProps) {
-    const { t } = useLanguage();
+    const { t, currentLang } = useLanguage();
     const [formData, setFormData] = useState<FormData>({
         nom: "",
         prenom: "",
@@ -75,7 +75,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         }
 
         console.log('Fetching arrondissements and statuts from API');
-        fetch(`${apiBaseUrl}/trusted_services/v2/apps/delphes/fr/case_model`)
+        fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || "fr"}/case_model`)
             .then(response => {
                 if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");
                 return response.json();
