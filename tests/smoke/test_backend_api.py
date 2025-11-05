@@ -75,13 +75,13 @@ class TestCriticalEndpoints:
     
     def test_analyze_endpoint_exists(self, api_client: httpx.Client):
         """Verify analyze endpoint accepts requests"""
-        # Test with query parameters (the endpoint expects form data, not JSON)
+        # Test with JSON body
         response = api_client.post(
             "/trusted_services/v2/apps/delphes/fr/analyze",
-            params={
-                "field_values": "{}",
+            json={
+                "field_values": {},
                 "text": "Test message",
-                "read_from_cache": "false",
+                "read_from_cache": False,
                 "llm_config_id": "test"
             }
         )

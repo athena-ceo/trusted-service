@@ -68,10 +68,10 @@ class TestAPIIntegration:
         
         response = client.post(
             "/trusted_services/v2/apps/delphes/fr/analyze",
-            params={
-                "field_values": "{}",
+            json={
+                "field_values": {},
                 "text": "Je souhaite renouveler mon titre de séjour",
-                "read_from_cache": "false",
+                "read_from_cache": False,
                 "llm_config_id": "default"
             }
         )
@@ -121,10 +121,10 @@ class TestMultilingualSupport:
         
         response = client.post(
             "/trusted_services/v2/apps/delphes/fr/analyze",
-            params={
-                "field_values": "{}",
+            json={
+                "field_values": {},
                 "text": "Bonjour, je souhaite obtenir un titre de séjour",
-                "read_from_cache": "false",
+                "read_from_cache": False,
                 "llm_config_id": "default"
             }
         )
@@ -139,10 +139,10 @@ class TestMultilingualSupport:
         
         response = client.post(
             "/trusted_services/v2/apps/delphes/en/analyze",
-            params={
-                "field_values": "{}",
+            json={
+                "field_values": {},
                 "text": "Hello, I would like to obtain a residence permit",
-                "read_from_cache": "false",
+                "read_from_cache": False,
                 "llm_config_id": "default"
             }
         )

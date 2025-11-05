@@ -70,13 +70,13 @@ class ApiClientRest(ApiClient):
 
     def analyze(self, app_id: str, locale: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
         url = f"{self.base_url}/{API_ROUTE_V2}/apps/{app_id}/{locale}/analyze"
-        params = {
-            "field_values": json.dumps(field_values),
+        data = {
+            "field_values": field_values,
             "text": text,
             "read_from_cache": read_from_cache,
             "llm_config_id": llm_config_id
         }
-        response = requests.post(url, params=params)
+        response = requests.post(url, json=data)
         if response.status_code == 200:
             return response.json()
         else:

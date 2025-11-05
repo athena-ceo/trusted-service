@@ -8,6 +8,7 @@ from typing import Optional, Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.server_api import ServerApi, CaseHandlingRequest, CaseHandlingDetailedResponse
@@ -15,6 +16,13 @@ from src.common.case_model import CaseModel
 from src.common.config import SupportedLocale
 from src.common.constants import API_ROUTE_V2
 from src.common.logging import print_red
+
+
+class AnalyzeRequest(BaseModel):
+    field_values: dict[str, Any]
+    text: str
+    read_from_cache: bool
+    llm_config_id: str
 
 
 def log_function_call():
@@ -191,10 +199,9 @@ async def get_case_model(app_id: str, locale: SupportedLocale) -> CaseModel:
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/analyze")
-async def analyze(app_id: str, locale: SupportedLocale, field_values: str, text: str, read_from_cache: bool, llm_config_id: str):
+async def analyze(app_id: str, locale: SupportedLocale, request: AnalyzeRequest):
     log_function_call()
-    field_values2 = json.loads(field_values)
-    return app.server_api.analyze(app_id=app_id, locale=locale, field_values=field_values2, text=text, read_from_cache=read_from_cache, llm_config_id=llm_config_id)
+    return app.server_api.analyze(app_id=app_id, locale=locale, field_values=request.field_values, text=request.text, read_from_cache=request.read_from_cache, llm_config_id=request.llm_config_id)
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/save_text_analysis_cache")
