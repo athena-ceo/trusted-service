@@ -56,7 +56,7 @@ class TestCriticalEndpoints:
     
     def test_get_app_ids_endpoint(self, api_client: httpx.Client):
         """Verify app_ids endpoint exists and returns data"""
-        response = api_client.get("/trusted_services/v2/app_ids")
+        response = api_client.get("/api/v2/app_ids")
         assert response.status_code == 200, \
             f"Endpoint missing or unexpected error: {response.status_code}"
         data = response.json()
@@ -64,7 +64,7 @@ class TestCriticalEndpoints:
     
     def test_get_locales_endpoint(self, api_client: httpx.Client):
         """Test get locales for an app"""
-        response = api_client.get("/trusted_services/v2/apps/delphes/locales")
+        response = api_client.get("/api/v2/apps/delphes/locales")
         # Should succeed if app exists, may return 404 if app doesn't exist
         assert response.status_code in [200, 404, 422], \
             f"Unexpected error: {response.status_code}"
@@ -77,7 +77,7 @@ class TestCriticalEndpoints:
         """Verify analyze endpoint accepts requests"""
         # Test with JSON body
         response = api_client.post(
-            "/trusted_services/v2/apps/delphes/fr/analyze",
+            "/api/v2/apps/delphes/fr/analyze",
             json={
                 "field_values": {},
                 "text": "Test message",
@@ -92,7 +92,7 @@ class TestCriticalEndpoints:
     def test_handle_case_endpoint_exists(self, api_client: httpx.Client):
         """Verify handle_case endpoint exists"""
         response = api_client.post(
-            "/trusted_services/v2/apps/delphes/fr/handle_case",
+            "/api/v2/apps/delphes/fr/handle_case",
             json={}
         )
         # Should not return 404 (endpoint exists), will return 422 for invalid data
@@ -101,7 +101,7 @@ class TestCriticalEndpoints:
     
     def test_get_intentions_endpoint(self, api_client: httpx.Client):
         """Test reload_apps endpoint (proxy for checking server responsiveness)"""
-        response = api_client.post("/trusted_services/v2/reload_apps")
+        response = api_client.post("/api/v2/reload_apps")
         # May return 200 or error, but should not be 404
         assert response.status_code != 404, \
             f"Endpoint missing: {response.status_code}"
@@ -140,7 +140,7 @@ class TestAPIErrorHandling:
     def test_invalid_json_on_handle_case(self, api_client: httpx.Client):
         """Verify API handles invalid JSON gracefully"""
         response = api_client.post(
-            "/trusted_services/v2/apps/delphes/fr/handle_case",
+            "/api/v2/apps/delphes/fr/handle_case",
             content="invalid json{",
             headers={"Content-Type": "application/json"}
         )
@@ -149,7 +149,7 @@ class TestAPIErrorHandling:
     def test_missing_required_fields_in_handle_case(self, api_client: httpx.Client):
         """Verify API validates required fields in handle_case"""
         response = api_client.post(
-            "/trusted_services/v2/apps/delphes/fr/handle_case",
+            "/api/v2/apps/delphes/fr/handle_case",
             json={}  # Missing required case_request field
         )
         assert response.status_code == 422, "Should validate required fields"
@@ -157,7 +157,7 @@ class TestAPIErrorHandling:
     def test_invalid_app_name(self, api_client: httpx.Client):
         """Verify API handles invalid app names gracefully"""
         response = api_client.get(
-            "/trusted_services/v2/apps/nonexistent_app_12345/locales"
+            "/api/v2/apps/nonexistent_app_12345/locales"
         )
         # API may return 200 with empty list or error code - both are valid
         # What matters is it doesn't crash (500) or hang

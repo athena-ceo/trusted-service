@@ -67,7 +67,7 @@ class TestAPIIntegration:
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/trusted_services/v2/apps/delphes/fr/analyze",
+            "/api/v2/apps/delphes/fr/analyze",
             json={
                 "field_values": {},
                 "text": "Je souhaite renouveler mon titre de séjour",
@@ -101,7 +101,7 @@ class TestAPIIntegration:
         }
         
         response = client.post(
-            "/trusted_services/v2/apps/delphes/fr/handle_case",
+            "/api/v2/apps/delphes/fr/handle_case",
             json={"case_request": case_request}
         )
         
@@ -120,7 +120,7 @@ class TestMultilingualSupport:
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/trusted_services/v2/apps/delphes/fr/analyze",
+            "/api/v2/apps/delphes/fr/analyze",
             json={
                 "field_values": {},
                 "text": "Bonjour, je souhaite obtenir un titre de séjour",
@@ -138,7 +138,7 @@ class TestMultilingualSupport:
         client = httpx.Client(base_url=api_base_url, timeout=30.0)
         
         response = client.post(
-            "/trusted_services/v2/apps/delphes/en/analyze",
+            "/api/v2/apps/delphes/en/analyze",
             json={
                 "field_values": {},
                 "text": "Hello, I would like to obtain a residence permit",
