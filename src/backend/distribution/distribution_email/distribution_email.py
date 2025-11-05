@@ -167,7 +167,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 subject=email_mail_to.subject,
                 body=email_mail_to.body,
             )
-            body += "<br>mailto" + mailto_link
+            body += "<br /><div style='font-size:x-large; margin-bottom:3rem'>📩 " + self.localization.label_reply + ": " + mailto_link + "</div><hr>"
 
         body += "</blockquote> </html>"
 
