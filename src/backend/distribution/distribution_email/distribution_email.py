@@ -90,10 +90,27 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         body_of_email_to_agent: str = self.build_body_of_email_to_agent(case_model, request, intent_label, case_handling_decision_output, )
 
+        # work_basket specifies the destination where the work item should be placed.
+        #
+        # This field can take two forms:
+        # - Mailbox basket name — a simple string representing a predefined inbox basket (e.g. "Incoming").
+        # - Email and folder path — a full destination composed of an email address followed by a folder path, separated by a colon (e.g. "user@example.com:Incoming" "user@example.com:/Folder/Subfolder").
+        # The general syntax is: <email>:<folder_path> | <basket_name>
+        #
+        # Examples:
+        #  "SupportTeam2025"
+        #  "john.doe@example.com:/Invoices/2025", "asile@pref92.gouv.fr:sauf-conduits"
+        basket_name: str = case_handling_decision_output.work_basket
+        if ":" in basket_name:
+            to_email_address, work_basket = basket_name.split(":", 1)
+        else:
+            to_email_address = self.email_config.agent_email_address
+            work_basket = basket_name
+
         email_to_agent: Email = Email(
             from_email_address=self.email_config.hub_email_address,
-            to_email_address=self.email_config.agent_email_address,
-            subject=f"{case_handling_decision_output.work_basket} - {case_handling_decision_output.priority}",
+            to_email_address=to_email_address,
+            subject=f"{work_basket} - {case_handling_decision_output.priority}",
             body=body_of_email_to_agent)
 
         # email_to_requester
@@ -123,7 +140,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         if self.email_config.send_email:
             print("SENDING EMAIL")
-            self.send_mail(email_config=self.email_config, email_to_send=email_to_agent, email_mail_to=email_to_requester)
+            self.send_mail(email_config=self.email_config, email_to_send=email_to_agent, email_mail_to=email_to_requester, priority=case_handling_decision_output.priority)
         else:
             print("NOT SENDING EMAIL")
 
@@ -173,10 +190,44 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         return body
 
+    def _set_email_priority(self, message: MIMEMultipart, priority: str) -> None:
+        """
+        Set email priority headers for SMTP clients.
+
+        Maps case priority to standard email priority headers:
+        - VERY_HIGH -> Highest priority (1)
+        - HIGH -> High priority (2)
+        - MEDIUM -> Normal priority (3)
+        - LOW -> Low priority (4)
+        - VERY_LOW -> Lowest priority (5)
+        """
+        priority_map = {
+            "VERY_HIGH": ("1", "Highest", "High"),
+            "HIGH": ("2", "High", "High"),
+            "MEDIUM": ("3", "Normal", "Normal"),
+            "LOW": ("4", "Low", "Low"),
+            "VERY_LOW": ("5", "Lowest", "Low")
+        }
+
+        if priority in priority_map:
+            x_priority, importance, priority_header = priority_map[priority]
+
+            # Standard headers for email priority
+            message["X-Priority"] = x_priority
+            message["Priority"] = priority_header
+            message["Importance"] = importance
+
+            # Additional headers for better client support
+            if priority in ["VERY_HIGH", "HIGH"]:
+                message["X-MSMail-Priority"] = "High"  # Outlook specific
+            elif priority in ["LOW", "VERY_LOW"]:
+                message["X-MSMail-Priority"] = "Low"   # Outlook specific
+
     def send_mail(self,
                   email_config: DistributionEmailConfig,
                   email_to_send: Email,
-                  email_mail_to: Optional[Email]) -> None:
+                  email_mail_to: Optional[Email],
+                  priority: str = "MEDIUM") -> None:
         email_password = email_config.password
         smtp_server = email_config.smtp_server
         smtp_port = email_config.smtp_port
@@ -196,6 +247,9 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         if isinstance(subject, str):
             subject = subject.encode('utf-8').decode('utf-8')
         message["Subject"] = subject
+
+        # Set email priority based on case_handling_decision_output.priority
+        self._set_email_priority(message, priority)
 
         # Prepare body (HTML) using UTF-8
         body = self.build_body(body=email_to_send.body, email_mail_to=email_mail_to)
@@ -244,7 +298,7 @@ if __name__ == "__main__":
 
     locale = "fr"
     email_config: DistributionEmailConfig = load_email_config_from_workbook(
-        os.path.join(os.path.dirname(__file__), "../../../../runtime/apps/delphes/delphes.xlsx"),
+        os.path.join(os.path.dirname(__file__), "../../../../runtime_dev/apps/delphes/delphes.xlsx"),
         locale)
     
     # Clean any problematic characters from config
@@ -275,4 +329,4 @@ if __name__ == "__main__":
         subject="Test d'email",
         body="Ceci est un test d'email envoye par le moteur de distribution.")
 
-    engine.send_mail(email_config=email_config, email_to_send=email_to_agent, email_mail_to=None)
+    engine.send_mail(email_config=email_config, email_to_send=email_to_agent, email_mail_to=None, priority="HIGH")
