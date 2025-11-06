@@ -44,6 +44,14 @@ export function Sidebar() {
     resetWorkflow,
   } = useTestClientStore();
 
+  // Handle app selection - reset workflow when changing app
+  const handleAppSelect = (appId: string) => {
+    if (selectedAppId !== appId) {
+      resetWorkflow(); // Reset all selections
+      setSelectedApp(appId); // Set new app
+    }
+  };
+
   // Fetch available apps
   const { data: appIds, isLoading: loadingApps, error: appsError } = useQuery({
     queryKey: ["appIds"],
@@ -70,12 +78,6 @@ export function Sidebar() {
     queryFn: () => apiClient.getDecisionEngineConfigIds(selectedAppId!),
     enabled: !!selectedAppId,
   });
-
-  // Auto-select first locale when app is selected
-  const handleAppSelect = (appId: string) => {
-    setSelectedApp(appId);
-    resetWorkflow();
-  };
 
   // Auto-select configs if only one option (must be in useEffect to avoid setState during render)
   useEffect(() => {
@@ -134,17 +136,16 @@ export function Sidebar() {
             <button
               key={appId}
               onClick={() => handleAppSelect(appId)}
-              className={`p-2 rounded-lg transition-all ${
-                selectedAppId === appId
+              className={`p-2 rounded-lg transition-all ${selectedAppId === appId
                   ? "bg-blue-600 text-white"
                   : "text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
               title={appId}
             >
               <Server className="h-5 w-5" />
             </button>
           ))}
-          
+
           {/* Locale Indicator */}
           {selectedLocale && (
             <div className="mt-4 p-2 bg-blue-50 rounded-lg">
@@ -161,36 +162,34 @@ export function Sidebar() {
               <Server className="h-5 w-5 text-gray-600" />
               <h2 className="text-lg font-semibold text-gray-900">Application</h2>
             </div>
-        
-        <div className="space-y-2">
-          {appIds?.map((appId) => (
-            <button
-              key={appId}
-              onClick={() => handleAppSelect(appId)}
-              className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
-                selectedAppId === appId
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`font-medium capitalize ${
-                    selectedAppId === appId ? "text-blue-900" : "text-gray-900"
-                  }`}>
-                    {appId}
-                  </p>
-                </div>
-                {selectedAppId === appId ? (
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                ) : (
-                  <Circle className="h-5 w-5 text-gray-400" />
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
+
+            <div className="space-y-2">
+              {appIds?.map((appId) => (
+                <button
+                  key={appId}
+                  onClick={() => handleAppSelect(appId)}
+                  className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${selectedAppId === appId
+                      ? "border-blue-600 bg-blue-50"
+                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={`font-medium capitalize ${selectedAppId === appId ? "text-blue-900" : "text-gray-900"
+                        }`}>
+                        {appId}
+                      </p>
+                    </div>
+                    {selectedAppId === appId ? (
+                      <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                    ) : (
+                      <Circle className="h-5 w-5 text-gray-400" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Locale Selection */}
           {selectedAppId && (
@@ -199,7 +198,7 @@ export function Sidebar() {
                 <Globe className="h-5 w-5 text-gray-600" />
                 <h2 className="text-lg font-semibold text-gray-900">Language</h2>
               </div>
-              
+
               {loadingLocales ? (
                 <div className="flex items-center justify-center py-4">
                   <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
@@ -229,17 +228,16 @@ export function Sidebar() {
                 <h3 className="text-sm font-semibold text-gray-900 mb-1">LLM Configuration</h3>
                 <p className="text-xs text-gray-500">Language model settings</p>
               </div>
-              
+
               <div className="space-y-1">
                 {llmConfigs.map((config) => (
                   <button
                     key={config}
                     onClick={() => setSelectedLlmConfigId(config)}
-                    className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
-                      selectedLlmConfigId === config
+                    className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${selectedLlmConfigId === config
                         ? "bg-blue-100 text-blue-900 font-medium"
                         : "hover:bg-gray-100 text-gray-700"
-                    }`}
+                      }`}
                   >
                     {config}
                   </button>
@@ -255,17 +253,16 @@ export function Sidebar() {
                 <h3 className="text-sm font-semibold text-gray-900 mb-1">Decision Engine</h3>
                 <p className="text-xs text-gray-500">Rule engine configuration</p>
               </div>
-              
+
               <div className="space-y-1">
                 {decisionEngineConfigs.map((config) => (
                   <button
                     key={config}
                     onClick={() => setSelectedDecisionEngineConfigId(config)}
-                    className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
-                      selectedDecisionEngineConfigId === config
+                    className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${selectedDecisionEngineConfigId === config
                         ? "bg-blue-100 text-blue-900 font-medium"
                         : "hover:bg-gray-100 text-gray-700"
-                    }`}
+                      }`}
                   >
                     {config}
                   </button>
