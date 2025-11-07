@@ -133,7 +133,7 @@ async def root():
     return {"message": "Hello"}
 
 
-@app.get("/api/health")
+@app.get("/api/health", tags=["System"])
 async def health_check():
     """Health check endpoint for Docker healthcheck and monitoring"""
     return {
@@ -143,119 +143,74 @@ async def health_check():
     }
 
 
-@app.post(API_ROUTE_V2 + "/reload_apps")
+@app.post(API_ROUTE_V2 + "/reload_apps", tags=["System"])
 async def reload_apps():
     print_red("*** reload_apps ***")
     log_function_call()
     return app.server_api.reload_apps()
 
 
-@app.get(API_ROUTE_V2 + "/app_ids", response_model=list[str], summary="Get the ids of all apps defined")
+@app.get(API_ROUTE_V2 + "/app_ids", response_model=list[str], summary="Get the ids of all apps defined", tags=["App Management"])
 async def get_app_ids() -> list[str]:
     log_function_call()
     return app.server_api.get_app_ids()
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/locales", response_model=list[str])
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/locales", response_model=list[str], tags=["App Management"])
 async def get_locales(app_id: str) -> list[str]:
     log_function_call()
     return app.server_api.get_locales(app_id)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/llm_config_ids", response_model=list[str])
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/llm_config_ids", response_model=list[str], tags=["Configuration"])
 async def get_llm_config_ids(app_id: str) -> list[str]:
     log_function_call()
     return app.server_api.get_llm_config_ids(app_id)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/decision_engine_config_ids", response_model=list[str])
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/decision_engine_config_ids", response_model=list[str], tags=["Configuration"])
 async def get_decision_engine_config_ids(app_id: str) -> list[str]:
     log_function_call()
     return app.server_api.get_decision_engine_config_ids(app_id)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/app_name")
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/app_name", tags=["Metadata"])
 async def get_app_name(app_id: str, locale: SupportedLocale) -> str:
     log_function_call()
     return app.server_api.get_app_name(app_id=app_id, locale=locale)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/app_description")
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/app_description", tags=["Metadata"])
 async def get_app_description(app_id: str, locale: SupportedLocale) -> str:
     log_function_call()
     return app.server_api.get_app_description(app_id=app_id, locale=locale)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/sample_message")
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/sample_message", tags=["Metadata"])
 async def get_sample_message(app_id: str, locale: SupportedLocale) -> str:
     log_function_call()
     return app.server_api.get_sample_message(app_id=app_id, locale=locale)
 
 
-@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/case_model")
+@app.get(API_ROUTE_V2 + "/apps/{app_id}/{locale}/case_model", tags=["Metadata"])
 async def get_case_model(app_id: str, locale: SupportedLocale) -> CaseModel:
     log_function_call()
     return app.server_api.get_case_model(app_id=app_id, locale=locale)
 
 
-@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/analyze")
+@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/analyze", tags=["Analysis and Processing"])
 async def analyze(app_id: str, locale: SupportedLocale, request: AnalyzeRequest):
     log_function_call()
     return app.server_api.analyze(app_id=app_id, locale=locale, field_values=request.field_values, text=request.text, read_from_cache=request.read_from_cache, llm_config_id=request.llm_config_id)
 
 
-@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/save_text_analysis_cache")
+@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/save_text_analysis_cache", tags=["Analysis and Processing"])
 async def save_text_analysis_cache(app_id: str, locale: SupportedLocale, text_analysis_cache: str):
     log_function_call()
     return app.server_api.save_text_analysis_cache(app_id, locale, text_analysis_cache)
 
 
-@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/handle_case")
+@app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/handle_case", tags=["Analysis and Processing"])
 async def handle_case(app_id: str, locale: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
     log_function_call()
     return app.server_api.handle_case(app_id=app_id, locale=locale, request=request)
-
-
-API_ROUTE = "/api/v1"
-# API_ROUTE = "/delphes-api/api/v1"
-
-
-@app.post(f"{API_ROUTE}/analyze", tags=["Services"])
-async def analyze_v1(data: dict) -> dict[str, Any]:
-    # Extract the field values from the POST request body
-    field_values: dict[str, Any] = data.get("field_values", "{}")
-
-    # Extract the message from the POST request body
-    text: str = data.get("text", "")
-
-    lang: SupportedLocale = data.get("lang", "fr").lower()
-
-    # Print current date and time
-    print("********************************** analyze_request **********************************")
-    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - analyze_v1")
-
-    # Get the APP_ENV environment variable
-    app_env = os.getenv("APP_ENV", "local")
-    print(f"APP_ENV: {app_env}")
-
-    if app_env == "production":
-        llm_config_id="scaleway1"
-    else:
-        llm_config_id="scaleway1"
-
-    return app.server_api.analyze(app_id="delphes", locale=lang, field_values=field_values, text=text, read_from_cache=False, llm_config_id=llm_config_id)
-
-
-@app.post(f"{API_ROUTE}/process_request", tags=["Services"])
-async def handle_case_v1(data: dict):
-    # Extract the case request object from the POST request body
-    case_request = data.get("case_request", "{}")
-    if isinstance(case_request, dict):
-        if "decision_engine_config_id" not in case_request:
-            case_request["decision_engine_config_id"] = "tests"
-        case_request = CaseHandlingRequest(**case_request)
-
-    lang: SupportedLocale = data.get("lang", "fr").lower()
-
-    print("********************************** handle_case_v1 **********************************")
-    return app.server_api.handle_case(app_id="delphes", locale=lang, request=case_request)
