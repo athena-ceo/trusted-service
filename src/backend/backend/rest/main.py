@@ -16,6 +16,7 @@ from src.common.case_model import CaseModel
 from src.common.config import SupportedLocale
 from src.common.constants import API_ROUTE_V2
 from src.common.logging import print_red
+from src.backend.ruleflow.ruleflow_api import router as ruleflow_router
 
 
 class AnalyzeRequest(BaseModel):
@@ -214,3 +215,7 @@ async def save_text_analysis_cache(app_id: str, locale: SupportedLocale, text_an
 async def handle_case(app_id: str, locale: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
     log_function_call()
     return app.server_api.handle_case(app_id=app_id, locale=locale, request=request)
+
+
+# Include ruleflow editor API router
+app.include_router(ruleflow_router)
