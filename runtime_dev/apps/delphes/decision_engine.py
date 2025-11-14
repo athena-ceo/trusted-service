@@ -13,6 +13,7 @@ work_basket_dublin = "dublin"
 work_basket_reorientation = "reorientation"
 work_basket_sauf_conduits = "sauf-conduits"
 work_basket_ukraine = "ukraine"
+work_basket_autres = "autres"
 
 response_template_id_api_a_renouveler = "api-a-renouveler"
 response_template_id_atda = "atda"
@@ -58,8 +59,15 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.priority = "MEDIUM" # Default priority
             output.handling = "DEFLECTION" # Default handling
 
+        def rule_other(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "other":
+                output.details.append("rule_other")
+                output.work_basket = work_basket_autres
+                output.notes.append("#INTENTION_AUTRE")
+
         print(f"------- 📦 Executing package_initialisations")
         rule_decision_par_defaut(input, output)
+        rule_other(input, output)
 
 
 
