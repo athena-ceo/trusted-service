@@ -302,6 +302,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
     package_initialisations(input, output)
     package_regles_nationales(input, output)
+    
+    # Packages spécifiques au département 78
     if input.field_values["departement"] == "78":
         package_cas_nominal_78(input, output)
         package_reajustements_78(input, output)

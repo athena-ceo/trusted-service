@@ -18,6 +18,28 @@ const formatPackageName = (name: string): string => {
     return formatted;
 };
 
+// Fonction pour simplifier l'affichage de la condition
+const simplifyCondition = (condition: string | null): string => {
+    if (!condition) return '';
+
+    // Pattern pour extraire: input.field_values["key"] == "value" ou input.field_values['key'] == 'value'
+    const pattern1 = /input\.field_values\[["']([^"']+)["']\]\s*==\s*["']([^"']+)["']/;
+    const match1 = condition.match(pattern1);
+    if (match1) {
+        return `${match1[1]} = ${match1[2]}`;
+    }
+
+    // Pattern pour: input.field_values["key"] == value (sans guillemets pour la valeur)
+    const pattern2 = /input\.field_values\[["']([^"']+)["']\]\s*==\s*([^\s\)]+)/;
+    const match2 = condition.match(pattern2);
+    if (match2) {
+        return `${match2[1]} = ${match2[2]}`;
+    }
+
+    // Si aucun pattern ne correspond, retourner la condition telle quelle
+    return condition;
+};
+
 interface RuleflowDiagramProps {
     packages: PackageConfig[];
     selectedPackage?: string | null;
@@ -51,31 +73,67 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
     const [dragInsertIndex, setDragInsertIndex] = useState<number | null>(null);
 
     // Dimensions du diagramme - vérifier la largeur réelle du conteneur
-    const svgWidth = 400; // Largeur augmentée pour accommoder la colonne agrandie
-    const centerX = svgWidth / 2;
+    // Largeur augmentée pour accommoder les branches conditionnelles (150px de décalage + 200px de package + 20px d'espace)
+    const svgWidth = 650; // Largeur augmentée pour les branches "oui" des conditions
+    const centerX = svgWidth / 2 - 150;
     const packageWidth = 200;
     const packageHeight = 80;
     const startY = 140; // Décalage initial pour laisser de la place au START
-    const svgHeight = Math.max(400, packages.length * 120 + 300);
+    const decisionDiamondSize = 70; // Taille du losange de décision (augmentée pour meilleure lisibilité)
+    const branchOffset = 150; // Décalage horizontal pour la branche "oui" (augmenté pour plus d'espace)
+    const horizontalSpacing = 20; // Espacement horizontal entre le losange et le package conditionnel
+    const arrowGap = 20; // Espace pour la petite flèche avant le losange
+    const connectorStartOffset = 10; // Décale le début de la ligne sous le package précédent
 
     const diagramData = useMemo(() => {
         // Trier les packages par ordre d'exécution
         const sortedPackages = [...packages].sort((a, b) => a.execution_order - b.execution_order);
 
         const packageX = centerX - packageWidth / 2; // Centrer le package
+        const verticalSpacing = 130; // Espacement vertical de base (augmenté)
+        const conditionalSpacing = 220; // Espacement supplémentaire pour les packages conditionnels (augmenté)
+        const decisionOffset = 80; // Distance entre le losange et le package (augmenté pour éviter le chevauchement)
 
-        // Calculer les positions des packages (décalés vers le bas pour laisser de la place à la légende et au START)
-        const packagePositions = sortedPackages.map((pkg, index) => ({
-            ...pkg,
-            x: packageX,
-            y: startY + index * 120,
-            width: packageWidth,
-            height: packageHeight,
-            centerX: centerX
-        }));
+        // Calculer les positions des packages avec espacement pour les conditions
+        let currentY = startY;
+        const packagePositions = sortedPackages.map((pkg, index) => {
+            const hasCondition = pkg.condition !== null && pkg.condition !== '';
+            const previousHasCondition = index > 0 && sortedPackages[index - 1].condition !== null && sortedPackages[index - 1].condition !== '';
+
+            // Espacement supplémentaire si le package précédent avait une condition
+            if (previousHasCondition) {
+                currentY += 80; // Espace pour la jonction après le package conditionnel (augmenté)
+            }
+
+            const packageY = hasCondition ? currentY + 60 : currentY; // Décaler les packages conditionnels de 60px vers le bas
+            const decisionY = hasCondition ? packageY - decisionOffset : null; // Losange au-dessus du package avec espacement
+
+            // Espacement pour le prochain package
+            if (hasCondition) {
+                currentY += conditionalSpacing; // Plus d'espace pour les branches
+            } else {
+                currentY += verticalSpacing;
+            }
+
+            return {
+                ...pkg,
+                x: packageX,
+                y: packageY,
+                width: packageWidth,
+                height: packageHeight,
+                centerX: centerX,
+                hasCondition,
+                decisionY,
+                decisionX: centerX,
+                decisionSize: decisionDiamondSize,
+                branchOffset: hasCondition ? branchOffset : 0,
+                mergeY: hasCondition ? packageY + packageHeight + 80 : null, // Point de jonction après le package (augmenté)
+                packageXRight: hasCondition ? centerX + decisionDiamondSize / 2 + horizontalSpacing : null // Position X du package sur la branche "oui"
+            };
+        });
 
         return packagePositions;
-    }, [packages, centerX, packageWidth, packageHeight, startY]);
+    }, [packages, centerX, packageWidth, packageHeight, startY, decisionDiamondSize, branchOffset, horizontalSpacing]);
 
     useEffect(() => {
         animatedPositionsRef.current = animatedPositions;
@@ -206,6 +264,25 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
         });
     }, [getSvgPoint, legendPosition]);
 
+    // Calculer la hauteur du SVG en tenant compte des conditions (doit être calculé avant handleMouseMove)
+    const firstPackageCalc = diagramData[0];
+    const lastPackageCalc = diagramData[diagramData.length - 1];
+    const lastPackageHasConditionCalc = lastPackageCalc?.hasCondition ?? false;
+    const endBaseYCalc = lastPackageHasConditionCalc && lastPackageCalc?.mergeY
+        ? lastPackageCalc.mergeY
+        : (lastPackageCalc?.y ?? 128) + packageHeight;
+
+    const maxYCalc = Math.max(
+        ...diagramData.map(pkg => {
+            if (pkg.hasCondition && pkg.mergeY) {
+                return pkg.mergeY;
+            }
+            return pkg.y + packageHeight;
+        }),
+        endBaseYCalc
+    );
+    const svgHeightCalc = Math.max(400, maxYCalc + 100);
+
     const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
         const svgPoint = getSvgPoint(e);
         if (!svgPoint) return;
@@ -216,7 +293,7 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
 
             // Limiter la position dans les limites du SVG
             const maxX = svgWidth - 200; // largeur SVG - largeur légende
-            const maxY = svgHeight - 25; // hauteur SVG - hauteur légende
+            const maxY = svgHeightCalc - 25; // hauteur SVG - hauteur légende
 
             setLegendPosition({
                 x: Math.max(0, Math.min(newX, maxX)),
@@ -227,7 +304,7 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
         if (draggingPackage) {
             const proposedY = svgPoint.y - draggingPackage.offsetY;
             const minY = startY - packageHeight;
-            const maxY = svgHeight - packageHeight - 40;
+            const maxY = svgHeightCalc - packageHeight - 40;
             const clampedY = Math.max(minY, Math.min(proposedY, maxY));
             const hasMoved = draggingPackage.hasMoved || Math.abs(clampedY - draggingPackage.currentY) > 2;
 
@@ -244,7 +321,7 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
             const newIndex = computeInsertIndex(draggingPackage.id, clampedY);
             setDragInsertIndex(newIndex);
         }
-    }, [computeInsertIndex, draggingPackage, getSvgPoint, isLegendDragging, legendDragOffset, svgHeight, svgWidth, startY, packageHeight]);
+    }, [computeInsertIndex, draggingPackage, getSvgPoint, isLegendDragging, legendDragOffset, svgHeightCalc, svgWidth, startY, packageHeight]);
 
     const handleMouseUp = useCallback(() => {
         if (isLegendDragging) {
@@ -298,7 +375,13 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
     const firstPackageY = firstPackage ? resolvePackageY(firstPackage.id, firstPackage.y) : null;
     const lastPackage = diagramData[diagramData.length - 1];
     const lastPackageY = lastPackage ? resolvePackageY(lastPackage.id, lastPackage.y) : null;
-    const endBaseY = (lastPackageY ?? 128) + packageHeight;
+    const lastPackageHasCondition = lastPackage?.hasCondition ?? false;
+    const endBaseY = lastPackageHasCondition && lastPackage?.mergeY
+        ? lastPackage.mergeY
+        : (lastPackageY ?? 128) + packageHeight;
+
+    // Utiliser la hauteur calculée précédemment
+    const svgHeight = svgHeightCalc;
 
     if (packages.length === 0) {
         return (
@@ -352,17 +435,33 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
                         strokeDasharray="5,5"
                     />
                 )}
-                {/* Flèche simple depuis START vers premier package */}
+                {/* Flèche simple depuis START vers premier package ou décision */}
                 {diagramData.length > 0 && firstPackageY !== null && (
-                    <line
-                        x1={centerX}
-                        y1={firstPackageY - 20}
-                        x2={centerX}
-                        y2={firstPackageY}
-                        stroke="#6b7280"
-                        strokeWidth="2"
-                        markerEnd="url(#arrowhead)"
-                    />
+                    <>
+                        {diagramData[0].hasCondition && diagramData[0].decisionY !== null ? (
+                            // Flèche vers le losange de décision
+                            <line
+                                x1={centerX}
+                                y1={firstPackageY - 20}
+                                x2={centerX}
+                                y2={diagramData[0].decisionY! + decisionDiamondSize / 2}
+                                stroke="#6b7280"
+                                strokeWidth="2"
+                                markerEnd="url(#arrowhead)"
+                            />
+                        ) : (
+                            // Flèche directe vers le package
+                            <line
+                                x1={centerX}
+                                y1={firstPackageY - 20}
+                                x2={centerX}
+                                y2={firstPackageY}
+                                stroke="#6b7280"
+                                strokeWidth="2"
+                                markerEnd="url(#arrowhead)"
+                            />
+                        )}
+                    </>
                 )}
 
                 {/* Point de départ */}
@@ -392,124 +491,241 @@ export default function RuleflowDiagram({ packages, selectedPackage, onSelectPac
                     </text>
                 </g>
 
-                {/* Packages */}
+                {/* Packages et décisions */}
                 {diagramData.map((pkg, index) => {
                     const isLocked = pkg.name === LOCKED_PACKAGE_NAME;
                     const isSelected = selectedPackage === pkg.id;
-                    const isConditional = pkg.condition !== null && pkg.condition !== '';
+                    const isConditional = pkg.hasCondition;
                     const previousPackage = index > 0 ? diagramData[index - 1] : null;
                     const currentY = resolvePackageY(pkg.id, pkg.y);
                     const previousY = previousPackage ? resolvePackageY(previousPackage.id, previousPackage.y) : null;
+                    const previousMergeY = previousPackage?.hasCondition ? previousPackage.mergeY : null;
                     const isDraggable = Boolean(onReorderPackage);
+                    const decisionY = pkg.decisionY;
+                    const packageXRight = pkg.packageXRight ?? pkg.x;
 
                     return (
-                        <g
-                            key={pkg.id}
-                            className={isDraggable && !isLocked ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}
-                            onMouseDown={isDraggable && !isLocked ? handlePackageMouseDown(pkg.id, index, currentY, isLocked) : undefined}
-                        >
-                            {/* Flèche simple entre packages (une seule flèche par espace) */}
+                        <g key={pkg.id}>
+                            {/* Flèche depuis le bas du package précédent */}
                             {previousPackage && previousY !== null && (
-                                <line
-                                    x1={pkg.centerX}
-                                    y1={previousY + packageHeight}
-                                    x2={pkg.centerX}
-                                    y2={currentY}
-                                    stroke="#6b7280"
-                                    strokeWidth="2"
-                                    markerEnd="url(#arrowhead)"
-                                />
+                                <>
+                                    {/* Flèche directe depuis le bas du package précédent (même si le package précédent a une condition) */}
+                                    <line
+                                        x1={centerX}
+                                        y1={previousY + packageHeight + connectorStartOffset}
+                                        x2={centerX}
+                                        y2={isConditional && decisionY !== null ? decisionY - arrowGap : currentY - arrowGap}
+                                        stroke="#6b7280"
+                                        strokeWidth="2"
+                                    />
+                                    {/* Petite flèche avant le losange si conditionnel */}
+                                    {isConditional && decisionY !== null && (
+                                        <line
+                                            x1={centerX}
+                                            y1={decisionY - arrowGap}
+                                            x2={centerX}
+                                            y2={decisionY + decisionDiamondSize / 2}
+                                            stroke="#6b7280"
+                                            strokeWidth="2"
+                                            markerEnd="url(#arrowhead)"
+                                        />
+                                    )}
+                                    {/* Flèche vers le package si non conditionnel */}
+                                    {!isConditional && (
+                                        <line
+                                            x1={centerX}
+                                            y1={currentY - arrowGap}
+                                            x2={centerX}
+                                            y2={currentY}
+                                            stroke="#6b7280"
+                                            strokeWidth="2"
+                                            markerEnd="url(#arrowhead)"
+                                        />
+                                    )}
+                                </>
                             )}
 
-                            {/* Rectangle principal du package */}
-                            <rect
-                                x={pkg.x}
-                                y={currentY}
-                                width={pkg.width}
-                                height={pkg.height}
-                                rx="8"
-                                fill={isSelected ? "#dbeafe" : "#ffffff"}
-                                stroke={isSelected ? "#3b82f6" : isConditional ? "#f59e0b" : "#d1d5db"}
-                                strokeWidth={isSelected ? "3" : "2"}
-                                className={`${isDraggable && !isLocked ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'} hover:stroke-blue-400 transition-colors`}
-                                filter="url(#drop-shadow)"
-                                onClick={() => handlePackageClick(pkg.id)}
-                            />
-
-                            {/* Indicateur de condition */}
-                            {isConditional && (
+                            {/* Losange de décision (si condition) */}
+                            {isConditional && decisionY !== null && pkg.condition && (
                                 <g>
+                                    {/* Texte de la condition simplifiée à gauche du losange */}
+                                    <text
+                                        x={centerX - decisionDiamondSize / 2 - 10}
+                                        y={decisionY + decisionDiamondSize / 2 + 4}
+                                        textAnchor="end"
+                                        className="fill-gray-900 text-xs font-semibold"
+                                    >
+                                        {(() => {
+                                            const simplified = simplifyCondition(pkg.condition);
+                                            return simplified.length > 25 ? simplified.substring(0, 25) + '...' : simplified;
+                                        })()}
+                                    </text>
+
+                                    {/* Losange avec meilleur style */}
                                     <polygon
-                                        points={`${pkg.x + pkg.width - 20},${currentY} ${pkg.x + pkg.width},${currentY} ${pkg.x + pkg.width},${currentY + 20}`}
-                                        fill="#f59e0b"
+                                        points={`
+                                            ${centerX},${decisionY} 
+                                            ${centerX + decisionDiamondSize / 2},${decisionY + decisionDiamondSize / 2} 
+                                            ${centerX},${decisionY + decisionDiamondSize} 
+                                            ${centerX - decisionDiamondSize / 2},${decisionY + decisionDiamondSize / 2}
+                                        `}
+                                        fill="#fff9e6"
+                                        stroke="#f59e0b"
+                                        strokeWidth="2.5"
+                                        filter="url(#drop-shadow)"
+                                    />
+
+                                    {/* Branche "oui" (vers la droite puis vers le milieu du haut du package) */}
+                                    {packageXRight !== null && (
+                                        <>
+                                            <path
+                                                d={`M ${centerX + decisionDiamondSize / 2} ${decisionY + decisionDiamondSize / 2} 
+                                                    L ${packageXRight + packageWidth / 2} ${decisionY + decisionDiamondSize / 2} 
+                                                    L ${packageXRight + packageWidth / 2} ${currentY}`}
+                                                fill="none"
+                                                stroke="#6b7280"
+                                                strokeWidth="2"
+                                                markerEnd="url(#arrowhead)"
+                                            />
+                                            {/* Label "oui" avec fond */}
+                                            <rect
+                                                x={centerX + decisionDiamondSize / 2 + 8}
+                                                y={decisionY + decisionDiamondSize / 2 - 12}
+                                                width="28"
+                                                height="16"
+                                                rx="3"
+                                                fill="white"
+                                                stroke="#6b7280"
+                                                strokeWidth="1"
+                                            />
+                                            <text
+                                                x={centerX + decisionDiamondSize / 2 + 22}
+                                                y={decisionY + decisionDiamondSize / 2 - 2}
+                                                textAnchor="middle"
+                                                className="fill-gray-700 text-xs font-semibold"
+                                            >
+                                                oui
+                                            </text>
+                                        </>
+                                    )}
+
+                                    {/* Branche "non" (vers le bas, contourne le package) - sans flèche de fin */}
+                                    <path
+                                        d={`M ${centerX} ${decisionY + decisionDiamondSize} 
+                                            L ${centerX} ${pkg.mergeY ?? currentY + packageHeight + 40}`}
+                                        fill="none"
+                                        stroke="#6b7280"
+                                        strokeWidth="2"
+                                    />
+                                    {/* Label "non" avec fond */}
+                                    <rect
+                                        x={centerX + 8}
+                                        y={decisionY + decisionDiamondSize + 8}
+                                        width="28"
+                                        height="16"
+                                        rx="3"
+                                        fill="white"
+                                        stroke="#6b7280"
+                                        strokeWidth="1"
                                     />
                                     <text
-                                        x={pkg.x + pkg.width - 10}
-                                        y={currentY + 14}
+                                        x={centerX + 22}
+                                        y={decisionY + decisionDiamondSize + 20}
                                         textAnchor="middle"
-                                        className="fill-white text-xs font-bold"
+                                        className="fill-gray-700 text-xs font-semibold"
                                     >
-                                        ?
+                                        non
                                     </text>
+
+                                    {/* Ligne de retour depuis le milieu du bas du package vers le point de jonction - arrive exactement sur le point */}
+                                    {pkg.mergeY !== null && packageXRight !== null && (
+                                        <path
+                                            d={`M ${packageXRight + packageWidth / 2} ${currentY + packageHeight} 
+                                                L ${packageXRight + packageWidth / 2} ${pkg.mergeY - 24} 
+                                                L ${centerX} ${pkg.mergeY - 24} 
+                                                L ${centerX} ${pkg.mergeY}`}
+                                            fill="none"
+                                            stroke="#6b7280"
+                                            strokeWidth="2"
+                                        />
+                                    )}
+
+                                    {/* Point de jonction visible (sans flèche) */}
+                                    {pkg.mergeY !== null && (
+                                        <circle
+                                            cx={centerX}
+                                            cy={pkg.mergeY}
+                                            r="4"
+                                            fill="#6b7280"
+                                        />
+                                    )}
                                 </g>
                             )}
 
-                            {/* Numéro d'ordre */}
-                            <circle
-                                cx={pkg.x + 15}
-                                cy={currentY + 15}
-                                r="10"
-                                fill={isSelected ? "#3b82f6" : "#6b7280"}
-                            />
-                            <text
-                                x={pkg.x + 15}
-                                y={currentY + 20}
-                                textAnchor="middle"
-                                className="fill-white text-xs font-bold"
+                            {/* Rectangle principal du package */}
+                            <g
+                                className={isDraggable && !isLocked ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}
+                                onMouseDown={isDraggable && !isLocked ? handlePackageMouseDown(pkg.id, index, currentY, isLocked) : undefined}
                             >
-                                {index + 1}
-                            </text>
+                                <rect
+                                    x={isConditional ? (packageXRight ?? pkg.x) : pkg.x}
+                                    y={currentY}
+                                    width={pkg.width}
+                                    height={pkg.height}
+                                    rx="8"
+                                    fill={isSelected ? "#dbeafe" : "#ffffff"}
+                                    stroke={isSelected ? "#3b82f6" : isConditional ? "#f59e0b" : "#d1d5db"}
+                                    strokeWidth={isSelected ? "3" : "2.5"}
+                                    className={`${isDraggable && !isLocked ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'} hover:stroke-blue-400 transition-colors`}
+                                    filter="url(#drop-shadow)"
+                                    onClick={() => handlePackageClick(pkg.id)}
+                                />
 
-                            {/* Nom du package */}
-                            <text
-                                x={pkg.x + 35}
-                                y={currentY + 20}
-                                className={`text-sm font-medium ${isSelected ? "fill-blue-900" : "fill-gray-900"}`}
-                            >
-                                {formatPackageName(pkg.name)}
-                            </text>
-
-                            {/* Nombre de règles */}
-                            <text
-                                x={pkg.x + 35}
-                                y={currentY + 38}
-                                className={`text-xs ${isSelected ? "fill-blue-700" : "fill-gray-600"}`}
-                            >
-                                {pkg.rules.length} règle{pkg.rules.length !== 1 ? 's' : ''}
-                            </text>
-
-                            {/* Condition (si présente) */}
-                            {isConditional && pkg.condition && (
+                                {/* Numéro d'ordre */}
+                                <circle
+                                    cx={(isConditional ? (packageXRight ?? pkg.x) : pkg.x) + 15}
+                                    cy={currentY + 15}
+                                    r="11"
+                                    fill={isSelected ? "#3b82f6" : "#6b7280"}
+                                />
                                 <text
-                                    x={pkg.x + 35}
-                                    y={currentY + 56}
-                                    className="text-xs fill-amber-700"
+                                    x={(isConditional ? (packageXRight ?? pkg.x) : pkg.x) + 15}
+                                    y={currentY + 21}
+                                    textAnchor="middle"
+                                    className="fill-white text-xs font-bold"
                                 >
-                                    if {pkg.condition.length > 25 ? pkg.condition.substring(0, 25) + '...' : pkg.condition}
+                                    {index + 1}
                                 </text>
-                            )}
 
+                                {/* Nom du package */}
+                                <text
+                                    x={(isConditional ? (packageXRight ?? pkg.x) : pkg.x) + 35}
+                                    y={currentY + 22}
+                                    className={`text-sm font-semibold ${isSelected ? "fill-blue-900" : "fill-gray-900"}`}
+                                >
+                                    {formatPackageName(pkg.name)}
+                                </text>
+
+                                {/* Nombre de règles */}
+                                <text
+                                    x={(isConditional ? (packageXRight ?? pkg.x) : pkg.x) + 35}
+                                    y={currentY + 40}
+                                    className={`text-xs ${isSelected ? "fill-blue-700" : "fill-gray-600"}`}
+                                >
+                                    {pkg.rules.length} règle{pkg.rules.length !== 1 ? 's' : ''}
+                                </text>
+                            </g>
                         </g>
                     );
                 })}
 
                 {/* Ligne pointillée entre dernier package et END */}
-                {diagramData.length > 0 && lastPackageY !== null && (
+                {diagramData.length > 0 && (
                     <line
                         x1={centerX}
-                        y1={lastPackageY + packageHeight}
+                        y1={endBaseY}
                         x2={centerX}
-                        y2={lastPackageY + packageHeight + 40}
+                        y2={endBaseY + 40}
                         stroke="#d1d5db"
                         strokeWidth="2"
                         strokeDasharray="5,5"

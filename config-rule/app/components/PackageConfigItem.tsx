@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Code, Plus, Trash2, ChevronUp, ChevronDown as RuleDown, Settings } from 'lucide-react';
 import { useRuleflowConfig } from '../stores/ruleflow-config-store';
 import { PackageConfig, RuleConfig } from '../types/ruleflow-config';
@@ -24,6 +24,28 @@ const formatRuleDisplayName = (name: string): string => {
     return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
 };
 
+// Fonction pour simplifier l'affichage de la condition
+const simplifyCondition = (condition: string | null): string => {
+    if (!condition) return '';
+    
+    // Pattern pour extraire: input.field_values["key"] == "value" ou input.field_values['key'] == 'value'
+    const pattern1 = /input\.field_values\[["']([^"']+)["']\]\s*==\s*["']([^"']+)["']/;
+    const match1 = condition.match(pattern1);
+    if (match1) {
+        return `${match1[1]} = ${match1[2]}`;
+    }
+    
+    // Pattern pour: input.field_values["key"] == value (sans guillemets pour la valeur)
+    const pattern2 = /input\.field_values\[["']([^"']+)["']\]\s*==\s*([^\s\)]+)/;
+    const match2 = condition.match(pattern2);
+    if (match2) {
+        return `${match2[1]} = ${match2[2]}`;
+    }
+    
+    // Si aucun pattern ne correspond, retourner la condition telle quelle
+    return condition;
+};
+
 export default function PackageConfigItem({
     package: pkg,
     isSelected,
@@ -39,6 +61,13 @@ export default function PackageConfigItem({
     const [editingRuleAdvanced, setEditingRuleAdvanced] = useState<string | null>(null);
 
     const { executeAction } = useRuleflowConfig();
+
+    // Synchroniser le formulaire local lorsque l'on change de package
+    useEffect(() => {
+        setPackageName(pkg.name);
+        setPackageCondition(pkg.condition || '');
+        setEditingPackage(false);
+    }, [pkg.id, pkg.name, pkg.condition]);
 
     const handlePackageUpdate = () => {
         if (packageName.trim() !== pkg.name || (packageCondition.trim() || null) !== pkg.condition) {
@@ -119,8 +148,8 @@ export default function PackageConfigItem({
         <div className={`border rounded-lg ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'} ml-8`}>
             {/* En-tête du package */}
             <div className="p-3 border-b border-gray-200 last:border-b-0">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 flex-1">
+                <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center space-x-2 flex-1 min-w-0">
                         {/* Bouton d'expansion */}
                         <button
                             onClick={() => onToggleExpanded(!isExpanded)}
@@ -165,16 +194,10 @@ export default function PackageConfigItem({
                             </button>
                         )}
 
-                        {/* Condition du package */}
-                        {pkg.condition && (
-                            <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                                if {pkg.condition}
-                            </span>
-                        )}
                     </div>
 
                     {/* Actions du package */}
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 shrink-0">
                         <span className="text-xs text-gray-500">
                             {pkg.rules.length} règle{pkg.rules.length !== 1 ? 's' : ''}
                         </span>
@@ -191,19 +214,47 @@ export default function PackageConfigItem({
                         </button>
                     </div>
                 </div>
-
-                {/* Condition éditable */}
-                {editingPackage && (
-                    <div className="mt-2">
+                
+                {/* Condition du package affichée sous le nom */}
+                <div className="mt-2 ml-8">
+                    {editingPackage ? (
                         <input
                             type="text"
                             value={packageCondition}
                             onChange={(e) => setPackageCondition(e.target.value)}
-                            placeholder="Condition (optionnelle)"
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-xs"
+                            onBlur={handlePackageUpdate}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handlePackageUpdate();
+                                if (e.key === 'Escape') {
+                                    setPackageCondition(pkg.condition || '');
+                                    setEditingPackage(false);
+                                }
+                            }}
+                            placeholder="Condition (ex: input.field_values['departement'] == '78')"
+                            className="w-full px-2 py-1 border border-blue-300 rounded text-xs font-mono"
+                            autoFocus
                         />
-                    </div>
-                )}
+                    ) : (
+                        <button
+                            onClick={() => {
+                                setEditingPackage(true);
+                                setPackageCondition(pkg.condition || '');
+                            }}
+                            className={`text-xs px-2 py-1 rounded text-left w-full ${
+                                pkg.condition 
+                                    ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200' 
+                                    : 'text-gray-500 bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                            }`}
+                            title={pkg.condition ? "Cliquer pour modifier la condition" : "Cliquer pour ajouter une condition"}
+                        >
+                            {pkg.condition ? (
+                                <span className="font-mono">if {simplifyCondition(pkg.condition)}</span>
+                            ) : (
+                                <span className="italic">+ Ajouter une condition</span>
+                            )}
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Liste des règles (si étendu) */}

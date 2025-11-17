@@ -245,7 +245,7 @@ export default function Home() {
             {/* Contenu principal */}
             <div className="flex-1 flex">
                 {/* Panel de gauche - Sélection runtime/app + Diagramme */}
-                <div className="w-110 bg-white border-r border-gray-200 flex flex-col">
+                <div className="w-130 bg-white border-r border-gray-200 flex flex-col">
                     <div className="p-4 border-b border-gray-200">
                         <h2 className="text-lg font-medium text-gray-900 mb-4">Configuration</h2>
 
