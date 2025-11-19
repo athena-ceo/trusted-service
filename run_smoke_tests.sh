@@ -128,9 +128,9 @@ run_frontend_tests() {
     fi
     
     # Install Playwright if needed
-    if ! command -v playwright &> /dev/null; then
+    if ! python -m playwright --version &> /dev/null; then
         echo -e "${YELLOW}Installing Playwright browsers...${NC}"
-        playwright install chromium
+        python -m playwright install chromium
     fi
     
     # Run frontend smoke tests

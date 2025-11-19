@@ -321,7 +321,7 @@ class TextAnalyzer:
 
         return system_prompt, analysis_result
 
-    def analyze(self, llm_config: LlmConfig, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
+    def analyze(self, locale: SupportedLocale, llm_config: LlmConfig, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
 
         system_prompt, analysis_result = self._analyze(llm_config, field_values, text, read_from_cache)
 
@@ -329,7 +329,7 @@ class TextAnalyzer:
             KEY_ANALYSIS_RESULT: analysis_result,  # json.dumps(analysis_result),
             KEY_PROMPT: system_prompt,
             KEY_MARKDOWN_TABLE: build_markdown_table_intentions(analysis_result),
-            KEY_HIGHLIGHTED_TEXT_AND_FEATURES: build_html_highlighted_text_and_features(text, self.features, analysis_result)
+            KEY_HIGHLIGHTED_TEXT_AND_FEATURES: build_html_highlighted_text_and_features(locale, text, self.features, analysis_result)
         }
 
         return analysis_result_and_rendering

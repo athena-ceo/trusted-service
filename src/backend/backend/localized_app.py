@@ -125,7 +125,11 @@ class LocalizedApp(ServerApi):
 
         llm_configs: dict[str, LlmConfig] = self.parent_app.llm_configs
         llm_config: LlmConfig = llm_configs[llm_config_id]
-        result = self.text_analyzer.analyze(llm_config, field_values, text, read_from_cache)
+        result = self.text_analyzer.analyze(locale=locale, 
+                                            llm_config=llm_config, 
+                                            field_values=field_values, 
+                                            text=text, 
+                                            read_from_cache=read_from_cache)
         return result
 
     def save_text_analysis_cache(self, app_id: str, locale: SupportedLocale, text_analysis_cache: str):

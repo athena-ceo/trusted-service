@@ -77,12 +77,12 @@ git push origin main
 
 ## 🖥️ Phase 2 : Déploiement côté Serveur
 
-### 2.1 🛑 Arrêt du Service
+* [ ] 2.1 🛑 Arrêt du Service
 
 Connectez-vous au serveur et arrêtez les conteneurs existants :
 
 ```bash
-# Sur le serveur, dans /data/demos/trusted-service/apps/delphes
+cd /data/demos/trusted-service/apps/delphes
 docker-compose -f docker-compose.prod.yml down
 ```
 
@@ -116,6 +116,7 @@ git pull origin main
 Démarrez la nouvelle version de l'application :
 
 ```bash
+cd /data/demos/trusted-service/apps/delphes
 docker-compose -f docker-compose.prod.yml up -d
 ```
 

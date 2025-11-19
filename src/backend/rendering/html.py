@@ -3,6 +3,7 @@ from typing import Any, Optional, List
 from pydantic import BaseModel
 
 from src.backend.distribution.distribution_email.email2 import Email
+from src.backend.rendering.html_localization import html_localizations, SupportedLocale, HTMLLocalization
 from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS
 from src.common.logging import print_red
 
@@ -33,13 +34,15 @@ class FeatureValue(BaseModel):
     color: Optional[str]
 
 
-def build_html_highlighted_text_and_features(text: str,
+def build_html_highlighted_text_and_features(locale: SupportedLocale, 
+                                             text: str,
                                              features: list[Feature],
                                              analysis_result: dict[str, Any]) -> str:
     colors = ["lightblue", "pink", "lightgreen", "cyan", "yellow"]
     index_color = 0
     colored_segments: list[ColoredSegment] = []
     feature_values: list[FeatureValue] = []
+    localizations: HTMLLocalization = html_localizations[locale]
 
     for feature in features:
         # id = feature.id
@@ -115,7 +118,11 @@ def build_html_highlighted_text_and_features(text: str,
 
     table = "<table cellpadding='10'>"
     for feature_value in feature_values:
-        table += f"<tr><td bgcolor=#F0F2F6>{feature_value.label}</td><td bgcolor={feature_value.color}>{feature_value.value}</td></tr>"
+        value = feature_value.value
+        if isinstance(feature_value.value, bool):
+            #value: str= html_localizations["en"].label_yes if feature_value.value else html_localizations["en"].label_no
+            value: str= localizations.label_yes if feature_value.value else localizations.label_no
+        table += f"<tr><td bgcolor=#F0F2F6>{feature_value.label}</td><td bgcolor={feature_value.color}>{value}</td></tr>"
     table += "</table>"
 
     highlighted_text += "<br>"

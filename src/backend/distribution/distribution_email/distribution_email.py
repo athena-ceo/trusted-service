@@ -32,13 +32,17 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                                      intent_label: str,
                                      case_handling_decision_output: CaseHandlingDecisionOutput) -> str:
 
+        def markdown_to_html(markdown_text: str) -> str:
+            import markdown
+            return markdown.markdown(markdown_text)
+
         # Build table with field values
 
-        labels_and_values = [(self.localization.label_intent, intent_label)]
+        labels_and_values: List[tuple[str, str]] = [(self.localization.label_intent, intent_label)]
         for case_field_id, case_field_value in request.field_values.items():
             try:
-                case_field = case_model.get_field_by_id(case_field_id)
-                case_field_label = case_field.label
+                case_field: CaseField = case_model.get_field_by_id(case_field_id)
+                case_field_label: str = case_field.label
             except ValueError:
                 # Defensive: if the case model does not define this field id,
                 # don't crash the whole request. Log a warning and use the
@@ -51,8 +55,10 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
             case_field_value2 = case_field_value
             if isinstance(case_field_value, bool):
-                case_field_value2 = self.localization.label_yes if case_field_value else self.localization.label_no
+                case_field_value2: str = self.localization.label_yes if case_field_value else self.localization.label_no
 
+            if not case_field_value2:
+                case_field_value2 = "-"
             labels_and_values.append((case_field_label, case_field_value2))
 
         table = "<table cellpadding='10'>\n"
@@ -77,7 +83,17 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             table += "</table>"
             body += table + "<br>"
 
+        # Display the response displayed to the requester
+
+        table="<table cellpadding='10'>\n"
+        table += f"<tr><th>{self.localization.label_response_to_requester}</th></tr>\n"
+        html_acknowledgement: str = markdown_to_html(case_handling_decision_output.acknowledgement_to_requester)
+        table += f"<tr><td>{html_acknowledgement}</td></tr>\n"
+        table += "</table>"
+        body += "<hr><br>" + table
+
         return body
+
 
     def distribute(self,
                    case_model: CaseModel,
@@ -107,15 +123,23 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             to_email_address = self.email_config.agent_email_address
             work_basket = basket_name
 
+        priority: str = self.localization.label_very_high if case_handling_decision_output.priority == "VERY_HIGH" else \
+                          self.localization.label_high if case_handling_decision_output.priority == "HIGH" else \
+                            self.localization.label_low if case_handling_decision_output.priority == "LOW" else \
+                                self.localization.label_very_low if case_handling_decision_output.priority == "VERY_LOW" else \
+                                    self.localization.label_medium
         email_to_agent: Email = Email(
             from_email_address=self.email_config.hub_email_address,
             to_email_address=to_email_address,
-            subject=f"{work_basket} - {case_handling_decision_output.priority}",
+            subject=f"{work_basket} - {priority}",
             body=body_of_email_to_agent)
 
         # email_to_requester
 
-        email_to_requester: Optional[Email] = None
+        email_to_requester: Email = Email(from_email_address=self.email_config.agent_email_address, 
+                                                    to_email_address=request.field_values[self.email_config.case_field_email_address],
+                                                    subject=self.localization.label_response_default_subject,
+                                                    body="")
 
         template_id: str = case_handling_decision_output.response_template_id
         if template_id:  # if a template is defined
@@ -147,7 +171,10 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         # Return response to client
 
         rendering_email_to_agent = render_email(email_to_agent)
-        rendering_email_to_requester = render_email(email_to_requester)  # is None if email_to_requester is None
+        if email_to_requester.body == "":
+            rendering_email_to_requester = ""
+        else:
+            rendering_email_to_requester = render_email(email_to_requester)  # is None if email_to_requester is None
 
         return rendering_email_to_agent, rendering_email_to_requester
 
@@ -226,7 +253,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
     def send_mail(self,
                   email_config: DistributionEmailConfig,
                   email_to_send: Email,
-                  email_mail_to: Optional[Email],
+                  email_mail_to: Email,
                   priority: str = "MEDIUM") -> None:
         email_password = email_config.password
         smtp_server = email_config.smtp_server
