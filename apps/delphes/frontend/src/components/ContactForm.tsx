@@ -75,7 +75,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         }
 
         console.log('Fetching arrondissements and statuts from API');
-        fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || "fr"}/case_model`)
+        fetch(`${apiBaseUrl}/api/v2/apps/delphes${departement}/${currentLang.toLowerCase() || "fr"}/case_model`)
             .then(response => {
                 if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");
                 return response.json();

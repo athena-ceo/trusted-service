@@ -84,7 +84,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                     lang: currentLang || 'fr'
                 }
             });
-            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
+            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -243,14 +243,14 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                                     }}
                                 />
                                 <hr />
-                                <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
+                                {answer && <button type="button" id="vue-agent-reponse" className="fr-btn fr-mt-3w" onClick={handleVueAgentReponseClick}>
                                     {t('handleCase.generateResponse')}
-                                </button>
+                                </button>}
                             </div>
                         )}
 
                         {/* Vue Réponse */}
-                        {!isLoading && vueAgentReponse && (
+                        {!isLoading && vueAgentReponse && answer && (
                             <div className="fr-mb-3w">
                                 <h3 className="fr-h6">{t('handleCase.generatedResponse')}</h3>
                                 <div

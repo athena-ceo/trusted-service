@@ -31,17 +31,17 @@ const translations: Record<Language, Record<string, string>> = {
         'service.title.78': 'Les services de l\'État dans les Yvelines',
         'service.title.91': 'Les services de l\'État dans l\'Essonne',
         'service.title.92': 'Les services de l\'État dans les Hauts de Seine',
-        'service.title.94': 'Les services de l\'État dans le Val de Marne',
+        'service.title.94': 'Les services de l\'État dans le Val-de-Marne',
         'service.tagline.': 'Portail de l\'État',
         'service.tagline.78': 'Portail de l\'État en Yvelines',
         'service.tagline.91': 'Portail de l\'État en Essonne',
         'service.tagline.92': 'Portail de l\'État en Hauts de Seine',
-        'service.tagline.94': 'Portail de l\'État en Val de Marne',
+        'service.tagline.94': 'Portail de l\'État en Val-de-Marne',
         'service.home.': 'Accueil - Les services de l\'État',
         'service.home.78': 'Accueil - Les services de l\'État dans les Yvelines',
         'service.home.91': 'Accueil - Les services de l\'État dans l\'Essonne',
         'service.home.92': 'Accueil - Les services de l\'État dans les Hauts de Seine',
-        'service.home.94': 'Accueil - Les services de l\'État dans le Val de Marne',
+        'service.home.94': 'Accueil - Les services de l\'État dans le Val-de-Marne',
 
         // Navigation
         'nav.news': 'Actualités',
@@ -73,7 +73,7 @@ const translations: Record<Language, Record<string, string>> = {
         'accueil.intro.line1.78': 'Vous souhaitez contacter les services d\'accueil des étrangers dans le département des Yvelines.',
         'accueil.intro.line1.91': 'Vous souhaitez contacter les services d\'accueil des étrangers dans le département de l\'Essonne.',
         'accueil.intro.line1.92': 'Vous souhaitez contacter les services d\'accueil des étrangers dans le département des Hauts de Seine.',
-        'accueil.intro.line1.94': 'Vous souhaitez contacter les services d\'accueil des étrangers dans le département du Val de Marne.',
+        'accueil.intro.line1.94': 'Vous souhaitez contacter les services d\'accueil des étrangers dans le département du Val-de-Marne.',
         'accueil.intro.line2': 'Nous vous invitons à utiliser le formulaire ci-dessous.',
         'accueil.intro.line3': 'Nos services mettront tout en œuvre pour vous répondre dans les meilleurs délais.',
         'accueil.alert.info.title': 'Information importante',
@@ -81,7 +81,7 @@ const translations: Record<Language, Record<string, string>> = {
         'accueil.alert.warning.78': 'Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture des Yvelines.',
         'accueil.alert.warning.91': 'Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture de l\'Essonne.',
         'accueil.alert.warning.92': 'Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture des Hauts de Seine.',
-        'accueil.alert.warning.94': 'Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture du Val de Marne.',
+        'accueil.alert.warning.94': 'Les données personnelles recueillies par le formulaire de prise de contact ne sont pas conservées par la préfecture du Val-de-Marne.',
         'accueil.sidebar.title': 'En complément',
         'accueil.sidebar.sites.title': 'Sites officiels pour vos démarches',
         'accueil.sidebar.sites.desc': 'Accédez directement aux sites officiels de l\'administration française.',
@@ -103,7 +103,7 @@ const translations: Record<Language, Record<string, string>> = {
         'home.prefecture.78': 'Préfecture des Yvelines',
         'home.prefecture.91': 'Préfecture de l\'Essonne',
         'home.prefecture.92': 'Préfecture des Hauts de Seine',
-        'home.prefecture.94': 'Préfecture du Val de Marne',
+        'home.prefecture.94': 'Préfecture du Val-de-Marne',
 
         // Analysis Page
         'analysis.alert.processing.title': 'Votre demande est en cours de traitement automatique',
@@ -181,7 +181,7 @@ const translations: Record<Language, Record<string, string>> = {
 
 J'ai effectué la démarche en ligne sur le site ANEF pour le renouvellement de mon titre séjour - passeport talent le 09-08-2024. 
 J'ai reçu l'attestation de prolongation directement après l'expiration de mon titre de séjour. 
-Cette dernière a été renouvelée durant l'été mais maintenant, mon API est expirée depuis le début du mois.
+Cette dernière a été renouvelée durant l'été mais maintenant, mon API est expirée depuis 2 semaines.
 Mais jusqu'à ce jour je n'ai pas reçu de nouvelle API.
 Mon contrat de travail est suspendu et si ça continue, mon contrat de travail va être résilié.
 

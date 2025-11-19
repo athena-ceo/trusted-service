@@ -6,8 +6,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Services de l'État dans les Yvelines",
-  description: "Portail des services préfectoraux des Yvelines",
+  title: "Services de l'État dans les départements",
+  description: "Portail des services préfectoraux",
 };
 
 export default function RootLayout({

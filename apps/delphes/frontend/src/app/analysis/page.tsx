@@ -95,7 +95,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
             }
 
             console.log('Sending analysis request with payload', fieldValues)
-            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes/${currentLang.toLowerCase() || 'fr'}/analyze`, {
+            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}/${currentLang.toLowerCase() || 'fr'}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
