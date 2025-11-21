@@ -123,15 +123,6 @@ export default function Accueil() {
                         </Link>
                       </h3>
                     </div>
-                    <div className="fr-mt-5w">
-                      <a
-                        className="fr-link fr-icon-external-link-line fr-link--icon-right"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="/documents/delphes-mode-emploi.pdf">
-                        Delphes - mode d'emploi
-                      </a>
-                    </div>
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">

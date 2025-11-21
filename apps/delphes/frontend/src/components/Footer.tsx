@@ -21,7 +21,7 @@ export default function Footer({ departement = '', displayWatson = false }: { de
         } else if (departement === '91') {
             setDepartementLabel('de l\'Essonne');
         } else if (departement === '92') {
-            setDepartementLabel('des Hauts de Seine');
+            setDepartementLabel('des Hauts-de-Seine');
         } else if (departement === '94') {
             setDepartementLabel('du Val-de-Marne');
         }

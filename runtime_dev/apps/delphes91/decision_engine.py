@@ -468,7 +468,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
     if input.field_values["departement"] == "78":
         package_cas_nominal_78(input, output)
         package_reajustements_78(input, output)
-    elif input.field_values["departement"] == "94":
+    elif input.field_values["departement"] == "91":
         package_cas_nominal_91(input, output)
         package_reajustements_91(input, output)
 
