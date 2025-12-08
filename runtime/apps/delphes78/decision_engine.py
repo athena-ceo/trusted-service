@@ -1,18 +1,34 @@
 from datetime import datetime
 from typing import Literal
-
+import os
 from src.backend.decision.decision import CaseHandlingDecisionEngine, CaseHandlingDecisionOutput, CaseHandlingDecisionInput
 
+# Si un email doit être envoyé dans la bannette d'une boite de messagerie particulière, utiliser la syntaxe :
+#   pref-delphes-asile@yvelines.gouv.fr:sauf-conduits
+
+app_env = os.getenv("APP_ENV", "local")
+if app_env == "production":
+    asile_email_address = "pref-delphes-asile@yvelines.gouv.fr"
+    sejour_email_address = "pref-delphes-sejour@yvelines.gouv.fr"
+else:
+    asile_email_address = "pocagent78@gmail.com"
+    sejour_email_address = "pocagent78@gmail.com"
+print(f"⚙️  Using asile_email_address='{asile_email_address}' and sejour_email_address='{sejour_email_address}' in decision_engine.py")
+# Cette configuration n'est pas idéale parce que ça surcharge les définitions globales du fichier Excel.
+
 work_basket_accueil = "accueil"
-work_basket_pref_etrangers_aes_salarie = "pref-etrangers-aes-salarie"
+# work_basket_pref_etrangers_aes_salarie = "pref-etrangers-aes-salarie"
 work_basket_api_a_renouveler = "api-a-renouveler"
-work_basket_asile_priorite = "asile-priorite"
-work_basket_atda = "atda"
-work_basket_generique = "generique"
-work_basket_dublin = "dublin"
+work_basket_asile_priorite = f"{asile_email_address}:asile-priorite"
+work_basket_atda = f"{asile_email_address}:atda"
+work_basket_dublin = f"{asile_email_address}:dublin"
 work_basket_reorientation = "reorientation"
-work_basket_sauf_conduits = "sauf-conduits"
-work_basket_ukraine = "ukraine"
+work_basket_reorientation_asile = f"{asile_email_address}:reorientation"
+work_basket_reorientation_sejour = f"{sejour_email_address}:reorientation"
+work_basket_sauf_conduits = f"{asile_email_address}:sauf-conduits"
+work_basket_ukraine = f"{asile_email_address}:ukraine"
+work_basket_anef = "anef"
+work_basket_etudiants = f"{sejour_email_address}:etudiants"
 work_basket_autres = "autres"
 
 response_template_id_api_a_renouveler = "api-a-renouveler"
@@ -55,7 +71,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             output.details.append("rule_decision_par_defaut")
             output.acknowledgement_to_requester = "#ACK"
             output.response_template_id = ""
-            output.work_basket = work_basket_reorientation # Default work basket
+            output.work_basket = work_basket_autres # Default work basket
             output.priority = "MEDIUM" # Default priority
             output.handling = "DEFLECTION" # Default handling
 
@@ -78,11 +94,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 text = "**Le site officiel de l'administration française** - Demande d'asile"
                 url = "https://www.service-public.fr/particuliers/vosdroits/F2232#:~:text=Si%20vous%20souhaitez%20entrer%20en,de%20votre%20lieu%20d'arriv%C3%A9e."
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.work_basket = work_basket_reorientation_asile
 
         def rule_ou_en_est_ma_demande_d_asile_en_cours(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "ou_en_est_ma_dem_asile_en_cours":
                 output.details.append("ou_en_est_ma_dem_asile_en_cours")
                 output.acknowledgement_to_requester = "#CONTACT_OFPRA"
+                output.work_basket = work_basket_reorientation_asile
 
         def rule_rdv_premiere_demande_titre_sejour(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_premiere_demande_titre_sejour":
@@ -91,12 +109,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 url = "https://www.demarches-simplifiees.fr/commencer/demande-de-rendez-vous-admission-exceptionnelle-au-sejour"
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
                 output.priority = "LOW"
+                output.work_basket = work_basket_reorientation_sejour
 
         def rule_asile_hebergement_urgence(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "asile_hebergement_urgence":
                 output.details.append("rule_asile_hebergement_urgence")
                 output.handling = "DEFLECTION"
-                output.work_basket = work_basket_reorientation
+                output.work_basket = work_basket_reorientation_asile
                 output.priority = "HIGH"
                 if input.field_values.get("demandeur_d_asile"):
                     text = "Le site de **l’Office Français de l’Immigration et de l’Intégration**"
@@ -109,7 +128,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
             if input.intention_id == "aide_financiere_demandeur_asile":
                 output.details.append("rule_aide_financiere_demandeur_asile")
                 output.handling = "DEFLECTION"
-                output.work_basket = work_basket_reorientation
+                output.work_basket = work_basket_reorientation_asile
                 output.priority = "HIGH"
                 if input.field_values.get("demandeur_d_asile"):
                     text = "Le site de **l’Office Français de l’Immigration et de l’Intégration**"
@@ -124,6 +143,36 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 text = "**Administration numérique pour les étrangers en France**"
                 url = "https://administration-etrangers-en-france.interieur.gouv.fr"
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.work_basket = work_basket_reorientation
+
+        def rule_ukraine(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "ukr_demande_un_nouveau_titre" or input.intention_id == "ukr_demande_renouv_titre" or input.intention_id == "ukr_autre_demande":
+                output.details.append("rule_ukraine")
+                output.work_basket = work_basket_ukraine
+                output.handling = "AGENT"
+                output.acknowledgement_to_requester = "#ACK"
+                output.priority = "HIGH"
+
+        def rule_anef(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "diff_avec_le_site_de_l_anef":
+                output.details.append("rule_anef")
+                output.work_basket = work_basket_anef
+                output.priority = "HIGH"
+                output.acknowledgement_to_requester = "#ACK"
+                output.handling = "AGENT"
+
+        def rule_etudiants(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id in [
+                "dem_etudiant_progr_mobilite",
+                "dem_stagiaire_prof_medic",
+                "chang_stat_etud_a_salarie",
+                "chang_stat_etud_a_rech_empl"
+            ]:
+                output.details.append("rule_etudiants")
+                output.work_basket = work_basket_etudiants
+                output.priority = "MEDIUM"
+                output.acknowledgement_to_requester = "#ACK"
+                output.handling = "AGENT"
 
         print(f"------- 📦 Executing package_regles_nationales")
 
@@ -133,6 +182,9 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
         rule_asile_hebergement_urgence(input, output)
         rule_aide_financiere_demandeur_asile(input, output)
         rule_duplicata(input, output)
+        rule_ukraine(input, output)
+        rule_anef(input, output)
+        rule_etudiants(input, output)
 
 
 
@@ -143,22 +195,20 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 text = "**Les services de l'État dans les Yvelines** - Je demande l'asile en France"
                 url = "https://www.yvelines.gouv.fr/Demarches/Accueil-des-etrangers-dans-les-Yvelines/Asile/Je-demande-l-asile-en-France"
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                output.work_basket = work_basket_reorientation_asile
 
         def rule_refugie_ou_protege_subsidiaire(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "dem_retour_pays_motif_except" and input.field_values["refugie_ou_protege_subsidiaire"]:
                 output.details.append("rule_refugie_ou_protege_subsidiaire")
-
                 output.handling = "AGENT"
                 output.acknowledgement_to_requester = "#ACK"
                 output.response_template_id = response_template_id_sauf_conduits
                 output.work_basket = work_basket_sauf_conduits
                 output.priority = "HIGH"
 
-        def rule_expiration_d_une_atda(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-
-            if input.intention_id == "expiration_d_une_atda":
-                output.details.append("rule_expiration_d_une_atda")
-
+        def rule_expiration_ou_mise_a_jour_d_une_atda(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
+            if input.intention_id == "expiration_d_une_atda" or input.intention_id == "mise_a_jour_infos_atda":
+                output.details.append("rule_expiration_ou_mise_a_jour_d_une_atda")
                 output.handling = "AGENT"
                 output.acknowledgement_to_requester = "#ACK"
                 output.response_template_id = response_template_id_atda
@@ -166,10 +216,8 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.priority = "HIGH"
 
         def rule_expiration_d_une_api_cas_nominal(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
-
             if input.intention_id == "expiration_d_une_api":
                 output.details.append("rule_expiration_d_une_api_cas_nominal")
-
                 output.handling = "AGENT"
                 output.acknowledgement_to_requester = "#ACK"
                 output.response_template_id = response_template_id_api_a_renouveler
@@ -217,11 +265,11 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                 output.details.append("rule_rdv_remise_de_titre")
                 output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
                 output.priority = "LOW"
+                output.work_basket = work_basket_reorientation
 
         def rule_rdv_renouvellement_recepisse(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutput):
             if input.intention_id == "rdv_renouvellement_recepisse":
                 output.details.append("rule_rdv_renouvellement_recepisse")
-
                 difference_in_days: int = jours_jusqu_a_date(input, "date_expiration_recepisse")
                 output.notes.append(f"#RECEPISSE_VA_EXPIRER_DANS_X_JOURS,{difference_in_days}")
 
@@ -230,6 +278,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                     url = "https://contacts-demarches.interieur.gouv.fr/etrangers/renouvellement-recepisse/"
                     output.priority = "MEDIUM"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                    output.work_basket = work_basket_reorientation
                 else:
                     output.priority = "HIGH"
                     output.acknowledgement_to_requester = "#ACCUEIL"
@@ -252,11 +301,13 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
                     text = "**Administration numérique pour les étrangers en France**"
                     url = "https://administration-etrangers-en-france.interieur.gouv.fr"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                    output.work_basket = work_basket_reorientation_sejour
                 elif difference_in_days > 60:
                     text = "**Prendre un rendez-vous** - Les services de l'État dans les Yvelines"
                     url = "https://www.yvelines.gouv.fr/Prendre-un-rendez-vous"
                     output.priority = "MEDIUM"
                     output.acknowledgement_to_requester = f"#VISIT_PAGE,{text},{url}"
+                    output.work_basket = work_basket_reorientation_sejour
                 else:
                     output.priority = "HIGH"
                     output.acknowledgement_to_requester = "#ACCUEIL"
@@ -274,7 +325,7 @@ def ruleflow(input: CaseHandlingDecisionInput, output: CaseHandlingDecisionOutpu
 
         rule_depot_de_demande_d_asile_78(input, output)
         rule_refugie_ou_protege_subsidiaire(input, output)
-        rule_expiration_d_une_atda(input, output)
+        rule_expiration_ou_mise_a_jour_d_une_atda(input, output)
         rule_expiration_d_une_api_cas_nominal(input, output)
         rule_expiration_d_une_api_api_expiree(input, output)
         rule_expiration_d_une_api_api_non_expiree(input, output)

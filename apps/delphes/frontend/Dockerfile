@@ -1,18 +1,17 @@
 # Dockerfile pour le frontend Next.js modernisé
 # Supporte: linux/amd64, linux/arm64
+# ========== BASE ==========
 FROM node:20-alpine AS base
-
-# Installer les dépendances seulement quand nécessaire
-FROM base AS deps
-# Vérifier https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine pour comprendre pourquoi libc6-compat pourrait être nécessaire.
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Installer les dépendances basées sur le gestionnaire de paquets préféré
+# ========== DEPS ==========
+FROM base AS deps
 COPY package.json package-lock.json* ./
 RUN npm ci
 
 # Rebuild le code source seulement quand nécessaire
+# ========== BUILD ==========
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -33,6 +32,7 @@ ENV NEXT_PUBLIC_WATSON_AGENT_ID=__NEXT_PUBLIC_WATSON_AGENT_ID__
 RUN npm run build
 
 # Image de production, copier tous les fichiers et exécuter next
+# ========== RUNNER ==========
 FROM base AS runner
 WORKDIR /app
 
@@ -53,6 +53,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copier le script de substitution des variables d'environnement
 COPY --chown=nextjs:nodejs substitute-env.sh ./
 RUN chmod +x substitute-env.sh
+
+USER root
+RUN apk del busybox-extras || true
 
 USER nextjs
 
