@@ -5,15 +5,10 @@ services:
   frontend:
     image: athenadecisionsystems/delphes-frontend:20251208-175453
     container_name: delphes-frontend-prod
+    restart: unless-stopped
     env_file:
       - .env.production
     ports:
-      - "3006:3000"  # Exposition directe du port Next.js
+      - "3006:3000" # Exposition directe du port Next.js
     environment:
       - NEXT_TELEMETRY_DISABLED=1
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
