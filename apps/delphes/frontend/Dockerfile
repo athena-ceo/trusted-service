@@ -64,6 +64,9 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD node -e "require('http').get('http://127.0.0.1:3000', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"
+
 # server.js est créé par next build à partir du répertoire de sortie autonome
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 CMD ["./substitute-env.sh"]

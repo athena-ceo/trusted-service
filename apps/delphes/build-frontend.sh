@@ -72,6 +72,7 @@ fi
 # Construire l'image Docker
 log "🔨 Construction de l'image Docker..."
 if docker buildx build \
+    --no-cache \
     --platform "$PLATFORM" \
     -t "$FULL_IMAGE_NAME" \
     -t "$LATEST_IMAGE_NAME" \
