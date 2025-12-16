@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    // Ignorer les erreurs ESLint pendant le build
-    ignoreDuringBuilds: true,
-  },
   output: 'standalone', // Nécessaire pour Docker
   turbopack: {
     // Définir explicitement le répertoire racine pour Turbopack

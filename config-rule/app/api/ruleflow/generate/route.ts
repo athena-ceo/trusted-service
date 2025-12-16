@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Erreur lors de la génération du code:', error);
         return NextResponse.json(
-            { error: `Erreur lors de la génération du code: ${error.message}` },
+            { error: `Erreur lors de la génération du code: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }
