@@ -81,22 +81,22 @@ export default function Header({ departement = '' }: { departement?: string }) {
                             </div>
                         </div>
                         <div className="fr-header__tools">
-                            <div className="fr-header__tools-links">
+                            <div className="fr-header__tools-links" suppressHydrationWarning>
                                 <ul className="fr-btns-group">
-                                    <li className="fr-translate fr-nav">
+                                    <li className="fr-translate fr-nav" suppressHydrationWarning>
                                         <button aria-controls="translate-menu-desktop"
                                             title={t('header.language.select')}
                                             aria-expanded={isMenuOpen}
                                             className="fr-btn fr-icon-translate-2 fr-btn--tertiary-no-outline fr-translate fr-nav language-select"
                                             id="fr-header-with-horizontal-operator-logo-quick-access-item-2"
                                             onClick={() => toggleMenu(false)}
-                                            data-fr-js-collapse-button="true" data-fr-js-navigation="true">
+                                            suppressHydrationWarning>
                                             <div>
                                                 <span className="short-label">{currentLang}</span>
                                                 <span className="fr-hidden-lg"> {currentLang} - {currentLang === 'FR' ? t('header.language.fr').split(' - ')[1] : t('header.language.en').split(' - ')[1]}</span>
                                             </div>
                                             <div className={`fr-collapse fr-translate__menu fr-menu ${isMenuOpen ? 'fr-collapse--expanded' : ''}`}
-                                                id="translate-menu-desktop" data-fr-js-collapse="true" style={{ ['--collapse' as any]: '-132px' }}>
+                                                id="translate-menu-desktop" suppressHydrationWarning style={{ ['--collapse' as any]: '-132px' }}>
                                                 <ul className="fr-menu__list">
                                                     <li><a className="fr-translate__language fr-nav__link" hrefLang="fr" lang="fr"
                                                         aria-current={currentLang === 'FR' ? 'true' : 'false'}

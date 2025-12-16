@@ -54,7 +54,7 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/78.png" className="fr-responsive-img" alt="78" />
+                      <img src="/images/78.png" className="fr-responsive-img" alt="78" suppressHydrationWarning />
                     </div>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/92.png" className="fr-responsive-img" alt="92" />
+                      <img src="/images/92.png" className="fr-responsive-img" alt="92" suppressHydrationWarning />
                     </div>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/91.png" className="fr-responsive-img" alt="91" />
+                      <img src="/images/91.png" className="fr-responsive-img" alt="91" suppressHydrationWarning />
                     </div>
                   </div>
                 </div>
@@ -126,7 +126,7 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/94.png" className="fr-responsive-img" alt="94" />
+                      <img src="/images/94.png" className="fr-responsive-img" alt="94" suppressHydrationWarning />
                     </div>
                   </div>
                 </div>
