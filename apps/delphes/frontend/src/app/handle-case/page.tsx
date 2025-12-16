@@ -66,8 +66,6 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                 return;
             }
 
-            fieldValues.numero_AGDREF = fieldValues.agdref || undefined;
-            delete fieldValues.agdref;
             delete fieldValues.message;
 
             const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
@@ -264,7 +262,14 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
                         <div className="fr-grid-row fr-grid-row--gutters">
                             <div className="fr-col-12">
-                                <Link href="/" className="fr-btn fr-btn--secondary">
+                                <Link
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.history.go(-2);
+                                    }}
+                                    className="fr-btn fr-btn--secondary"
+                                >
                                     {t('analysis.backToHome')}
                                 </Link>
                             </div>

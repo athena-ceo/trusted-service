@@ -36,15 +36,15 @@ function AccueilEtrangersContent() {
     const dateString = today.toLocaleDateString('fr-FR');
 
     const fieldValues = {
+      numero_AGDREF: formData.agdref,
       date_demande: dateString,
-      departement: departement,
       nom: formData.nom,
       prenom: formData.prenom,
       adresse_mail: formData.email,
-      arrondissement: formData.arrondissement,
-      agdref: formData.agdref,
       statut: formData.statut,
+      arrondissement: formData.arrondissement,
       message: formData.message,
+      departement: departement,
     };
 
     // Stocker les résultats pour la page de confirmation
@@ -62,7 +62,7 @@ function AccueilEtrangersContent() {
       <main role="main" id="content">
         <div className="fr-container">
           {/* Fil d'Ariane */}
-          <nav role="navigation" className="fr-breadcrumb" aria-label="vous êtes ici :">
+          {/* <nav role="navigation" className="fr-breadcrumb" aria-label="vous êtes ici :">
             <button className="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
               {t('accueil.breadcrumb.show')}
             </button>
@@ -76,8 +76,8 @@ function AccueilEtrangersContent() {
                 </li>
               </ol>
             </div>
-          </nav>
-          <div className="fr-grid-row fr-grid-row--gutters">
+          </nav> */}
+          <div className="fr-mt-1w fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-12">
               <h1 className="fr-h1">{t('accueil.title')}</h1>
 

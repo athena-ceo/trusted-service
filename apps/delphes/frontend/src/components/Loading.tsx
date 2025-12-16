@@ -13,8 +13,8 @@ interface LoadingProps {
 export default function Loading({
     message = "Chargement...",
     showBackButton = true,
-    backButtonText = "Retour à l'accueil",
-    backButtonHref = "/"
+    backButtonText = "Retour au formulaire",
+    backButtonHref = "/accueil-etrangers"
 }: LoadingProps) {
     return (
         <>

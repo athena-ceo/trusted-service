@@ -70,13 +70,13 @@ export default function Header({ departement = '' }: { departement?: string }) {
                                 </div>
                             </div>
                             <div className="fr-header__service">
-                                <Link href="/" title={t('service.home' + "." + departement)} className="fr-header__service-link">
+                                <Link href="#" title={true ? "DELPHES" : t('service.home' + "." + departement)} className="fr-header__service-link">
                                     <p className="fr-header__service-title">
-                                        {t('service.title' + "." + departement)}
+                                        {/*t('service.title' + "." + departement)*/}DELPHES
                                     </p>
                                 </Link>
                                 <p className="fr-header__service-tagline">
-                                    {t('service.tagline' + "." + departement)}
+                                    {/*t('service.tagline' + "." + departement)*/}Demandeurs Etrangers, Logique de Priorisation et Hiérarchisation des E-mails pour les Services
                                 </p>
                             </div>
                         </div>
@@ -118,13 +118,13 @@ export default function Header({ departement = '' }: { departement?: string }) {
                                             </div>
                                         </button>
                                     </li>
-                                    {departement && (
+                                    {/*departement && (
                                         <li className="contact-li">
                                             <a className="fr-btn fr-icon-mail-line" href={`/accueil-etrangers${departement ? `?departement=${departement}` : ''}`} title={t('header.contact.title')}>
                                                 {t('header.contact')}
                                             </a>
                                         </li>
-                                    )}
+                                    )*/}
                                 </ul>
                             </div>
                         </div>

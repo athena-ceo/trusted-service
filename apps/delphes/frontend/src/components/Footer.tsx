@@ -55,7 +55,7 @@ export default function Footer({ departement = '', displayWatson = false }: { de
             <div className="fr-container">
                 <div className="fr-footer__body">
                     <div className="fr-footer__brand fr-enlarge-link">
-                        <Link href="/" title={t('footer.home')}>
+                        <Link href="#" title={t('footer.home')}>
                             <p className="fr-logo">
                                 préfet
                                 <br />
@@ -103,7 +103,7 @@ export default function Footer({ departement = '', displayWatson = false }: { de
 
                 <div className="fr-footer__bottom">
                     <ul className="fr-footer__bottom-list">
-                        <li className="fr-footer__bottom-item">
+                        {/* <li className="fr-footer__bottom-item">
                             <a className="fr-footer__bottom-link" href="/plan-du-site">
                                 {t('footer.sitemap')}
                             </a>
@@ -132,7 +132,7 @@ export default function Footer({ departement = '', displayWatson = false }: { de
                             <a className="fr-footer__bottom-link" href="/gestion-des-cookies">
                                 Gestion des cookies
                             </a>
-                        </li>
+                        </li> */}
                         {displayWatson && !watsonActivated && (
                             <li className="fr-footer__bottom-item">
                                 <Button

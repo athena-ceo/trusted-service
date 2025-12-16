@@ -411,7 +411,14 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
                         <div className="fr-grid-row fr-grid-row--gutters">
                             <div className="fr-col-12">
-                                <Link href="/" className="fr-btn fr-btn--secondary">
+                                <Link
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        router.back();
+                                    }}
+                                    className="fr-btn fr-btn--secondary"
+                                >
                                     {t('analysis.backToHome')}
                                 </Link>
                             </div>

@@ -125,6 +125,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                                 ...parsed.fieldValues
                             }));
                             formData.email = parsed.fieldValues.adresse_mail || "";
+                            formData.agdref = parsed.fieldValues.numero_AGDREF || "";
                             formData.acceptation = true; // Forcer l'acceptation des CGU
                         }
                     } catch (e) {
