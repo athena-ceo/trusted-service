@@ -1,0 +1,18 @@
+# Serveur email SMTP4Dev pour le développement
+# Ce serveur capture tous les emails sans les envoyer réellement
+# Utile pour le développement et les tests
+
+services:
+  # SMTP4Dev - Serveur email de développement
+  smtp4dev:
+    image: rnwood/smtp4dev:latest
+    container_name: trusted-services-smtp4dev
+    ports:
+      - "5001:80"   # Interface web (http://localhost:5001)
+      - "25:25"     # Port SMTP standard
+      - "2525:2525" # Port SMTP alternatif
+    environment:
+      - ServerOptions__HostName=smtp4dev
+      - ServerOptions__Ports=25,2525
+    restart: unless-stopped
+
