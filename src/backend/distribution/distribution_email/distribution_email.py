@@ -308,7 +308,11 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 # Disable SMTP protocol debug output in production
                 server.set_debuglevel(0)
                 server.starttls()
-                server.login(email_to_send.from_email_address, email_password)
+                # Utiliser smtp_username si disponible, sinon utiliser l'adresse email (rétrocompatibilité)
+                smtp_username = email_config.smtp_username if email_config.smtp_username else email_to_send.from_email_address
+                print(f"Attempting SMTP login with username: {smtp_username}")
+                server.login(smtp_username, email_password)
+                print("SMTP login successful!")
 
                 # Send as bytes to preserve UTF-8
                 server.sendmail(email_to_send.from_email_address, recipients, message.as_bytes())
@@ -325,7 +329,7 @@ if __name__ == "__main__":
 
     locale = "fr"
     email_config: DistributionEmailConfig = load_email_config_from_workbook(
-        os.path.join(os.path.dirname(__file__), "../../../../runtime_dev/apps/delphes/delphes.xlsx"),
+        os.path.join(os.path.dirname(__file__), "../../../../runtime_dev/apps/delphes78/delphes78.xlsx"),
         locale)
     
     # Clean any problematic characters from config
@@ -344,11 +348,24 @@ if __name__ == "__main__":
     print(f"email_config.password: {email_config.password}")
     email_config.smtp_server = clean_string(email_config.smtp_server)
     print(f"email_config.smtp_server: {email_config.smtp_server}")
+    if email_config.smtp_username:
+        email_config.smtp_username = clean_string(email_config.smtp_username)
+        print(f"email_config.smtp_username: {email_config.smtp_username}")
+    else:
+        print("email_config.smtp_username: NOT SET (will use email address)")
+    print(f"email_config.smtp_port: {email_config.smtp_port}")
     
     # Override agent email for testing
     email_config.agent_email_address = "j@milgram.fr"
     engine = CaseHandlingDistributionEngineEmail(email_config, locale)
 
+    print(f"\n=== Configuration d'envoi d'email ===")
+    print(f"From (hub_email_address): {email_config.hub_email_address}")
+    print(f"To (agent_email_address): {email_config.agent_email_address}")
+    print(f"SMTP Server: {email_config.smtp_server}:{email_config.smtp_port}")
+    print(f"SMTP Username: {email_config.smtp_username if email_config.smtp_username else 'N/A (using email address)'}")
+    print(f"=====================================\n")
+    
     email_to_agent: Email = Email(
         from_email_address=email_config.hub_email_address,
         to_email_address=email_config.agent_email_address,

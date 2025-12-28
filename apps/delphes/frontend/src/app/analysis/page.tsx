@@ -288,7 +288,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                                         <p><strong>{t('analysis.form.selectPrompt')}</strong></p>
                                         <fieldset className="fr-fieldset" id="radio-intentions" aria-labelledby="radio-intentions-legend radio-intentions-messages">
                                             <legend className="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-intentions-legend">
-                                                {t('analysis.form.aiIdentified')} {scoringsPositifs.length} {t('analysis.form.cases')}<br />{t('analysis.form.yourSelection')} *
+                                                {t('analysis.form.aiIdentified')} {scoringsPositifs.length} {t('analysis.form.cases')}<br />{t('analysis.form.yourSelection')}
                                             </legend>
                                             {scoringsPositifs.map((intention, index) => (
                                                 <div className="fr-fieldset__element" key={index}>

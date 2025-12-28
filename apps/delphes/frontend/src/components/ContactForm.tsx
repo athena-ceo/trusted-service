@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Arrondissement78, { communesYvelines } from "./Arrondissement78";
 
 interface FormData {
     nom: string;
@@ -11,6 +12,7 @@ interface FormData {
     agdref: string;
     statut: string;
     message: string;
+    captcha: boolean;
     acceptation: boolean;
 }
 
@@ -43,6 +45,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         agdref: "",
         statut: "",
         message: "",
+        captcha: false,
         acceptation: false,
     });
 
@@ -50,6 +53,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
     const [statuts, setStatuts] = useState<Array<{ id: string, label: string }>>([]);
     const [errors, setErrors] = useState<Partial<FormData>>({});
     const [urlArrondissement, setUrlArrondissement] = useState<string>("");
+    const [initialCommune, setInitialCommune] = useState<string | undefined>(undefined);
 
     const hasFetchedRef = useRef(false);
 
@@ -122,14 +126,15 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                         if (parsed.fieldValues) {
                             setFormData((prev) => ({
                                 ...prev,
-                                ...parsed.fieldValues
+                                ...parsed.fieldValues,
+                                email: parsed.fieldValues.adresse_mail || prev.email,
+                                agdref: parsed.fieldValues.numero_AGDREF || prev.agdref,
+                                captcha: parsed.fieldValues.captcha !== undefined ? parsed.fieldValues.captcha : prev.captcha,
+                                acceptation: true, // Forcer l'acceptation des CGU
                             }));
-                            formData.email = parsed.fieldValues.adresse_mail || "";
-                            formData.agdref = parsed.fieldValues.numero_AGDREF || "";
-                            formData.acceptation = true; // Forcer l'acceptation des CGU
                         }
                     } catch (e) {
-                        // Optionnel : log d’erreur
+                        // Optionnel : log d'erreur
                         console.warn("Erreur lors de la lecture du localStorage accueilEtrangers", e);
                     }
                 }
@@ -147,14 +152,33 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         const randomEmail = `${randomNom.toLowerCase()}.${randomPrenom.toLowerCase()}@${messageries[Math.floor(Math.random() * messageries.length)]}`;
         const randomAgdref = departement + Math.floor(Math.random() * 100000000);
 
+        // Pour le département 78, sélectionner une commune aléatoire
+        let randomArrondissement = arrondissements.length > 0 ? arrondissements[0].id : "";
+        let randomCommune: string | undefined = undefined;
+
+        if (departement === "78" && communesYvelines.length > 0) {
+            const randomCommuneData = communesYvelines[Math.floor(Math.random() * communesYvelines.length)];
+            randomCommune = randomCommuneData.commune;
+            // Déterminer le code d'arrondissement à partir de la commune
+            const arrondissementCodes: Record<string, string> = {
+                "Versailles": "VERS",
+                "Rambouillet": "RAMB",
+                "Saint-Germain-en-Laye": "SGEL",
+                "Mantes-la-Jolie": "MLJ",
+            };
+            randomArrondissement = arrondissementCodes[randomCommuneData.arrondissement] || "";
+        }
+
+        setInitialCommune(randomCommune);
         setFormData({
             nom: randomNom,
             prenom: randomPrenom,
             email: randomEmail,
-            arrondissement: arrondissements.length > 0 ? arrondissements[0].id : "",
+            arrondissement: randomArrondissement,
             agdref: randomAgdref,
             statut: "régulier",
             message: `${t('form.message.example')}\n\n${randomPrenom} ${randomNom}`,
+            captcha: true,
             acceptation: true,
         });
     };
@@ -171,6 +195,9 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         }
         if (!formData.arrondissement) newErrors.arrondissement = t('form.error.arrondissement');
         if (!formData.message.trim()) newErrors.message = t('form.error.message');
+        if (!formData.captcha) {
+            (newErrors as any).captcha = t('form.error.captcha') || 'Veuillez confirmer que vous êtes une personne réelle';
+        }
         if (!formData.acceptation) {
             (newErrors as any).acceptation = t('form.error.acceptance');
         }
@@ -255,40 +282,63 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                 </div>
             </div>
 
-            <div className="fr-fieldset__element">
-                <div className={`fr-select-group ${errors.arrondissement ? 'fr-input-group--error' : ''}`}>
-                    <label className="fr-label" htmlFor="arrondissement">
-                        {t('form.arrondissement')} *
-                    </label>
-                    <div className="fr-alert fr-alert--warning fr-mb-1w">
-                        <p>
-                            <a
-                                className="fr-link fr-icon-external-link-line fr-link--icon-right"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={urlArrondissement}>
-                                {t('form.arrondissementLink' + "." + departement)}
-                            </a>
-                        </p>
+            {departement === "78" ? (
+                <Arrondissement78
+                    value={formData.arrondissement}
+                    onChange={useCallback((value: string) => {
+                        setFormData(prev => ({ ...prev, arrondissement: value }));
+                        setErrors(prev => {
+                            if (prev.arrondissement) {
+                                return { ...prev, arrondissement: undefined };
+                            }
+                            return prev;
+                        });
+                        // Réinitialiser initialCommune après le changement manuel
+                        setInitialCommune(undefined);
+                    }, [])}
+                    error={errors.arrondissement}
+                    label={t('form.arrondissement')}
+                    urlArrondissement={urlArrondissement}
+                    t={t}
+                    departement={departement}
+                    initialCommune={initialCommune}
+                />
+            ) : (
+                <div className="fr-fieldset__element">
+                    <div className={`fr-select-group ${errors.arrondissement ? 'fr-input-group--error' : ''}`}>
+                        <label className="fr-label" htmlFor="arrondissement">
+                            {t('form.arrondissement')} *
+                        </label>
+                        <div className="fr-alert fr-alert--warning fr-mb-1w">
+                            <p>
+                                <a
+                                    className="fr-link fr-icon-external-link-line fr-link--icon-right"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={urlArrondissement}>
+                                    {t('form.arrondissementLink' + "." + departement)}
+                                </a>
+                            </p>
+                        </div>
+                        <select
+                            className="fr-select"
+                            id="arrondissement"
+                            name="arrondissement"
+                            value={formData.arrondissement}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">{t('form.selectArrondissement')}</option>
+                            {arrondissements.map((arr) => (
+                                <option key={arr.id} value={arr.id}>
+                                    {arr.label}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.arrondissement && <p className="fr-error-text">{errors.arrondissement}</p>}
                     </div>
-                    <select
-                        className="fr-select"
-                        id="arrondissement"
-                        name="arrondissement"
-                        value={formData.arrondissement}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">{t('form.selectArrondissement')}</option>
-                        {arrondissements.map((arr) => (
-                            <option key={arr.id} value={arr.id}>
-                                {arr.label}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.arrondissement && <p className="fr-error-text">{errors.arrondissement}</p>}
                 </div>
-            </div>
+            )}
 
             <div className="fr-fieldset__element">
                 <div className={`fr-input-group ${errors.agdref ? 'fr-input-group--error' : ''}`}>
@@ -346,6 +396,30 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
             </div>
 
             <div className="fr-fieldset__element">
+                <div className={`fr-alert ${formData.captcha ? 'fr-alert--success' : 'fr-alert--warning'} fr-mb-3w`}>
+                    <h3 className="fr-alert__title">
+                        Veuillez confirmer que vous êtes une personne réelle
+                    </h3>
+                    <div className="fr-checkbox-group">
+                        <input
+                            type="checkbox"
+                            name="captcha"
+                            id="captcha-verification"
+                            required
+                            className="fr-input"
+                            checked={formData.captcha}
+                            onChange={handleChange}
+                            suppressHydrationWarning
+                        />
+                        <label htmlFor="captcha-verification" className="fr-label">
+                            Je confirme être une personne réelle *
+                        </label>
+                    </div>
+                    {(errors as any).captcha && <p className="fr-error-text">{(errors as any).captcha}</p>}
+                </div>
+            </div>
+
+            <div className="fr-fieldset__element">
                 <div className={`fr-checkbox-group ${(errors as any).acceptation ? 'fr-input-group--error' : ''}`}>
                     <input
                         type="checkbox"
@@ -355,6 +429,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                         className="fr-input"
                         checked={formData.acceptation}
                         onChange={handleChange}
+                        suppressHydrationWarning
                     />
                     <label htmlFor="reglement-service" className="fr-label">
                         {t('form.acceptance')} *

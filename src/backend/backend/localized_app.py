@@ -75,6 +75,8 @@ class LocalizedApp(ServerApi):
             email_config.agent_email_address = clean_string(email_config.agent_email_address)
             email_config.password = clean_string(email_config.password)
             email_config.smtp_server = clean_string(email_config.smtp_server)
+            if email_config.smtp_username:
+                email_config.smtp_username = clean_string(email_config.smtp_username)
             
             self.case_handling_distribution_engine = CaseHandlingDistributionEngineEmail(email_config, locale)
         else:  # Ticketing system, etc...
@@ -86,8 +88,14 @@ class LocalizedApp(ServerApi):
         #####
 
         case_model_config: CaseModelConfig = load_case_model_config_from_workbook(app_def_filename, locale)
+        print_blue(f"Loaded {len(case_model_config.case_fields)} case fields for app '{app_id}' locale '{locale}'")
+
         case_model: CaseModel = CaseModel(case_fields=case_model_config.case_fields)
         self.case_model: CaseModel = case_model
+        print_blue(f"Initialized case model for app '{app_id}' locale '{locale}' with {len(self.case_model.case_fields)} fields")
+        # for field in self.case_model.case_fields:
+        #     print_blue(f"  Field: id='{field.id}', label='{field.label}'")
+        # print_blue("...")
 
         self.text_analysis_config: TextAnalysisConfig = load_text_analysis_config_from_workbook(app_def_filename, locale)
         self.text_analyzer = TextAnalyzer(runtime_directory, app_id, locale, case_model, self.text_analysis_config)
@@ -203,9 +211,14 @@ class LocalizedApp(ServerApi):
 
         intent_label = None
 
-        for intent in self.text_analysis_config.intentions:
-            if intent.id == request.intention_id:
-                intent_label = intent.label
+        # Si l'intention est "other", utiliser le label de localisation car cette intention
+        # n'est pas dans text_analysis_config.intentions (elle est créée dynamiquement)
+        if request.intention_id == "other":
+            intent_label = self.text_analyzer.localization.label_intention_other
+        else:
+            for intent in self.text_analysis_config.intentions:
+                if intent.id == request.intention_id:
+                    intent_label = intent.label
 
         rendering_email_to_agent, rendering_email_to_requester = self.case_handling_distribution_engine.distribute(
             self.case_model,  # TODO avoid passing this

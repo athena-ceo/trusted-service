@@ -16,6 +16,7 @@ interface FormData {
   agdref: string;
   statut: string;
   message: string;
+  captcha: boolean;
   acceptation: boolean;
 }
 
@@ -45,6 +46,7 @@ function AccueilEtrangersContent() {
       arrondissement: formData.arrondissement,
       message: formData.message,
       departement: departement,
+      captcha: formData.captcha,
     };
 
     // Stocker les résultats pour la page de confirmation
@@ -89,16 +91,22 @@ function AccueilEtrangersContent() {
                 {t('accueil.intro.line3')}
               </p>
 
+              <p>
+                {t('accueil.intro.aiProcessing' + "." + departement)}
+              </p>
+
               <div className="fr-alert fr-alert--info fr-mb-4w">
                 <p className="fr-alert__title">{t('accueil.alert.info.title')}</p>
                 <p>
                   <strong>{t('accueil.alert.info.message')}</strong>
+                  <br />
+                  {t('accueil.alert.info.processingTime' + "." + departement)}
                 </p>
               </div>
 
               <div className="fr-alert fr-alert--warning fr-mb-4w">
                 <p>
-                  <strong>{t('accueil.alert.warning' + "." + departement)}</strong>
+                  <strong>{t('accueil.alert.warning.' + departement)}</strong>
                 </p>
               </div>
             </div>
@@ -115,10 +123,10 @@ function AccueilEtrangersContent() {
             <div className="fr-col-12 fr-col-md-4">
               <nav className="fr-sidemenu fr-sidemenu--right fr-sidemenu--full-border" role="navigation" aria-label="secondaire">
                 <div className="fr-sidemenu__inner">
-                  <button className="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper-right" aria-expanded="false">
+                  <button className="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper-right" aria-expanded="false" suppressHydrationWarning>
                     {t('accueil.sidebar.title')}
                   </button>
-                  <div className="fr-collapse fr-px-1w" id="fr-sidemenu-wrapper-right">
+                  <div className="fr-collapse fr-px-1w" id="fr-sidemenu-wrapper-right" suppressHydrationWarning>
 
                     {/* Sites officiels */}
                     <div className="fr-card fr-enlarge-link fr-card--grey fr-card--no-border fr-mt-3w">
@@ -170,27 +178,6 @@ function AccueilEtrangersContent() {
                       </div>
                     </div>
 
-                    {/* Les services de l'État */}
-                    <div className="fr-card fr-enlarge-link fr-card--grey fr-card--no-border fr-mt-3w">
-                      <div className="fr-card__body">
-                        <div className="fr-card__content">
-                          <h2 className="fr-card__title">
-                            {t('accueil.sidebar.services.title')}
-                          </h2>
-                          <p className="fr-card__desc">
-                            {t('accueil.sidebar.services.desc')}
-                          </p>
-                          <div className="fr-card__end">
-                            <a className="fr-link fr-link--icon-right fr-icon-external-link-line fr-mb-3w"
-                              href="https://contacts-demarches.interieur.gouv.fr/"
-                              target="_blank"
-                              title={t('accueil.sidebar.services.linkTitle')}>
-                              {t('accueil.sidebar.services.link')}
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </nav>

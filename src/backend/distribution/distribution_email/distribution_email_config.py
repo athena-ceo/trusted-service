@@ -16,6 +16,7 @@ class DistributionEmailConfig(Config):
     agent_email_address: str
     case_field_email_address: str
     smtp_server: str
+    smtp_username: str | None = None  # Username pour l'authentification SMTP (optionnel pour rétrocompatibilité)
     password: str
     smtp_port: int
     send_email: bool
