@@ -4,7 +4,15 @@ Fixtures communes pour tous les tests
 import pytest
 import tempfile
 import os
+import sys
 from unittest.mock import Mock
+
+# Ajouter le répertoire racine au path pour les imports
+# Cela permet d'importer src.* même si conftest.py est dans tests/
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 from src.common.case_model import CaseModel, CaseField
 from src.backend.text_analysis.text_analyzer import TextAnalysisConfig
