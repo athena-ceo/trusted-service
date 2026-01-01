@@ -1,5 +1,6 @@
 import importlib
 import json
+import time
 from typing import Any, cast
 
 from pydantic import BaseModel, ValidationError
@@ -129,16 +130,118 @@ class LocalizedApp(ServerApi):
     def get_case_model(self, app_id: str, locale: SupportedLocale) -> CaseModel:
         return self.case_model
 
-    def analyze(self, app_id: str, locale: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
+    def _create_fallback_response(self, locale: SupportedLocale, llm_config: LlmConfig, exception: Exception) -> dict[str, Any]:
+        """
+        Crée une réponse minimale en cas d'échec de l'analyse LLM.
+        
+        Args:
+            locale: La locale pour adapter les messages
+            llm_config: La configuration LLM utilisée
+            exception: L'exception qui a causé l'échec
+        
+        Returns:
+            dict: Structure de réponse minimale avec uniquement l'intention "Autre"/"Other"
+        """
+        import traceback
+        from src.backend.text_analysis.text_analysis_localization import text_analysis_localizations
+        from src.backend.text_analysis.base_models import FIELD_NAME_SCORINGS
+        from src.common.constants import KEY_ANALYSIS_RESULT, KEY_PROMPT, KEY_MARKDOWN_TABLE, KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_STATISTICS, KEY_HASH_CODE
+        
+        # Obtenir les messages localisés
+        localization = text_analysis_localizations[locale]
+        label_other = localization.label_intention_other
+        
+        # Construire le message d'erreur détaillé
+        error_type = type(exception).__name__
+        error_message = str(exception)
+        error_traceback = traceback.format_exc()
+        
+        # Code d'erreur court (type + message tronqué)
+        error_code = f"{error_type}: {error_message[:200]}"
+        
+        # Message d'erreur complet avec traceback
+        error_message_full = f"{error_type}: {error_message}\n\nTraceback:\n{error_traceback}"
+        
+        # Créer l'intention "Autre" avec score 1 et justification localisée
+        intention_other = {
+            "intention_id": "other",
+            "score": 1,
+            "justification": f"{localization.error_justification_prefix}{error_code}",
+            "intention_label": label_other,
+            "intention_fields": []
+        }
+        
+        # Créer les statistiques avec le code d'erreur et le message d'erreur complet
+        statistics = {
+            "LLM config": llm_config.id,
+            "LLM": llm_config.llm,
+            "LLM Model": llm_config.model,
+            "Prompt format": llm_config.prompt_format,
+            "Response time": "0.00s",
+            "Error code": error_code,
+            "Error Message": error_message_full,
+            "Prompt tokens": "N/A",
+            "Completion tokens": "N/A",
+        }
+        
+        # Créer l'analysis_result minimal
+        analysis_result = {
+            FIELD_NAME_SCORINGS: [intention_other],
+            KEY_STATISTICS: statistics,
+            KEY_HASH_CODE: None
+        }
+        
+        # Générer le markdown table en utilisant la fonction existante
+        from src.backend.rendering.md import build_markdown_table_intentions
+        markdown_table = build_markdown_table_intentions(analysis_result)
+        
+        # Créer la réponse complète avec la structure attendue
+        return {
+            KEY_ANALYSIS_RESULT: analysis_result,
+            KEY_PROMPT: "",
+            KEY_MARKDOWN_TABLE: markdown_table,
+            KEY_HIGHLIGHTED_TEXT_AND_FEATURES: ""
+        }
 
+    def analyze(self, app_id: str, locale: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
+        """
+        Analyse le texte avec mécanisme de retry pour les erreurs temporaires.
+        
+        En cas d'erreur lors de l'analyse, réessaie jusqu'à 3 fois avec un délai de 2 secondes
+        entre chaque tentative. Si toutes les tentatives échouent, retourne une réponse minimale
+        avec uniquement l'intention "Autre"/"Other" et le code d'erreur dans les statistiques.
+        """
         llm_configs: dict[str, LlmConfig] = self.parent_app.llm_configs
         llm_config: LlmConfig = llm_configs[llm_config_id]
-        result = self.text_analyzer.analyze(locale=locale, 
-                                            llm_config=llm_config, 
-                                            field_values=field_values, 
-                                            text=text, 
-                                            read_from_cache=read_from_cache)
-        return result
+        
+        # Nombre maximum de tentatives
+        max_retries = 3
+        # Délai entre les tentatives en secondes
+        retry_delay = 2.0
+        
+        last_exception = None
+        for attempt in range(1, max_retries + 1):
+            try:
+                result = self.text_analyzer.analyze(locale=locale, 
+                                                    llm_config=llm_config, 
+                                                    field_values=field_values, 
+                                                    text=text, 
+                                                    read_from_cache=read_from_cache)
+                return result
+            except Exception as e:
+                last_exception = e
+                if attempt < max_retries:
+                    # Erreur temporaire : on réessaie après un délai
+                    print_red(f"⚠️  Erreur lors de l'analyse (tentative {attempt}/{max_retries}): {type(e).__name__}: {str(e)[:200]}")
+                    print_blue(f"   Nouvelle tentative dans {retry_delay}s...")
+                    time.sleep(retry_delay)
+                    continue
+                else:
+                    # Dernière tentative échouée : on retourne une réponse minimale au lieu de propager l'exception
+                    error_code = f"{type(e).__name__}: {str(e)[:200]}"
+                    print_red(f"❌ Échec de l'analyse après {max_retries} tentatives: {error_code}")
+                    print_blue("   Retour d'une réponse minimale avec l'intention 'Autre'")
+                    return self._create_fallback_response(locale, llm_config, e)
 
     def save_text_analysis_cache(self, app_id: str, locale: SupportedLocale, text_analysis_cache: str):
         print_blue("SAVING")

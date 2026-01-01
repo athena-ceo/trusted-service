@@ -33,6 +33,7 @@ tsvenv/
 .coverage
 .coverage.*
 htmlcov/
+tests/coverage/
 coverage.xml
 *.cover
 .hypothesis/

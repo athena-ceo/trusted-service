@@ -103,8 +103,8 @@ test-watch:
 
 coverage:
 	@echo "Generating coverage report..."
-	pytest tests/unit/ --cov=src --cov-report=html --cov-report=term
-	@echo "Coverage report: htmlcov/index.html"
+	pytest tests/unit/ --cov=src --cov-report=html:tests/coverage/htmlcov --cov-report=term
+	@echo "Coverage report: tests/coverage/htmlcov/index.html"
 
 # ============================================================================
 # Code Quality
@@ -239,9 +239,9 @@ clean-cache:
 
 clean-test:
 	@echo "Cleaning test artifacts..."
-	rm -rf htmlcov/
-	rm -rf .coverage
-	rm -rf coverage.xml
+	rm -rf tests/coverage/htmlcov/
+	rm -rf tests/coverage/.coverage
+	rm -rf tests/coverage/coverage.xml
 	rm -rf .pytest_cache/
 	rm -rf test-results/
 	rm -rf playwright-report/

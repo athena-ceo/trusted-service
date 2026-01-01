@@ -24,6 +24,8 @@ class TextAnalysisLocalization(Localization):
     promptstring_return_only_json: str
 
     label_intention_other: str
+    error_analysis_failed: str
+    error_justification_prefix: str
 
 
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
@@ -51,7 +53,9 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_definition="Definition",
         promptstring_return_only_json="Return ONLY valid JSON that matches this JSON Schema (no extra keys, no prose)",
 
-        label_intention_other="OTHER", ),
+        label_intention_other="OTHER",
+        error_analysis_failed="Analysis failed after multiple retry attempts",
+        error_justification_prefix="Analysis error: "),
 
     "fr": TextAnalysisLocalization(
         docstring_scoring_for_one_intention="Résultat pour une intention unique.",
@@ -74,7 +78,9 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_definition="Définition",
         promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
 
-        label_intention_other="AUTRE"),
+        label_intention_other="AUTRE",
+        error_analysis_failed="Échec de l'analyse après plusieurs tentatives",
+        error_justification_prefix="Erreur lors de l'analyse : "),
 
     "fi": TextAnalysisLocalization(
         docstring_scoring_for_one_intention="Mallin tuloste yhdestä aikomuksesta.",
@@ -95,6 +101,8 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_term="Termi",
         promptstring_definition="Määritelmä",
         promptstring_return_only_json="Palauta VAIN validi JSON, joka vastaa kyseistä JSON-mallia (ei ylimääräisiä avaimia, ei proosaa)",
-        label_intention_other="MUU", ),
+        label_intention_other="MUU",
+        error_analysis_failed="Analyysi epäonnistui useiden uudelleenyritysten jälkeen",
+        error_justification_prefix="Analyysivirhe: "),
 
 }
