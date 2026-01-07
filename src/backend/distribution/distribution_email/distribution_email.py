@@ -57,9 +57,11 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             if isinstance(case_field_value, bool):
                 case_field_value2: str = self.localization.label_yes if case_field_value else self.localization.label_no
 
+            # Don't include empty values
             if not case_field_value2:
                 case_field_value2 = "-"
-            labels_and_values.append((case_field_label, case_field_value2))
+            else:
+                labels_and_values.append((case_field_label, case_field_value2))
 
         table = "<table cellpadding='10'>\n"
         for label, value in labels_and_values:

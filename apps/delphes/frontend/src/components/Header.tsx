@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function Header({ departement = '' }: { departement?: string }) {
+export default function Header({ departement = '', mode = '' }: { departement?: string, mode?: string }) {
     const { currentLang, setLanguage, t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMenuMobileOpen, setIsMenuMobileOpen] = useState(false);
@@ -72,7 +72,7 @@ export default function Header({ departement = '' }: { departement?: string }) {
                             <div className="fr-header__service">
                                 <Link href="#" title={true ? "DELPHES" : t('service.home' + "." + departement)} className="fr-header__service-link">
                                     <p className="fr-header__service-title">
-                                        {/*t('service.title' + "." + departement)*/}DELPHES
+                                        {/*t('service.title' + "." + departement)*/}DELPHES {mode === 'test' ? ' EN MODE TEST' : ''}
                                     </p>
                                 </Link>
                                 <p className="fr-header__service-tagline">

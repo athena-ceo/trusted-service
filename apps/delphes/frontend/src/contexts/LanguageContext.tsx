@@ -107,11 +107,13 @@ const translations: Record<Language, Record<string, string>> = {
         'accueil.sidebar.services.linkTitle': 'Accéder à la plateforme les services de l\'état https://contacts-demarches.interieur.gouv.fr/ - Nouvelle fenêtre',
 
         // Home Page
-        'home.title': 'Delphes pour les préfectures',
-        'home.prefecture.78': 'Préfecture des Yvelines',
-        'home.prefecture.91': 'Préfecture de l\'Essonne',
-        'home.prefecture.92': 'Préfecture des Hauts-de-Seine',
-        'home.prefecture.94': 'Préfecture du Val-de-Marne',
+        'home.title.test': 'Plateformes de test de Delphes pour les préfectures',
+        'home.title.production': 'Delphes pour les préfectures en production',
+        'home.prefecture.test.78': 'Préfecture des Yvelines (test)',
+        'home.prefecture.test.91': 'Préfecture de l\'Essonne (test)',
+        'home.prefecture.test.92': 'Préfecture des Hauts-de-Seine (test)',
+        'home.prefecture.test.94': 'Préfecture du Val-de-Marne (test)',
+        'home.prefecture.production.78': 'Préfecture des Yvelines (production)',
 
         // Analysis Page
         'analysis.alert.processing.title': 'Votre demande est en cours de traitement automatique',
@@ -163,6 +165,8 @@ const translations: Record<Language, Record<string, string>> = {
         'form.firstName': 'Prénom',
         'form.email': 'Adresse mail',
         'form.emailFormat': 'Format attendu : nom@domaine.ext',
+        'form.communeDeResidence': 'Commune de résidence',
+        'form.arrondissementLabel': 'Arrondissement de rattachement',
         'form.arrondissement': 'Arrondissement de rattachement de votre commune de résidence',
         'form.arrondissementLink.78': 'Cliquer ici pour consulter la liste des arrondissements de rattachement des communes des Yvelines.',
         'form.arrondissementLink.91': 'Cliquer ici pour consulter la liste des arrondissements de rattachement des communes de l\'Essonne.',
@@ -199,6 +203,9 @@ Mais jusqu'à ce jour je n'ai pas reçu de nouvelle API.
 Mon contrat de travail est suspendu et si ça continue, mon contrat de travail va être résilié.
 
 Cordialement,`,
+        'form.captcha': 'Veuillez confirmer que vous êtes une personne réelle',
+        'form.captcha.label': 'Je confirme être une personne réelle',
+        'form.error.captcha': 'Veuillez confirmer que vous êtes une personne réelle',
     },
     EN: {
         // Header
@@ -294,11 +301,14 @@ Cordialement,`,
         'accueil.sidebar.services.linkTitle': 'Access the state services platform https://contacts-demarches.interieur.gouv.fr/ - New window',
 
         // Home Page
-        'home.title': 'Delphes for prefectures',
-        'home.prefecture.78': 'Yvelines Prefecture',
-        'home.prefecture.91': 'Essonne Prefecture',
-        'home.prefecture.92': 'Hauts-de-Seine Prefecture',
-        'home.prefecture.94': 'Val-de-Marne Prefecture',
+        'home.title.test': 'Test platforms for Delphes for prefectures',
+        'home.title.production': 'Production platforms for Delphes for prefectures',
+        'home.prefecture.test.78': 'Yvelines Prefecture (test)',
+        'home.prefecture.test.91': 'Essonne Prefecture (test)',
+        'home.prefecture.test.92': 'Hauts-de-Seine Prefecture (test)',
+        'home.prefecture.test.94': 'Val-de-Marne Prefecture (test)',
+        'home.prefecture.production.78': 'Yvelines Prefecture (production)',
+
 
         // Analysis Page
         'analysis.alert.processing.title': 'Your request is being automatically processed',
@@ -350,13 +360,15 @@ Cordialement,`,
         'form.firstName': 'First name',
         'form.email': 'Email address',
         'form.emailFormat': 'Expected format: name@domain.ext',
+        'form.communeDeResidence': 'Municipality of residence',
+        'form.arrondissementLabel': 'District',
         'form.arrondissement': 'District of your municipality of residence',
         'form.arrondissementLink.78': 'Click here to view the list of districts of municipalities in Yvelines.',
         'form.arrondissementLink.91': 'Click here to view the list of districts of municipalities in Essonne.',
         'form.arrondissementLink.92': 'Click here to view the list of districts of municipalities in Hauts-de-Seine.',
         'form.arrondissementLink.94': 'Click here to view the list of districts of municipalities in Val-de-Marne.',
         'form.selectArrondissement': 'Select your district',
-        'form.agdref': 'Numéro étranger',
+        'form.agdref': 'AGDREF Number',
         'form.agdrefFormat': 'Expected format: 10 digits',
         'form.statut': 'Status',
         'form.selectStatut': 'Select the status that best fits your situation.',
@@ -385,7 +397,10 @@ The latter was renewed during the summer but my API is now expired since the beg
 But to this day I have not received a new API.
 My work contract is suspended and if this continues, my work contract will be terminated.
 
-Best regards,`
+Best regards,`,
+        'form.captcha': 'Please confirm that you are a real person',
+        'form.captcha.label': 'I confirm that I am a real person',
+        'form.error.captcha': 'Please confirm that you are a real person',
     }
 };
 

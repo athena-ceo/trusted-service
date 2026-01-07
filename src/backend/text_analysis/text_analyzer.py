@@ -234,6 +234,10 @@ class TextAnalyzer:
 
         # TODO: Save the system_prompt in cache and move down the lines that follow under else:  # read_from_cache
 
+        # S'assurer que date_demande est présent dans field_values (requis par le template)
+        if "date_demande" not in field_values:
+            field_values["date_demande"] = datetime.now().strftime("%d/%m/%Y")
+        
         localized_system_prompt_template: str = self.build_localizedsystem_prompt_template(llm_config)
         system_prompt = localized_system_prompt_template.format(**field_values)
 
@@ -266,7 +270,12 @@ class TextAnalyzer:
                 raise ValueError(f"Unsupported LLM: {llm_config.llm}")
 
             if llm_config.response_format_type == "json_object":
-                _analysis_result: BaseModel = llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
+                try:
+                    _analysis_result: BaseModel = llm.call_llm_with_json_schema(self.analysis_response_model, system_prompt, text)
+                except (ValueError, Exception) as e:
+                    # Si la validation Pydantic échoue, propager l'erreur pour le retry/fallback
+                    # L'erreur sera capturée par le mécanisme de retry dans LocalizedApp.analyze()
+                    raise ValueError(f"LLM returned invalid format: {type(e).__name__}: {str(e)}") from e
             else:
                 _analysis_result: BaseModel = llm.call_llm_with_pydantic_model(self.analysis_response_model, system_prompt, text)
 
@@ -305,21 +314,25 @@ class TextAnalyzer:
         analysis_result[FIELD_NAME_SCORINGS] = [scoring for scoring in analysis_result[FIELD_NAME_SCORINGS] if
                                                 scoring.get("intention_label") is not None]
 
-        if not read_from_cache:
-            intention_other = Intention(id="other", label=self.localization.label_intention_other, description="Fallback")
-
-            dict_other: dict[str, Any] = {
-                "intention_id": intention_other.id,
-                "score": 1,
-                "justification": intention_other.description,
-                "intention_label": intention_other.label,
-                "intention_fields": [
-                ]
-            }
-
-            analysis_result[FIELD_NAME_SCORINGS].append(dict_other)
+        self._ensure_fallback_intention(analysis_result)
 
         return system_prompt, analysis_result
+
+    def _ensure_fallback_intention(self, analysis_result: dict[str, Any]) -> None:
+        """Guarantee presence of the fallback "other" intention, even for cached payloads."""
+        existing_ids = {scoring.get("intention_id") for scoring in analysis_result.get(FIELD_NAME_SCORINGS, [])}
+        if "other" in existing_ids:
+            return
+
+        intention_other = Intention(id="other", label=self.localization.label_intention_other, description="Fallback")
+
+        analysis_result.setdefault(FIELD_NAME_SCORINGS, []).append({
+            "intention_id": intention_other.id,
+            "score": 1,
+            "justification": intention_other.description,
+            "intention_label": intention_other.label,
+            "intention_fields": []
+        })
 
     def analyze(self, locale: SupportedLocale, llm_config: LlmConfig, field_values: dict[str, Any], text: str, read_from_cache: bool) -> dict[str, str]:
 

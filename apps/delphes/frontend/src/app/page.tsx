@@ -31,10 +31,8 @@ export default function Accueil() {
       }}>
         <div className="fr-container" id="main">
           {/* Lien vers les départements */}
-          <section id="demarches" className="fr-mt-4w">
-            <h2 className="fr-h2 fr-mb-4w">{t('home.title')}</h2>
-
-            {/* Tuiles des démarches principales */}
+          <section id="demarches-test" className="fr-mt-4w">
+            <h2 className="fr-h2 fr-mb-4w">{t('home.title.test')}</h2>
             <div id="bloc-demarches" className="fr-grid-row fr-grid-row--gutters" style={{ display: 'flex', flexWrap: 'wrap' }}>
               <div className="fr-col-6 fr-col-md-4 fr-col-lg" style={{ flex: '1 1 20%' }}>
                 <div className="fr-tile fr-enlarge-link">
@@ -43,11 +41,11 @@ export default function Accueil() {
                       <h3 className="fr-tile__title">
                         <Link
                           className="fr-tile__link"
-                          href="/accueil-etrangers?departement=78"
-                          title={t('home.prefecture.78')}
+                          href="/accueil-etrangers?departement=78&mode=test"
+                          title={t('home.prefecture.test.78')}
                           onClick={handleAccueilEtrangersClick}
                         >
-                          {t('home.prefecture.78')}
+                          {t('home.prefecture.test.78')}
                         </Link>
                       </h3>
                     </div>
@@ -67,11 +65,11 @@ export default function Accueil() {
                       <h3 className="fr-tile__title">
                         <Link
                           className="fr-tile__link"
-                          href="/accueil-etrangers?departement=92"
-                          title={t('home.prefecture.92')}
+                          href="/accueil-etrangers?departement=92&mode=test"
+                          title={t('home.prefecture.test.92')}
                           onClick={handleAccueilEtrangersClick}
                         >
-                          {t('home.prefecture.92')}
+                          {t('home.prefecture.test.92')}
                         </Link>
                       </h3>
                     </div>
@@ -91,11 +89,11 @@ export default function Accueil() {
                       <h3 className="fr-tile__title">
                         <Link
                           className="fr-tile__link"
-                          href="/accueil-etrangers?departement=91"
-                          title={t('home.prefecture.91')}
+                          href="/accueil-etrangers?departement=91&mode=test"
+                          title={t('home.prefecture.test.91')}
                           onClick={handleAccueilEtrangersClick}
                         >
-                          {t('home.prefecture.91')}
+                          {t('home.prefecture.test.91')}
                         </Link>
                       </h3>
                     </div>
@@ -115,11 +113,11 @@ export default function Accueil() {
                       <h3 className="fr-tile__title">
                         <Link
                           className="fr-tile__link"
-                          href="/accueil-etrangers?departement=94"
-                          title={t('home.prefecture.94')}
+                          href="/accueil-etrangers?departement=94&mode=test"
+                          title={t('home.prefecture.test.94')}
                           onClick={handleAccueilEtrangersClick}
                         >
-                          {t('home.prefecture.94')}
+                          {t('home.prefecture.test.94')}
                         </Link>
                       </h3>
                     </div>
@@ -127,6 +125,36 @@ export default function Accueil() {
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
                       <img src="/images/94.png" className="fr-responsive-img" alt="94" suppressHydrationWarning />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section de DELPHES en production */}
+          <section id="demarches-production" className="fr-mt-4w">
+            <h2 className="fr-h2 fr-mb-4w">{t('home.title.production')}</h2>
+            <div id="bloc-demarches" className="fr-grid-row fr-grid-row--gutters" style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <div className="fr-col-6 fr-col-md-4 fr-col-lg" style={{ flex: '1 1 20%' }}>
+                <div className="fr-tile fr-enlarge-link">
+                  <div className="fr-tile__body">
+                    <div className="fr-tile__content">
+                      <h3 className="fr-tile__title">
+                        <Link
+                          className="fr-tile__link"
+                          href="/accueil-etrangers?departement=78"
+                          title={t('home.prefecture.production.78')}
+                          onClick={handleAccueilEtrangersClick}
+                        >
+                          {t('home.prefecture.production.78')}
+                        </Link>
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="fr-tile__header">
+                    <div className="fr-tile__pictogram">
+                      <img src="/images/78.png" className="fr-responsive-img" alt="78" suppressHydrationWarning />
                     </div>
                   </div>
                 </div>

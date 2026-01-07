@@ -69,9 +69,18 @@ def analyze_text(
         if response.status_code == 200:
             return response.json()
         else:
+            # Pour les erreurs 500, essayer d'extraire plus d'informations
+            error_message = response.text[:500]  # Limiter la taille mais plus d'info
+            try:
+                error_json = response.json()
+                if "detail" in error_json:
+                    error_message = str(error_json["detail"])
+            except:
+                pass
+            
             return {
                 "error": f"HTTP {response.status_code}",
-                "message": response.text[:200]  # Limiter la taille
+                "message": error_message
             }
     except requests.exceptions.ConnectionError:
         return {"error": "connection_error", "message": "Backend inaccessible"}
@@ -268,85 +277,93 @@ def process_excel_file(
     print(f"\nTraitement de {num_rows_to_process} lignes...")
     print("-" * 60)
     
-    # Utiliser enumerate pour avoir la position dans rows_to_process (0-indexed)
-    # Mais on doit trouver la vraie ligne Excel correspondante
-    for pos, (idx, row) in enumerate(rows_to_process.iterrows()):
-        # Timestamp
-        timestamp_line = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Composer le message à partir des colonnes F (Objet du mail) et G (Texte Mail)
-        objet_column = "Objet du mail"
-        texte_column = "Texte Mail"
-        
-        # Récupérer l'objet et le texte
-        objet = str(row[objet_column]) if objet_column in row.index and not pd.isna(row[objet_column]) else ''
-        texte = str(row[texte_column]) if texte_column in row.index and not pd.isna(row[texte_column]) else ''
-        
-        # Supprimer "[INTERNET] " au début de l'objet
-        if objet.startswith("[INTERNET] "):
-            objet = objet[11:]  # Supprimer "[INTERNET] "
-        
-        # Composer le message : objet + 2 sauts de ligne + texte
-        text_str = f"{objet}\n\n{texte}".strip()
-        
-        # Calculer le numéro de ligne Excel pour l'affichage
-        if rows and row_numbers_list and pos < len(row_numbers_list):
-            # Utiliser directement la liste row_numbers_list avec la position
-            excel_row_num = row_numbers_list[pos]
-        else:
-            excel_row_num = pos + 2
-        
-        # Ignorer les lignes sans texte
-        if not text_str.strip():
-            print(f"\n[{timestamp_line}] {pos + 1}/{num_rows_to_process} : ligne {excel_row_num} - ⚠️  Pas de texte, ignorée")
-            continue
-        
-        # Trace : Timestamp et numéro de ligne
-        print(f"\n[{timestamp_line}] {pos + 1}/{num_rows_to_process} : ligne {excel_row_num}")
-        
-        # Trace : Message composé (limité à 200 caractères pour l'affichage)
-        message_preview = text_str[:200] + "..." if len(text_str) > 200 else text_str
-        print(f"Message composé: {message_preview}")
-        
-        print("Traitement en cours...", end=' ', flush=True)
-        
-        # Créer le payload (exclure les colonnes de dates et "Type de problème")
-        exclude_cols = ["Type de problème"]
-        field_values = create_field_values(row, exclude_date_columns=True, exclude_columns=exclude_cols)
-        
-        # Appeler l'API avec gestion d'erreur
-        is_error = False
-        result = None
-        try:
-            result = analyze_text(
-                api_base_url=api_base_url,
-                app_id=app_id,
-                locale=locale,
-                text=text_str,
-                field_values=field_values,
-                read_from_cache=False,
-                llm_config_id=llm_config_id
-            )
-        except Exception as e:
-            # En cas d'exception, créer un résultat d'erreur
-            result = {"error": "exception", "message": str(e)}
-            is_error = True
-            result_str = f"ERREUR: Exception - {str(e)}"
-            print(f"✗ {result_str}")
-        
-        # Stocker le résultat
-        result_str = ""
-        if not is_error:
-            if "error" in result:
-                result_str = f"ERREUR: {result.get('error', 'unknown')} - {result.get('message', '')}"
-                is_error = True
-                print(f"✗ {result_str}")
+    # Gestion des interruptions pour fermer proprement le fichier Excel
+    try:
+        # Utiliser enumerate pour avoir la position dans rows_to_process (0-indexed)
+        # Mais on doit trouver la vraie ligne Excel correspondante
+        for pos, (idx, row) in enumerate(rows_to_process.iterrows()):
+            # Timestamp
+            timestamp_line = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Composer le message à partir des colonnes F (Objet du mail) et G (Texte Mail)
+            objet_column = "Objet du mail"
+            texte_column = "Texte Mail"
+            
+            # Récupérer l'objet et le texte
+            objet = str(row[objet_column]) if objet_column in row.index and not pd.isna(row[objet_column]) else ''
+            texte = str(row[texte_column]) if texte_column in row.index and not pd.isna(row[texte_column]) else ''
+            
+            # Supprimer "[INTERNET] " au début de l'objet
+            if objet.startswith("[INTERNET] "):
+                objet = objet[11:]  # Supprimer "[INTERNET] "
+            
+            # Composer le message : objet + 2 sauts de ligne + texte
+            text_str = f"{objet}\n\n{texte}".strip()
+            
+            # Calculer le numéro de ligne Excel pour l'affichage
+            if rows and row_numbers_list and pos < len(row_numbers_list):
+                # Utiliser directement la liste row_numbers_list avec la position
+                excel_row_num = row_numbers_list[pos]
             else:
-                # Formater le résultat de manière détaillée
-                result_lines = []
-                
-                if "analysis_result" in result:
-                    analysis = result["analysis_result"]
+                excel_row_num = pos + 2
+            
+            # Ignorer les lignes sans texte
+            if not text_str.strip():
+                print(f"\n[{timestamp_line}] {pos + 1}/{num_rows_to_process} : ligne {excel_row_num} - ⚠️  Pas de texte, ignorée")
+                continue
+            
+            # Trace : Timestamp et numéro de ligne
+            print(f"\n[{timestamp_line}] {pos + 1}/{num_rows_to_process} : ligne {excel_row_num}")
+            
+            # Trace : Message composé (limité à 200 caractères pour l'affichage)
+            message_preview = text_str[:200] + "..." if len(text_str) > 200 else text_str
+            print(f"Message composé: {message_preview}")
+            
+            print("Traitement en cours...", end=' ', flush=True)
+            
+            # Créer le payload (exclure les colonnes de dates et "Type de problème")
+            exclude_cols = ["Type de problème"]
+            field_values = create_field_values(row, exclude_date_columns=True, exclude_columns=exclude_cols)
+            
+            # Appeler l'API avec gestion d'erreur
+            is_error = False
+            result = None
+            import time
+            start_time = time.time()
+            try:
+                # Afficher un indicateur de progression pendant l'attente
+                print("(appel API en cours, cela peut prendre jusqu'à 2 minutes...)")
+                result = analyze_text(
+                    api_base_url=api_base_url,
+                    app_id=app_id,
+                    locale=locale,
+                    text=text_str,
+                    field_values=field_values,
+                    read_from_cache=False,
+                    llm_config_id=llm_config_id
+                )
+                elapsed_time = time.time() - start_time
+                print(f"(appel API terminé en {elapsed_time:.1f}s)")
+            except Exception as e:
+                # En cas d'exception, créer un résultat d'erreur
+                result = {"error": "exception", "message": str(e)}
+                is_error = True
+                result_str = f"ERREUR: Exception - {str(e)}"
+                print(f"✗ {result_str}")
+            
+            # Stocker le résultat
+            result_str = ""
+            if not is_error:
+                if "error" in result:
+                    result_str = f"ERREUR: {result.get('error', 'unknown')} - {result.get('message', '')}"
+                    is_error = True
+                    print(f"✗ {result_str}")
+                else:
+                    # Formater le résultat de manière détaillée
+                    result_lines = []
+                    
+                    if "analysis_result" in result:
+                        analysis = result["analysis_result"]
                     
                     # Récupérer le temps de réponse et le modèle LLM
                     response_time = "N/A"
@@ -408,165 +425,175 @@ def process_excel_file(
                         print(f"Résultat: ✓ Intention: {intention_label} (Score: {score})")
                     else:
                         print("Résultat: ✓ Formaté (aucune intention)")
-                else:
-                    result_str = "Résultat inattendu"
-                    is_error = True
-                    print(f"\nTemps de réponse: N/A")
-                    print("Résultat: ✗ Résultat inattendu")
+            else:
+                result_str = "Résultat inattendu"
+                is_error = True
+                print(f"\nTemps de réponse: N/A")
+                print("Résultat: ✗ Résultat inattendu")
         
-        # Stocker le résultat directement dans le fichier Excel avec openpyxl pour préserver les styles
-        # Si on a spécifié des lignes avec --rows, utiliser directement row_numbers_list[pos]
-        # Sinon, pos est la position dans rows_to_process (0-indexed)
-        if rows and row_numbers_list and pos < len(row_numbers_list):
-            # Utiliser directement la liste row_numbers_list avec la position
-            excel_row = row_numbers_list[pos]
-        else:
-            # Utiliser directement pos + 2 car rows_to_process contient les lignes dans l'ordre
-            excel_row = pos + 2
-        
-        try:
-            # Copier le style d'un en-tête existant (première colonne par exemple)
-            header_font = None
-            header_fill = None
-            header_border = None
-            if ws.max_column > 0:
-                # Prendre le style de la première colonne d'en-tête comme référence
-                ref_header = ws.cell(row=1, column=1)
-                if ref_header.font:
-                    header_font = Font(
-                        name=ref_header.font.name or 'Calibri',
-                        size=ref_header.font.size or 11,
-                        bold=ref_header.font.bold if ref_header.font.bold is not None else True,
-                        color=ref_header.font.color
-                    )
-                if ref_header.fill:
-                    header_fill = PatternFill(
-                        fill_type=ref_header.fill.fill_type or 'solid',
-                        start_color=ref_header.fill.start_color or 'FFFFFF',
-                        end_color=ref_header.fill.end_color or 'FFFFFF'
-                    )
-                # Copier la bordure en créant un nouvel objet Border
-                if ref_header.border:
-                    try:
-                        header_border = Border(
-                            left=ref_header.border.left,
-                            right=ref_header.border.right,
-                            top=ref_header.border.top,
-                            bottom=ref_header.border.bottom
+            # Stocker le résultat directement dans le fichier Excel avec openpyxl pour préserver les styles
+            # Si on a spécifié des lignes avec --rows, utiliser directement row_numbers_list[pos]
+            # Sinon, pos est la position dans rows_to_process (0-indexed)
+            if rows and row_numbers_list and pos < len(row_numbers_list):
+                # Utiliser directement la liste row_numbers_list avec la position
+                excel_row = row_numbers_list[pos]
+            else:
+                # Utiliser directement pos + 2 car rows_to_process contient les lignes dans l'ordre
+                excel_row = pos + 2
+            
+            try:
+                # Copier le style d'un en-tête existant (première colonne par exemple)
+                header_font = None
+                header_fill = None
+                header_border = None
+                if ws.max_column > 0:
+                    # Prendre le style de la première colonne d'en-tête comme référence
+                    ref_header = ws.cell(row=1, column=1)
+                    if ref_header.font:
+                        header_font = Font(
+                            name=ref_header.font.name or 'Calibri',
+                            size=ref_header.font.size or 11,
+                            bold=ref_header.font.bold if ref_header.font.bold is not None else True,
+                            color=ref_header.font.color
                         )
-                    except:
-                        # Si erreur, on ne copie pas la bordure
-                        header_border = None
-            
-            # Si c'est une nouvelle colonne, créer l'en-tête
-            if result_col_idx > ws.max_column:
-                header_cell = ws.cell(row=1, column=result_col_idx)
-                header_cell.value = timestamp  # Temporaire, sera mis à jour avec le modèle LLM
-                
-                # Appliquer le style de l'en-tête
-                if header_font:
-                    header_cell.font = header_font
-                if header_fill:
-                    header_cell.fill = header_fill
-                if header_border:
-                    header_cell.border = header_border
-                header_cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='center')
-                
-                ws.row_dimensions[1].height = 50
-                
-                # Définir la largeur de la colonne à 350 pixels (environ 50 unités Excel)
-                # 1 unité Excel ≈ 7 pixels, donc 350 pixels ≈ 50 unités
-                col_letter = get_column_letter(result_col_idx)
-                ws.column_dimensions[col_letter].width = 50
-            
-            # Écrire le résultat dans la cellule Excel (toujours écrire quelque chose)
-            result_cell = ws.cell(row=excel_row, column=result_col_idx)
-            if result_str and result_str.strip():
-                result_cell.value = result_str
-            else:
-                result_cell.value = ""  # Écrire au moins une chaîne vide
-            result_cell.alignment = Alignment(wrap_text=True, vertical='top')
-            
-            # Appliquer le style
-            if is_error:
-                # Pour les erreurs : texte en rouge, fond blanc transparent
-                result_cell.font = Font(
-                    name='Calibri',
-                    size=11,
-                    color=Color(rgb='00FF0000')  # Rouge
-                )
-                result_cell.fill = PatternFill(fill_type='solid', start_color='FFFFFF', end_color='FFFFFF')  # Fond blanc
-            else:
-                # Copier le style d'une cellule existante de la même ligne
-                if excel_row <= ws.max_row and ws.max_column > 0:
-                    # Prendre le style de la première colonne de la même ligne
-                    ref_cell = ws.cell(row=excel_row, column=1)
-                    
-                    # Copier la police (font) - important pour la couleur du texte
-                    if ref_cell.font:
+                    if ref_header.fill:
+                        header_fill = PatternFill(
+                            fill_type=ref_header.fill.fill_type or 'solid',
+                            start_color=ref_header.fill.start_color or 'FFFFFF',
+                            end_color=ref_header.fill.end_color or 'FFFFFF'
+                        )
+                    # Copier la bordure en créant un nouvel objet Border
+                    if ref_header.border:
                         try:
-                            result_cell.font = Font(
-                                name=ref_cell.font.name or 'Calibri',
-                                size=ref_cell.font.size or 11,
-                                bold=ref_cell.font.bold,
-                                italic=ref_cell.font.italic,
-                                underline=ref_cell.font.underline,
-                                strike=ref_cell.font.strike,
-                                color=ref_cell.font.color  # Copier la couleur du texte
+                            header_border = Border(
+                                left=ref_header.border.left,
+                                right=ref_header.border.right,
+                                top=ref_header.border.top,
+                                bottom=ref_header.border.bottom
                             )
                         except:
-                            # Style par défaut si erreur
-                            result_cell.font = Font(name='Calibri', size=11)
-                    else:
-                        result_cell.font = Font(name='Calibri', size=11)
+                            # Si erreur, on ne copie pas la bordure
+                            header_border = None
+                
+                # Si c'est une nouvelle colonne, créer l'en-tête
+                if result_col_idx > ws.max_column:
+                    header_cell = ws.cell(row=1, column=result_col_idx)
+                    header_cell.value = timestamp  # Temporaire, sera mis à jour avec le modèle LLM
+                
+                    # Appliquer le style de l'en-tête
+                    if header_font:
+                        header_cell.font = header_font
+                    if header_fill:
+                        header_cell.fill = header_fill
+                    if header_border:
+                        header_cell.border = header_border
+                    header_cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='center')
                     
-                    # Copier la bordure
-                    if ref_cell.border:
-                        try:
-                            result_cell.border = Border(
-                                left=ref_cell.border.left,
-                                right=ref_cell.border.right,
-                                top=ref_cell.border.top,
-                                bottom=ref_cell.border.bottom
-                            )
-                        except:
-                            pass
+                    ws.row_dimensions[1].height = 50
+                    
+                    # Définir la largeur de la colonne à 350 pixels (environ 50 unités Excel)
+                    # 1 unité Excel ≈ 7 pixels, donc 350 pixels ≈ 50 unités
+                    col_letter = get_column_letter(result_col_idx)
+                    ws.column_dimensions[col_letter].width = 50
+            
+                # Écrire le résultat dans la cellule Excel (toujours écrire quelque chose)
+                result_cell = ws.cell(row=excel_row, column=result_col_idx)
+                if result_str and result_str.strip():
+                    result_cell.value = result_str
                 else:
-                    # Style par défaut si pas de référence
-                    result_cell.font = Font(name='Calibri', size=11)
-            
-            # Toujours appliquer un fond blanc transparent (sauf pour les erreurs qui ont déjà un fond blanc)
-            if not is_error:
-                result_cell.fill = PatternFill(fill_type='solid', start_color='FFFFFF', end_color='FFFFFF')  # Fond blanc transparent
-            
-            # Mettre à jour le titre de colonne si on a le modèle LLM
-            if llm_model:
-                header_cell = ws.cell(row=1, column=result_col_idx)
-                header_cell.value = f"{timestamp}\n{llm_model}"
+                    result_cell.value = ""  # Écrire au moins une chaîne vide
+                result_cell.alignment = Alignment(wrap_text=True, vertical='top')
                 
-                # Réappliquer le style
-                if header_font:
-                    header_cell.font = header_font
-                if header_fill:
-                    header_cell.fill = header_fill
-                if header_border:
-                    header_cell.border = header_border
-                header_cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='center')
-                
-                ws.row_dimensions[1].height = 50
-                
-                # S'assurer que la largeur de colonne est définie
-                col_letter = get_column_letter(result_col_idx)
-                ws.column_dimensions[col_letter].width = 50
+                # Appliquer le style
+                if is_error:
+                    # Pour les erreurs : texte en rouge, fond blanc transparent
+                    result_cell.font = Font(
+                        name='Calibri',
+                        size=11,
+                        color=Color(rgb='00FF0000')  # Rouge
+                    )
+                    result_cell.fill = PatternFill(fill_type='solid', start_color='FFFFFF', end_color='FFFFFF')  # Fond blanc
+                else:
+                    # Copier le style d'une cellule existante de la même ligne
+                    if excel_row <= ws.max_row and ws.max_column > 0:
+                        # Prendre le style de la première colonne de la même ligne
+                        ref_cell = ws.cell(row=excel_row, column=1)
+                        
+                        # Copier la police (font) - important pour la couleur du texte
+                        if ref_cell.font:
+                            try:
+                                result_cell.font = Font(
+                                    name=ref_cell.font.name or 'Calibri',
+                                    size=ref_cell.font.size or 11,
+                                    bold=ref_cell.font.bold,
+                                    italic=ref_cell.font.italic,
+                                    underline=ref_cell.font.underline,
+                                    strike=ref_cell.font.strike,
+                                    color=ref_cell.font.color  # Copier la couleur du texte
+                                )
+                            except:
+                                # Style par défaut si erreur
+                                result_cell.font = Font(name='Calibri', size=11)
+                        else:
+                            result_cell.font = Font(name='Calibri', size=11)
+                    
+                        # Copier la bordure
+                        if ref_cell.border:
+                            try:
+                                result_cell.border = Border(
+                                    left=ref_cell.border.left,
+                                    right=ref_cell.border.right,
+                                    top=ref_cell.border.top,
+                                    bottom=ref_cell.border.bottom
+                                )
+                            except:
+                                pass
+                    else:
+                        # Style par défaut si pas de référence
+                        result_cell.font = Font(name='Calibri', size=11)
             
-            # Sauvegarder après chaque ligne pour ne pas perdre les résultats
+                # Toujours appliquer un fond blanc transparent (sauf pour les erreurs qui ont déjà un fond blanc)
+                if not is_error:
+                    result_cell.fill = PatternFill(fill_type='solid', start_color='FFFFFF', end_color='FFFFFF')  # Fond blanc transparent
+                
+                # Mettre à jour le titre de colonne si on a le modèle LLM
+                if llm_model:
+                    header_cell = ws.cell(row=1, column=result_col_idx)
+                    header_cell.value = f"{timestamp}\n{llm_model}"
+                    
+                    # Réappliquer le style
+                    if header_font:
+                        header_cell.font = header_font
+                    if header_fill:
+                        header_cell.fill = header_fill
+                    if header_border:
+                        header_cell.border = header_border
+                    header_cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='center')
+                    
+                    ws.row_dimensions[1].height = 50
+                    
+                    # S'assurer que la largeur de colonne est définie
+                    col_letter = get_column_letter(result_col_idx)
+                    ws.column_dimensions[col_letter].width = 50
+                
+                # Sauvegarder après chaque ligne pour ne pas perdre les résultats
+                wb.save(output_file)
+                
+                # Mettre à jour aussi le DataFrame pour la cohérence
+                df.at[idx, result_column] = result_str
+                
+            except Exception as e:
+                print(f"\n⚠️  Erreur lors de la sauvegarde: {e}")
+    
+    except KeyboardInterrupt:
+        print("\n\n⚠️  Interruption par l'utilisateur (Ctrl+C)")
+        print("Fermeture propre du fichier Excel...")
+        try:
             wb.save(output_file)
-            
-            # Mettre à jour aussi le DataFrame pour la cohérence
-            df.at[idx, result_column] = result_str
-            
+            print("✓ Fichier sauvegardé avant l'arrêt")
         except Exception as e:
-            print(f"\n⚠️  Erreur lors de la sauvegarde: {e}")
+            print(f"⚠️  Erreur lors de la sauvegarde finale: {e}")
+        return
     
     # Sauvegarde finale - le fichier a déjà été sauvegardé ligne par ligne
     # On s'assure juste que le titre de colonne est bien formaté et que la largeur est définie

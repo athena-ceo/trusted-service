@@ -5,6 +5,7 @@ from typing import Type
 
 from openai import OpenAI
 from pydantic import BaseModel
+from pydantic_core import ValidationError as PydanticCoreValidationError
 
 from src.backend.text_analysis.llm import Llm, LlmConfig
 
@@ -46,7 +47,12 @@ class LlmScaleway(Llm):
         )
 
         content = response.choices[0].message.content
-        return analysis_response_model.model_validate_json(content)
+        try:
+            return analysis_response_model.model_validate_json(content)
+        except (PydanticCoreValidationError, ValueError) as e:
+            # Si la validation échoue, c'est que le LLM a retourné un format incorrect
+            # On propage l'erreur pour qu'elle soit gérée par le mécanisme de retry/fallback
+            raise ValueError(f"LLM returned invalid JSON format: {str(e)}") from e
 
     def call_llm_with_pydantic_model(self,
                                      analysis_response_model: Type[BaseModel],

@@ -82,7 +82,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                     lang: currentLang || 'fr'
                 }
             });
-            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
+            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
     return (
         <>
-            <Header departement={"" + fieldValues?.departement} />
+            <Header departement={"" + fieldValues?.departement} mode={"" + fieldValues?.mode} />
             <main role="main" id="main" className="fr-container fr-py-6w">
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">
@@ -224,9 +224,11 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                                 </div>
 
                                 <hr />
-                                <button type="button" id="vue-agent" className="fr-btn fr-mt-3w" onClick={handleVueAgentClick}>
-                                    {t('handleCase.agentView')}
-                                </button>
+                                {fieldValues?.mode === 'test' && (
+                                    <button type="button" id="vue-agent" className="fr-btn fr-mt-3w" onClick={handleVueAgentClick}>
+                                        {t('handleCase.agentView')}
+                                    </button>
+                                )}
                             </div>
                         )}
 

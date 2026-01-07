@@ -1,1 +1,87 @@
 **/.metadata/
+
+# Virtual Environments
+**/venv/
+**/env/
+**/.venv/
+**/ENV/
+venv-tools/
+
+# Python Cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.py[cod]
+**/*$py.class
+
+# Node.js Dependencies
+**/node_modules/
+**/.pnp/
+**/.pnp.js
+
+# Build and Distribution
+**/build/
+**/dist/
+**/out/
+**/.next/
+**/.nuxt/
+
+# User Data and Chats
+**/chats/
+
+# Temporary Files and Directories
+**/temps/
+**/temp/
+**/tmp/
+
+# Old and Backup Files
+**/*_old.*
+**/*.backup
+**/*.bak
+**/*~
+README_OLD.md
+
+# IDE Files
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+**/.vs/
+
+# OS Files
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
+# Logs
+**/*.log
+**/logs/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Environment Files
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Coverage Reports
+**/coverage/
+**/.coverage
+**/htmlcov/
+**/.pytest_cache/
+
+# Package Manager Files (keep package.json but ignore lock files if needed)
+# **/package-lock.json
+# **/yarn.lock
+
+# Large Documentation Files (if not needed for context)
+# Uncomment if you want to exclude these:
+# **/docs/**/*.md
+# **/*.md
+
+# Excel Files (large data files)
+**/*.xlsx
+**/*.xls
+!tests/**/*.xlsx  # Keep Excel files in tests directory

@@ -6,9 +6,12 @@ import types
 from datetime import datetime
 from typing import Optional, Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
+import traceback
 
 from src.backend.backend.trusted_services_server import TrustedServicesServer
 from src.common.server_api import ServerApi, CaseHandlingRequest, CaseHandlingDetailedResponse
@@ -202,7 +205,22 @@ async def get_case_model(app_id: str, locale: SupportedLocale) -> CaseModel:
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/analyze", tags=["Analysis and Processing"])
 async def analyze(app_id: str, locale: SupportedLocale, request: AnalyzeRequest):
     log_function_call()
-    return app.server_api.analyze(app_id=app_id, locale=locale, field_values=request.field_values, text=request.text, read_from_cache=request.read_from_cache, llm_config_id=request.llm_config_id)
+    try:
+        return app.server_api.analyze(app_id=app_id, locale=locale, field_values=request.field_values, text=request.text, read_from_cache=request.read_from_cache, llm_config_id=request.llm_config_id)
+    except Exception as e:
+        import traceback
+        error_traceback = traceback.format_exc()
+        print_red(f"❌ Erreur dans l'endpoint /analyze: {type(e).__name__}: {str(e)}")
+        print_red(f"Traceback:\n{error_traceback}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Internal Server Error",
+                "error_type": type(e).__name__,
+                "error_message": str(e),
+                "traceback": error_traceback
+            }
+        )
 
 
 @app.post(API_ROUTE_V2 + "/apps/{app_id}/{locale}/save_text_analysis_cache", tags=["Analysis and Processing"])

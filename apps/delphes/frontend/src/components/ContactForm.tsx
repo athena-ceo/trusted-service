@@ -20,6 +20,7 @@ interface ContactFormProps {
     onSubmit: (formData: FormData) => void;
     isLoading: boolean;
     departement?: string;
+    mode?: string;
 }
 
 // Données pour le préremplissage automatique (pour les tests)
@@ -35,7 +36,7 @@ const prenoms = ["John", "Michael", "David", "James", "Robert", "Maria", "Jennif
 
 const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com"];
 
-export default function ContactForm({ onSubmit, isLoading, departement = '78' }: ContactFormProps) {
+export default function ContactForm({ onSubmit, isLoading, departement = '78', mode = '' }: ContactFormProps) {
     const { t, currentLang } = useLanguage();
     const [formData, setFormData] = useState<FormData>({
         nom: "",
@@ -79,7 +80,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
         }
 
         console.log('Fetching arrondissements and statuts from API');
-        fetch(`${apiBaseUrl}/api/v2/apps/delphes${departement}/${currentLang.toLowerCase() || "fr"}/case_model`)
+        fetch(`${apiBaseUrl}/api/v2/apps/delphes${departement}${mode}/${currentLang.toLowerCase() || "fr"}/case_model`)
             .then(response => {
                 if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");
                 return response.json();
@@ -94,7 +95,8 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                 const allowed = arrondissementField.allowed_values;
                 const departementNumber = parseInt(departement);
 
-                // Filtrer selon la condition departement==78
+                // Filtrer selon la condition departement=={departement}
+                // Inutile pour le 78 puisque l'usager choisit une commune dans le composant dédié
                 const filtered = allowed.filter((item: any) => {
                     try {
                         if (!item.condition_javascript) return true;
@@ -297,10 +299,6 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                         setInitialCommune(undefined);
                     }, [])}
                     error={errors.arrondissement}
-                    label={t('form.arrondissement')}
-                    urlArrondissement={urlArrondissement}
-                    t={t}
-                    departement={departement}
                     initialCommune={initialCommune}
                 />
             ) : (
@@ -397,9 +395,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
 
             <div className="fr-fieldset__element">
                 <div className={`fr-alert ${formData.captcha ? 'fr-alert--success' : 'fr-alert--warning'} fr-mb-3w`}>
-                    <h3 className="fr-alert__title">
-                        Veuillez confirmer que vous êtes une personne réelle
-                    </h3>
+                    <h3 className="fr-alert__title">{t('form.captcha')}</h3>
                     <div className="fr-checkbox-group">
                         <input
                             type="checkbox"
@@ -412,7 +408,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                             suppressHydrationWarning
                         />
                         <label htmlFor="captcha-verification" className="fr-label">
-                            Je confirme être une personne réelle *
+                            {t('form.captcha.label')} *
                         </label>
                     </div>
                     {(errors as any).captcha && <p className="fr-error-text">{(errors as any).captcha}</p>}
@@ -448,13 +444,15 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78' }:
                         {isLoading ? t('form.sending') : t('form.submit')}
                     </button>
 
-                    <button
-                        type="button"
-                        className="fr-btn fr-btn--secondary fr-ml-2w"
-                        onClick={preremplirFormulaire}
-                    >
-                        {t('form.prefill')}
-                    </button>
+                    {mode === 'test' && (
+                        <button
+                            type="button"
+                            className="fr-btn fr-btn--secondary fr-ml-2w"
+                            onClick={preremplirFormulaire}
+                        >
+                            {t('form.prefill')}
+                        </button>
+                    )}
                 </div>
             </div>
         </form >

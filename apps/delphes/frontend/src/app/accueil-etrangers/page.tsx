@@ -31,6 +31,9 @@ function AccueilEtrangersContent() {
   // Récupérer le département depuis l'URL, valeur par défaut '78'
   const departement = searchParams.get('departement') || '78';
 
+  // Récupérer le mode depuis l'URL, valeur par défaut : production ('')
+  const mode = searchParams.get('mode') || '';
+
   const analyzeRequest = (formData: FormData) => {
     // Préparer les données pour l'API
     const today = new Date();
@@ -47,6 +50,7 @@ function AccueilEtrangersContent() {
       message: formData.message,
       departement: departement,
       captcha: formData.captcha,
+      mode: mode,
     };
 
     // Stocker les résultats pour la page de confirmation
@@ -60,7 +64,7 @@ function AccueilEtrangersContent() {
 
   return (
     <>
-      <Header departement={departement} />
+      <Header departement={departement} mode={mode} />
       <main role="main" id="content">
         <div className="fr-container">
           {/* Fil d'Ariane */}
@@ -116,7 +120,7 @@ function AccueilEtrangersContent() {
           <div className="fr-grid-row fr-grid-row--gutters fr-mb-6w">
             {/* Formulaire principal */}
             <div className="fr-col-12 fr-col-md-8">
-              <ContactForm onSubmit={analyzeRequest} isLoading={false} departement={departement} />
+              <ContactForm onSubmit={analyzeRequest} isLoading={false} departement={departement} mode={mode} />
             </div>
 
             {/* Sidebar informative */}

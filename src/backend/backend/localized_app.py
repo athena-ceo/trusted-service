@@ -277,11 +277,20 @@ class LocalizedApp(ServerApi):
             func = getattr(module, function_name)
             func(request.field_values)
 
+        # Validate presence of required fields before building decision input
+        missing_fields = [
+            case_field.id
+            for case_field in self.case_model.case_fields
+            if case_field.send_to_decision_engine and case_field.id not in request.field_values
+        ]
+        if missing_fields:
+            raise ValueError(f"Missing required field_values for decision engine: {', '.join(missing_fields)}")
+
         # Filter-out the field values that are not to be sent to the decision engine
         field_values: dict[str, Any] = {}
         for case_field in self.case_model.case_fields:
             if case_field.send_to_decision_engine:
-                field_values[case_field.id] = request.field_values[case_field.id]
+                field_values[case_field.id] = request.field_values.get(case_field.id)
 
         case_handling_decision_input = CaseHandlingDecisionInput(intention_id=request.intention_id, field_values=field_values)
 
@@ -301,9 +310,6 @@ class LocalizedApp(ServerApi):
             print_blue(case_handling_decision_output.notes)
             print_blue(case_handling_decision_output.details)
             print(str(exc))
-            input("-> ")
-        else:
-            print_red("no ValidationError")
 
         # A verbalized copy of case_handling_decision_output
         verbalized_case_handling_decision_output = case_handling_decision_output.copy(deep=True)
@@ -322,6 +328,12 @@ class LocalizedApp(ServerApi):
             for intent in self.text_analysis_config.intentions:
                 if intent.id == request.intention_id:
                     intent_label = intent.label
+
+        if self.case_handling_distribution_engine is None:
+            raise ValueError(
+                "No distribution engine configured for this app/locale. "
+                "Configure distribution_engine in the workbook (e.g., 'email') or provide a custom implementation."
+            )
 
         rendering_email_to_agent, rendering_email_to_requester = self.case_handling_distribution_engine.distribute(
             self.case_model,  # TODO avoid passing this

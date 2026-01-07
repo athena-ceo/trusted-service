@@ -30,6 +30,8 @@ class TrustedServicesServer(ServerApi):
         apps_subdirectory = Path(self.runtime_directory + "/apps")
         app_ids = [p.name for p in apps_subdirectory.iterdir() if p.is_dir()]
 
+        print(f"TrustedServicesServer.reload_apps: found app_ids={app_ids}")
+        
         self.apps: dict[str, App] = {
             app_id: App(self.runtime_directory, app_id, )
             for app_id in app_ids

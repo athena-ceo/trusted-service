@@ -95,7 +95,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
             }
 
             console.log('Sending analysis request with payload', fieldValues)
-            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}/${currentLang.toLowerCase() || 'fr'}/analyze`, {
+            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -249,7 +249,7 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
     return (
         <>
-            <Header departement={"" + fieldValues?.departement} />
+            <Header departement={"" + fieldValues?.departement} mode={"" + fieldValues?.mode} />
             <main role="main" id="main" className="fr-container fr-py-6w">
                 <div className="fr-grid-row fr-grid-row--gutters">
                     <div className="fr-col-12 fr-col-md-8 fr-col-offset-md-2">

@@ -46,264 +46,264 @@ const codePostalToCommune: Record<string, string> = {
 export const communesYvelines: Array<{ commune: string; arrondissement: string; codePostal?: string }> = [
     { commune: "ABLIS", arrondissement: "Rambouillet", codePostal: "78660" },
     { commune: "ACHERES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78260" },
-    { commune: "ADAINVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "AIGREMONT", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "ALLAINVILLE", arrondissement: "Rambouillet" },
-    { commune: "ALLUETS LE ROI (LES)", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "ANDELU", arrondissement: "Saint-Germain-en-Laye" },
+    { commune: "ADAINVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "AIGREMONT", arrondissement: "Saint-Germain-en-Laye", codePostal: "78240" },
+    { commune: "ALLAINVILLE", arrondissement: "Rambouillet", codePostal: "78660" },
+    { commune: "ALLUETS LE ROI (LES)", arrondissement: "Saint-Germain-en-Laye", codePostal: "78580" },
+    { commune: "ANDELU", arrondissement: "Saint-Germain-en-Laye", codePostal: "78580" },
     { commune: "ANDRESY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78570" },
-    { commune: "ARNOUVILLE LES MANTES", arrondissement: "Mantes-la-Jolie" },
+    { commune: "ARNOUVILLE LES MANTES", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
     { commune: "AUBERGENVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78410" },
-    { commune: "AUFFARGIS", arrondissement: "Rambouillet" },
-    { commune: "AUFFREVILLE BRASSEUIL", arrondissement: "Mantes-la-Jolie" },
-    { commune: "AULNAY SUR MAULDRE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "AUTEUIL LE ROI", arrondissement: "Rambouillet" },
-    { commune: "AUTOUILLET", arrondissement: "Rambouillet" },
+    { commune: "AUFFARGIS", arrondissement: "Rambouillet", codePostal: "78610" },
+    { commune: "AUFFREVILLE BRASSEUIL", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
+    { commune: "AULNAY SUR MAULDRE", arrondissement: "Mantes-la-Jolie", codePostal: "78126" },
+    { commune: "AUTEUIL LE ROI", arrondissement: "Rambouillet", codePostal: "78770" },
+    { commune: "AUTOUILLET", arrondissement: "Rambouillet", codePostal: "78770" },
     { commune: "BAILLY", arrondissement: "Versailles", codePostal: "78870" },
-    { commune: "BAZAINVILLE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "BAZAINVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
     { commune: "BAZEMONT", arrondissement: "Saint-Germain-en-Laye", codePostal: "78580" },
-    { commune: "BAZOCHES SUR GUYONNE", arrondissement: "Rambouillet" },
-    { commune: "BEHOUST", arrondissement: "Rambouillet" },
-    { commune: "BENNECOURT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "BAZOCHES SUR GUYONNE", arrondissement: "Rambouillet", codePostal: "78490" },
+    { commune: "BEHOUST", arrondissement: "Rambouillet", codePostal: "78910" },
+    { commune: "BENNECOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
     { commune: "BEYNES", arrondissement: "Rambouillet", codePostal: "78650" },
-    { commune: "BLARU", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BOINVILLE EN MANTOIS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BOINVILLE LE GAILLARD", arrondissement: "Rambouillet" },
-    { commune: "BOINVILLIERS", arrondissement: "Mantes-la-Jolie" },
+    { commune: "BLARU", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "BOINVILLE EN MANTOIS", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "BOINVILLE LE GAILLARD", arrondissement: "Rambouillet", codePostal: "78660" },
+    { commune: "BOINVILLIERS", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
     { commune: "BOIS D'ARCY", arrondissement: "Versailles", codePostal: "78390" },
-    { commune: "BOISSETS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BOISSIERE ECOLE (LA)", arrondissement: "Rambouillet" },
-    { commune: "BOISSY MAUVOISIN", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BOISSY SANS AVOIR", arrondissement: "Rambouillet" },
+    { commune: "BOISSETS", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
+    { commune: "BOISSIERE ECOLE (LA)", arrondissement: "Rambouillet", codePostal: "78610" },
+    { commune: "BOISSY MAUVOISIN", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "BOISSY SANS AVOIR", arrondissement: "Rambouillet", codePostal: "78490" },
     { commune: "BONNELLES", arrondissement: "Rambouillet", codePostal: "78830" },
     { commune: "BONNIERES SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
-    { commune: "BOUAFLE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "BOUAFLE", arrondissement: "Mantes-la-Jolie", codePostal: "78410" },
     { commune: "BOUGIVAL", arrondissement: "Versailles", codePostal: "78380" },
-    { commune: "BOURDONNE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BREUIL BOIS ROBERT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BREVAL", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BREVIAIRES (LES)", arrondissement: "Rambouillet" },
-    { commune: "BRUEIL EN VEXIN", arrondissement: "Mantes-la-Jolie" },
-    { commune: "BUC", arrondissement: "Versailles" },
+    { commune: "BOURDONNE", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "BREUIL BOIS ROBERT", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
+    { commune: "BREVAL", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
+    { commune: "BREVIAIRES (LES)", arrondissement: "Rambouillet", codePostal: "78610" },
+    { commune: "BRUEIL EN VEXIN", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "BUC", arrondissement: "Versailles", codePostal: "78530" },
     { commune: "BUCHELAY", arrondissement: "Mantes-la-Jolie", codePostal: "78530" },
-    { commune: "BULLION", arrondissement: "Rambouillet" },
+    { commune: "BULLION", arrondissement: "Rambouillet", codePostal: "78830" },
     { commune: "CARRIERES SOUS POISSY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78955" },
     { commune: "CARRIERES SUR SEINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78420" },
-    { commune: "CELLE LES BORDES (LA)", arrondissement: "Rambouillet" },
+    { commune: "CELLE LES BORDES (LA)", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "CELLE ST CLOUD (LA)", arrondissement: "Versailles", codePostal: "78170" },
-    { commune: "CERNAY LA VILLE", arrondissement: "Rambouillet" },
+    { commune: "CERNAY LA VILLE", arrondissement: "Rambouillet", codePostal: "78720" },
     { commune: "CHAMBOURCY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78240" },
-    { commune: "CHANTELOUP LES VIGNES", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "CHAPET", arrondissement: "Mantes-la-Jolie" },
-    { commune: "CHATEAUFORT", arrondissement: "Versailles" },
+    { commune: "CHANTELOUP LES VIGNES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78570" },
+    { commune: "CHAPET", arrondissement: "Mantes-la-Jolie", codePostal: "78130" },
+    { commune: "CHATEAUFORT", arrondissement: "Versailles", codePostal: "78117" },
     { commune: "CHATOU", arrondissement: "Saint-Germain-en-Laye", codePostal: "78400" },
-    { commune: "CHAUFOUR LES BONNIERES", arrondissement: "Mantes-la-Jolie" },
-    { commune: "CHAVENAY", arrondissement: "Saint-Germain-en-Laye" },
+    { commune: "CHAUFOUR LES BONNIERES", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "CHAVENAY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78450" },
     { commune: "CHESNAY (LE)", arrondissement: "Versailles", codePostal: "78150" },
     { commune: "CHEVREUSE", arrondissement: "Rambouillet", codePostal: "78460" },
-    { commune: "CHOISEL", arrondissement: "Rambouillet" },
-    { commune: "CIVRY LA FORET", arrondissement: "Mantes-la-Jolie" },
-    { commune: "CLAIREFONTAINE", arrondissement: "Rambouillet" },
+    { commune: "CHOISEL", arrondissement: "Rambouillet", codePostal: "78460" },
+    { commune: "CIVRY LA FORET", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
+    { commune: "CLAIREFONTAINE", arrondissement: "Rambouillet", codePostal: "78120" },
     { commune: "CLAYES SOUS BOIS (LES)", arrondissement: "Versailles", codePostal: "78340" },
-    { commune: "COIGNIERES", arrondissement: "Rambouillet" },
-    { commune: "CONDE SUR VESGRE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "COIGNIERES", arrondissement: "Rambouillet", codePostal: "78310" },
+    { commune: "CONDE SUR VESGRE", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
     { commune: "CONFLANS STE HONORINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78700" },
-    { commune: "COURGENT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "CRAVENT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "CRESPIERES", arrondissement: "Saint-Germain-en-Laye" },
+    { commune: "COURGENT", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "CRAVENT", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "CRESPIERES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78121" },
     { commune: "CROISSY SUR SEINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78290" },
-    { commune: "DAMMARTIN EN SERVE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "DAMMARTIN EN SERVE", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
     { commune: "DAMPIERRE EN YVELINES", arrondissement: "Rambouillet", codePostal: "78720" },
-    { commune: "DANNEMARIE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "DANNEMARIE", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
     { commune: "DAVRON", arrondissement: "Saint-Germain-en-Laye", codePostal: "78810" },
-    { commune: "DROCOURT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "DROCOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
     { commune: "ECQUEVILLY", arrondissement: "Mantes-la-Jolie", codePostal: "78920" },
     { commune: "ELANCOURT", arrondissement: "Rambouillet", codePostal: "78990" },
-    { commune: "EMANCE", arrondissement: "Rambouillet" },
+    { commune: "EMANCE", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "EPONE", arrondissement: "Mantes-la-Jolie", codePostal: "78680" },
     { commune: "ESSARTS LE ROI (LES)", arrondissement: "Rambouillet", codePostal: "78690" },
     { commune: "ETANG LA VILLE (L')", arrondissement: "Saint-Germain-en-Laye", codePostal: "78620" },
-    { commune: "EVECQUEMONT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FALAISE (LA)", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FAVRIEUX", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FEUCHEROLLES", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "FLACOURT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FLEXANVILLE", arrondissement: "Rambouillet" },
-    { commune: "FLINS NEUVE EGLISE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FLINS SUR SEINE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FOLLAINVILLE DENNEMONT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "EVECQUEMONT", arrondissement: "Mantes-la-Jolie", codePostal: "78740" },
+    { commune: "FALAISE (LA)", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "FAVRIEUX", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "FEUCHEROLLES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78112" },
+    { commune: "FLACOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78250" },
+    { commune: "FLEXANVILLE", arrondissement: "Rambouillet", codePostal: "78910" },
+    { commune: "FLINS NEUVE EGLISE", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "FLINS SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78410" },
+    { commune: "FOLLAINVILLE DENNEMONT", arrondissement: "Mantes-la-Jolie", codePostal: "78520" },
     { commune: "FONTENAY LE FLEURY", arrondissement: "Versailles", codePostal: "78330" },
-    { commune: "FONTENAY MAUVOISIN", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FONTENAY SAINT PERE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "FOURQUEUX", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "FRENEUSE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "GAILLON SUR MONTCIENT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "FONTENAY MAUVOISIN", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "FONTENAY SAINT PERE", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "FOURQUEUX", arrondissement: "Saint-Germain-en-Laye", codePostal: "78112" },
+    { commune: "FRENEUSE", arrondissement: "Mantes-la-Jolie", codePostal: "78840" },
+    { commune: "GAILLON SUR MONTCIENT", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
     { commune: "GALLUIS", arrondissement: "Rambouillet", codePostal: "78490" },
     { commune: "GAMBAIS", arrondissement: "Rambouillet", codePostal: "78950" },
-    { commune: "GAMBAISEUL", arrondissement: "Rambouillet" },
-    { commune: "GARANCIERES", arrondissement: "Rambouillet" },
+    { commune: "GAMBAISEUL", arrondissement: "Rambouillet", codePostal: "78950" },
+    { commune: "GARANCIERES", arrondissement: "Rambouillet", codePostal: "78890" },
     { commune: "GARGENVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
-    { commune: "GAZERAN", arrondissement: "Rambouillet" },
+    { commune: "GAZERAN", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "GOMMECOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78890" },
-    { commune: "GOUPILLIERES", arrondissement: "Rambouillet" },
-    { commune: "GOUSSONVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "GRANDCHAMP", arrondissement: "Mantes-la-Jolie" },
-    { commune: "GRESSEY", arrondissement: "Mantes-la-Jolie" },
-    { commune: "GROSROUVRE", arrondissement: "Rambouillet" },
-    { commune: "GUERNES", arrondissement: "Mantes-la-Jolie" },
+    { commune: "GOUPILLIERES", arrondissement: "Rambouillet", codePostal: "78113" },
+    { commune: "GOUSSONVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
+    { commune: "GRANDCHAMP", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "GRESSEY", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
+    { commune: "GROSROUVRE", arrondissement: "Rambouillet", codePostal: "78490" },
+    { commune: "GUERNES", arrondissement: "Mantes-la-Jolie", codePostal: "78580" },
     { commune: "GUERVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
-    { commune: "GUITRANCOURT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "GUITRANCOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
     { commune: "GUYANCOURT", arrondissement: "Versailles", codePostal: "78280" },
     { commune: "HARDRICOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78880" },
-    { commune: "HARGEVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "HAUTEVILLE (LA)", arrondissement: "Mantes-la-Jolie" },
-    { commune: "HERBEVILLE", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "HERMERAY", arrondissement: "Rambouillet" },
+    { commune: "HARGEVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "HAUTEVILLE (LA)", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
+    { commune: "HERBEVILLE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78580" },
+    { commune: "HERMERAY", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "HOUDAN", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
     { commune: "HOUILLES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78800" },
-    { commune: "ISSOU", arrondissement: "Mantes-la-Jolie" },
-    { commune: "JAMBVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "JEUFOSSE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "ISSOU", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "JAMBVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "JEUFOSSE", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
     { commune: "JOUARS PONTCHARTRAIN", arrondissement: "Rambouillet", codePostal: "78760" },
     { commune: "JOUY EN JOSAS", arrondissement: "Versailles", codePostal: "78350" },
-    { commune: "JOUY MAUVOISIN", arrondissement: "Mantes-la-Jolie" },
-    { commune: "JUMEAUVILLE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "JOUY MAUVOISIN", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "JUMEAUVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78580" },
     { commune: "JUZIERS", arrondissement: "Mantes-la-Jolie", codePostal: "78820" },
-    { commune: "LAINVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "LEVIS ST NOM", arrondissement: "Rambouillet" },
+    { commune: "LAINVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78440" },
+    { commune: "LEVIS ST NOM", arrondissement: "Rambouillet", codePostal: "78320" },
     { commune: "LIMAY", arrondissement: "Mantes-la-Jolie", codePostal: "78520" },
-    { commune: "LIMETZ VILLEZ", arrondissement: "Mantes-la-Jolie" },
-    { commune: "LOGES EN JOSAS (LES)", arrondissement: "Versailles" },
-    { commune: "LOMMOYE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "LONGNES", arrondissement: "Mantes-la-Jolie" },
-    { commune: "LONGVILLIERS", arrondissement: "Rambouillet" },
+    { commune: "LIMETZ VILLEZ", arrondissement: "Mantes-la-Jolie", codePostal: "78420" },
+    { commune: "LOGES EN JOSAS (LES)", arrondissement: "Versailles", codePostal: "78350" },
+    { commune: "LOMMOYE", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "LONGNES", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
+    { commune: "LONGVILLIERS", arrondissement: "Rambouillet", codePostal: "78730" },
     { commune: "LOUVECIENNES", arrondissement: "Saint-Germain-en-Laye", codePostal: "78430" },
-    { commune: "MAGNANVILLE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "MAGNANVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
     { commune: "MAGNY LES HAMEAUX", arrondissement: "Rambouillet", codePostal: "78470" },
     { commune: "MAISONS LAFFITTE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78310" },
     { commune: "MANTES LA JOLIE", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
-    { commune: "MANTES LA VILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MARCQ", arrondissement: "Rambouillet" },
-    { commune: "MAREIL LE GUYON", arrondissement: "Rambouillet" },
-    { commune: "MAREIL MARLY", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "MAREIL SUR MAULDRE", arrondissement: "Saint-Germain-en-Laye" },
+    { commune: "MANTES LA VILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "MARCQ", arrondissement: "Rambouillet", codePostal: "78770" },
+    { commune: "MAREIL LE GUYON", arrondissement: "Rambouillet", codePostal: "78490" },
+    { commune: "MAREIL MARLY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78124" },
+    { commune: "MAREIL SUR MAULDRE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78126" },
     { commune: "MARLY LE ROI", arrondissement: "Saint-Germain-en-Laye", codePostal: "78160" },
     { commune: "MAULE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78580" },
-    { commune: "MAULETTE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "MAULETTE", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
     { commune: "MAURECOURT", arrondissement: "Saint-Germain-en-Laye", codePostal: "78780" },
-    { commune: "MAUREPAS", arrondissement: "Rambouillet" },
-    { commune: "MEDAN", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "MENERVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MERE", arrondissement: "Rambouillet" },
-    { commune: "MERICOURT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MESNIL LE ROI (LE)", arrondissement: "Saint-Germain-en-Laye" },
+    { commune: "MAUREPAS", arrondissement: "Rambouillet", codePostal: "78310" },
+    { commune: "MEDAN", arrondissement: "Saint-Germain-en-Laye", codePostal: "78470" },
+    { commune: "MENERVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "MERE", arrondissement: "Rambouillet", codePostal: "78490" },
+    { commune: "MERICOURT", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "MESNIL LE ROI (LE)", arrondissement: "Saint-Germain-en-Laye", codePostal: "78600" },
     { commune: "MESNIL ST DENIS (LE)", arrondissement: "Rambouillet", codePostal: "78320" },
-    { commune: "MESNULS (LES)", arrondissement: "Rambouillet" },
+    { commune: "MESNULS (LES)", arrondissement: "Rambouillet", codePostal: "78490" },
     { commune: "MEULAN-EN-YVELINES", arrondissement: "Mantes-la-Jolie", codePostal: "78250" },
     { commune: "MEZIERES SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78970" },
-    { commune: "MEZY SUR SEINE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MILLEMONT", arrondissement: "Rambouillet" },
-    { commune: "MILON LA CHAPELLE", arrondissement: "Rambouillet" },
-    { commune: "MITTAINVILLE", arrondissement: "Rambouillet" },
+    { commune: "MEZY SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78250" },
+    { commune: "MILLEMONT", arrondissement: "Rambouillet", codePostal: "78125" },
+    { commune: "MILON LA CHAPELLE", arrondissement: "Rambouillet", codePostal: "78470" },
+    { commune: "MITTAINVILLE", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "MOISSON", arrondissement: "Mantes-la-Jolie", codePostal: "78840" },
     { commune: "MONDREVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
-    { commune: "MONTAINVILLE", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "MONTALET LE BOIS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MONTCHAUVET", arrondissement: "Mantes-la-Jolie" },
+    { commune: "MONTAINVILLE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78112" },
+    { commune: "MONTALET LE BOIS", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "MONTCHAUVET", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
     { commune: "MONTESSON", arrondissement: "Saint-Germain-en-Laye", codePostal: "78360" },
-    { commune: "MONTFORT L'AMAURY", arrondissement: "Rambouillet" },
+    { commune: "MONTFORT L'AMAURY", arrondissement: "Rambouillet", codePostal: "78490" },
     { commune: "MONTIGNY LE BRETONNEUX", arrondissement: "Versailles", codePostal: "78180" },
-    { commune: "MORAINVILLIERS", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "MOUSSEAUX SUR SEINE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "MULCENT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "MORAINVILLIERS", arrondissement: "Saint-Germain-en-Laye", codePostal: "78930" },
+    { commune: "MOUSSEAUX SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "MULCENT", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
     { commune: "MUREAUX (LES)", arrondissement: "Mantes-la-Jolie", codePostal: "78130" },
-    { commune: "NEAUPHLE LE CHATEAU", arrondissement: "Rambouillet" },
-    { commune: "NEAUPHLE LE VIEUX", arrondissement: "Rambouillet" },
-    { commune: "NEAUPHLETTE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "NEAUPHLE LE CHATEAU", arrondissement: "Rambouillet", codePostal: "78640" },
+    { commune: "NEAUPHLE LE VIEUX", arrondissement: "Rambouillet", codePostal: "78640" },
+    { commune: "NEAUPHLETTE", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
     { commune: "NEZEL", arrondissement: "Mantes-la-Jolie", codePostal: "78640" },
     { commune: "NOISY LE ROI", arrondissement: "Versailles", codePostal: "78590" },
-    { commune: "OINVILLE SUR MONTCIENT", arrondissement: "Mantes-la-Jolie" },
-    { commune: "ORCEMONT", arrondissement: "Rambouillet" },
+    { commune: "OINVILLE SUR MONTCIENT", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "ORCEMONT", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "ORGERUS", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
     { commune: "ORGEVAL", arrondissement: "Saint-Germain-en-Laye", codePostal: "78630" },
-    { commune: "ORPHIN", arrondissement: "Rambouillet" },
-    { commune: "ORSONVILLE", arrondissement: "Rambouillet" },
-    { commune: "ORVILLIERS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "OSMOY", arrondissement: "Mantes-la-Jolie" },
-    { commune: "PARAY DOUAVILLE", arrondissement: "Rambouillet" },
+    { commune: "ORPHIN", arrondissement: "Rambouillet", codePostal: "78125" },
+    { commune: "ORSONVILLE", arrondissement: "Rambouillet", codePostal: "78660" },
+    { commune: "ORVILLIERS", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
+    { commune: "OSMOY", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
+    { commune: "PARAY DOUAVILLE", arrondissement: "Rambouillet", codePostal: "78660" },
     { commune: "PECQ (LE)", arrondissement: "Saint-Germain-en-Laye", codePostal: "78230" },
-    { commune: "PERDREAUVILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "PERRAY EN YVELINES (LE)", arrondissement: "Rambouillet" },
+    { commune: "PERDREAUVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "PERRAY EN YVELINES (LE)", arrondissement: "Rambouillet", codePostal: "78610" },
     { commune: "PLAISIR", arrondissement: "Versailles", codePostal: "78370" },
-    { commune: "POIGNY LA FORET", arrondissement: "Rambouillet" },
+    { commune: "POIGNY LA FORET", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "POISSY", arrondissement: "Saint-Germain-en-Laye", codePostal: "78300" },
-    { commune: "PONTHEVRARD", arrondissement: "Rambouillet" },
+    { commune: "PONTHEVRARD", arrondissement: "Rambouillet", codePostal: "78660" },
     { commune: "PORCHEVILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78560" },
-    { commune: "PORT MARLY (LE)", arrondissement: "Saint-Germain-en-Laye" },
-    { commune: "PORT VILLEZ", arrondissement: "Mantes-la-Jolie" },
-    { commune: "PRUNAY EN YVELINES", arrondissement: "Rambouillet" },
-    { commune: "PRUNAY LE TEMPLE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "PORT MARLY (LE)", arrondissement: "Saint-Germain-en-Laye", codePostal: "78560" },
+    { commune: "PORT VILLEZ", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "PRUNAY EN YVELINES", arrondissement: "Rambouillet", codePostal: "78660" },
+    { commune: "PRUNAY LE TEMPLE", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
     { commune: "QUEUE LES YVELINES (LA)", arrondissement: "Rambouillet", codePostal: "78940" },
-    { commune: "RAIZEUX", arrondissement: "Rambouillet" },
+    { commune: "RAIZEUX", arrondissement: "Rambouillet", codePostal: "78125" },
     { commune: "RAMBOUILLET", arrondissement: "Rambouillet", codePostal: "78120" },
-    { commune: "RENNEMOULIN", arrondissement: "Versailles" },
-    { commune: "RICHEBOURG", arrondissement: "Mantes-la-Jolie" },
+    { commune: "RENNEMOULIN", arrondissement: "Versailles", codePostal: "78530" },
+    { commune: "RICHEBOURG", arrondissement: "Mantes-la-Jolie", codePostal: "78550" },
     { commune: "ROCHEFORT EN YVELINES", arrondissement: "Rambouillet", codePostal: "78730" },
-    { commune: "ROCQUENCOURT", arrondissement: "Versailles" },
-    { commune: "ROLLEBOISE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "ROSAY", arrondissement: "Mantes-la-Jolie" },
+    { commune: "ROCQUENCOURT", arrondissement: "Versailles", codePostal: "78150" },
+    { commune: "ROLLEBOISE", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
+    { commune: "ROSAY", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
     { commune: "ROSNY SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78710" },
-    { commune: "SAILLY", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SAINT ARNOULT EN YVELINES", arrondissement: "Rambouillet" },
+    { commune: "SAILLY", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "SAINT ARNOULT EN YVELINES", arrondissement: "Rambouillet", codePostal: "78730" },
     { commune: "SAINT CYR L'ECOLE", arrondissement: "Versailles", codePostal: "78210" },
-    { commune: "SAINT FORGET", arrondissement: "Rambouillet" },
-    { commune: "SAINT GERMAIN DE LA GRANGE", arrondissement: "Rambouillet" },
+    { commune: "SAINT FORGET", arrondissement: "Rambouillet", codePostal: "78730" },
+    { commune: "SAINT GERMAIN DE LA GRANGE", arrondissement: "Rambouillet", codePostal: "78610" },
     { commune: "SAINT GERMAIN EN LAYE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78100" },
-    { commune: "SAINT HILARION", arrondissement: "Rambouillet" },
-    { commune: "SAINT ILLIERS LA VILLE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SAINT ILLIERS LE BOIS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SAINT LAMBERT DES BOIS", arrondissement: "Rambouillet" },
+    { commune: "SAINT HILARION", arrondissement: "Rambouillet", codePostal: "78125" },
+    { commune: "SAINT ILLIERS LA VILLE", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
+    { commune: "SAINT ILLIERS LE BOIS", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
+    { commune: "SAINT LAMBERT DES BOIS", arrondissement: "Rambouillet", codePostal: "78470" },
     { commune: "SAINT LEGER EN YVELINES", arrondissement: "Rambouillet", codePostal: "78610" },
-    { commune: "SAINT MARTIN DE BRETHENCOURT", arrondissement: "Rambouillet" },
-    { commune: "SAINT MARTIN DES CHAMPS", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SAINT MARTIN LA GARENNE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "SAINT MARTIN DE BRETHENCOURT", arrondissement: "Rambouillet", codePostal: "78660" },
+    { commune: "SAINT MARTIN DES CHAMPS", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "SAINT MARTIN LA GARENNE", arrondissement: "Mantes-la-Jolie", codePostal: "78520" },
     { commune: "SAINT NOM LA BRETECHE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78860" },
-    { commune: "SAINT REMY LES CHEVREUSE", arrondissement: "Rambouillet" },
+    { commune: "SAINT REMY LES CHEVREUSE", arrondissement: "Rambouillet", codePostal: "78470" },
     { commune: "SAINT REMY L'HONORE", arrondissement: "Rambouillet", codePostal: "78750" },
-    { commune: "SAINTE MESME", arrondissement: "Rambouillet" },
+    { commune: "SAINTE MESME", arrondissement: "Rambouillet", codePostal: "78730" },
     { commune: "SARTROUVILLE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78500" },
-    { commune: "SAULX MARCHAIS", arrondissement: "Rambouillet" },
-    { commune: "SENLISSE", arrondissement: "Rambouillet" },
-    { commune: "SEPTEUIL", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SOINDRES", arrondissement: "Mantes-la-Jolie" },
-    { commune: "SONCHAMP", arrondissement: "Rambouillet" },
-    { commune: "TACOIGNIERES", arrondissement: "Mantes-la-Jolie" },
-    { commune: "TARTRE GAUDRAN (LE)", arrondissement: "Mantes-la-Jolie" },
+    { commune: "SAULX MARCHAIS", arrondissement: "Rambouillet", codePostal: "78650" },
+    { commune: "SENLISSE", arrondissement: "Rambouillet", codePostal: "78720" },
+    { commune: "SEPTEUIL", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
+    { commune: "SOINDRES", arrondissement: "Mantes-la-Jolie", codePostal: "78200" },
+    { commune: "SONCHAMP", arrondissement: "Rambouillet", codePostal: "78120" },
+    { commune: "TACOIGNIERES", arrondissement: "Mantes-la-Jolie", codePostal: "78910" },
+    { commune: "TARTRE GAUDRAN (LE)", arrondissement: "Mantes-la-Jolie", codePostal: "78113" },
     { commune: "TERTRE ST DENIS (LE)", arrondissement: "Mantes-la-Jolie", codePostal: "78980" },
-    { commune: "TESSANCOURT SUR AUBETTE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "TESSANCOURT SUR AUBETTE", arrondissement: "Mantes-la-Jolie", codePostal: "78250" },
     { commune: "THIVERVAL GRIGNON", arrondissement: "Rambouillet", codePostal: "78850" },
     { commune: "THOIRY", arrondissement: "Rambouillet", codePostal: "78770" },
-    { commune: "TILLY", arrondissement: "Mantes-la-Jolie" },
-    { commune: "TOUSSUS LE NOBLE", arrondissement: "Versailles" },
+    { commune: "TILLY", arrondissement: "Mantes-la-Jolie", codePostal: "78790" },
+    { commune: "TOUSSUS LE NOBLE", arrondissement: "Versailles", codePostal: "78117" },
     { commune: "TRAPPES", arrondissement: "Versailles", codePostal: "78190" },
-    { commune: "TREMBLAY SUR MAULDRE (LE)", arrondissement: "Rambouillet" },
+    { commune: "TREMBLAY SUR MAULDRE (LE)", arrondissement: "Rambouillet", codePostal: "78113" },
     { commune: "TRIEL SUR SEINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78510" },
-    { commune: "VAUX SUR SEINE", arrondissement: "Mantes-la-Jolie" },
+    { commune: "VAUX SUR SEINE", arrondissement: "Mantes-la-Jolie", codePostal: "78740" },
     { commune: "VELIZY VILLACOUBLAY", arrondissement: "Versailles", codePostal: "78140" },
     { commune: "VERNEUIL SUR SEINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78480" },
     { commune: "VERNOUILLET", arrondissement: "Saint-Germain-en-Laye", codePostal: "78540" },
-    { commune: "VERRIERE (LA)", arrondissement: "Rambouillet" },
+    { commune: "VERRIERE (LA)", arrondissement: "Rambouillet", codePostal: "78630" },
     { commune: "VERSAILLES", arrondissement: "Versailles", codePostal: "78000" },
-    { commune: "VERT", arrondissement: "Mantes-la-Jolie" },
+    { commune: "VERT", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
     { commune: "VESINET (LE)", arrondissement: "Saint-Germain-en-Laye", codePostal: "78110" },
     { commune: "VICQ", arrondissement: "Rambouillet", codePostal: "78740" },
-    { commune: "VIEILLE EGLISE EN YVELINES", arrondissement: "Rambouillet" },
-    { commune: "VILLENEUVE EN CHEVRIE (LA)", arrondissement: "Mantes-la-Jolie" },
+    { commune: "VIEILLE EGLISE EN YVELINES", arrondissement: "Rambouillet", codePostal: "78125" },
+    { commune: "VILLENEUVE EN CHEVRIE (LA)", arrondissement: "Mantes-la-Jolie", codePostal: "78270" },
     { commune: "VILLENNES SUR SEINE", arrondissement: "Saint-Germain-en-Laye", codePostal: "78670" },
     { commune: "VILLEPREUX", arrondissement: "Versailles", codePostal: "78450" },
-    { commune: "VILLETTE", arrondissement: "Mantes-la-Jolie" },
-    { commune: "VILLIERS LE MAHIEU", arrondissement: "Rambouillet" },
-    { commune: "VILLIERS ST FREDERIC", arrondissement: "Rambouillet" },
+    { commune: "VILLETTE", arrondissement: "Mantes-la-Jolie", codePostal: "78930" },
+    { commune: "VILLIERS LE MAHIEU", arrondissement: "Rambouillet", codePostal: "78770" },
+    { commune: "VILLIERS ST FREDERIC", arrondissement: "Rambouillet", codePostal: "78640" },
     { commune: "VIROFLAY", arrondissement: "Versailles", codePostal: "78220" },
     { commune: "VOISINS LE BRETONNEUX", arrondissement: "Versailles", codePostal: "78960" },
 ];
@@ -320,10 +320,6 @@ interface Arrondissement78Props {
     value: string;
     onChange: (value: string) => void;
     error?: string;
-    label: string;
-    urlArrondissement: string;
-    t: (key: string) => string;
-    departement: string;
     initialCommune?: string; // Nom de la commune pour initialisation
 }
 
@@ -331,14 +327,9 @@ export default function Arrondissement78({
     value,
     onChange,
     error,
-    label,
-    urlArrondissement,
-    t,
-    departement,
     initialCommune,
 }: Arrondissement78Props) {
-    const { t: translate } = useLanguage();
-    // Utiliser t pour les clés spécifiques au formulaire, translate pour les clés générales
+    const { t } = useLanguage();
 
     // Clé pour le localStorage
     const STORAGE_KEY = 'arrondissement78-selected-commune';
@@ -415,8 +406,8 @@ export default function Arrondissement78({
         const isCodePostalExact = /^\d{5}$/.test(searchTerm);
 
         if (isCodePostalExact) {
-            // Recherche par code postal exact
-            // D'abord chercher dans les communes avec codePostal
+            // Recherche par code postal exact - afficher TOUTES les communes correspondantes
+            // Chercher dans les communes avec codePostal
             let filtered = communesYvelines.filter((item) =>
                 item.codePostal === searchTerm
             );
@@ -431,7 +422,8 @@ export default function Arrondissement78({
             }
 
             setHasNoResults(filtered.length === 0);
-            return filtered.slice(0, 10);
+            // Retourner TOUTES les communes correspondantes (pas de limite pour code postal exact)
+            return filtered;
         } else if (isNumeric && searchTerm.length > 0) {
             // Recherche par début de code postal (ex: "78" pour toutes les communes commençant par 78)
             const filtered = communesYvelines.filter((item) =>
@@ -635,11 +627,11 @@ export default function Arrondissement78({
     return (
         <div className="fr-fieldset__element">
             <div className={`fr-input-group ${error ? 'fr-input-group--error' : ''}`}>
-                <label className="fr-label" htmlFor={inputId}>
-                    {label} *
-                </label>
-                <div className="fr-grid-row fr-grid-row--gutters">
-                    <div className="fr-col-8">
+                <div className="fr-grid-row fr-grid-row--gutters" style={{ alignItems: 'flex-end' }}>
+                    <div className="fr-col-7">
+                        <label className="fr-label" htmlFor={inputId}>
+                            {t('form.communeDeResidence')} *
+                        </label>
                         <div className="fr-input-wrap">
                             <input
                                 ref={inputRef}
@@ -655,7 +647,7 @@ export default function Arrondissement78({
                                         setShowSuggestions(true);
                                     }
                                 }}
-                                placeholder={translate('form.commune.placeholder')}
+                                placeholder={t('form.commune.placeholder')}
                                 autoComplete="off"
                                 aria-autocomplete="list"
                                 aria-controls={suggestionsId}
@@ -670,7 +662,7 @@ export default function Arrondissement78({
                                     id={suggestionsId}
                                     className="fr-list"
                                     role="listbox"
-                                    aria-label={translate('form.commune.suggestions.label')}
+                                    aria-label={t('form.commune.suggestions.label')}
                                     style={{
                                         position: 'absolute',
                                         top: '100%',
@@ -680,7 +672,7 @@ export default function Arrondissement78({
                                         backgroundColor: 'var(--background-default-grey)',
                                         border: '1px solid var(--border-default-grey)',
                                         borderRadius: '0.25rem',
-                                        maxHeight: '12.5rem',
+                                        maxHeight: filteredCommunes.length > 10 ? '30rem' : '12.5rem',
                                         overflowY: 'auto',
                                         margin: 0,
                                         padding: 0,
@@ -720,26 +712,30 @@ export default function Arrondissement78({
                                     role="status"
                                     aria-live="polite"
                                 >
-                                    {translate('form.commune.noResults')}
+                                    {t('form.commune.noResults')}
                                 </div>
                             )}
                         </div>
                     </div>
-                    <div className="fr-col-4">
-                        <input
-                            className="fr-input"
-                            type="text"
-                            id="arrondissement-display-78"
-                            value={selectedCommune ? selectedCommune.arrondissement : ""}
-                            readOnly
-                            disabled
-                            aria-label={translate('form.arrondissement.display')}
-                            style={{
-                                backgroundColor: 'var(--background-disabled-grey)',
-                                cursor: 'not-allowed',
-                                opacity: 0.6,
-                            }}
-                        />
+                    <div className="fr-col-5">
+                        <label className="fr-label" htmlFor="arrondissement-display-78">
+                            {t('form.arrondissementLabel')}
+                        </label>
+                        <div className="fr-input-wrap">
+                            <input
+                                className="fr-input"
+                                type="text"
+                                id="arrondissement-display-78"
+                                value={selectedCommune ? selectedCommune.arrondissement : ""}
+                                readOnly
+                                disabled
+                                aria-label={t('form.arrondissement.display')}
+                                style={{
+                                    backgroundColor: 'var(--background-disabled-grey)',
+                                    cursor: 'not-allowed',
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
                 {error && (
@@ -748,6 +744,6 @@ export default function Arrondissement78({
                     </p>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

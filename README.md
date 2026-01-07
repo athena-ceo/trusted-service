@@ -84,6 +84,72 @@
 
 ---
 
+## 🔄 Recent Updates
+
+- Added validation for required case fields before hitting decision engines and explicit errors when no distribution engine is configured.
+- Cache and live analysis responses now both include the fallback “other” intention for consistent payloads.
+- New unit tests protect `handle_case` against missing fields and missing distribution engines.
+
+---
+
+## 🚧 Known Issues
+
+The canonical list of issues is tracked on GitHub: https://github.com/athena-ceo/trusted-service/issues
+
+Highlighted open issues:
+- #28: Add an attachment based on the selected intent — https://github.com/athena-ceo/trusted-service/issues/28
+- #27: Keep a log of requests and decisions to enable stats — https://github.com/athena-ceo/trusted-service/issues/27
+- #26: Expose detected user intents to the agent — https://github.com/athena-ceo/trusted-service/issues/26
+- #25: Accept messages written in a different language — https://github.com/athena-ceo/trusted-service/issues/25
+- #24: Manage language dependent email address — https://github.com/athena-ceo/trusted-service/issues/24
+- #12: Add support for DMN rule engines — https://github.com/athena-ceo/trusted-service/issues/12
+- #9: Use Docker Compose with separate containers for backend and frontend — https://github.com/athena-ceo/trusted-service/issues/9
+- #17: Create environment-specific configuration — https://github.com/athena-ceo/trusted-service/issues/17
+- #18: Replace Excel-based configuration with more standard approach — https://github.com/athena-ceo/trusted-service/issues/18
+- #6: Add smoke tests in GitHub Actions to detect issues on each commit — https://github.com/athena-ceo/trusted-service/issues/6
+- #15: Automated LLM tests — https://github.com/athena-ceo/trusted-service/issues/15
+- #1: Add logging and improve error management — https://github.com/athena-ceo/trusted-service/issues/1
+ - #29: Safeguard get_app_name() when app_id is missing — https://github.com/athena-ceo/trusted-service/issues/29
+ - #30: Strengthen cache key and unify cache paths — https://github.com/athena-ceo/trusted-service/issues/30
+ - #31: Add ticketing/webhook distribution engines — https://github.com/athena-ceo/trusted-service/issues/31
+ - #32: Document and harden runtime import alias — https://github.com/athena-ceo/trusted-service/issues/32
+
+Additional technical observations (not yet filed or to be refined):
+- API error exposure: `/analyze` currently returns full tracebacks to clients; harden by returning generic errors while logging details server-side. See [src/backend/backend/rest/main.py](src/backend/backend/rest/main.py).
+- CORS policy: `allow_origins=["*"]` is permissive; restrict to allowed frontends in production. See [src/backend/backend/rest/main.py](src/backend/backend/rest/main.py).
+- `get_app_name()` error handling: ensure safe behavior when `app_id` is missing. See [src/backend/backend/trusted_services_server.py](src/backend/backend/trusted_services_server.py).
+- Cache key collisions: `short_hash()` truncated to 6 chars increases collision risk; consider 10–12+ chars and include `llm_config.id`. See [src/backend/backend/paths.py](src/backend/backend/paths.py).
+- Duplicate cache paths: `get_cache_file_path` vs `get_cache_file_path2`; unify the strategy and location. See [src/backend/backend/paths.py](src/backend/backend/paths.py).
+- Logging: basic global logging without rotation/JSON; add rotation and per-module levels. See [src/backend/backend/trusted_services_server.py](src/backend/backend/trusted_services_server.py).
+- Distribution engines: only email implemented; plan ticketing/webhook interfaces with timeouts and async retries. See [src/backend/distribution](src/backend/distribution).
+- Runtime import alias: dynamic `runtime` alias for `uvicorn --reload`; document and harden import resolution. See [src/backend/backend/rest/main.py](src/backend/backend/rest/main.py).
+- Field validation: enforce `mandatory` case fields consistently at API/UI boundaries. See [src/common/case_model.py](src/common/case_model.py).
+- Token accounting: implement token counts for observability across LLMs. See [src/backend/text_analysis/text_analyzer.py](src/backend/text_analysis/text_analyzer.py).
+
+If helpful, we can open/refine GitHub issues for the observations above and prioritize them.
+
+CI guard: The repository includes an automated check that validates this section stays coherent with GitHub (see .github/workflows/known-issues-check.yml). The job ensures all referenced issues exist, are open, and that links match the numbers.
+
+## 🏷️ Issue Labels Guide
+
+Use labels consistently to keep issue triage clear and actionable:
+- security: Security-related hardening (e.g., CORS restrictions, hiding server tracebacks). Typically paired with `enhancement` or `bug`.
+- observability: Telemetry, metrics, logging, and traces (e.g., token accounting in analysis stats). Usually paired with `enhancement`.
+- enhancement: New capability or improvement to existing functionality.
+- bug: Defect leading to incorrect behavior or crashes.
+- documentation: README and docs changes, examples, configuration guides.
+- help wanted: Contributions welcome; community support appreciated.
+- question: Clarification or design discussion needed before implementation.
+
+Guidelines:
+- Combine one functional label (e.g., `enhancement` or `bug`) with category labels (`security`, `observability`, `documentation`) when relevant.
+- Keep titles action-oriented; include Problem, Proposal, and Acceptance criteria in the issue body.
+- Examples:
+  - #29: Safeguard `get_app_name()` when `app_id` is missing → bug (+ optionally security if exposure is a concern).
+  - #30: Strengthen cache key and unify cache paths → enhancement (+ optionally observability for tracing collisions).
+  - #31: Add ticketing/webhook distribution engines → enhancement.
+  - #32: Document and harden runtime import alias → documentation + enhancement.
+
 ## 🚀 Quick Start
 
 The simplest option to check the framework is the integrated demo (client + in-process server) which runs the test/demo client and the Trusted Services server in the same process.

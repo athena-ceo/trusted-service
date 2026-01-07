@@ -81,10 +81,10 @@ class App(ServerApi):
     # API implementation
 
     def reload_apps(self):
-        pass
+        raise NotImplementedError("reload_apps is handled at the server level, not per-App instance")
 
     def get_app_ids(self) -> list[str]:
-        pass
+        raise NotImplementedError("get_app_ids is handled at the server level, not per-App instance")
 
     def get_locales(self, app_id: str) -> list[SupportedLocale]:
         return self.locales
