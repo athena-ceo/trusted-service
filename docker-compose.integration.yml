@@ -8,8 +8,11 @@ services:
       file: ./docker-compose.yml
       service: backend
     container_name: trusted-services-backend-integration
+    environment:
+      - SCW_PROJECT_ID=${SCW_PROJECT_ID}
+      - SCW_SECRET_KEY=${SCW_SECRET_KEY}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8002/api/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,10 +32,9 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 40s
     restart: unless-stopped
-

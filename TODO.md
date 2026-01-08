@@ -3,36 +3,38 @@
 ## 📋 Current Tasks
 
 ### Docker & Architecture Restructuring (COMPLETED ✅)
-- [x] Phase 1: Framework Docker Infrastructure
-  - [x] Create docker-compose.yml (framework backend only)
-  - [x] Create Dockerfile.streamlit (generic test client)
-  - [x] Update docker-compose.dev.yml (framework + test client)
-  - [x] Update docker-compose.prod.yml (framework production)
-  - [x] Create apps/delphes/docker-compose.dev.yml
-  - [x] Create apps/delphes/docker-compose.prod.yml
-- [x] Phase 2: Update docker-manage.sh
-  - [x] Support multiple targets (framework, delphes, aisa, connexion)
-  - [x] Support dev/prod environments
-  - [x] Add list-apps command
-  - [x] Update help documentation
-- [x] Phase 3: Documentation Restructuring
-  - [x] Update README.md (framework vs applications, new Quick Start)
-  - [x] Create APPLICATIONS.md (complete application catalog + dev guide)
-  - [x] Create apps/delphes/README.md (Delphes-specific documentation)
-  - [x] Update TESTING.md (application-specific testing sections)
-- [x] Phase 4: CI/CD Updates
-  - [x] Update integration-tests.yml (clarify framework testing)
-  - [x] Update deploy.yml (clarify deployment targets)
-  - [x] Update backend-ci.yml (add scope comments)
-  - [x] Update frontend-ci.yml (clarify Delphes-specific)
-- [x] Phase 5: Future Planning Documentation
-  - [x] Create FUTURE_REFACTORING.md (comprehensive roadmap)
+
+- [X] Phase 1: Framework Docker Infrastructure
+  - [X] Create docker-compose.yml (framework backend only)
+  - [X] Create Dockerfile.streamlit (generic test client)
+  - [X] Update docker-compose.dev.yml (framework + test client)
+  - [X] Update docker-compose.prod.yml (framework production)
+  - [X] Create apps/delphes/docker-compose.dev.yml
+  - [X] Create apps/delphes/docker-compose.prod.yml
+- [X] Phase 2: Update docker-manage.sh
+  - [X] Support multiple targets (framework, delphes, aisa, connexion)
+  - [X] Support dev/prod environments
+  - [X] Add list-apps command
+  - [X] Update help documentation
+- [X] Phase 3: Documentation Restructuring
+  - [X] Update README.md (framework vs applications, new Quick Start)
+  - [X] Create APPLICATIONS.md (complete application catalog + dev guide)
+  - [X] Create apps/delphes/README.md (Delphes-specific documentation)
+  - [X] Update TESTING.md (application-specific testing sections)
+- [X] Phase 4: CI/CD Updates
+  - [X] Update integration-tests.yml (clarify framework testing)
+  - [X] Update deploy.yml (clarify deployment targets)
+  - [X] Update backend-ci.yml (add scope comments)
+  - [X] Update frontend-ci.yml (clarify Delphes-specific)
+- [X] Phase 5: Future Planning Documentation
+  - [X] Create FUTURE_REFACTORING.md (comprehensive roadmap)
 
 ---
 
 ## 🏗️ Framework vs Applications Architecture
 
 ### Current State (After Phase 1-2)
+
 ```
 Trusted Services Framework (Generic)
 ├── Backend (FastAPI) - Serves ALL applications
@@ -53,6 +55,7 @@ Trusted Services Framework (Generic)
 ```
 
 ### Running Different Configurations
+
 ```bash
 # Framework with test client
 ./docker-manage.sh start framework
@@ -72,8 +75,8 @@ Trusted Services Framework (Generic)
 ## 🚀 Future Refactoring Roadmap
 
 ### Phase A: React Generic Test Client (PRIORITY: HIGH)
-**Goal**: Replace Streamlit with modern React test client  
-**Timeline**: Next phase after current Docker restructuring
+
+**Goal**: Replace Streamlit with modern React test client**Timeline**: Next phase after current Docker restructuring
 
 - [ ] Design React test client UI/UX
 - [ ] Implement test client features:
@@ -89,10 +92,12 @@ Trusted Services Framework (Generic)
 - [ ] Update documentation
 
 ### Phase B: Excel → JSON Configuration Migration (PRIORITY: HIGH)
-**Goal**: Replace Excel-based configs with JSON + config management UI  
+
+**Goal**: Replace Excel-based configs with JSON + config management UI
 **Timeline**: After React test client
 
 Current: Each application has .xlsx file with:
+
 - Intentions
 - Features
 - Field definitions
@@ -115,6 +120,7 @@ Future: JSON-based configuration with management frontend
 - [ ] Document configuration format and migration
 
 **Benefits**:
+
 - Version control friendly (text-based)
 - No Excel dependency
 - Better validation
@@ -122,8 +128,8 @@ Future: JSON-based configuration with management frontend
 - Easier programmatic manipulation
 
 ### Phase C: AISA Custom Frontend (PRIORITY: MEDIUM)
-**Goal**: Create AISA-specific frontend similar to Delphes  
-**Timeline**: After config migration
+
+**Goal**: Create AISA-specific frontend similar to Delphes**Timeline**: After config migration
 
 - [ ] Design AISA frontend requirements
 - [ ] Create apps/AISA/frontend/ (React/Next.js)
@@ -134,10 +140,12 @@ Future: JSON-based configuration with management frontend
 - [ ] Deploy AISA production
 
 ### Phase D: Application Repository Separation (PRIORITY: MEDIUM)
-**Goal**: Extract applications into independent repositories  
+
+**Goal**: Extract applications into independent repositories
 **Timeline**: After AISA frontend complete
 
 Current Structure:
+
 ```
 trusted-service/
 ├── src/                    # Framework
@@ -146,6 +154,7 @@ trusted-service/
 ```
 
 Target Structure:
+
 ```
 trusted-services/           # Framework repository
 ├── src/                    # Framework code
@@ -166,6 +175,7 @@ aisa/                       # AISA repository
 ```
 
 **Steps**:
+
 - [ ] Define framework API contract
 - [ ] Create framework PyPI package
 - [ ] Publish framework Docker image
@@ -180,42 +190,48 @@ aisa/                       # AISA repository
 ## 📝 Completed Tasks (Archive)
 
 ### September 2024 - Munich and Paris Events
-- [x] PPTX Presentation 1
-- [x] Deployment on Scaleway: Trusted Services
-- [x] Deployment on Scaleway: Trusted Services generic client 1
+
+- [X] PPTX Presentation 1
+- [X] Deployment on Scaleway: Trusted Services
+- [X] Deployment on Scaleway: Trusted Services generic client 1
 
 ### October-November 2024 - CI/CD and Testing
-- [x] CI/CD Setup (GitHub Actions)
-- [x] Backend smoke tests
-- [x] Frontend smoke tests
-- [x] Integration tests
-- [x] Docker ARM64 support (Apple Silicon)
-- [x] Unified docker-manage.sh script
-- [x] Documentation simplification
+
+- [X] CI/CD Setup (GitHub Actions)
+- [X] Backend smoke tests
+- [X] Frontend smoke tests
+- [X] Integration tests
+- [X] Docker ARM64 support (Apple Silicon)
+- [X] Unified docker-manage.sh script
+- [X] Documentation simplification
 
 ### November 2024 - Code Quality
-- [x] Translate framework code comments to English
-- [x] SSH authentication setup
-- [x] Pydantic version consistency
+
+- [X] Translate framework code comments to English
+- [X] SSH authentication setup
+- [X] Pydantic version consistency
 
 ---
 
 ## 🔧 Technical Debt & Improvements
 
 ### Code Quality
+
 - [ ] Gestion clean de toutes les erreurs: consistency xlsx
 - [ ] Logs techniques structured logging
 - [ ] Feedback log system
 - [ ] In app_def, put locale as a column everywhere + default locale
 
 ### Infrastructure
+
 - [ ] Deployment flow optimization
 - [ ] Reorganization of runtime directory structure
 - [ ] Architecture diagram (update with new structure)
 - [ ] Script de déploiement d'une application
 
 ### Documentation
-- [x] README restructuring (in progress - Phase 3)
+
+- [X] README restructuring (in progress - Phase 3)
 - [ ] API documentation (Swagger/OpenAPI)
 - [ ] Developer guide
 - [ ] Deployment guide for each application
@@ -225,18 +241,21 @@ aisa/                       # AISA repository
 ## 🤔 To Be Decided
 
 ### API Evolution
-- [ ] Passer à l'API V2 uniformément
+
+- [X] Passer à l'API V2 uniformément
   - Currently mixing v1 and v2 endpoints
   - Create consistent API facade
   - Deprecate old endpoints gracefully
 
 ### Configuration
+
 - [ ] Define configuration versioning strategy
 - [ ] Backward compatibility policy for configs
 - [ ] Configuration validation framework
 
 ### Multi-tenancy
-- [ ] Support multiple apps in single deployment
+
+- [X] Support multiple apps in single deployment
 - [ ] Application isolation strategy
 - [ ] Resource allocation per application
 
@@ -263,6 +282,6 @@ aisa/                       # AISA repository
 
 ---
 
-**Last Updated**: November 2024  
-**Current Phase**: Docker & Architecture Restructuring (Phases 1-5 COMPLETE ✅)  
+**Last Updated**: November 2024
+**Current Phase**: Docker & Architecture Restructuring (Phases 1-5 COMPLETE ✅)
 **Next Phase**: Future Refactoring - Phase A (React Test Client)

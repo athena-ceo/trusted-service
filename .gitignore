@@ -70,6 +70,7 @@ out/
 
 # Environment variables
 .env
+.env.integration
 .env.local
 .env*.local
 *.env

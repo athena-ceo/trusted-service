@@ -194,7 +194,7 @@ docker-clean:
 # Integration testing with full stack
 docker-integration-up:
 	@echo "Starting integration test stack (backend + Delphes frontend)..."
-	docker compose -f docker-compose.integration.yml up -d
+	docker compose --env-file .env.integration -f docker-compose.integration.yml up -d
 	@echo "Integration stack started:"
 	@echo "  Backend: http://localhost:8002"
 	@echo "  Delphes Frontend: http://localhost:3000"
@@ -202,15 +202,15 @@ docker-integration-up:
 
 docker-integration-down:
 	@echo "Stopping integration test stack..."
-	docker compose -f docker-compose.integration.yml down
+	docker compose --env-file .env.integration -f docker-compose.integration.yml down
 
 docker-integration-test:
 	@echo "Running integration tests..."
 	@$(MAKE) docker-integration-up
 	@sleep 15
 	@echo "Waiting for services to be healthy..."
-	@timeout 90 bash -c 'until curl -f http://localhost:8002/api/health; do sleep 3; done' || (echo "Backend failed to start" && $(MAKE) docker-integration-down && exit 1)
-	@timeout 90 bash -c 'until curl -f http://localhost:3000/; do sleep 3; done' || (echo "Frontend failed to start" && $(MAKE) docker-integration-down && exit 1)
+	@bash -c 'count=0; max=30; while [ $$count -lt $$max ]; do echo "Checking backend health ($$count/$$max)..."; curl -sf http://localhost:8002/api/health > /dev/null && break; sleep 3; count=$$((count+1)); done; if [ $$count -eq $$max ]; then echo "Backend health check timeout"; exit 1; fi'
+	@bash -c 'count=0; max=30; while [ $$count -lt $$max ]; do echo "Checking frontend health ($$count/$$max)..."; curl -sf http://localhost:3000/ > /dev/null && break; sleep 3; count=$$((count+1)); done; if [ $$count -eq $$max ]; then echo "Frontend health check timeout"; exit 1; fi'
 	@echo "✓ Services healthy, running tests..."
 	@API_BASE_URL=http://localhost:8002 FRONTEND_BASE_URL=http://localhost:3000 pytest tests/integration/ -v --tb=short
 	@$(MAKE) docker-integration-down

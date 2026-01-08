@@ -10,6 +10,10 @@ import json
 from typing import Optional
 from datetime import datetime
 import requests
+
+# Ajouter le répertoire parent au chemin pour accéder aux modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 from src.common.config import SupportedLocale
 from src.common.constants import API_ROUTE_V2
 
@@ -143,7 +147,7 @@ def test_analyze(
         print(f"✗ L'application '{app_id}' n'existe pas.")
         print(f"\nApplications disponibles: {', '.join(available_apps)}")
         print(f"\n💡 Suggestion: Utilisez une des applications disponibles, par exemple:")
-        print(f"   python test_analysis.py {available_apps[0]} {locale} '{text}'")
+        print(f"   python -m tests.test_analysis {available_apps[0]} {locale} '{text}'")
         return {"error": "app_not_found", "available_apps": available_apps}
     elif available_apps:
         print(f"✓ Application '{app_id}' trouvée")
@@ -158,7 +162,7 @@ def test_analyze(
         suggested_config = "scaleway1" if "scaleway1" in available_llm_configs else available_llm_configs[0] if available_llm_configs else None
         if suggested_config:
             print(f"\n💡 Suggestion: Utilisez une des configurations disponibles, par exemple:")
-            print(f"   python test_analysis.py {app_id} {locale} '{text}' --llm-config {suggested_config}")
+            print(f"   python -m tests.test_analysis {app_id} {locale} '{text}' --llm-config {suggested_config}")
             # Utiliser automatiquement la configuration suggérée
             llm_config_id = suggested_config
             print(f"   → Utilisation automatique de '{llm_config_id}'")
@@ -246,11 +250,11 @@ def main():
     # Gestion des arguments en ligne de commande
     if len(sys.argv) > 1:
         if sys.argv[1] in ["-h", "--help"]:
-            print("Usage: python test_analysis.py [app_id] [locale] [text] [--llm-config CONFIG_ID]")
+            print("Usage: python -m tests.test_analysis [app_id] [locale] [text] [--llm-config CONFIG_ID]")
             print("\nExemples:")
-            print("  python test_analysis.py")
-            print("  python test_analysis.py delphes78 fr 'Je veux renouveler mon titre'")
-            print("  python test_analysis.py delphes91 en 'I want to renew my permit' --llm-config scaleway1")
+            print("  python -m tests.test_analysis")
+            print("  python -m tests.test_analysis delphes78 fr 'Je veux renouveler mon titre'")
+            print("  python -m tests.test_analysis delphes91 en 'I want to renew my permit' --llm-config scaleway1")
             print("\nVariables d'environnement:")
             print("  API_BASE_URL: URL de base de l'API (défaut: http://localhost:8002)")
             print("\nNote: Le script vérifie automatiquement les applications et configurations LLM disponibles.")
@@ -300,4 +304,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
