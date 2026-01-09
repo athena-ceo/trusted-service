@@ -34,7 +34,7 @@ Vous pouvez y voir tous les emails capturés, leur contenu HTML, les en-têtes, 
 Un script de démonstration est disponible :
 
 ```bash
-python3 demo_smtp4dev.py
+python demo_smtp4dev.py
 ```
 
 Ce script envoie un email de test qui sera capturé par smtp4dev.
@@ -44,4 +44,3 @@ Ce script envoie un email de test qui sera capturé par smtp4dev.
 - smtp4dev ne stocke pas les emails de manière persistante (ils sont perdus au redémarrage)
 - Tous les emails sont capturés, aucune authentification n'est requise
 - Idéal pour le développement et les tests locaux
-

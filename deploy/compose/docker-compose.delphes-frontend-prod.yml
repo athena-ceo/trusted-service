@@ -1,0 +1,22 @@
+# Docker Compose pour la production - Version simplifiée AMD64
+
+services:
+  # Frontend Next.js - Serveur unique - Architecture AMD64
+  backend:
+    extends:
+      file: docker-compose.trusted-services-backend.yml
+      service: backend
+    container_name: trusted-services-backend-prod
+    env_file:
+      - .env.production
+
+  delphes-frontend:
+    extends:
+      file: docker-compose.delphes-frontend.yml
+      service: delphes-frontend
+    container_name: delphes-frontend-prod
+    env_file:
+      - .env.production
+    ports:
+      - "3006:3000" # Translation du port Next.js
+      # Attention, le service se retrouve exposé sur les 2 ports: 3000 et 3006

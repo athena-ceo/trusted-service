@@ -17,7 +17,7 @@ Created a **Docker entrypoint script** (`docker-entrypoint.sh`) that:
 
 ```bash
 # Start all services
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml up -d
 
 # Wait for services to be ready
 timeout 90 bash -c 'until curl -f http://localhost:8002/api/health; do echo "Waiting..."; sleep 3; done'
@@ -26,7 +26,7 @@ timeout 90 bash -c 'until curl -f http://localhost:8002/api/health; do echo "Wai
 pytest tests/integration/ -v
 
 # Stop services
-docker compose -f docker-compose.dev.yml down -v
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml down -v
 ```
 
 ### Option 2: Using the Makefile
@@ -69,16 +69,16 @@ curl http://localhost:3000/
 
 ```bash
 # All services
-docker compose -f docker-compose.dev.yml logs
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs
 
 # Backend only
-docker compose -f docker-compose.dev.yml logs backend
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs backend
 
 # Frontend only
-docker compose -f docker-compose.dev.yml logs frontend
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs streamlit-client
 
 # Follow logs in real-time
-docker compose -f docker-compose.dev.yml logs -f
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs -f
 ```
 
 ## 📊 GitHub Actions CI/CD
@@ -98,12 +98,12 @@ Integration tests now run automatically on every push to `main`:
 
 **Check container status:**
 ```bash
-docker compose -f docker-compose.dev.yml ps
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml ps
 ```
 
 **View backend logs:**
 ```bash
-docker compose -f docker-compose.dev.yml logs backend
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs backend
 ```
 
 **Common issues:**
@@ -118,7 +118,7 @@ docker compose -f docker-compose.dev.yml logs backend
 **Solution:** The entrypoint script should fix this automatically. Verify:
 ```bash
 # Check if backend is binding to 0.0.0.0
-docker compose -f docker-compose.dev.yml exec backend netstat -tuln | grep 8002
+docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml exec backend netstat -tuln | grep 8002
 ```
 
 Should show: `0.0.0.0:8002` not `127.0.0.1:8002`
@@ -131,7 +131,7 @@ Should show: `0.0.0.0:8002` not `127.0.0.1:8002`
 pytest tests/integration/ -v --timeout=120
 
 # In docker-compose health check
-# Edit docker-compose.dev.yml backend service:
+# Edit deploy/compose/docker-compose.trusted-services-dev.yml backend service:
 healthcheck:
   start_period: 60s  # Increase from 30s
 ```
@@ -155,9 +155,9 @@ healthcheck:
 ## 🔧 Configuration Files
 
 ### For Docker:
-- `docker-compose.dev.yml` - Development/CI environment
-- `Dockerfile.backend` - Backend image with entrypoint
-- `docker-entrypoint.sh` - Automatic 0.0.0.0 binding
+- `deploy/compose/docker-compose.trusted-services-dev.yml` - Development/CI environment
+- `src/Dockerfile.backend` - Backend image with entrypoint
+- `deploy/compose/docker-entrypoint.sh` - Automatic 0.0.0.0 binding
 
 ### For Local Development:
 - `runtime/config_connection.yaml` - Uses 127.0.0.1 (fine for local)
@@ -178,4 +178,3 @@ Now that integration tests work, you can:
 2. Test complex workflows
 3. Validate multi-service interactions
 4. Build confidence in deployments
-

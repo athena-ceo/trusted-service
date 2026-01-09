@@ -7,6 +7,7 @@ Complete guide for running tests locally and understanding the CI/CD pipeline.
 - [Quick Start](#quick-start)
 - [Test Types](#test-types)
 - [Running Tests Locally](#running-tests-locally)
+- [Security Scans](#security-scans)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Writing Tests](#writing-tests)
 - [Troubleshooting](#troubleshooting)
@@ -217,6 +218,33 @@ export API_BASE_URL=http://localhost:8002
 export FRONTEND_BASE_URL=http://localhost:3000
 pytest tests/smoke/ -v
 ```
+
+---
+
+## Security Scans
+
+Run security checks with the Makefile target (Bandit + Safety + `npm audit` for the frontend):
+
+```bash
+make security
+```
+
+Safety requires authentication and network access. Use one of the following options:
+
+```bash
+# Option 1: API key for this shell session
+export SAFETY_API_KEY="your_safety_api_key"
+make security
+
+# Option 2: interactive login (stores credentials locally)
+safety auth login
+make security
+```
+
+Keep the API key out of source control and avoid committing it to `.env` files.
+
+`npm audit` also needs network access to reach the npm registry. If it fails with
+`ENOTFOUND registry.npmjs.org`, ensure the network is available.
 
 ---
 
@@ -603,7 +631,7 @@ Test framework functionality independently of applications:
 
 ```bash
 # Start framework with generic test client
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # Run backend smoke tests
 pytest tests/smoke/test_backend_api.py -v
@@ -622,7 +650,7 @@ pytest tests/smoke/test_backend_api.py -v
 **Full stack testing**:
 ```bash
 # Start Delphes (backend + custom frontend)
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 
 # Run Delphes-specific tests
 pytest tests/smoke/test_backend_api.py -v --app=delphes
@@ -653,7 +681,7 @@ npm test
 **Configuration testing**:
 ```bash
 # Test with generic client (validates config without custom UI)
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # In test client:
 # 1. Select "delphes" application
@@ -668,7 +696,7 @@ npm test
 **Testing AISA configuration**:
 ```bash
 # Start AISA with generic client
-./docker-manage.sh start aisa
+./deploy/compose/docker-manage.sh start aisa
 
 # Verify AISA configuration
 pytest tests/smoke/test_backend_api.py -v
@@ -696,7 +724,7 @@ python -c "from runtime.apps.AISA.decision_engine import *; print('Decision engi
 **Testing conneXion**:
 ```bash
 # Start conneXion
-./docker-manage.sh start connexion
+./deploy/compose/docker-manage.sh start connexion
 
 # Access at: http://localhost:8501
 # Test telecom-specific scenarios
@@ -713,8 +741,8 @@ apps=("delphes" "aisa" "connexion")
 
 for app in "${apps[@]}"; do
     echo "Testing $app..."
-    ./docker-manage.sh stop
-    ./docker-manage.sh start $app
+    ./deploy/compose/docker-manage.sh stop
+    ./deploy/compose/docker-manage.sh start $app
     sleep 10  # Wait for services to be ready
     
     # Run tests for this app
@@ -728,7 +756,7 @@ for app in "${apps[@]}"; do
     echo "✅ $app tests passed"
 done
 
-./docker-manage.sh stop
+./deploy/compose/docker-manage.sh stop
 echo "✅ All applications tested successfully"
 ```
 
@@ -741,17 +769,17 @@ echo "✅ All applications tested successfully"
 rm -rf runtime/cache/*
 
 # 2. Rebuild Docker images if needed
-./docker-manage.sh rebuild framework
+./deploy/compose/docker-manage.sh rebuild framework
 
 # 3. Test with generic client first
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 # Manually verify changes at http://localhost:8501
 
 # 4. Run automated tests
 pytest tests/smoke/ -v
 
 # 5. Test custom frontend (if applicable)
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 pytest tests/smoke/test_frontend.py -v
 ```
 
@@ -799,7 +827,7 @@ def test_intent_detection(app, locale, text, expected_intent):
 Run with:
 ```bash
 # Start framework
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # Run intent tests
 pytest test_custom_intents.py -v
@@ -914,7 +942,7 @@ if __name__ == "__main__":
 
 ```bash
 # Test framework backend image
-docker build -t test-backend -f Dockerfile.backend .
+docker build -t test-backend -f src/Dockerfile.backend .
 docker run --rm -p 8002:8002 test-backend &
 sleep 10
 curl http://localhost:8002/api/health
@@ -922,7 +950,7 @@ docker stop $(docker ps -q --filter ancestor=test-backend)
 
 # Test Delphes frontend image
 cd apps/delphes/frontend
-docker build -t test-delphes-frontend .
+docker build -t test-delphes-frontend -f Dockerfile.delphes-frontend .
 docker run --rm -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8002 test-delphes-frontend &
 sleep 15
 curl http://localhost:3000/
@@ -978,4 +1006,3 @@ For questions or issues with tests:
 ---
 
 *Last updated: November 2025*
-

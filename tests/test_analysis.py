@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Script de test pour le web service analysis
 Teste l'appel à l'endpoint /api/v2/apps/{app_id}/{locale}/analyze

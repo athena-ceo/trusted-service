@@ -22,7 +22,12 @@ class CaseHandlingDecisionEngineODM(CaseHandlingDecisionEngine):
         }
 
         try:
-            response = requests.post(self.decision_service_url, json=payload, headers={"Content-Type": "application/json"})
+            response = requests.post(
+                self.decision_service_url,
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=10,
+            )
             response.raise_for_status()
         except Exception as exception:
             error_msg = f"An error occurred: {exception}"

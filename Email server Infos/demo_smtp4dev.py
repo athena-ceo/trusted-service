@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Script de démonstration pour tester smtp4dev
 Envoie un email de test qui sera capturé par smtp4dev

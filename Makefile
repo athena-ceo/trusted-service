@@ -53,49 +53,57 @@ help:
 # Installation
 # ============================================================================
 
+VENV_DIR := .venv
+VENV_PY := $(VENV_DIR)/bin/python
+
+$(VENV_PY):
+	@python -m venv $(VENV_DIR)
+	@$(VENV_PY) -m pip install --upgrade pip
+
 install: install-backend install-frontend install-tests
 	@echo "✓ All dependencies installed"
 
-install-backend:
+install-backend: $(VENV_PY)
 	@echo "Installing Python dependencies..."
-	pip install -r requirements.txt
+	@$(VENV_PY) -m pip install -r requirements.txt
 
 install-frontend:
 	@echo "Installing frontend dependencies..."
 	cd apps/delphes/frontend && npm install
 
-install-tests:
+install-tests: $(VENV_PY)
 	@echo "Installing test dependencies..."
-	pip install -r tests/requirements.txt
-	playwright install chromium
+	@$(VENV_PY) -m pip install --upgrade pip
+	@$(VENV_PY) -m pip install -r tests/requirements.txt
+	@$(VENV_PY) -m playwright install chromium
 
 # ============================================================================
 # Testing
 # ============================================================================
 
-test:
+test: $(VENV_PY)
 	@echo "Running all tests..."
-	python run_tests.py all
+	@$(VENV_PY) run_tests.py all
 
-test-unit:
+test-unit: $(VENV_PY)
 	@echo "Running unit tests..."
-	python run_tests.py unit
+	@$(VENV_PY) run_tests.py unit
 
-test-smoke:
+test-smoke: $(VENV_PY)
 	@echo "Running smoke tests..."
-	python run_tests.py smoke
+	@$(VENV_PY) run_tests.py smoke
 
-test-integration:
+test-integration: $(VENV_PY)
 	@echo "Running integration tests..."
-	python run_tests.py integration
+	@$(VENV_PY) run_tests.py integration
 
-test-backend:
+test-backend: $(VENV_PY)
 	@echo "Running backend smoke tests..."
-	python run_tests.py smoke --backend
+	@$(VENV_PY) run_tests.py smoke --backend
 
-test-frontend:
+test-frontend: $(VENV_PY)
 	@echo "Running frontend smoke tests..."
-	python run_tests.py smoke --frontend
+	@$(VENV_PY) run_tests.py smoke --frontend
 
 test-watch:
 	@echo "Running tests in watch mode..."
@@ -134,8 +142,9 @@ format-backend:
 
 security:
 	@echo "Running security checks..."
-	bandit -r src/ -f json -o bandit-report.json || true
-	safety check
+	@$(VENV_PY) -c "import bandit" 2>/dev/null && ( $(VENV_PY) -m bandit -r src/ -f json -o bandit-report.json || true ) || echo "bandit not installed. Run 'make install-tests'."
+	@$(VENV_PY) -c "import safety" 2>/dev/null && ( $(VENV_PY) -m safety scan --full-report || true ) || echo "safety not installed. Run 'make install-tests'."
+	@cd apps/delphes/frontend && npm audit || true
 	@echo "Security reports generated"
 
 # ============================================================================
@@ -149,9 +158,9 @@ dev:
 	@echo "Press Ctrl+C to stop"
 	@make -j2 dev-backend dev-frontend
 
-dev-backend:
+dev-backend: $(VENV_PY)
 	@echo "Starting backend server..."
-	python launcher_api.py ./runtime
+	@$(VENV_PY) launcher_api.py ./runtime
 
 dev-frontend:
 	@echo "Starting frontend development server..."
@@ -170,31 +179,32 @@ build-frontend:
 
 docker-build:
 	@echo "Building Docker images..."
-	docker compose -f docker-compose.dev.yml build
+	docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml build
 
 docker-up:
 	@echo "Starting services with Docker Compose..."
-	docker compose -f docker-compose.dev.yml up -d
+	docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml up -d
 	@echo "Services started:"
 	@echo "  Backend: http://localhost:8002"
 	@echo "  Test Client: http://localhost:8501"
 
 docker-down:
 	@echo "Stopping Docker services..."
-	docker compose -f docker-compose.dev.yml down
+	docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml down
 
 docker-logs:
-	docker compose -f docker-compose.dev.yml logs -f
+	docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml logs -f
 
 docker-clean:
 	@echo "Cleaning Docker resources..."
-	docker compose -f docker-compose.dev.yml down -v
+	docker compose -f deploy/compose/docker-compose.trusted-services-dev.yml down -v
 	docker system prune -f
+	docker rmi -f compose-backend compose-streamlit-client || true
 
 # Integration testing with full stack
 docker-integration-up:
 	@echo "Starting integration test stack (backend + Delphes frontend)..."
-	docker compose --env-file .env.integration -f docker-compose.integration.yml up -d
+	docker compose --env-file deploy/compose/.env.example -f deploy/compose/docker-compose.delphes-integration.yml up -d
 	@echo "Integration stack started:"
 	@echo "  Backend: http://localhost:8002"
 	@echo "  Delphes Frontend: http://localhost:3000"
@@ -202,7 +212,7 @@ docker-integration-up:
 
 docker-integration-down:
 	@echo "Stopping integration test stack..."
-	docker compose --env-file .env.integration -f docker-compose.integration.yml down
+	docker compose --env-file deploy/compose/.env.example -f deploy/compose/docker-compose.delphes-integration.yml down
 
 docker-integration-test:
 	@echo "Running integration tests..."
@@ -291,10 +301,9 @@ kill-servers:
 	@lsof -ti :8002 | xargs kill -9 2>/dev/null || echo "No process on 8002"
 	@lsof -ti :3000 | xargs kill -9 2>/dev/null || echo "No process on 3000"
 
-version:
+version: $(VENV_PY)
 	@echo "Trusted Services Version Information"
-	@python --version
+	@$(VENV_PY) --version
 	@node --version
 	@npm --version
 	@echo "pytest: $$(pytest --version | head -1)"
-

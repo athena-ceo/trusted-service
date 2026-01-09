@@ -246,10 +246,16 @@ class RuleOrDT(Artefact):
 
 
 def main():
+    username = os.getenv("ODM_ADMIN_USERNAME")
+    password = os.getenv("ODM_ADMIN_PASSWORD")
+    if not username or not password:
+        print("Missing ODM credentials. Set ODM_ADMIN_USERNAME and ODM_ADMIN_PASSWORD.")
+        return
+
     connection = Connection(
         base_url='http://localhost:9060/decisioncenter-api/v1',
-        username='odmAdmin',
-        password='odmAdmin',
+        username=username,
+        password=password,
         verbose=True
     )
 

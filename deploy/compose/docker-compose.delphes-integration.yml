@@ -1,0 +1,22 @@
+# Docker Compose for Integration Testing
+# Includes: Backend + Delphes Frontend
+# Purpose: Full end-to-end integration tests including UI workflows
+# Note: Context is at root level (../..)
+
+services:
+  backend:
+    extends:
+      file: docker-compose.trusted-services-backend.yml
+      service: backend
+    container_name: trusted-services-backend-integration
+
+  delphes-frontend:
+    extends:
+      file: docker-compose.delphes-frontend.yml
+      service: delphes-frontend
+    container_name: delphes-frontend-integration
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8002
+    depends_on:
+      backend:
+        condition: service_healthy

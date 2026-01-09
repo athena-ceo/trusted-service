@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trusted-services-streamlit-client
+  namespace: trusted-services
+spec:
+  selector:
+    app: trusted-services-streamlit-client
+  ports:
+    - name: http
+      port: 8501
+      targetPort: 8501
+  type: ClusterIP

@@ -1,20 +1,22 @@
 # Trusted Services Framework - Development with Generic Test Client
 # Use this for framework development and testing with the Streamlit test client
+# Note: Context is at root level (../..)
 
 services:
   # Backend - extends from base docker-compose.yml
   backend:
     extends:
-      file: docker-compose.yml
+      file: docker-compose.trusted-services-backend.yml
       service: backend
     container_name: trusted-services-backend-dev
 
   # Generic Streamlit Test Client
   streamlit-client:
     build:
-      context: .
-      dockerfile: Dockerfile.streamlit
+      context: ../..
+      dockerfile: src/Dockerfile.streamlit
     container_name: trusted-services-test-client-dev
+    command: [ "streamlit", "run", "launcher_testclient.py", "--server.address=0.0.0.0", "--server.port=8501", "--", "./runtime/client", "rest" ]
     ports:
       - "8501:8501"
     environment:
@@ -25,6 +27,5 @@ services:
       backend:
         condition: service_healthy
     volumes:
-      - ./runtime:/app/runtime
-      - ./runtime_dev:/app/runtime_dev
+      - ../../runtime:/app/runtime
     restart: unless-stopped

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Script minimal pour tester l'envoi d'email via Scaleway TEM
 """

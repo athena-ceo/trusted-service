@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Visualisation hiérarchique du ruleflow du moteur de décision Delphes.
 Affiche l'arborescence des packages de règles et l'ordre d'exécution.

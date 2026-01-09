@@ -7,7 +7,7 @@ set PORT=5006
 cd website || exit /b
 
 :: Start a simple HTTP server on localhost
-python3.12 -m http.server %PORT% || (
+python -m http.server %PORT% || (
   echo Error: Port %PORT% is already in use.
   exit /b 1
 )

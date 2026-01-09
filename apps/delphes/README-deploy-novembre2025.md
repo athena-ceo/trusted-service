@@ -27,16 +27,11 @@ cd <wherever>/trusted-service/apps/delphes
 
 - Générer une nouvelle image Docker
 - La pousser vers le registry
-- Mettre à jour `docker-compose.prod.yml`
+- Mettre à jour `deploy/compose/docker-compose.delphes-frontend-prod.yml`
 
 ### 1.2 📄 Configuration Delphes
 
-Copiez le fichier de configuration `delphes.xlsx` du runtime_dev vers le runtime :
-
-```bash
-# Depuis <wherever>/trusted-service
-cp runtime_dev/apps/delphes/delphes.xlsx runtime/apps/delphes/delphes.xlsx
-```
+Mettre à jour les fichier de configuration `delphes*.xlsx` de la prod :
 
 **⚠️ Important :** Conservez la configuration email existante dans le fichier copié.
 
@@ -44,24 +39,17 @@ cp runtime_dev/apps/delphes/delphes.xlsx runtime/apps/delphes/delphes.xlsx
 
 | Paramètre                         | Valeur                                                                                                                                                   |
 | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **hub_email_address**        | [Athena.Delphes@gmail.com](mailto:Athena.Delphes@gmail.com)                                                                                                 |
+| **hub_email_address**        | [ne-pas-repondre@mail.athendadecisions.ai](mailto:ne-pas-repondre@mail.athendadecisions.ai)                                                                 |
 | **agent_email_address**      | [pref-delphes-sejour@yvelines.gouv.fr,pref-delphes-asile@yvelines.gouv.fr](mailto:pref-delphes-sejour@yvelines.gouv.fr,pref-delphes-asile@yvelines.gouv.fr) |
 | **case_field_email_address** | `adresse_mail`                                                                                                                                         |
-| **smtp_server**              | `smtp.gmail.com`                                                                                                                                       |
-| **password**                 | `tubd yhuh fgiq hqrs`                                                                                                                                  |
+| **smtp_server**              | `smtp.tem.scaleway.com`                                                                                                                                |
+| **password**                 | `xxxx-xxxx-xxxx-xxxx`                                                                                                                                  |
 | **smtp_port**                | `587`                                                                                                                                                  |
 | **send_email**               | `True`                                                                                                                                                 |
 
 ### 1.3 ⚙️ Règles de décision
 
-Copiez les règles du runtime_dev vers le runtime :
-
-```bash
-# Depuis <wherever>/trusted-service
-diff runtime/apps/delphes/decision_engine.py runtime_dev/apps/delphes/decision_engine.py
-# Si différents :
-cp runtime_dev/apps/delphes/decision_engine.py runtime/apps/delphes/decision_engine.py
-```
+Mettre à jour les règles de décision de production.
 
 ### 1.4 🔄 Synchronisation Git
 
@@ -83,10 +71,10 @@ Connectez-vous au serveur et arrêtez les conteneurs existants :
 
 ```bash
 cd /data/demos/trusted-service/apps/delphes
-docker-compose -f docker-compose.prod.yml down
+docker-compose -f deploy/compose/docker-compose.delphes-frontend-prod.yml down
 ```
 
-**⚠️ Important :** Le conteneur doit être arrêté avant `git pull` car `docker-compose.prod.yml` change à chaque build.
+**⚠️ Important :** Le conteneur doit être arrêté avant `git pull` car `deploy/compose/docker-compose.delphes-frontend-prod.yml` change à chaque build.
 
 ### 2.2 📊 Vérification du Statut Git
 
@@ -117,7 +105,7 @@ Démarrez la nouvelle version de l'application :
 
 ```bash
 cd /data/demos/trusted-service/apps/delphes
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f deploy/compose/docker-compose.delphes-frontend-prod.yml up -d
 ```
 
 ---
@@ -150,10 +138,10 @@ sudo systemctl restart trusted-demo
 
 ```bash
 # Vérifier que les conteneurs tournent
-docker-compose -f docker-compose.prod.yml ps
+docker-compose -f deploy/compose/docker-compose.delphes-frontend-prod.yml ps
 
 # Consulter les logs
-docker-compose -f docker-compose.prod.yml logs -f frontend
+docker-compose -f deploy/compose/docker-compose.delphes-frontend-prod.yml logs -f frontend
 
 # Tester l'application
 https://delphes.athenadecisions.com/

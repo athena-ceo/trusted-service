@@ -12,7 +12,7 @@ import RuleflowConfigDiagram from './components/RuleflowConfigDiagram';
 import { useRuleflowConfig } from './stores/ruleflow-config-store';
 
 export default function Home() {
-    const [selectedRuntime, setSelectedRuntime] = useState<string | null>('runtime_dev');
+    const [selectedRuntime, setSelectedRuntime] = useState<string | null>('runtime');
     const [selectedApp, setSelectedApp] = useState<string | null>('delphes');
     const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
     const [expandedPackages, setExpandedPackages] = useState<Set<string>>(new Set());

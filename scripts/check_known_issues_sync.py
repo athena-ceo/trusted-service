@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Checks that the README's "Known Issues" section only lists valid, open GitHub issues
 and that each list item has a direct link matching the referenced issue number.

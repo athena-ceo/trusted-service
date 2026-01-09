@@ -85,3 +85,15 @@ README_OLD.md
 **/*.xlsx
 **/*.xls
 !tests/**/*.xlsx  # Keep Excel files in tests directory
+
+# Trusted Services/Delphes
+/apps/delphes/design_time/
+/apps/delphes/runtime/
+/config-rule/
+/docs/
+/Email\ server\ Infos/
+/images/
+/misc/
+/runtime/cache/
+/src/client/
+/studio/

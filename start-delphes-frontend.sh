@@ -6,7 +6,7 @@
 echo "🚀 Démarrage du frontend Next.js modernisé..."
 
 # Navigate to the frontend directory
-cd "$(dirname "$0")/frontend" || exit 1
+cd "$(dirname "$0")/apps/delphes/frontend" || exit 1
 
 # Check if dependencies are installed
 if [ ! -d "node_modules" ]; then

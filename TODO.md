@@ -5,12 +5,12 @@
 ### Docker & Architecture Restructuring (COMPLETED ✅)
 
 - [X] Phase 1: Framework Docker Infrastructure
-  - [X] Create docker-compose.yml (framework backend only)
+  - [X] Create deploy/compose/docker-compose.trusted-services-backend.yml (framework backend only)
   - [X] Create Dockerfile.streamlit (generic test client)
-  - [X] Update docker-compose.dev.yml (framework + test client)
-  - [X] Update docker-compose.prod.yml (framework production)
-  - [X] Create apps/delphes/docker-compose.dev.yml
-  - [X] Create apps/delphes/docker-compose.prod.yml
+  - [X] Update deploy/compose/docker-compose.trusted-services-dev.yml (framework + test client)
+  - [X] Update deploy/compose/docker-compose.trusted-services-backend.yml (framework production)
+  - [X] Create deploy/compose/docker-compose.delphes-integration.yml
+  - [X] Create deploy/compose/docker-compose.delphes-frontend-prod.yml
 - [X] Phase 2: Update docker-manage.sh
   - [X] Support multiple targets (framework, delphes, aisa, connexion)
   - [X] Support dev/prod environments
@@ -43,7 +43,7 @@ Trusted Services Framework (Generic)
     ├── Delphes (French Prefecture System)
     │   ├── Config: runtime/apps/delphes/
     │   ├── Frontend: apps/delphes/frontend/ (Next.js)
-    │   └── Compose: apps/delphes/docker-compose.*.yml
+    │   └── Compose: deploy/compose/docker-compose.delphes-*.yml
     ├── AISA (Helsinki City Services)
     │   ├── Config: runtime/apps/AISA/
     │   ├── Frontend: Generic test client (for now)
@@ -58,16 +58,16 @@ Trusted Services Framework (Generic)
 
 ```bash
 # Framework with test client
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # Delphes full stack
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 
 # AISA (uses test client)
-./docker-manage.sh start aisa
+./deploy/compose/docker-manage.sh start aisa
 
 # List all applications
-./docker-manage.sh list-apps
+./deploy/compose/docker-manage.sh list-apps
 ```
 
 ---

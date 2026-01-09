@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 COPY launcher_api.py .
-COPY docker-entrypoint.sh .
+COPY deploy/compose/docker-entrypoint.sh .
 COPY runtime/ ./runtime/
 
 # Create cache directory and make entrypoint executable
@@ -40,4 +40,3 @@ ENV PYTHONUNBUFFERED=1
 # Use entrypoint script to handle Docker-specific setup
 ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["./runtime"]
-

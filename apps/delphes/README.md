@@ -29,7 +29,7 @@
 
 ```bash
 # From repository root
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 
 # Access:
 # - Frontend: http://localhost:3000
@@ -135,14 +135,17 @@ apps/delphes/
 │   │       ├── convertDateToISO.ts
 │   │       └── convertISOToDate.ts
 │   ├── public/                    # Static assets
-│   ├── Dockerfile                 # Frontend container
+│   ├── Dockerfile.delphes-frontend # Frontend container
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── next.config.ts
 │
-├── docker-compose.dev.yml         # Dev environment
-├── docker-compose.prod.yml        # Production environment
 └── README.md                      # This file
+
+deploy/compose/
+├── docker-compose.delphes-integration.yml     # Dev environment (backend + frontend)
+├── docker-compose.delphes-frontend.yml        # Frontend base
+└── docker-compose.delphes-frontend-prod.yml   # Production frontend
 
 runtime/apps/delphes/              # Configuration (in root)
 ├── delphes.xlsx                   # Intent/field definitions
@@ -323,12 +326,12 @@ make test-smoke-frontend
 
 #### Development
 ```bash
-./docker-manage.sh start delphes dev
+./deploy/compose/docker-manage.sh start delphes dev
 ```
 
 #### Production
 ```bash
-./docker-manage.sh start delphes prod
+./deploy/compose/docker-manage.sh start delphes prod
 ```
 
 ### Manual Deployment
@@ -351,11 +354,11 @@ export NEXT_PUBLIC_API_URL=https://api.your-domain.com
 Build images:
 ```bash
 # Backend (from repository root)
-docker build -t delphes-backend -f Dockerfile.backend .
+docker build -t delphes-backend -f src/Dockerfile.backend .
 
 # Frontend
 cd apps/delphes/frontend
-docker build -t delphes-frontend .
+docker build -t delphes-frontend -f Dockerfile.delphes-frontend .
 ```
 
 ---
@@ -409,7 +412,7 @@ const translations = {
 
 3. **Test with Generic Client First**
    ```bash
-   ./docker-manage.sh start framework
+   ./deploy/compose/docker-manage.sh start framework
    # Test at http://localhost:8501
    ```
 

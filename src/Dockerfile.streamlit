@@ -20,6 +20,7 @@ COPY src/ ./src/
 
 # Copy client-specific files
 COPY src/client/ ./src/client/
+COPY images/ ./images/
 
 # Expose Streamlit default port
 EXPOSE 8501
@@ -33,4 +34,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 # Run Streamlit
 CMD ["streamlit", "run", "launcher_testclient.py", "--server.address=0.0.0.0", "--server.port=8501"]
-

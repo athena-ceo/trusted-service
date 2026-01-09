@@ -15,6 +15,7 @@ class ApiClientRest(ApiClient):
 
     def __init__(self, http_connection_url: str):
         self.base_url = http_connection_url
+        self._timeout = 10
 
     def get(self, suff: str, app_id: str | None = None, locale: SupportedLocale | None = None, ) -> any:
 
@@ -25,7 +26,7 @@ class ApiClientRest(ApiClient):
                 url += f"/{locale}"
         url += f"/{suff}"
         print("url", url)
-        response = requests.get(url)
+        response = requests.get(url, timeout=self._timeout)
 
         if response.status_code == 200:
             return response.json()
@@ -35,7 +36,7 @@ class ApiClientRest(ApiClient):
     def reload_apps(self):
         print_red("1")
         url = f"{self.base_url}/{API_ROUTE_V2}/reload_apps"
-        response = requests.post(url)
+        response = requests.post(url, timeout=self._timeout)
         if response.status_code == 200:
             return response.json()
         else:
@@ -76,7 +77,7 @@ class ApiClientRest(ApiClient):
             "read_from_cache": read_from_cache,
             "llm_config_id": llm_config_id
         }
-        response = requests.post(url, json=data)
+        response = requests.post(url, json=data, timeout=self._timeout)
         if response.status_code == 200:
             return response.json()
         else:
@@ -87,7 +88,7 @@ class ApiClientRest(ApiClient):
         params = {
             "text_analysis_cache": text_analysis_cache
         }
-        response = requests.post(url, params=params)
+        response = requests.post(url, params=params, timeout=self._timeout)
         if response.status_code == 200:
             return response.json()
         else:
@@ -95,7 +96,7 @@ class ApiClientRest(ApiClient):
 
     def handle_case(self, app_id: str, locale: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
         url = f"{self.base_url}/{API_ROUTE_V2}/apps/{app_id}/{locale}/handle_case"
-        response = requests.post(url, json=request.dict())
+        response = requests.post(url, json=request.dict(), timeout=self._timeout)
 
         if response.status_code == 200:
             response_data = response.json()

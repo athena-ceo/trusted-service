@@ -1,9 +1,12 @@
 import ast
+import logging
 import re
 from pathlib import Path
 from typing import Optional, Any, Dict, List
 from dataclasses import dataclass, field
 from enum import Enum
+
+_LOGGER = logging.getLogger(__name__)
 
 class NodeType(str, Enum):
     PACKAGE = "package"
@@ -367,8 +370,8 @@ class RuleflowParser:
                                 line_number=stmt.lineno - base_line
                             )
                             assignments.append(assignment)
-                        except:
-                            pass  # Ignorer les affectations qu'on ne peut pas parser
+                        except Exception as exc:
+                            _LOGGER.debug("Skipping output assignment at line %s: %s", stmt.lineno, exc)
             
             elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
                 # Vérifier si c'est un appel de méthode sur output
@@ -389,8 +392,8 @@ class RuleflowParser:
                                 line_number=stmt.lineno - base_line
                             )
                             assignments.append(assignment)
-                    except:
-                        pass
+                    except Exception as exc:
+                        _LOGGER.debug("Skipping output append at line %s: %s", stmt.lineno, exc)
             
             elif isinstance(stmt, ast.If):
                 # Analyser récursivement le corps de la condition if
@@ -621,4 +624,3 @@ class RuleflowGenerator:
                 else:
                     # Affectation directe
                     lines.append(f"{indent_str}    output.{assignment.attribute} = {assignment.value}")
-

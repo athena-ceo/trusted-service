@@ -54,7 +54,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 
 3. **Docker Integration**
    ```yaml
-   # docker-compose.dev.yml (framework)
+   # deploy/compose/docker-compose.trusted-services-dev.yml (framework)
    services:
      react-test-client:
        build: ./apps/test-client
@@ -220,7 +220,7 @@ This document outlines planned future refactorings for the Trusted Services fram
    │   └── styles/
    │       └── helsinki-theme.css # Helsinki design system
    ├── Dockerfile
-   └── docker-compose.dev.yml
+   └── (compose files live in deploy/compose/)
    ```
 
 2. **Design System**
@@ -231,11 +231,11 @@ This document outlines planned future refactorings for the Trusted Services fram
 
 3. **Integration**
    ```yaml
-   # apps/AISA/docker-compose.dev.yml
+   # deploy/compose/docker-compose.aisa.yml
    services:
      backend:
        extends:
-         file: ../../docker-compose.yml
+         file: docker-compose.trusted-services-backend.yml
          service: backend
      
      aisa-frontend:
@@ -458,4 +458,3 @@ github.com/trusted-services/connexion-example
 
 *Last updated: November 2025*
 *Review and update quarterly*
-

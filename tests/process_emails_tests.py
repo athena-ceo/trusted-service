@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Script pour traiter le fichier Excel "Emails type.xlsx", exécuter des tests d'analyse
 et ajouter les résultats dans une nouvelle colonne avec la date.

@@ -112,8 +112,8 @@ async def get_ruleflow_structure(runtime_dir: str, app_name: str) -> RuleflowStr
                 lines = f.readlines()
                 if syntax_err.lineno and syntax_err.lineno <= len(lines):
                     print(f"Problematic line: {lines[syntax_err.lineno - 1]}")
-        except:
-            pass
+        except Exception as exc:
+            print(f"Failed to read decision_engine.py for context: {exc}")
         raise HTTPException(status_code=500, detail=f"Syntax error in decision_engine.py at line {syntax_err.lineno}: {str(syntax_err)}")
     except Exception as e:
         import traceback
@@ -724,4 +724,3 @@ async def generate_from_config(request: GenerateFromConfigRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération: {str(e)}")
-

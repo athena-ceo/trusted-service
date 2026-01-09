@@ -1,4 +1,6 @@
+import ast
 import json
+import operator
 from datetime import date
 from time import strptime, struct_time
 from typing import Any, Optional
@@ -17,6 +19,65 @@ from src.common.constants import KEY_HIGHLIGHTED_TEXT_AND_FEATURES, KEY_MARKDOWN
 from src.common.logging import print_red, print_blue
 
 connection_to_api = "direct"
+
+_SAFE_BINOPS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Mod: operator.mod,
+}
+
+
+def _safe_eval_condition(expr: str) -> bool:
+    try:
+        tree = ast.parse(expr, mode="eval")
+    except SyntaxError as exc:
+        raise ValueError(f"Invalid condition syntax: {expr}") from exc
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        if isinstance(node, ast.Constant):
+            return node.value
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+            return not _eval(node.operand)
+        if isinstance(node, ast.BoolOp):
+            values = [_eval(v) for v in node.values]
+            if isinstance(node.op, ast.And):
+                return all(values)
+            if isinstance(node.op, ast.Or):
+                return any(values)
+        if isinstance(node, ast.BinOp) and type(node.op) in _SAFE_BINOPS:
+            return _SAFE_BINOPS[type(node.op)](_eval(node.left), _eval(node.right))
+        if isinstance(node, ast.Compare):
+            left = _eval(node.left)
+            for op, comparator in zip(node.ops, node.comparators):
+                right = _eval(comparator)
+                if isinstance(op, ast.Eq) and not (left == right):
+                    return False
+                if isinstance(op, ast.NotEq) and not (left != right):
+                    return False
+                if isinstance(op, ast.Lt) and not (left < right):
+                    return False
+                if isinstance(op, ast.LtE) and not (left <= right):
+                    return False
+                if isinstance(op, ast.Gt) and not (left > right):
+                    return False
+                if isinstance(op, ast.GtE) and not (left >= right):
+                    return False
+                if isinstance(op, ast.In) and not (left in right):
+                    return False
+                if isinstance(op, ast.NotIn) and not (left not in right):
+                    return False
+                left = right
+            return True
+        raise ValueError(f"Unsupported condition: {expr}")
+
+    result = _eval(tree)
+    if not isinstance(result, bool):
+        raise ValueError(f"Condition did not evaluate to bool: {expr}")
+    return result
 
 
 def expander_user(label: str, expanded: bool = False, *, icon: str | None = None) -> DeltaGenerator:
@@ -121,11 +182,11 @@ def add_case_field_input_widget(case: Case, case_field: CaseField, l12n: ClientL
                         field_value = case.field_values[field_id]
                         option_condition = option_condition.replace("{" + field_id + "}", str(field_value))
 
-                    if eval(option_condition):
+                    if _safe_eval_condition(option_condition):
                         options.append(option.label)
 
-                except NameError:
-                    print_red(f"Error evaluating {option_condition}")
+                except ValueError as exc:
+                    print_red(f"Error evaluating {option_condition}: {exc}")
                     options.append(option.label)
 
             selected_option_label = st.selectbox(label=label,

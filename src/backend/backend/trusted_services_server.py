@@ -50,8 +50,11 @@ class TrustedServicesServer(ServerApi):
                     try:
                         cf_ids = [f.id for f in localized.case_model.case_fields]
                         defined_ids.update(cf_ids)
-                    except Exception:
-                        # if case_model not present for a locale, skip
+                    except Exception as exc:
+                        logging.getLogger(__name__).warning(
+                            "Skipping case fields for app %s locale %s: %s",
+                            app_id, locale, exc
+                        )
                         continue
 
                 # Scan python files under the app directory
@@ -60,7 +63,11 @@ class TrustedServicesServer(ServerApi):
                 for py in app_dir.rglob('*.py'):
                     try:
                         text = py.read_text(encoding='utf-8')
-                    except Exception:
+                    except Exception as exc:
+                        logging.getLogger(__name__).warning(
+                            "Skipping file %s while scanning case fields: %s",
+                            py, exc
+                        )
                         continue
                     for m in pattern.finditer(text):
                         referenced_ids.add(m.group(1))

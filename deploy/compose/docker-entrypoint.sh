@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # Docker entrypoint script for backend
@@ -34,4 +34,3 @@ echo "🚀 Launching backend..."
 
 # Execute the Python application with all arguments
 exec python launcher_api.py "$@"
-

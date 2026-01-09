@@ -1,3 +1,4 @@
+import os
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -42,10 +43,16 @@ def call_request(base_url: str, username: str, password: str, method: str, endpo
             print(e)
 
 
-call_request(
-    base_url='http://localhost:9060/decisioncenter-api',
-    username='odmAdmin',
-    password='odmAdmin',
-    method='PUT',
-    endpoint='/v1/DBAdmin/persistencelocale',
-    params={'persistenceLocale': "fr_FR"})
+if __name__ == "__main__":
+    username = os.getenv("ODM_ADMIN_USERNAME")
+    password = os.getenv("ODM_ADMIN_PASSWORD")
+    if not username or not password:
+        print("Missing ODM credentials. Set ODM_ADMIN_USERNAME and ODM_ADMIN_PASSWORD.")
+    else:
+        call_request(
+            base_url='http://localhost:9060/decisioncenter-api',
+            username=username,
+            password=password,
+            method='PUT',
+            endpoint='/v1/DBAdmin/persistencelocale',
+            params={'persistenceLocale': "fr_FR"})

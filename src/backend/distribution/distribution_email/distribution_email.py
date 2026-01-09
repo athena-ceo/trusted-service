@@ -331,7 +331,7 @@ if __name__ == "__main__":
 
     locale = "fr"
     email_config: DistributionEmailConfig = load_email_config_from_workbook(
-        os.path.join(os.path.dirname(__file__), "../../../../runtime_dev/apps/delphes78/delphes78.xlsx"),
+        os.path.join(os.path.dirname(__file__), "../../../../runtime/apps/delphes78test/delphes78test.xlsx"),
         locale)
     
     # Clean any problematic characters from config

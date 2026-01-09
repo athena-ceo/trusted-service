@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trusted-services-streamlit-client
+  namespace: trusted-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trusted-services-streamlit-client
+  template:
+    metadata:
+      labels:
+        app: trusted-services-streamlit-client
+    spec:
+      containers:
+        - name: streamlit-client
+          image: ghcr.io/your-org/trusted-services-test-client:latest
+          command:
+            - streamlit
+            - run
+            - launcher_testclient.py
+            - --server.address=0.0.0.0
+            - --server.port=8501
+            - --
+            - ./runtime/client
+            - rest
+          ports:
+            - containerPort: 8501
+          envFrom:
+            - configMapRef:
+                name: trusted-services-config
+            - secretRef:
+                name: trusted-services-secrets
+          volumeMounts:
+            - name: runtime-data
+              mountPath: /app/runtime
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8501
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: runtime-data
+          persistentVolumeClaim:
+            claimName: trusted-services-runtime

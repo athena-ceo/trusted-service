@@ -443,55 +443,23 @@ uvicorn src.backend.app:app \
 
 ### Docker (Recommandé)
 
-```dockerfile
-# Dockerfile.frontend
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
+Utilisez les Dockerfiles et les fichiers compose déjà présents :
+
+- Frontend : `apps/delphes/frontend/Dockerfile.delphes-frontend`
+- Backend : `src/Dockerfile.backend`
+- Stack dev (backend + frontend) : `deploy/compose/docker-compose.delphes-integration.yml`
+- Frontend prod : `deploy/compose/docker-compose.delphes-frontend-prod.yml`
+
+Exemple :
+```bash
+docker compose -f deploy/compose/docker-compose.delphes-integration.yml up -d --build
 ```
 
-```dockerfile
-# Dockerfile.backend
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 8002
-CMD ["uvicorn", "src.backend.app:app", "--host", "0.0.0.0", "--port", "8002"]
-```
+### Kubernetes (Scaleway)
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  frontend:
-    build:
-      context: ./apps/delphes/frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://backend:8002
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./runtime:/app/runtime
-    environment:
-      - PYTHON_PATH=/app
-```
+Des manifestes Kubernetes dérivés de la configuration Compose sont disponibles
+dans `k8s/`. Voir `k8s/README.md` pour les notes Scaleway et le mode
+d’application.
 
 ### Nginx Configuration
 
@@ -775,4 +743,3 @@ Pour toute question ou problème :
 - **Tests** : Structure testable vs difficilement testable
 
 Pour plus de détails, consultez le [README frontend](apps/delphes/frontend/README.md).
-

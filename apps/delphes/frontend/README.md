@@ -223,7 +223,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8002
 
 ### Build Docker
 ```bash
-docker build -t delphes-frontend .
+docker build -t delphes-frontend -f Dockerfile.delphes-frontend .
 docker run -p 3000:3000 delphes-frontend
 ```
 

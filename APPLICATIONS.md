@@ -42,16 +42,16 @@ runtime/apps/delphes/
 ├── decision_engine.py     # Business rules for case handling
 └── delphes-no-mail.xlsx   # Version without email distribution
 
-apps/delphes/
-├── frontend/              # Custom Next.js frontend
-├── docker-compose.dev.yml # Development stack
-└── docker-compose.prod.yml # Production stack
+deploy/compose/
+├── docker-compose.delphes-integration.yml     # Dev stack (backend + frontend)
+├── docker-compose.delphes-frontend.yml        # Frontend base
+└── docker-compose.delphes-frontend-prod.yml   # Production frontend
 ```
 
 ### Running Delphes
 ```bash
 # Full stack (backend + frontend)
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 
 # Access:
 # - Frontend: http://localhost:3000
@@ -97,7 +97,7 @@ runtime/apps/AISA/
 ### Running AISA
 ```bash
 # Using generic test client
-./docker-manage.sh start aisa
+./deploy/compose/docker-manage.sh start aisa
 
 # Access:
 # - Test Client: http://localhost:8501
@@ -147,7 +147,7 @@ runtime/apps/conneXion/
 ### Running conneXion
 ```bash
 # Using generic test client
-./docker-manage.sh start connexion
+./deploy/compose/docker-manage.sh start connexion
 
 # Access:
 # - Test Client: http://localhost:8501
@@ -224,7 +224,7 @@ class YourAppDecision(Decision):
 
 ```bash
 # Start framework with your app
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # Access test client
 # Navigate to http://localhost:8501
@@ -246,18 +246,19 @@ See Delphes frontend as reference: `apps/delphes/frontend/`
 
 #### 6. Configure Docker Compose
 
-Create `apps/your_app_name/docker-compose.dev.yml`:
+Create `deploy/compose/docker-compose.your_app_name.yml`:
 ```yaml
 services:
   backend:
     extends:
-      file: ../../docker-compose.yml
+      file: docker-compose.trusted-services-backend.yml
       service: backend
     container_name: your-app-backend-dev
 
   your-app-frontend:
     build:
-      context: ./frontend
+      context: ../..
+      dockerfile: apps/your_app_name/frontend/Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -274,7 +275,7 @@ Add your application to the script's application list.
 #### 8. Test End-to-End
 
 ```bash
-./docker-manage.sh start your_app_name
+./deploy/compose/docker-manage.sh start your_app_name
 ```
 
 ---
@@ -332,20 +333,20 @@ See `apps/delphes/frontend/` for complete React/Next.js example.
 ### Pattern 1: Framework with Generic Client
 **Use case**: Development, testing, simple applications
 ```bash
-./docker-manage.sh start framework prod
+./deploy/compose/docker-manage.sh start framework prod
 ```
 
 ### Pattern 2: Application with Custom Frontend
 **Use case**: Production applications (like Delphes)
 ```bash
-./docker-manage.sh start delphes prod
+./deploy/compose/docker-manage.sh start delphes prod
 ```
 
 ### Pattern 3: Shared Backend, Multiple Frontends
 **Use case**: Multiple applications sharing backend
 ```bash
 # Backend runs once, serves multiple apps
-./docker-manage.sh start framework prod
+./deploy/compose/docker-manage.sh start framework prod
 
 # Multiple custom frontends connect to same backend
 # Each frontend configured with NEXT_PUBLIC_API_URL
@@ -425,4 +426,3 @@ See [TODO.md](TODO.md) for complete roadmap including:
 - Application repository separation
 - AISA custom frontend development
 - Additional public service applications
-

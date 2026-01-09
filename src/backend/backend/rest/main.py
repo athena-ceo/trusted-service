@@ -89,12 +89,11 @@ class FastAPI2(FastAPI):
                 # __path__ tells importlib where to look for subpackages/modules
                 runtime_pkg.__path__ = [runtime_directory]
                 sys.modules['runtime'] = runtime_pkg
-        except Exception:
+        except Exception as exc:
             # Don't fail initialization just because we couldn't create the alias;
-            # importlib may still find modules depending on sys.path. We swallow
-            # errors here and let downstream imports raise if needed (they'll be
-            # caught by the outer try/except and printed for debugging).
-            pass
+            # importlib may still find modules depending on sys.path. We log and
+            # let downstream imports raise if needed (caught by outer try/except).
+            print_red(f"Failed to create runtime import alias: {exc}")
 
         self.server_api: ServerApi = TrustedServicesServer(runtime_directory)
 
@@ -128,8 +127,8 @@ else:
     # under uvicorn --reload so logs show what runtime directory is used.
     try:
         print(f"Initialized app during import using TRUSTED_SERVICES_RUNTIME_DIR={runtime_dir_env}")
-    except Exception:
-        pass
+    except Exception as exc:
+        print_red(f"Failed to log TRUSTED_SERVICES_RUNTIME_DIR: {exc}")
 
 
 @app.get("/")

@@ -1,16 +1,42 @@
 #!/bin/bash
 # Unified Docker management script for Trusted Services Framework and Applications
 # Usage: ./docker-manage.sh [command] [target] [environment]
+# Location: deploy/compose/docker-manage.sh
 
 set -e
 
-# Colors for output
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Couleurs pour les logs
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+NC='\033[0;m' # No Color
+
+# Fonctions de log
+log() {
+    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+}
+
+error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+header() {
+    echo -e "${CYAN}=========================================="
+    echo "$1"
+    echo -e "==========================================${NC}"
+}
 
 # Parse arguments
 COMMAND="${1:-help}"
@@ -18,49 +44,48 @@ TARGET="${2:-framework}"
 ENV="${3:-dev}"
 
 # Determine compose file and context based on target
+# Context for compose commands is deploy/compose/
 case "$TARGET" in
     framework)
         if [ "$ENV" = "prod" ]; then
-            COMPOSE_FILE="docker-compose.prod.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-backend.yml"
             TARGET_NAME="Trusted Services Framework (Backend Only)"
         else
-            COMPOSE_FILE="docker-compose.dev.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-dev.yml"
             TARGET_NAME="Trusted Services Framework (Backend + Test Client)"
         fi
         ;;
     delphes)
-        COMPOSE_FILE="docker-compose.${ENV}.yml"
-        CONTEXT_DIR="apps/delphes"
-        TARGET_NAME="Delphes Application"
+        if [ "$ENV" = "prod" ]; then
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.delphes-frontend-prod.yml"
+            TARGET_NAME="Delphes Application"
+        else
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.delphes-integration.yml"
+            TARGET_NAME="Delphes Application"
+        fi
         ;;
     aisa)
         # AISA uses the framework test client for now
         if [ "$ENV" = "prod" ]; then
-            COMPOSE_FILE="docker-compose.prod.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-backend.yml"
             TARGET_NAME="AISA Application (using Framework Backend)"
         else
-            COMPOSE_FILE="docker-compose.dev.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-dev.yml"
             TARGET_NAME="AISA Application (using Framework Test Client)"
         fi
         ;;
     connexion)
         # conneXion uses the framework test client
         if [ "$ENV" = "prod" ]; then
-            COMPOSE_FILE="docker-compose.prod.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-backend.yml"
             TARGET_NAME="conneXion Application (using Framework Backend)"
         else
-            COMPOSE_FILE="docker-compose.dev.yml"
-            CONTEXT_DIR="."
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.trusted-services-dev.yml"
             TARGET_NAME="conneXion Application (using Framework Test Client)"
         fi
         ;;
     *)
-        echo -e "${RED}❌ Unknown target: $TARGET${NC}"
+        error "Unknown target: $TARGET"
         echo "Valid targets: framework, delphes, aisa, connexion"
         exit 1
         ;;
@@ -68,12 +93,12 @@ esac
 
 # Functions
 show_usage() {
-    cat << EOF
-${CYAN}🐳 Trusted Services - Docker Management${NC}
+    cat << 'EOF'
+Docker Management Script for Trusted Services Framework
 
-${BLUE}Usage:${NC} ./docker-manage.sh [command] [target] [environment]
+Usage: ./docker-manage.sh [command] [target] [environment]
 
-${BLUE}Commands:${NC}
+Commands:
   start       Start services
   stop        Stop services
   restart     Restart services
@@ -85,7 +110,7 @@ ${BLUE}Commands:${NC}
   shell       Open shell in backend container
   list-apps   List available applications
 
-${BLUE}Targets:${NC}
+Targets:
   framework   Trusted Services framework (default)
               - dev: Backend + Streamlit test client
               - prod: Backend only
@@ -97,31 +122,31 @@ ${BLUE}Targets:${NC}
   connexion   conneXion test application (telecom)
               - Uses framework test client
 
-${BLUE}Environments:${NC}
+Environments:
   dev         Development (default)
   prod        Production
 
-${BLUE}Examples:${NC}
-  ${GREEN}# Framework development${NC}
+Examples:
+  # Framework development
   ./docker-manage.sh start                     # Backend + test client
   ./docker-manage.sh start framework           # Same as above
   ./docker-manage.sh start framework prod      # Backend only (production)
 
-  ${GREEN}# Delphes application${NC}
+  # Delphes application
   ./docker-manage.sh start delphes             # Full Delphes stack (dev)
   ./docker-manage.sh start delphes prod        # Delphes frontend (production)
   ./docker-manage.sh logs delphes              # View Delphes logs
 
-  ${GREEN}# AISA application${NC}
+  # AISA application
   ./docker-manage.sh start aisa                # Backend + test client
   ./docker-manage.sh status aisa               # Check AISA status
 
-  ${GREEN}# Utility commands${NC}
+  # Utility commands
   ./docker-manage.sh list-apps                 # Show available apps
   ./docker-manage.sh shell framework           # Access backend shell
   ./docker-manage.sh rebuild delphes           # Clean rebuild Delphes
 
-${BLUE}Services:${NC}
+Services:
   Framework Backend:    http://localhost:8002
   Test Client:          http://localhost:8501
   Delphes Frontend:     http://localhost:3000
@@ -131,40 +156,36 @@ EOF
 }
 
 start_services() {
-    echo -e "${BLUE}🚀 Starting: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    
-    # Navigate to context directory
-    cd "$CONTEXT_DIR" || exit 1
-    
-    # Check if .env file exists, create if not (only at root)
-    if [ "$CONTEXT_DIR" = "." ] && [ ! -f .env ]; then
-        echo -e "${YELLOW}📝 Creating .env file...${NC}"
-        touch .env
-    fi
+    header "Starting: $TARGET_NAME ($ENV)"
     
     # Check if compose file exists
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
-    echo "🐳 Starting Docker Compose services..."
+    # Check if .env file exists, create if not
+    if [ ! -f .env ]; then
+        warning "Creating .env file..."
+        touch .env
+    fi
+    
+    log "Starting Docker Compose services..."
     docker compose -f "$COMPOSE_FILE" up -d
     
     echo ""
-    echo -e "${YELLOW}⏳ Waiting for services to be healthy...${NC}"
+    log "Waiting for services to be healthy..."
     sleep 5
     
     echo ""
     docker compose -f "$COMPOSE_FILE" ps
     
     echo ""
-    echo -e "${GREEN}✅ Services started successfully!${NC}"
+    success "Services started successfully!"
     
     # Show relevant URLs based on target and env
     echo ""
-    echo "🌐 Access your services:"
+    echo "Access your services:"
     if [ "$TARGET" = "framework" ]; then
         if [ "$ENV" = "prod" ]; then
             echo "   Backend API:  http://localhost:8002"
@@ -190,208 +211,170 @@ start_services() {
     fi
     
     echo ""
-    echo "📋 Useful commands:"
+    echo "Useful commands:"
     echo "   View logs:    ./docker-manage.sh logs $TARGET $ENV"
     echo "   Stop:         ./docker-manage.sh stop $TARGET $ENV"
     echo "   Restart:      ./docker-manage.sh restart $TARGET $ENV"
     echo ""
-    
-    # Return to original directory
-    cd - > /dev/null || exit 1
 }
 
 stop_services() {
-    echo -e "${BLUE}🛑 Stopping: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    
-    cd "$CONTEXT_DIR" || exit 1
+    header "Stopping: $TARGET_NAME ($ENV)"
     
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" down
     
     echo ""
-    echo -e "${GREEN}✅ Services stopped successfully!${NC}"
+    success "Services stopped successfully!"
     echo ""
-    echo "💡 To remove volumes as well:"
+    echo "To remove volumes as well:"
     echo "   ./docker-manage.sh clean $TARGET $ENV"
     echo ""
-    
-    cd - > /dev/null || exit 1
 }
 
 restart_services() {
-    echo -e "${BLUE}🔄 Restarting: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    
-    cd "$CONTEXT_DIR" || exit 1
+    header "Restarting: $TARGET_NAME ($ENV)"
     
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" restart
     
     echo ""
-    echo -e "${GREEN}✅ Services restarted successfully!${NC}"
+    success "Services restarted successfully!"
     echo ""
-    
-    cd - > /dev/null || exit 1
 }
 
 show_status() {
-    echo -e "${BLUE}📊 Status: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    echo ""
-    
-    cd "$CONTEXT_DIR" || exit 1
+    header "Status: $TARGET_NAME ($ENV)"
     
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" ps
     echo ""
-    
-    cd - > /dev/null || exit 1
 }
 
 show_logs() {
-    echo -e "${BLUE}📋 Logs: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
+    header "Logs: $TARGET_NAME ($ENV)"
     echo "Press Ctrl+C to exit"
     echo ""
     
-    cd "$CONTEXT_DIR" || exit 1
-    
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" logs -f
-    
-    cd - > /dev/null || exit 1
 }
 
 build_images() {
-    echo -e "${BLUE}🔨 Building: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    
-    cd "$CONTEXT_DIR" || exit 1
+    header "Building: $TARGET_NAME ($ENV)"
     
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" build
     
     echo ""
-    echo -e "${GREEN}✅ Images built successfully!${NC}"
+    success "Images built successfully!"
     echo ""
-    
-    cd - > /dev/null || exit 1
 }
 
 rebuild_images() {
-    echo -e "${BLUE}🔨 Rebuilding from scratch: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    
-    cd "$CONTEXT_DIR" || exit 1
+    header "Rebuilding from scratch: $TARGET_NAME ($ENV)"
     
     if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+        error "$COMPOSE_FILE not found!"
         exit 1
     fi
     
     docker compose -f "$COMPOSE_FILE" build --no-cache
     
     echo ""
-    echo -e "${GREEN}✅ Images rebuilt successfully!${NC}"
+    success "Images rebuilt successfully!"
     echo ""
-    
-    cd - > /dev/null || exit 1
 }
 
 clean_all() {
-    echo -e "${YELLOW}🧹 Cleaning: ${TARGET_NAME} (${ENV})${NC}"
-    echo "=========================================="
-    echo -e "${RED}⚠️  WARNING: This will remove containers AND volumes!${NC}"
+    header "Cleaning: $TARGET_NAME ($ENV)"
+    warning "This will remove containers AND volumes!"
     read -p "Are you sure? (yes/no): " -r
     echo
     
     if [[ $REPLY =~ ^[Yy][Ee][Ss]$ ]]; then
-        cd "$CONTEXT_DIR" || exit 1
-        
         if [ ! -f "$COMPOSE_FILE" ]; then
-            echo -e "${RED}❌ Error: $COMPOSE_FILE not found!${NC}"
+            error "$COMPOSE_FILE not found!"
             exit 1
         fi
         
         docker compose -f "$COMPOSE_FILE" down -v
         
         echo ""
-        echo -e "${GREEN}✅ Cleaned successfully!${NC}"
+        success "Cleaned successfully!"
         echo ""
-        
-        cd - > /dev/null || exit 1
     else
         echo "Cancelled."
     fi
 }
 
 open_shell() {
-    echo -e "${BLUE}🐚 Opening Shell in Backend Container${NC}"
-    echo "=========================================="
-    
-    # Determine container name based on target and env
-    if [ "$TARGET" = "delphes" ] && [ "$ENV" = "dev" ]; then
-        CONTAINER="delphes-backend-dev"
-    elif [ "$ENV" = "prod" ]; then
-        CONTAINER="trusted-services-backend-prod"
-    else
-        CONTAINER="trusted-services-backend-dev"
-    fi
-    
-    if ! docker ps | grep -q "$CONTAINER"; then
-        echo -e "${RED}❌ Error: Container $CONTAINER is not running!${NC}"
+    header "Opening Shell in Backend Container"
+
+    CONTAINER_ID="$(docker compose -f "$COMPOSE_FILE" ps -q backend)"
+    if [ -z "$CONTAINER_ID" ]; then
+        error "No backend service found in $COMPOSE_FILE"
         echo ""
         echo "Start services first:"
         echo "  ./docker-manage.sh start $TARGET $ENV"
         exit 1
     fi
-    
-    docker exec -it "$CONTAINER" /bin/bash
+
+    if ! docker ps -q --no-trunc | grep -q "$CONTAINER_ID"; then
+        error "Backend container is not running!"
+        echo ""
+        echo "Start services first:"
+        echo "  ./docker-manage.sh start $TARGET $ENV"
+        exit 1
+    fi
+
+    docker exec -it "$CONTAINER_ID" /bin/sh
 }
 
 list_apps() {
-    echo -e "${CYAN}📦 Available Trusted Services Applications${NC}"
-    echo "=========================================="
+    header "Available Trusted Services Applications"
     echo ""
     
-    echo -e "${BLUE}Framework:${NC}"
+    echo "Framework:"
     echo "  Name:        Trusted Services Framework"
     echo "  Target:      framework"
     echo "  Description: Generic AI framework with test client"
     echo ""
     
-    if [ -d "runtime/apps" ]; then
-        for app_dir in runtime/apps/*/; do
+    RUNTIME_APPS_DIR="$SCRIPT_DIR/../../runtime/apps"
+    APPS_DIR="$SCRIPT_DIR/../../apps"
+
+    if [ -d "$RUNTIME_APPS_DIR" ]; then
+        for app_dir in "$RUNTIME_APPS_DIR"/*/; do
             if [ -d "$app_dir" ]; then
                 app_name=$(basename "$app_dir")
-                echo -e "${BLUE}Application:${NC}"
+                echo "Application:"
                 echo "  Name:        $app_name"
                 echo "  Target:      $(echo "$app_name" | tr '[:upper:]' '[:lower:]')"
                 echo "  Config:      runtime/apps/$app_name/"
                 
                 # Check for custom frontend
-                if [ -d "apps/$app_name/frontend" ]; then
+                if [ -d "$APPS_DIR/$app_name/frontend" ]; then
                     echo "  Frontend:    Custom (apps/$app_name/frontend/)"
                 else
                     echo "  Frontend:    Generic test client"

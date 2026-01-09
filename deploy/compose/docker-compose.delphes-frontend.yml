@@ -1,0 +1,18 @@
+# Docker Compose pour le Dev - Version simplifiée AMD64
+
+services:
+  # Frontend Next.js - Serveur unique - Architecture AMD64
+  delphes-frontend:
+    platform: linux/amd64 # Target for Scaleway
+    build:
+      context: ../../apps/delphes/frontend
+      dockerfile: Dockerfile.delphes-frontend
+    container_name: delphes-frontend
+    env_file:
+      - ../../.env
+    ports:
+      - "3000:3000" # Exposition directe du port Next.js
+    environment:
+      - NEXT_TELEMETRY_DISABLED=1
+    # healthcheck included in Dockerfile
+    restart: unless-stopped

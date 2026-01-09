@@ -167,10 +167,10 @@ git clone <repository-url>
 cd trusted-service
 
 # Start framework with Streamlit test client
-./docker-manage.sh start framework
+./deploy/compose/docker-manage.sh start framework
 
 # Or just the backend
-./docker-manage.sh start framework prod
+./deploy/compose/docker-manage.sh start framework prod
 ```
 
 🌐 **Access**:
@@ -187,7 +187,7 @@ The generic test client lets you test any application (Delphes, AISA, conneXion)
 #### Option 1: Delphes Application (French Prefecture)
 ```bash
 # Full Delphes stack: Backend + Custom Next.js Frontend
-./docker-manage.sh start delphes
+./deploy/compose/docker-manage.sh start delphes
 
 # Access at:
 #  - Frontend: http://localhost:3000
@@ -197,7 +197,7 @@ The generic test client lets you test any application (Delphes, AISA, conneXion)
 #### Option 2: AISA Application (Helsinki City)
 ```bash
 # AISA uses the framework test client (for now)
-./docker-manage.sh start aisa
+./deploy/compose/docker-manage.sh start aisa
 
 # Access at:
 #  - Test Client: http://localhost:8501
@@ -207,7 +207,7 @@ The generic test client lets you test any application (Delphes, AISA, conneXion)
 #### Option 3: conneXion (Telecom Test App)
 ```bash
 # Test application for validation
-./docker-manage.sh start connexion
+./deploy/compose/docker-manage.sh start connexion
 
 # Access at:
 #  - Test Client: http://localhost:8501
@@ -216,23 +216,23 @@ The generic test client lets you test any application (Delphes, AISA, conneXion)
 
 **List all available applications:**
 ```bash
-./docker-manage.sh list-apps
+./deploy/compose/docker-manage.sh list-apps
 ```
 
 ### Docker Commands Reference
 
 ```bash
 # Basic commands
-./docker-manage.sh start [app] [env]    # Start services
-./docker-manage.sh stop [app]           # Stop services
-./docker-manage.sh status [app]         # Check status
-./docker-manage.sh logs [app]           # View logs
-./docker-manage.sh shell [app]          # Backend shell
+./deploy/compose/docker-manage.sh start [app] [env]    # Start services
+./deploy/compose/docker-manage.sh stop [app]           # Stop services
+./deploy/compose/docker-manage.sh status [app]         # Check status
+./deploy/compose/docker-manage.sh logs [app]           # View logs
+./deploy/compose/docker-manage.sh shell [app]          # Backend shell
 
 # Build commands
-./docker-manage.sh build [app]          # Build images
-./docker-manage.sh rebuild [app]        # Rebuild from scratch
-./docker-manage.sh clean [app]          # Remove all (⚠️ includes volumes)
+./deploy/compose/docker-manage.sh build [app]          # Build images
+./deploy/compose/docker-manage.sh rebuild [app]        # Rebuild from scratch
+./deploy/compose/docker-manage.sh clean [app]          # Remove all (⚠️ includes volumes)
 
 # Targets: framework, delphes, aisa, connexion
 # Environments: dev (default), prod
@@ -240,10 +240,10 @@ The generic test client lets you test any application (Delphes, AISA, conneXion)
 
 **Examples:**
 ```bash
-./docker-manage.sh start framework      # Framework + test client
-./docker-manage.sh start delphes        # Delphes full stack
-./docker-manage.sh logs delphes         # View Delphes logs
-./docker-manage.sh rebuild framework    # Clean framework rebuild
+./deploy/compose/docker-manage.sh start framework      # Framework + test client
+./deploy/compose/docker-manage.sh start delphes        # Delphes full stack
+./deploy/compose/docker-manage.sh logs delphes         # View Delphes logs
+./deploy/compose/docker-manage.sh rebuild framework    # Clean framework rebuild
 ```
 
 ### Manual Setup (No Docker)
@@ -286,10 +286,10 @@ npm run dev
 
 | **Goal** | **Command** | **What You Get** |
 |----------|-------------|------------------|
-| Test framework features | `./docker-manage.sh start framework` | Backend + Generic test client |
-| Run Delphes in production-like mode | `./docker-manage.sh start delphes` | Full Delphes stack |
-| Develop on AISA | `./docker-manage.sh start aisa` | Backend + Test client for AISA |
-| Framework backend only | `./docker-manage.sh start framework prod` | Just backend (for remote frontends) |
+| Test framework features | `./deploy/compose/docker-manage.sh start framework` | Backend + Generic test client |
+| Run Delphes in production-like mode | `./deploy/compose/docker-manage.sh start delphes` | Full Delphes stack |
+| Develop on AISA | `./deploy/compose/docker-manage.sh start aisa` | Backend + Test client for AISA |
+| Framework backend only | `./deploy/compose/docker-manage.sh start framework prod` | Just backend (for remote frontends) |
 | Build new application | See [APPLICATIONS.md](APPLICATIONS.md) | Development guide |
 
 ---
@@ -369,8 +369,7 @@ trusted-service/
 ├── 📁 apps/                      # ⭐ APPLICATIONS
 │   ├── delphes/                 # French Prefecture app
 │   │   ├── frontend/            # Custom Next.js UI
-│   │   ├── docker-compose.dev.yml
-│   │   └── docker-compose.prod.yml
+│   │   └── (compose files live in deploy/compose/)
 │   ├── (future: aisa/, connexion/)
 │
 ├── 📁 runtime/                   # ⭐ RUNTIME CONFIGURATION
@@ -394,14 +393,17 @@ trusted-service/
 ├── 📁 .github/workflows/         # CI/CD pipelines
 │
 ├── 🐳 Docker files (Framework)
-│   ├── Dockerfile.backend       # Backend container
-│   ├── Dockerfile.streamlit     # Generic test client
-│   ├── docker-compose.yml       # Backend only
-│   ├── docker-compose.dev.yml   # Backend + test client
-│   └── docker-compose.prod.yml  # Production backend
+│   ├── src/Dockerfile.backend                   # Backend container
+│   ├── src/Dockerfile.streamlit                 # Generic test client
+│   └── deploy/compose/                          # Compose definitions
+│       ├── docker-compose.trusted-services-dev.yml
+│       ├── docker-compose.trusted-services-backend.yml
+│       ├── docker-compose.delphes-frontend.yml
+│       ├── docker-compose.delphes-integration.yml
+│       └── docker-compose.delphes-frontend-prod.yml
 │
 ├── 🔧 Management scripts
-│   ├── docker-manage.sh         # Multi-app Docker manager
+│   ├── deploy/compose/docker-manage.sh         # Multi-app Docker manager
 │   ├── launcher_api.py          # Backend launcher
 │   └── launcher_testclient.py   # Streamlit test client
 │
@@ -445,8 +447,7 @@ runtime/apps/{app_name}/
 
 apps/{app_name}/            # Optional: custom frontend
 ├── frontend/
-├── docker-compose.dev.yml
-└── docker-compose.prod.yml
+└── (compose files live in deploy/compose/)
 ```
 
 ### Building Your Own Application
@@ -849,55 +850,22 @@ uvicorn src.backend.app:app \
 
 ### Docker (Recommended)
 
-```dockerfile
-# Dockerfile.frontend
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
+Use the Dockerfiles and compose definitions already in this repo:
+
+- Frontend: `apps/delphes/frontend/Dockerfile.delphes-frontend`
+- Backend: `src/Dockerfile.backend`
+- Dev stack (backend + frontend): `deploy/compose/docker-compose.delphes-integration.yml`
+- Prod frontend: `deploy/compose/docker-compose.delphes-frontend-prod.yml`
+
+Example:
+```bash
+docker compose -f deploy/compose/docker-compose.delphes-integration.yml up -d --build
 ```
 
-```dockerfile
-# Dockerfile.backend
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 8002
-CMD ["uvicorn", "src.backend.app:app", "--host", "0.0.0.0", "--port", "8002"]
-```
+### Kubernetes (Scaleway)
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  frontend:
-    build:
-      context: ./apps/delphes/frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://backend:8002
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./runtime:/app/runtime
-    environment:
-      - PYTHON_PATH=/app
-```
+Kubernetes manifests derived from the Compose setup are available in `k8s/`.
+See `k8s/README.md` for Scaleway-specific notes and how to apply the manifests.
 
 ### Nginx Configuration
 
@@ -1258,7 +1226,7 @@ Type
 
 ```
 git clone https://github.com/athena-ceo/trusted-service.git
-python3.12 -m venv .venv
+python -m venv .venv
 . .venv/bin/activate (or source .venv/scripts/Activate)
 pip install -r requirements.txt
 ```

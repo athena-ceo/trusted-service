@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Python-based test runner for cross-platform compatibility
 Can run on Windows, macOS, and Linux

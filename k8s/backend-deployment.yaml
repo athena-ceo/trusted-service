@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trusted-services-backend
+  namespace: trusted-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trusted-services-backend
+  template:
+    metadata:
+      labels:
+        app: trusted-services-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/your-org/trusted-services-backend:latest
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef:
+                name: trusted-services-config
+            - secretRef:
+                name: trusted-services-secrets
+          volumeMounts:
+            - name: runtime-data
+              mountPath: /app/runtime
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8002
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8002
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: runtime-data
+          persistentVolumeClaim:
+            claimName: trusted-services-runtime
