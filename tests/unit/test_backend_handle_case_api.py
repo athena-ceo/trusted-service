@@ -86,8 +86,8 @@ def test_handle_case_missing_required_fields_raises_value_error():
     app.parent_app.data_enrichment = None
     app.parent_app.decide = MagicMock(return_value=_build_decision_output())
     app.case_handling_distribution_engine = DummyDistributionEngine()
-    app.messages_to_agent = [Message(key="note", text="Note {0}")]
-    app.messages_to_requester = [Message(key="ack", text="Ack {0}")]
+    app.messages_to_agent = [Message(key="note", text="Note")]
+    app.messages_to_requester = [Message(key="ack", text="Ack")]
 
     request = _build_request(field_id, include_field=False)
 
@@ -108,8 +108,8 @@ def test_handle_case_without_distribution_engine_returns_error_before_distribute
     app.parent_app.data_enrichment = None
     app.parent_app.decide = MagicMock(return_value=_build_decision_output())
     app.case_handling_distribution_engine = None
-    app.messages_to_agent = [Message(key="note", text="Note {0}")]
-    app.messages_to_requester = [Message(key="ack", text="Ack {0}")]
+    app.messages_to_agent = [Message(key="note", text="Note")]
+    app.messages_to_requester = [Message(key="ack", text="Ack")]
 
     request = _build_request(field_id, include_field=True)
 
@@ -118,4 +118,3 @@ def test_handle_case_without_distribution_engine_returns_error_before_distribute
 
     assert "distribution engine" in str(exc.value)
     app.parent_app.decide.assert_called_once()
-```}
