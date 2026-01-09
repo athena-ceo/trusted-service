@@ -5,12 +5,12 @@ import { NextResponse } from 'next/server';
  * Returns a simple JSON response indicating service status
  */
 export async function GET() {
-  return NextResponse.json(
-    { 
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      service: 'delphes-frontend'
-    },
-    { status: 200 }
-  );
+    return NextResponse.json(
+        {
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+            service: 'delphes-frontend'
+        },
+        { status: 200 }
+    );
 }
