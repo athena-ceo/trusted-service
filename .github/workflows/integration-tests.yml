@@ -2,7 +2,7 @@ name: Integration Tests
 
 # Full integration tests with backend + Delphes frontend
 # Tests complete end-to-end workflows including UI
-# Uses docker-compose.integration.yml for complete stack
+# Uses deploy/compose/docker-compose.delphes-integration.yml for complete stack
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Start services with Docker Compose
         run: |
-          docker compose -f docker-compose.integration.yml up -d
+          docker compose -f deploy/compose/docker-compose.delphes-integration.yml up -d
           sleep 20
 
       - name: Wait for services to be healthy
@@ -72,10 +72,10 @@ jobs:
         if: failure()
         run: |
           echo "=== Docker Compose Logs ===" > integration-logs.txt
-          docker compose -f docker-compose.integration.yml logs >> integration-logs.txt 2>&1
+          docker compose -f deploy/compose/docker-compose.delphes-integration.yml logs >> integration-logs.txt 2>&1
           echo "" >> integration-logs.txt
           echo "=== Container Status ===" >> integration-logs.txt
-          docker compose -f docker-compose.integration.yml ps >> integration-logs.txt 2>&1
+          docker compose -f deploy/compose/docker-compose.delphes-integration.yml ps >> integration-logs.txt 2>&1
           echo "" >> integration-logs.txt
           echo "=== Backend Container Inspect ===" >> integration-logs.txt
           docker inspect trusted-services-backend-integration >> integration-logs.txt 2>&1 || echo "Backend container not found" >> integration-logs.txt
@@ -93,4 +93,4 @@ jobs:
       - name: Stop services
         if: always()
         run: |
-          docker compose -f docker-compose.integration.yml down -v
+          docker compose -f deploy/compose/docker-compose.delphes-integration.yml down -v
