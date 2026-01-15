@@ -1,11 +1,16 @@
-from typing import Any, Optional, List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
 
-from src.backend.distribution.distribution_email.email2 import Email
-from src.backend.rendering.html_localization import html_localizations, SupportedLocale, HTMLLocalization
-from src.backend.text_analysis.base_models import Feature, PREFIX_FRAGMENTS
+from src.backend.rendering.html_localization import HTMLLocalization, html_localizations
+from src.backend.text_analysis.base_models import PREFIX_FRAGMENTS, Feature
 from src.common.logging import print_red
+from src.common.config import SupportedLocale
+
+if TYPE_CHECKING:
+    from src.backend.distribution.distribution_email.email2 import Email
 
 standard_back_ground_color = "#F0F2F6"
 
@@ -30,14 +35,16 @@ class FeatureValue(BaseModel):
     id: str
     label: str
     value: Any
-    fragments: Optional[List[tuple[int, int]]] = None
-    color: Optional[str]
+    fragments: list[tuple[int, int]] | None = None
+    color: str | None
 
 
-def build_html_highlighted_text_and_features(locale: SupportedLocale, 
-                                             text: str,
-                                             features: list[Feature],
-                                             analysis_result: dict[str, Any]) -> str:
+def build_html_highlighted_text_and_features(
+    locale: SupportedLocale,
+    text: str,
+    features: list[Feature],
+    analysis_result: dict[str, Any],
+) -> str:
     colors = ["lightblue", "pink", "lightgreen", "cyan", "yellow"]
     index_color = 0
     colored_segments: list[ColoredSegment] = []
@@ -48,7 +55,7 @@ def build_html_highlighted_text_and_features(locale: SupportedLocale,
         # id = feature.id
         label = feature.label
         value = analysis_result[feature.id]
-        color: Optional[str] = None
+        color: str | None = None
         if not feature.highlight_fragments:
             continue
         fragments = analysis_result[f"{PREFIX_FRAGMENTS}{feature.id}"]
@@ -72,10 +79,10 @@ def build_html_highlighted_text_and_features(locale: SupportedLocale,
                 # Trying by capitilizing
                 start = text.upper().find(fragment.upper())
                 if start == -1:  # condition 1 not met
-                    print_red(f"even after comparing uppercase copies")
+                    print_red("even after comparing uppercase copies")
                     continue
                 else:
-                    print_red(f"but found after comparing uppercase copies")
+                    print_red("but found after comparing uppercase copies")
             end = start + len(fragment)
 
             overlaps = False
@@ -99,19 +106,26 @@ def build_html_highlighted_text_and_features(locale: SupportedLocale,
 
         if color is None:
             color = standard_back_ground_color
-        feature_values.append(FeatureValue(id=feature.id, label=label, value=value, color=color))
+        feature_values.append(
+            FeatureValue(id=feature.id, label=label, value=value, color=color),
+        )
 
     # HIGHLIGHT TEXT
     highlighted_text = text
-    colored_segments.sort(key=lambda _colored_segment: _colored_segment.start, reverse=True)
+    colored_segments.sort(
+        key=lambda _colored_segment: _colored_segment.start,
+        reverse=True,
+    )
     for colored_segment in colored_segments:
 
         if colored_segment.color is not None:
-            highlighted_text = (highlighted_text[:colored_segment.start]
-                                + f"<span style='background-color: {colored_segment.color}'>"
-                                + highlighted_text[colored_segment.start:colored_segment.end]
-                                + "</span>"
-                                + highlighted_text[colored_segment.end:])
+            highlighted_text = (
+                highlighted_text[: colored_segment.start]
+                + f"<span style='background-color: {colored_segment.color}'>"
+                + highlighted_text[colored_segment.start : colored_segment.end]
+                + "</span>"
+                + highlighted_text[colored_segment.end :]
+            )
 
     # highlighted_text = "<b>" + highlighted_text + "</b>"
     highlighted_text = f'<table border="1" cellpadding="10"><tr><td bgcolor="{standard_back_ground_color}">{highlighted_text}</td></tr></table>'
@@ -120,8 +134,12 @@ def build_html_highlighted_text_and_features(locale: SupportedLocale,
     for feature_value in feature_values:
         value = feature_value.value
         if isinstance(feature_value.value, bool):
-            #value: str= html_localizations["en"].label_yes if feature_value.value else html_localizations["en"].label_no
-            value: str= localizations.label_yes if feature_value.value else localizations.label_no
+            # value: str= html_localizations["en"].label_yes if feature_value.value else html_localizations["en"].label_no
+            value: str = (
+                localizations.label_yes
+                if feature_value.value
+                else localizations.label_no
+            )
         table += f"<tr><td bgcolor=#F0F2F6>{feature_value.label}</td><td bgcolor={feature_value.color}>{value}</td></tr>"
     table += "</table>"
 
@@ -139,7 +157,7 @@ def hilite_blue(text: str) -> str:
     return f'<p style="font-weight: bold; color: blue;">{text}</p>'
 
 
-def render_email(email: Optional[Email]) -> str:
+def render_email(email: Email | None) -> str:
     if email is None:
         return None
     s = hilite("From:&nbsp;") + email.from_email_address + "<br>"

@@ -37,8 +37,8 @@ kubectl apply -k k8s/
 
 - The frontend service is `LoadBalancer` on port `3006` (maps to container 3000).
 - The backend service is `ClusterIP` on port `8002`.
-- Update `NEXT_PUBLIC_API_URL` in `k8s/configmap.yaml` to the public API
-  endpoint your users can reach.
+- Update `BACKEND_INTERNAL_URL` in `k8s/configmap.yaml` to the private API
+  endpoint your frontend can reach.
 - The runtime volume is backed by a PVC. Adjust the storage class if needed
   (see `k8s/runtime-pvc.yaml`).
 - Streamlit test client is optional. Use it only for dev/integration scenarios.

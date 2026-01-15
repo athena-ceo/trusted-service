@@ -1,25 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Header({ departement = '', mode = '' }: { departement?: string, mode?: string }) {
     const { currentLang, setLanguage, t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMenuMobileOpen, setIsMenuMobileOpen] = useState(false);
-    const [departementLabel, setDepartementLabel] = useState('');
-
-    useEffect(() => {
-        if (departement === '78') {
-            setDepartementLabel('des Yvelines');
-        } else if (departement === '91') {
-            setDepartementLabel('de l\'Essonne');
-        } else if (departement === '92') {
-            setDepartementLabel('des Hauts-de-Seine');
-        } else if (departement === '94') {
-            setDepartementLabel('du Val-de-Marne');
+    const departementLabel = useMemo(() => {
+        if (departement === "78") {
+            return "des Yvelines";
         }
+        if (departement === "91") {
+            return "de l'Essonne";
+        }
+        if (departement === "92") {
+            return "des Hauts-de-Seine";
+        }
+        if (departement === "94") {
+            return "du Val-de-Marne";
+        }
+        return "";
     }, [departement]);
 
     const handleLanguageChange = (lang: 'FR' | 'EN', isMobile: boolean = false) => {
@@ -38,6 +40,53 @@ export default function Header({ departement = '', mode = '' }: { departement?: 
             setIsMenuOpen(!isMenuOpen);
         }
     };
+
+    const renderToolsLinks = () => (
+        <ul className="fr-btns-group">
+            <li className="fr-translate fr-nav" suppressHydrationWarning>
+                <button aria-controls="translate-menu-desktop"
+                    title={t('header.language.select')}
+                    aria-expanded={isMenuOpen}
+                    className="fr-btn fr-icon-translate-2 fr-btn--tertiary-no-outline fr-translate fr-nav language-select"
+                    id="fr-header-with-horizontal-operator-logo-quick-access-item-2"
+                    onClick={() => toggleMenu(false)}
+                    suppressHydrationWarning>
+                    <div>
+                        <span className="short-label">{currentLang}</span>
+                        <span className="fr-hidden-lg"> {currentLang} - {currentLang === 'FR' ? t('header.language.fr').split(' - ')[1] : t('header.language.en').split(' - ')[1]}</span>
+                    </div>
+                    <div className={`fr-collapse fr-translate__menu fr-menu ${isMenuOpen ? 'fr-collapse--expanded' : ''}`}
+                        id="translate-menu-desktop" suppressHydrationWarning style={{ ['--collapse' as any]: '-132px' }}>
+                        <ul className="fr-menu__list">
+                            <li><a className="fr-translate__language fr-nav__link" hrefLang="fr" lang="fr"
+                                aria-current={currentLang === 'FR' ? 'true' : 'false'}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleLanguageChange('FR', false);
+                                }}>
+                                {t('header.language.fr')}
+                            </a>
+                            </li>
+                            <li><a className="fr-translate__language fr-nav__link" hrefLang="en" lang="en"
+                                aria-current={currentLang === 'EN' ? 'true' : 'false'}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleLanguageChange('EN', false);
+                                }}>
+                                {t('header.language.en')}</a></li>
+                        </ul>
+                    </div>
+                </button>
+            </li>
+            {/*departement && (
+                <li className="contact-li">
+                    <a className="fr-btn fr-icon-mail-line" href={`/accueil-etrangers${departement ? `?departement=${departement}` : ''}`} title={t('header.contact.title')}>
+                        {t('header.contact')}
+                    </a>
+                </li>
+            )*/}
+        </ul>
+    );
 
     return (
         <header role="banner" className="fr-header" suppressHydrationWarning>
@@ -82,50 +131,10 @@ export default function Header({ departement = '', mode = '' }: { departement?: 
                         </div>
                         <div className="fr-header__tools">
                             <div className="fr-header__tools-links" suppressHydrationWarning>
-                                <ul className="fr-btns-group">
-                                    <li className="fr-translate fr-nav" suppressHydrationWarning>
-                                        <button aria-controls="translate-menu-desktop"
-                                            title={t('header.language.select')}
-                                            aria-expanded={isMenuOpen}
-                                            className="fr-btn fr-icon-translate-2 fr-btn--tertiary-no-outline fr-translate fr-nav language-select"
-                                            id="fr-header-with-horizontal-operator-logo-quick-access-item-2"
-                                            onClick={() => toggleMenu(false)}
-                                            suppressHydrationWarning>
-                                            <div>
-                                                <span className="short-label">{currentLang}</span>
-                                                <span className="fr-hidden-lg"> {currentLang} - {currentLang === 'FR' ? t('header.language.fr').split(' - ')[1] : t('header.language.en').split(' - ')[1]}</span>
-                                            </div>
-                                            <div className={`fr-collapse fr-translate__menu fr-menu ${isMenuOpen ? 'fr-collapse--expanded' : ''}`}
-                                                id="translate-menu-desktop" suppressHydrationWarning style={{ ['--collapse' as any]: '-132px' }}>
-                                                <ul className="fr-menu__list">
-                                                    <li><a className="fr-translate__language fr-nav__link" hrefLang="fr" lang="fr"
-                                                        aria-current={currentLang === 'FR' ? 'true' : 'false'}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            handleLanguageChange('FR', false);
-                                                        }}>
-                                                        {t('header.language.fr')}
-                                                    </a>
-                                                    </li>
-                                                    <li><a className="fr-translate__language fr-nav__link" hrefLang="en" lang="en"
-                                                        aria-current={currentLang === 'EN' ? 'true' : 'false'}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            handleLanguageChange('EN', false);
-                                                        }}>
-                                                        {t('header.language.en')}</a></li>
-                                                </ul>
-                                            </div>
-                                        </button>
-                                    </li>
-                                    {/*departement && (
-                                        <li className="contact-li">
-                                            <a className="fr-btn fr-icon-mail-line" href={`/accueil-etrangers${departement ? `?departement=${departement}` : ''}`} title={t('header.contact.title')}>
-                                                {t('header.contact')}
-                                            </a>
-                                        </li>
-                                    )*/}
-                                </ul>
+                                {renderToolsLinks()}
+                            </div>
+                            <div className="fr-header__menu-links" suppressHydrationWarning hidden>
+                                {renderToolsLinks()}
                             </div>
                         </div>
                     </div>

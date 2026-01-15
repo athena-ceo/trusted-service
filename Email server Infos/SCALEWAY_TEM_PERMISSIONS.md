@@ -58,7 +58,7 @@ Une fois la clé API générée, mettez à jour votre fichier Excel avec :
 
 | Paramètre | Valeur |
 |-----------|--------|
-| `smtp_username` | Votre **Project ID** (ex: `59c350ec-8be5-4b8b-8a4c-93db7f9690b3`) |
+| `smtp_username` | Votre **Project ID** (ex: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) |
 | `password` | La **Secret Key** de la nouvelle clé API générée |
 
 ## Vérification

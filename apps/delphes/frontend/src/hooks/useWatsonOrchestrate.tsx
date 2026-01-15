@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 interface WatsonOrchestrateConfig {
     orchestrationID: string;
@@ -39,8 +39,7 @@ export const useWatsonOrchestrate = ({
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const scriptElementRef = useRef<HTMLScriptElement | null>(null);
 
-    // Construction de la configuration à partir des paramètres
-    const finalConfig: WatsonOrchestrateConfig = {
+    const finalConfig: WatsonOrchestrateConfig = useMemo(() => ({
         orchestrationID,
         hostURL,
         rootElementID,
@@ -49,7 +48,7 @@ export const useWatsonOrchestrate = ({
         chatOptions: {
             agentId,
         }
-    };
+    }), [agentId, crn, deploymentPlatform, hostURL, orchestrationID, rootElementID]);
 
     useEffect(() => {
         if (!enabled) {

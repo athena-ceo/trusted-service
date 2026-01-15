@@ -73,6 +73,7 @@ function convertISOToDate(isoDateStr: string): string {
 function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
     const router = useRouter();
     const { t, currentLang } = useLanguage();
+    const isProd = process.env.NODE_ENV === "production";
     const [isLoading, setIsLoading] = useState(true);
     const [scoringsPositifs, setScoringsPositifs] = useState<Scoring[]>([]);
     const [selectedIntention, setSelectedIntention] = useState<string>('');
@@ -83,19 +84,15 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
     const analyzeRequest = async () => {
         try {
-            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
-            if (!apiBaseUrl || apiBaseUrl.startsWith('__NEXT_PUBLIC_')) {
-                console.warn('NEXT_PUBLIC_API_URL is not configured - API calls may not work');
-                return;
-            }
-
             if (!fieldValues) {
                 console.error('No field values provided');
                 return;
             }
 
-            console.log('Sending analysis request with payload', fieldValues)
-            const analyzeResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/analyze`, {
+            if (!isProd) {
+                console.log("Sending analysis request with payload", fieldValues);
+            }
+            const analyzeResponse = await fetch(`/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,7 +105,9 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
                 }),
             });
             const analyzeResult = await analyzeResponse.json();
-            console.log('Résultat de l\'analyse:', analyzeResult);
+            if (!isProd) {
+                console.log("Resultat de l'analyse:", analyzeResult);
+            }
 
             // Sauver les champs supplémentaires retournés par l'API
             fieldValues.date_expiration_api = analyzeResult.analysis_result.date_expiration_api;
@@ -216,7 +215,11 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
     const getFieldValue = (champ: string): string => {
         // Si on a déjà une valeur saisie, l'utiliser
         if (champ === 'refugie_ou_protege_subsidiaire' || champ === 'motif_deces' || champ === 'demandeur_d_asile') {
-            console.log(`Valeur du champ booléen avant retour: ${fieldInputValues[champ]}`);
+            if (!isProd) {
+                console.log(
+                    `Valeur du champ booleen avant retour: ${fieldInputValues[champ]}`,
+                );
+            }
         }
         if (fieldInputValues[champ] !== undefined) {
             return fieldInputValues[champ];
@@ -433,25 +436,24 @@ function AnalysisContent({ fieldValues }: { fieldValues: FieldValues | null }) {
 
 export default function Analysis() {
     const { t } = useLanguage();
-    const [fieldValues, setFieldValues] = useState<FieldValues | null>(null);
-
-    useEffect(() => {
-        // Récupération des données au chargement de la page
-        const storedData = localStorage.getItem('accueilEtrangers');
-
-        if (storedData) {
-            try {
-                const parsedData = JSON.parse(storedData);
-                // Corriger : récupérer les fieldValues depuis parsedData.fieldValues
-                setFieldValues(parsedData.fieldValues);
-
-                // Optionnel : nettoyer le localStorage après récupération
-                // localStorage.removeItem('accueilEtrangers');
-            } catch (error) {
-                console.error('Erreur lors de la lecture des données de la requête:', error);
-            }
+    const [fieldValues] = useState<FieldValues | null>(() => {
+        if (typeof window === "undefined") {
+            return null;
         }
-    }, []); // Se déclenche une seule fois au montage du composant
+
+        const storedData = localStorage.getItem("accueilEtrangers");
+        if (!storedData) {
+            return null;
+        }
+
+        try {
+            const parsedData = JSON.parse(storedData);
+            return parsedData.fieldValues ?? null;
+        } catch (error) {
+            console.error("Erreur lors de la lecture des donnees de la requete:", error);
+            return null;
+        }
+    });
 
     if (!fieldValues) {
         return <Loading message={t('analysis.loadingData')} />;
@@ -464,4 +466,3 @@ export default function Analysis() {
         </Suspense>
     );
 }
-

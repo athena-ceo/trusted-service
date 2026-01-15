@@ -1,5 +1,11 @@
-from src.common.config import SupportedLocale
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from src.common.localization import Localization
+
+if TYPE_CHECKING:
+    from src.common.config import SupportedLocale
 
 
 class ClientLocalization(Localization):

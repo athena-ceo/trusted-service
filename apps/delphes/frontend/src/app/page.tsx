@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,10 +8,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Accueil() {
   const { t } = useLanguage();
+  const isProd = process.env.NODE_ENV === "production";
 
   // Fonction appelée lors du clic sur le lien "Accueil des étrangers"
   const handleAccueilEtrangersClick = () => {
-    console.log('Nettoyage du localStorage à l\'accueil');
+    if (!isProd) {
+      console.log("Nettoyage du localStorage a l'accueil");
+    }
     // Vider le localStorage
     localStorage.removeItem('analyzeResult');
     localStorage.removeItem('selectedIntention');
@@ -52,7 +56,13 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/78.png" className="fr-responsive-img" alt="78" suppressHydrationWarning />
+                      <Image
+                        src="/images/78.png"
+                        className="fr-responsive-img"
+                        alt="78"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                   </div>
                 </div>
@@ -76,7 +86,13 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/92.png" className="fr-responsive-img" alt="92" suppressHydrationWarning />
+                      <Image
+                        src="/images/92.png"
+                        className="fr-responsive-img"
+                        alt="92"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                   </div>
                 </div>
@@ -100,7 +116,13 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/91.png" className="fr-responsive-img" alt="91" suppressHydrationWarning />
+                      <Image
+                        src="/images/91.png"
+                        className="fr-responsive-img"
+                        alt="91"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                   </div>
                 </div>
@@ -124,7 +146,13 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/94.png" className="fr-responsive-img" alt="94" suppressHydrationWarning />
+                      <Image
+                        src="/images/94.png"
+                        className="fr-responsive-img"
+                        alt="94"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                   </div>
                 </div>
@@ -154,7 +182,13 @@ export default function Accueil() {
                   </div>
                   <div className="fr-tile__header">
                     <div className="fr-tile__pictogram">
-                      <img src="/images/78.png" className="fr-responsive-img" alt="78" suppressHydrationWarning />
+                      <Image
+                        src="/images/78.png"
+                        className="fr-responsive-img"
+                        alt="78"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                   </div>
                 </div>

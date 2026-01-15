@@ -19,6 +19,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 **Future State**: Replace with React-based generic test client
 
 #### Motivation
+
 - Modern web tech stack (React + TypeScript)
 - Better UI/UX capabilities
 - Easier for frontend developers to understand
@@ -28,6 +29,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 #### Implementation Plan
 
 1. **Create React Test Client**
+
    ```
    apps/test-client/
    ├── src/
@@ -42,8 +44,8 @@ This document outlines planned future refactorings for the Trusted Services fram
    ├── Dockerfile
    └── package.json
    ```
-
 2. **Features**
+
    - Dropdown to select application (delphes, AISA, conneXion)
    - Dropdown to select locale (based on app)
    - Form to test `analyze` endpoint
@@ -51,8 +53,8 @@ This document outlines planned future refactorings for the Trusted Services fram
    - JSON response viewer
    - Request/response history
    - Dark mode support
-
 3. **Docker Integration**
+
    ```yaml
    # deploy/compose/docker-compose.trusted-services-dev.yml (framework)
    services:
@@ -63,14 +65,15 @@ This document outlines planned future refactorings for the Trusted Services fram
        environment:
          - REACT_APP_API_URL=http://backend:8002
    ```
-
 4. **Migration Path**
+
    - Keep Streamlit client available during transition
    - Run both in parallel for compatibility
    - Update documentation gradually
    - Deprecate Streamlit once React client is stable
 
 #### Benefits
+
 - ✅ Modern, responsive UI
 - ✅ Better developer experience
 - ✅ TypeScript type safety
@@ -78,6 +81,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 - ✅ Consistent technology across project
 
 #### Estimated Effort
+
 2-3 weeks for initial implementation + 1 week testing
 
 ---
@@ -89,6 +93,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 **Future State**: JSON-based configuration with web UI for editing
 
 #### Motivation
+
 - Version control friendly (clear diffs)
 - Easier programmatic manipulation
 - No Excel dependency
@@ -98,6 +103,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 #### Implementation Plan
 
 1. **Define JSON Schema**
+
    ```json
    {
      "app_id": "delphes",
@@ -130,8 +136,8 @@ This document outlines planned future refactorings for the Trusted Services fram
      ]
    }
    ```
-
 2. **Configuration Loader Refactoring**
+
    ```python
    # src/backend/backend/config_loader.py
    class ConfigLoader:
@@ -139,7 +145,7 @@ This document outlines planned future refactorings for the Trusted Services fram
            """Load config from JSON or Excel (backward compat)"""
            json_path = f"runtime/apps/{app_id}/config.json"
            excel_path = f"runtime/apps/{app_id}/{app_id}.xlsx"
-           
+
            if os.path.exists(json_path):
                return self._load_json(json_path)
            elif os.path.exists(excel_path):
@@ -147,8 +153,8 @@ This document outlines planned future refactorings for the Trusted Services fram
            else:
                raise ConfigNotFoundError(app_id)
    ```
-
 3. **Configuration Web UI**
+
    ```
    apps/config-editor/
    ├── src/
@@ -163,16 +169,16 @@ This document outlines planned future refactorings for the Trusted Services fram
    │       ├── ValidationErrors.tsx
    │       └── ImportExport.tsx
    ```
-
 4. **Features**
+
    - Visual editor for intents and fields
    - Import from Excel (one-time migration)
    - Export to Excel (compatibility)
    - Real-time validation
    - Git-friendly JSON format
    - Preview before save
-
 5. **Migration Strategy**
+
    - Support both formats during transition
    - Provide Excel → JSON converter tool
    - Update one application at a time
@@ -180,6 +186,7 @@ This document outlines planned future refactorings for the Trusted Services fram
    - Eventually deprecate Excel (years, not months)
 
 #### Benefits
+
 - ✅ Better version control
 - ✅ Easier collaboration
 - ✅ No Excel dependency
@@ -187,6 +194,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 - ✅ Programmatic config generation
 
 #### Estimated Effort
+
 4-6 weeks (schema + loader + web UI + migration)
 
 ---
@@ -198,6 +206,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 **Future State**: Custom React frontend for AISA application
 
 #### Motivation
+
 - Production-ready UI for Helsinki deployment
 - Finnish design system compliance
 - AISA-specific workflows and features
@@ -206,6 +215,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 #### Implementation Plan
 
 1. **Frontend Structure**
+
    ```
    apps/AISA/frontend/
    ├── src/
@@ -222,14 +232,14 @@ This document outlines planned future refactorings for the Trusted Services fram
    ├── Dockerfile
    └── (compose files live in deploy/compose/)
    ```
-
 2. **Design System**
+
    - Comply with Helsinki city design guidelines
    - Accessibility (WCAG 2.1 AA)
    - Finnish and English translations
    - Mobile-first responsive design
-
 3. **Integration**
+
    ```yaml
    # deploy/compose/docker-compose.aisa.yml
    services:
@@ -237,27 +247,29 @@ This document outlines planned future refactorings for the Trusted Services fram
        extends:
          file: docker-compose.trusted-services-backend.yml
          service: backend
-     
+
      aisa-frontend:
        build: ./frontend
        ports:
          - "3000:3000"
        environment:
-         - NEXT_PUBLIC_API_URL=http://backend:8002
+         - BACKEND_INTERNAL_URL=http://localhost:8002
    ```
-
 4. **Update docker-manage.sh**
+
    - Add AISA-specific commands
    - Support AISA development mode
    - Production deployment config
 
 #### Benefits
+
 - ✅ Production-ready AISA deployment
 - ✅ Helsinki-specific UX
 - ✅ Professional appearance
 - ✅ Better end-user experience
 
 #### Estimated Effort
+
 6-8 weeks (design + implementation + testing)
 
 ---
@@ -269,6 +281,7 @@ This document outlines planned future refactorings for the Trusted Services fram
 **Future State**: Each application in its own repository
 
 #### Motivation
+
 - Clear ownership boundaries
 - Independent versioning
 - Easier external contributions
@@ -301,15 +314,16 @@ github.com/trusted-services/connexion-example
 #### Implementation Plan
 
 1. **Framework as Library/Service**
+
    ```python
    # Framework published as pip package
    pip install trusted-services-framework
-   
+
    # Or as Docker image
    docker pull ghcr.io/trusted-services/backend:latest
    ```
-
 2. **Application Structure**
+
    ```
    delphes/
    ├── config/
@@ -320,8 +334,8 @@ github.com/trusted-services/connexion-example
    ├── requirements.txt           # Dependencies
    └── README.md                  # Delphes docs
    ```
-
 3. **Docker Compose Integration**
+
    ```yaml
    # apps/{app}/docker-compose.yml
    services:
@@ -329,20 +343,20 @@ github.com/trusted-services/connexion-example
        image: ghcr.io/trusted-services/backend:latest
        volumes:
          - ./config:/app/runtime/apps/{app}
-     
+
      frontend:
        build: ./frontend
        environment:
          - API_URL=http://backend:8002
    ```
-
 4. **CI/CD per Application**
+
    - Each app has its own GitHub Actions
    - Independent deployment pipelines
    - Application-specific testing
    - Version tagging per app
-
 5. **Migration Path**
+
    - Extract framework to separate repo first
    - Migrate Delphes as pilot
    - Migrate AISA after custom frontend ready
@@ -350,12 +364,14 @@ github.com/trusted-services/connexion-example
    - Update all documentation and links
 
 #### Challenges
+
 - Coordinating framework version updates
 - Maintaining backward compatibility
 - Documentation synchronization
 - Cross-repository testing
 
 #### Benefits
+
 - ✅ Clear separation of concerns
 - ✅ Independent versioning
 - ✅ Easier collaboration
@@ -363,6 +379,7 @@ github.com/trusted-services/connexion-example
 - ✅ Better deployment isolation
 
 #### Estimated Effort
+
 8-12 weeks (careful planning + migration + CI/CD setup)
 
 ---
@@ -370,15 +387,18 @@ github.com/trusted-services/connexion-example
 ## 🗓️ Recommended Sequence
 
 ### Short Term (Next 3-6 months)
+
 1. ✅ Phase 1-2: Docker restructuring (COMPLETED)
 2. ✅ Phase 3: Documentation updates (COMPLETED)
 3. **Phase A**: React Test Client (Start soon - improves dev experience)
 
 ### Medium Term (6-12 months)
+
 4. **Phase B**: JSON Configuration (After React client stable)
 5. **Phase C**: AISA Custom Frontend (Parallel with Phase B)
 
 ### Long Term (12-24 months)
+
 6. **Phase D**: Repository Separation (After all other phases complete)
 
 ---
@@ -386,12 +406,14 @@ github.com/trusted-services/connexion-example
 ## 📝 Notes on Backward Compatibility
 
 ### Critical Principles
+
 - **Never break existing applications mid-project**
 - **Always support legacy formats during transition**
 - **Provide clear migration guides and tools**
 - **Give ample warning before deprecating features**
 
 ### Deprecation Process
+
 1. Announce deprecation with timeline (6-12 months notice)
 2. Provide migration tools and documentation
 3. Support both old and new during overlap period
@@ -403,17 +425,20 @@ github.com/trusted-services/connexion-example
 ## 🧪 Testing During Refactoring
 
 ### Before Each Refactoring
+
 - [ ] All existing tests passing
 - [ ] Full backup of configurations
 - [ ] Migration scripts tested in isolation
 
 ### During Refactoring
+
 - [ ] Maintain test coverage > 80%
 - [ ] Run integration tests daily
 - [ ] Test backward compatibility
 - [ ] Verify each application still works
 
 ### After Each Refactoring
+
 - [ ] Update all documentation
 - [ ] Verify performance unchanged or improved
 - [ ] Confirm all applications deployed successfully
@@ -424,12 +449,14 @@ github.com/trusted-services/connexion-example
 ## 🤝 Contribution Guidelines for Future Work
 
 ### For Framework Developers
+
 - Maintain framework application-agnostic
 - Keep APIs stable and well-documented
 - Consider backward compatibility always
 - Write comprehensive tests
 
 ### For Application Developers
+
 - Follow framework conventions
 - Don't modify framework core for app-specific needs
 - Share reusable components back to framework

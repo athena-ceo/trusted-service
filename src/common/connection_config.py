@@ -8,8 +8,8 @@ class ConnectionConfig(BaseModel):
     rest_api_port: int
 
     @staticmethod
-    def load_from_yaml_file(path: str) -> 'ConnectionConfig':
-        with open(path, "r") as file:
+    def load_from_yaml_file(path: str) -> "ConnectionConfig":
+        with open(path) as file:
             config_data = yaml.safe_load(file)
 
         return ConnectionConfig(**config_data)

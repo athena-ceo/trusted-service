@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useWatsonExpandButton } from "@/hooks/useWatsonExpandButton";
 import { useWatsonOrchestrate } from "@/hooks/useWatsonOrchestrate";
 import { useWatsonConfig } from "@/config/watson";
@@ -13,18 +13,20 @@ export default function Footer({ departement = '', displayWatson = false }: { de
     const { t } = useLanguage();
     const [watsonEnabled, setWatsonEnabled] = useState(false);
     const [watsonActivated, setWatsonActivated] = useState(false);
-    const [departementLabel, setDepartementLabel] = useState('');
-
-    useEffect(() => {
-        if (departement === '78') {
-            setDepartementLabel('des Yvelines');
-        } else if (departement === '91') {
-            setDepartementLabel('de l\'Essonne');
-        } else if (departement === '92') {
-            setDepartementLabel('des Hauts-de-Seine');
-        } else if (departement === '94') {
-            setDepartementLabel('du Val-de-Marne');
+    const departementLabel = useMemo(() => {
+        if (departement === "78") {
+            return "des Yvelines";
         }
+        if (departement === "91") {
+            return "de l'Essonne";
+        }
+        if (departement === "92") {
+            return "des Hauts-de-Seine";
+        }
+        if (departement === "94") {
+            return "du Val-de-Marne";
+        }
+        return "";
     }, [departement]);
 
     // Utilisation du hook pour créer le bouton d'expansion Watson

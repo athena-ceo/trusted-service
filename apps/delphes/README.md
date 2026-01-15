@@ -226,7 +226,7 @@ export async function POST(request: Request, { params }: Props) {
 Create `.env.local` in `frontend/`:
 ```bash
 # Backend API URL
-NEXT_PUBLIC_API_URL=http://localhost:8002
+BACKEND_INTERNAL_URL=http://localhost:8002
 
 # Optional: Disable telemetry
 NEXT_TELEMETRY_DISABLED=1
@@ -344,9 +344,9 @@ npm start
 ```
 
 #### Environment Configuration
-Set `NEXT_PUBLIC_API_URL` to your backend URL:
+Set `BACKEND_INTERNAL_URL` to your backend URL:
 ```bash
-export NEXT_PUBLIC_API_URL=https://api.your-domain.com
+export BACKEND_INTERNAL_URL=http://your-backend:port
 ```
 
 ### Docker Images
@@ -444,7 +444,7 @@ All styles follow DSFR guidelines. To customize:
 **Symptom**: API calls fail with network errors
 
 **Solution**:
-- Check `NEXT_PUBLIC_API_URL` is set correctly
+- Check `BACKEND_INTERNAL_URL` is set correctly
 - Verify backend is running: `curl http://localhost:8002/api/health`
 - Check Docker network if using containers
 

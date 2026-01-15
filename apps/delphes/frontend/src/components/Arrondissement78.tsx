@@ -649,6 +649,7 @@ export default function Arrondissement78({
                                 }}
                                 placeholder={t('form.commune.placeholder')}
                                 autoComplete="off"
+                                role="combobox"
                                 aria-autocomplete="list"
                                 aria-controls={suggestionsId}
                                 aria-expanded={showSuggestions && filteredCommunes.length > 0}

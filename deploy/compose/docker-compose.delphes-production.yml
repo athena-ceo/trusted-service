@@ -6,15 +6,17 @@ services:
     extends:
       file: docker-compose.trusted-services-backend.yml
       service: backend
-    container_name: trusted-services-backend-prod
+    container_name: trusted-services-backend-production
     env_file:
       - .env.production
+    # Ne pas exposer le backend en production (accès uniquement via le réseau Docker interne)
+    ports: []
 
   delphes-frontend:
     extends:
       file: docker-compose.delphes-frontend.yml
       service: delphes-frontend
-    container_name: delphes-frontend-prod
+    container_name: delphes-frontend-production
     env_file:
       - .env.production
     ports:

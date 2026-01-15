@@ -1,6 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from src.common.localization import Localization
 
-from src.common.config import SupportedLocale
+if TYPE_CHECKING:
+    from src.common.config import SupportedLocale
 
 
 class DistributionEngineEmaiLocalization(Localization):
@@ -20,8 +25,10 @@ class DistributionEngineEmaiLocalization(Localization):
 
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
 # Add here support for new languages
-distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngineEmaiLocalization] = {
-
+distribution_engine_email_localizations: dict[
+    SupportedLocale,
+    DistributionEngineEmaiLocalization,
+] = {
     "en": DistributionEngineEmaiLocalization(
         label_intent="Intent",
         label_yes="yes",
@@ -34,8 +41,8 @@ distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngin
         label_high="HIGH",
         label_medium="MEDIUM",
         label_low="LOW",
-        label_very_low="VERY_LOW"),
-
+        label_very_low="VERY_LOW",
+    ),
     "fr": DistributionEngineEmaiLocalization(
         label_intent="Intention",
         label_yes="oui",
@@ -48,8 +55,8 @@ distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngin
         label_high="HAUTE",
         label_medium="NORMALE",
         label_low="BASSE",
-        label_very_low="TRES_BASSE"),
-
+        label_very_low="TRES_BASSE",
+    ),
     "fi": DistributionEngineEmaiLocalization(
         label_intent="aikomus",
         label_yes="kyllä",
@@ -62,5 +69,6 @@ distribution_engine_email_localizations: dict[SupportedLocale, DistributionEngin
         label_high="KORKEA",
         label_medium="NORMAALI",
         label_low="MATALA",
-        label_very_low="ERITTAIN_MATALA"),
+        label_very_low="ERITTAIN_MATALA",
+    ),
 }

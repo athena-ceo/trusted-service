@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Type, Literal
+from typing import Literal
 
 from pydantic import BaseModel
 
-
 # Important: Update TextAnalyzer.__init__ when adding a new subclass
+
 
 class LlmConfig(BaseModel):
     id: str
@@ -28,15 +28,19 @@ class Llm(ABC):
     #     pass
 
     @abstractmethod
-    def call_llm_with_json_schema(self,
-                                  analysis_response_model: Type[BaseModel],
-                                  system_prompt: str,
-                                  text: str) -> BaseModel:
+    def call_llm_with_json_schema(
+        self,
+        analysis_response_model: type[BaseModel],
+        system_prompt: str,
+        text: str,
+    ) -> BaseModel:
         pass
 
     @abstractmethod
-    def call_llm_with_pydantic_model(self,
-                                     analysis_response_model: Type[BaseModel],
-                                     system_prompt: str,
-                                     text: str) -> BaseModel:
+    def call_llm_with_pydantic_model(
+        self,
+        analysis_response_model: type[BaseModel],
+        system_prompt: str,
+        text: str,
+    ) -> BaseModel:
         pass

@@ -1,10 +1,12 @@
-import json
-from typing import Any, Literal, Type
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Literal
 
 from openpyxl.reader.excel import load_workbook
-from openpyxl.workbook import Workbook
+from pydantic import BaseModel
 
-from pydantic import BaseModel, field_validator
+if TYPE_CHECKING:
+    from openpyxl.workbook import Workbook
 
 # IF YOU CHANGE THE FOLLOWING COMMENT, UPDATE README.md ACCORDINGLY
 # Add here support for new languages
@@ -15,7 +17,11 @@ class Config(BaseModel):
     pass
 
 
-def load_dicts_from_worksheet(worksheet, locale: SupportedLocale, include_row: bool = False) -> list[dict[str, Any]] | list[tuple[int, dict[str, Any]]]:
+def load_dicts_from_worksheet(
+    worksheet,
+    locale: SupportedLocale,
+    include_row: bool = False,
+) -> list[dict[str, Any]] | list[tuple[int, dict[str, Any]]]:
     dicts: list[dict[str, Any]] = []
 
     title_row_hit = False
@@ -31,7 +37,7 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale, include_row: b
             for cell in row:
                 title = str(cell.value)
                 if title.endswith(f"_{locale}"):
-                    title = title[:len(title) - len(locale) - 1]
+                    title = title[: len(title) - len(locale) - 1]
                 column_labels_and_numbers[title] = cell.column
             continue
 
@@ -47,12 +53,20 @@ def load_dicts_from_worksheet(worksheet, locale: SupportedLocale, include_row: b
     return dicts
 
 
-def load_pydantic_objects_from_worksheet(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
+def load_pydantic_objects_from_worksheet(
+    worksheet,
+    model_type: type[BaseModel],
+    locale: SupportedLocale,
+) -> list[BaseModel]:
     list1: list[dict[str, Any]] = load_dicts_from_worksheet(worksheet, locale)
     return [model_type.model_validate(data) for data in list1]
 
 
-def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel], locale: SupportedLocale) -> list[BaseModel]:
+def load_pydantic_objects_from_worksheet2(
+    worksheet,
+    model_type: type[BaseModel],
+    locale: SupportedLocale,
+) -> list[BaseModel]:
     objects = []
 
     title_row_hit = False
@@ -68,7 +82,7 @@ def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel]
             for cell in row:
                 title = str(cell.value)
                 if title.endswith(f"_{locale}"):
-                    title = title[:len(title) - len(locale) - 1]
+                    title = title[: len(title) - len(locale) - 1]
                 column_labels_and_numbers[title] = cell.column
             continue
 
@@ -82,11 +96,13 @@ def load_pydantic_objects_from_worksheet2(worksheet, model_type: type[BaseModel]
     return objects
 
 
-def load_config_from_workbook(filename: str,
-                              main_tab: str | None,
-                              collections: list[tuple[str, type[BaseModel]]],
-                              config_type: Type[Config],
-                              locale: SupportedLocale | None) -> Config:
+def load_config_from_workbook(
+    filename: str,
+    main_tab: str | None,
+    collections: list[tuple[str, type[BaseModel]]],
+    config_type: type[Config],
+    locale: SupportedLocale | None,
+) -> Config:
     config_workbook: Workbook = load_workbook(filename)
     config_values: dict[str, Any] = {}
 
@@ -103,13 +119,14 @@ def load_config_from_workbook(filename: str,
                 continue
             key = row[0].value
             if key.endswith(f"_{locale}"):
-                key = key[:len(key) - len(locale) - 1]
+                key = key[: len(key) - len(locale) - 1]
             config_values[key] = row[1].value
 
     for collection_name, model_type in collections:
         config_values[collection_name] = load_pydantic_objects_from_worksheet(
             worksheet=config_workbook[collection_name],
             model_type=model_type,
-            locale=locale)
+            locale=locale,
+        )
 
     return config_type.model_validate(config_values)

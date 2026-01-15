@@ -1,12 +1,16 @@
 import argparse
 import os
 import uvicorn
+from dotenv import load_dotenv
 
 from src.backend.backend.rest.main import app
 from src.common.connection_config import ConnectionConfig
 
 
 def main() -> None:
+    # Load environment variables from .env file
+    load_dotenv()
+    
     parser = argparse.ArgumentParser(
         description="Launch the Trusted Services API using a runtime directory."
     )
@@ -19,6 +23,12 @@ def main() -> None:
         action="store_true",
         help="Start uvicorn with auto-reload (useful for development).",
     )
+    parser.add_argument(
+        "--lenient",
+        action="store_true",
+        help="Validation mode: if set, server starts even if some apps have validation errors (warnings logged). "
+             "Default (strict mode): server stops if any app validation fails.",
+    )
 
     args = parser.parse_args()
 
@@ -26,6 +36,10 @@ def main() -> None:
 
     config_connection_filename = runtime_directory + "/" + "config_connection.yaml"
     connection_config = ConnectionConfig.load_from_yaml_file(config_connection_filename)
+    
+    # Determine validation mode
+    validation_mode = "lenient" if args.lenient else "strict"
+    os.environ["APP_VALIDATION_MODE"] = validation_mode
 
     # When using reload, uvicorn must import the application from an import string.
     # In that mode we pass the runtime directory via an environment variable so the

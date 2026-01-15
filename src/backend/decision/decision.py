@@ -6,8 +6,14 @@ from src.common.server_api import CaseHandlingDecisionInput, CaseHandlingDecisio
 class CaseHandlingDecisionEngine(ABC):
 
     @abstractmethod
-    def _decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
+    def _decide(
+        self,
+        case_handling_decision_input: CaseHandlingDecisionInput,
+    ) -> CaseHandlingDecisionOutput:
         pass
 
-    def decide(self, case_handling_decision_input: CaseHandlingDecisionInput) -> CaseHandlingDecisionOutput:
+    def decide(
+        self,
+        case_handling_decision_input: CaseHandlingDecisionInput,
+    ) -> CaseHandlingDecisionOutput:
         return self._decide(case_handling_decision_input)

@@ -12,7 +12,14 @@ ANSI_COLORS = {
 RESET = "\033[0m"
 
 
-def print_color(color: str, *objects: Any, sep: str = ' ', end: str = '\n', file=None, flush: bool = False) -> None:
+def print_color(
+    color: str,
+    *objects: Any,
+    sep: str = " ",
+    end: str = "\n",
+    file=None,
+    flush: bool = False,
+) -> None:
     """Generic color printer."""
     if file is None:
         file = sys.stdout

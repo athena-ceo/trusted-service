@@ -376,7 +376,7 @@ This ensures compile-time safety and prevents runtime errors from API mismatches
 ```bash
 docker build -t test-client:latest .
 docker run -p 3001:3000 \
-  -e NEXT_PUBLIC_API_URL=http://backend:8002 \
+  -e BACKEND_INTERNAL_URL=http://backend:8002 \
   test-client:latest
 ```
 

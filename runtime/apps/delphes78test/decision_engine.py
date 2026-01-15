@@ -13,7 +13,7 @@ if app_env == "production":
 else:
     asile_email_address = "pocagent78@gmail.com"
     sejour_email_address = "pocagent78@gmail.com"
-print(f"⚙️  Using asile_email_address='{asile_email_address}' and sejour_email_address='{sejour_email_address}' in decision_engine.py")
+print(f"⚙️  app_env={app_env}  Using asile_email_address='{asile_email_address}' and sejour_email_address='{sejour_email_address}' in decision_engine.py")
 # Cette configuration n'est pas idéale parce que ça surcharge les définitions globales du fichier Excel.
 
 work_basket_accueil = "accueil"

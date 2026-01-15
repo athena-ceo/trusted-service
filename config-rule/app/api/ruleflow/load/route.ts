@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Appeler l'API backend pour convertir decision_engine.py en JSON
-        const backendUrl = process.env.BACKEND_URL || 'http://localhost:8002';
+        const backendUrl = process.env.BACKEND_INTERNAL_URL || 'http://localhost:8002';
         const response = await fetch(
             `${backendUrl}/api/v1/ruleflow/runtime/${encodeURIComponent(runtime)}/apps/${encodeURIComponent(app)}/config`,
             {

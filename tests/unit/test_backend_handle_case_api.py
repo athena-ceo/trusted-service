@@ -1,23 +1,21 @@
-"""
-Tests supplémentaires sur LocalizedApp.handle_case pour valider:
+"""Tests supplémentaires sur LocalizedApp.handle_case pour valider:
 - la validation des champs requis envoyés au moteur de décision
-- la gestion d'un moteur de distribution non configuré
+- la gestion d'un moteur de distribution non configuré.
 """
-import pytest
+
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from src.backend.backend.localized_app import LocalizedApp, Message
-from src.common.case_model import CaseModel, CaseField
-from src.common.server_api import (
-    CaseHandlingRequest,
-    CaseHandlingDecisionOutput,
-)
+from src.backend.text_analysis.base_models import Definition, Intention
 from src.backend.text_analysis.text_analyzer import TextAnalysisConfig
-from src.backend.text_analysis.base_models import Intention, Definition
+from src.common.case_model import CaseField, CaseModel
+from src.common.server_api import CaseHandlingDecisionOutput, CaseHandlingRequest
 
 
 class DummyDistributionEngine:
-    def __init__(self, response=("to_agent", "to_requester")):
+    def __init__(self, response=("to_agent", "to_requester")) -> None:
         self.response = response
 
     def distribute(self, *args, **kwargs):
@@ -25,25 +23,27 @@ class DummyDistributionEngine:
 
 
 def _build_case_model(field_id: str) -> CaseModel:
-    return CaseModel(case_fields=[
-        CaseField(
-            id=field_id,
-            type="str",
-            label="Field",
-            mandatory=True,
-            help="",
-            format="",
-            allowed_values_list_name="",
-            allowed_values=[],
-            default_value=None,
-            scope="REQUESTER",
-            show_in_ui=True,
-            intention_ids=["intent1"],
-            description="",
-            extraction="EXTRACT",
-            send_to_decision_engine=True,
-        )
-    ])
+    return CaseModel(
+        case_fields=[
+            CaseField(
+                id=field_id,
+                type="str",
+                label="Field",
+                mandatory=True,
+                help="",
+                format="",
+                allowed_values_list_name="",
+                allowed_values=[],
+                default_value=None,
+                scope="REQUESTER",
+                show_in_ui=True,
+                intention_ids=["intent1"],
+                description="",
+                extraction="EXTRACT",
+                send_to_decision_engine=True,
+            ),
+        ],
+    )
 
 
 def _build_text_analysis_config() -> TextAnalysisConfig:
@@ -77,7 +77,7 @@ def _build_decision_output() -> CaseHandlingDecisionOutput:
 
 
 @patch.object(LocalizedApp, "__init__", lambda self, *args, **kwargs: None)
-def test_handle_case_missing_required_fields_raises_value_error():
+def test_handle_case_missing_required_fields_raises_value_error() -> None:
     app = LocalizedApp(None, None, None, None)
     field_id = "required_field"
     app.case_model = _build_case_model(field_id)
@@ -99,7 +99,9 @@ def test_handle_case_missing_required_fields_raises_value_error():
 
 
 @patch.object(LocalizedApp, "__init__", lambda self, *args, **kwargs: None)
-def test_handle_case_without_distribution_engine_returns_error_before_distribute():
+def test_handle_case_without_distribution_engine_returns_error_before_distribute() -> (
+    None
+):
     app = LocalizedApp(None, None, None, None)
     field_id = "required_field"
     app.case_model = _build_case_model(field_id)

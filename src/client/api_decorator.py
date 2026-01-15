@@ -1,9 +1,7 @@
 from functools import wraps
 
-from src.backend.backend.server_config import ServerConfig
-from src.backend.backend.trusted_services_server import TrustedServicesServer
-from src.common.server_api import ServerApi
 from src.client.api_client import ApiClient
+from src.common.server_api import ServerApi
 
 
 def _format_call(name, args, kwargs):
@@ -20,14 +18,20 @@ def delegate_abstract_methods(cls):
     for name in abstract_names:
         # If not implemented on this class, synthesize a delegating method
         if name not in cls.__dict__:
+
             def make_wrapper(method_name):
-                @wraps(getattr(next(b for b in cls.__mro__ if hasattr(b, method_name)), method_name, None))
+                @wraps(
+                    getattr(
+                        next(b for b in cls.__mro__ if hasattr(b, method_name)),
+                        method_name,
+                        None,
+                    ),
+                )
                 def wrapper(self, *args, **kwargs):
                     target = getattr(self.server_api, method_name)
                     # print(f"Calling {_format_call(method_name, args, kwargs)}")
-                    result = target(*args, **kwargs)
+                    return target(*args, **kwargs)
                     # print(f" -> {result!r}")
-                    return result
 
                 return wrapper
 
@@ -41,19 +45,19 @@ def delegate_abstract_methods(cls):
 @delegate_abstract_methods
 class ApiDecorator(ApiClient):
 
-    def __init__(self, server_api: ServerApi):
+    def __init__(self, server_api: ServerApi) -> None:
         self.server_api: ServerApi = server_api
 
     # Optional: still forward unknown attributes generically (non-abstract helpers, props, etc.)
     def __getattr__(self, name):
         attr = getattr(self.server_api, name)
         if callable(attr):
+
             @wraps(attr)
             def wrapper(*args, **kwargs):
                 # print(f"Calling {_format_call(name, args, kwargs)}")
-                result = attr(*args, **kwargs)
+                return attr(*args, **kwargs)
                 # print(f" -> {result!r}")
-                return result
 
             return wrapper
         return attr

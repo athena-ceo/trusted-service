@@ -25,7 +25,11 @@ export function getWatsonConfig(): WatsonConfig {
         integrationId?.includes('__NEXT_PUBLIC_') ||
         agentId?.includes('__NEXT_PUBLIC_')) {
 
-        console.warn('Variables Watson en mode placeholder - en attente de substitution runtime');
+        if (process.env.NODE_ENV !== "production") {
+            console.warn(
+                "Variables Watson en mode placeholder - en attente de substitution runtime",
+            );
+        }
         // En mode runtime, on retourne des valeurs vides et on laisse le script faire la substitution
         return {
             orchestrationID: '',

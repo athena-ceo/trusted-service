@@ -61,6 +61,7 @@ function AccueilEtrangersContent() {
     // Rediriger vers la page de l'analyse
     router.push('/analysis');
   };
+  console.log("Current ENV:", process.env.NODE_ENV);
 
   return (
     <>

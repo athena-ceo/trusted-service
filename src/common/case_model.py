@@ -1,10 +1,10 @@
-from typing import Literal, cast, Any
-
-from openpyxl.reader.excel import load_workbook
-from openpyxl.workbook import Workbook
-from pydantic import BaseModel, field_validator, Field
+from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING, Any, Literal, cast
+
+from openpyxl.reader.excel import load_workbook
+from pydantic import BaseModel, Field, field_validator
 
 from src.common.config import (
     Config,
@@ -13,6 +13,9 @@ from src.common.config import (
     load_pydantic_objects_from_worksheet,
 )
 
+if TYPE_CHECKING:
+    from openpyxl.workbook import Workbook
+
 
 class OptionalListElement(BaseModel):
     id: str
@@ -20,15 +23,18 @@ class OptionalListElement(BaseModel):
     condition_python: str
     condition_javascript: str
 
+
 class CaseField(BaseModel):
     id: str
     type: str
     label: str
     mandatory: bool
     help: str = ""
-    format: str = ""  # format should be one of YYYY/MM/DD, DD/MM/YYYY, or MM/DD/YYYY and can also use a period (.) or hyphen (-) as separators
+    format: str = (
+        ""  # format should be one of YYYY/MM/DD, DD/MM/YYYY, or MM/DD/YYYY and can also use a period (.) or hyphen (-) as separators
+    )
     allowed_values_list_name: str = ""
-    allowed_values: list[OptionalListElement]  = Field(default_factory=list)
+    allowed_values: list[OptionalListElement] = Field(default_factory=list)
     default_value: Any = None
 
     # Fields required in UI
@@ -43,7 +49,7 @@ class CaseField(BaseModel):
     # Fields required for integration of decision engine
     send_to_decision_engine: bool
 
-    @field_validator('intention_ids', mode='before')
+    @field_validator("intention_ids", mode="before")
     @classmethod
     def convert_intention_ids(cls, v):
         if isinstance(v, list):
@@ -53,7 +59,8 @@ class CaseField(BaseModel):
         elif isinstance(v, str):
             return v.split()
         else:
-            raise TypeError(f"Invalid type value: {v}")
+            msg = f"Invalid type value: {v}"
+            raise TypeError(msg)
 
 
 class CaseModelConfig(Config):
@@ -67,7 +74,8 @@ class CaseModel(BaseModel):
         for field in self.case_fields:
             if field.id == field_id:
                 return field
-        raise ValueError(f"Field with id '{field_id}' not found in case model.")
+        msg = f"Field with id '{field_id}' not found in case model."
+        raise ValueError(msg)
 
 
 class Case(BaseModel):
@@ -76,13 +84,15 @@ class Case(BaseModel):
     @staticmethod
     def create_default_instance(case_model: CaseModel):
         field_values: dict[str, Any] = {
-            field.id: field.default_value
-            for field in case_model.case_fields
+            field.id: field.default_value for field in case_model.case_fields
         }
         return Case(field_values=field_values)
 
 
-def load_case_model_config_from_workbook(filename: str, locale: SupportedLocale) -> CaseModelConfig:
+def load_case_model_config_from_workbook(
+    filename: str,
+    locale: SupportedLocale,
+) -> CaseModelConfig:
     logger = logging.getLogger(__name__)
 
     # Load raw dicts with Excel row numbers so we can warn about missing important fields
@@ -100,9 +110,7 @@ def load_case_model_config_from_workbook(filename: str, locale: SupportedLocale)
             continue
         for f in important_fields:
             val = data.get(f)
-            if val is None:
-                missing_map[f].append(int(rownum))
-            elif isinstance(val, str) and val.strip() == "":
+            if val is None or isinstance(val, str) and val.strip() == "":
                 missing_map[f].append(int(rownum))
 
     # Emit warnings if any important field is missing in any rows
@@ -110,12 +118,14 @@ def load_case_model_config_from_workbook(filename: str, locale: SupportedLocale)
         if rows:
             logger.warning(
                 "case_fields: column '%s' is empty for rows: %s in workbook %s",
-                f, rows, filename,
+                f,
+                rows,
+                filename,
             )
 
     # Normalize None values for important string fields so Pydantic will accept them
     normalized: list[dict] = []
-    for (_row, data) in dicts_with_rows:
+    for _row, data in dicts_with_rows:
         if not isinstance(data, dict):
             continue
         for f in important_fields:
@@ -124,14 +134,22 @@ def load_case_model_config_from_workbook(filename: str, locale: SupportedLocale)
         normalized.append(data)
 
     # Validate models
-    case_field_models: list[CaseField] = [CaseField.model_validate(data) for data in normalized]
+    case_field_models: list[CaseField] = [
+        CaseField.model_validate(data) for data in normalized
+    ]
     case_model_config = CaseModelConfig(case_fields=case_field_models)
 
     # If the field has an associated list of allowed values, get the values from the matching tab
     for case_field in case_model_config.case_fields:
         if case_field.allowed_values_list_name:
             worksheet = config_workbook[case_field.allowed_values_list_name]
-            allowed_values: list[BaseModel] = load_pydantic_objects_from_worksheet(worksheet, OptionalListElement, locale)
-            case_field.allowed_values = [cast(OptionalListElement, e) for e in allowed_values]
+            allowed_values: list[BaseModel] = load_pydantic_objects_from_worksheet(
+                worksheet,
+                OptionalListElement,
+                locale,
+            )
+            case_field.allowed_values = [
+                cast(OptionalListElement, e) for e in allowed_values
+            ]
 
     return case_model_config

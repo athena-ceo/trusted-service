@@ -5,6 +5,7 @@ This document describes all applications built on the Trusted Services framework
 ## 🌟 Overview
 
 The Trusted Services framework is designed to support multiple independent applications. Each application:
+
 - Has its own configuration in `runtime/apps/{app_name}/`
 - Can use the generic test client or build a custom frontend
 - Shares the same backend infrastructure
@@ -15,12 +16,15 @@ The Trusted Services framework is designed to support multiple independent appli
 ## 🇫🇷 Delphes - French Prefecture System
 
 ### Description
+
 **Delphes** modernizes the reception of foreign nationals at French prefectures, specifically piloted at the Yvelines prefecture.
 
 ### Status
+
 ✅ **Production** - Actively deployed and maintained
 
 ### Key Features
+
 - AI-powered intent detection for residence permit requests
 - Automatic case routing based on user situation
 - Multilingual support (French, English)
@@ -29,6 +33,7 @@ The Trusted Services framework is designed to support multiple independent appli
 - Email distribution of responses
 
 ### Technical Stack
+
 - **Backend**: Trusted Services framework (FastAPI + Python)
 - **Frontend**: Custom Next.js 15 with React 19
 - **Design**: DSFR 1.14.2
@@ -36,6 +41,7 @@ The Trusted Services framework is designed to support multiple independent appli
 - **LLM**: Configurable (Ollama, OpenAI, Scaleway)
 
 ### Configuration Location
+
 ```
 runtime/apps/delphes/
 ├── delphes.xlsx           # Intent definitions and field mappings
@@ -49,6 +55,7 @@ deploy/compose/
 ```
 
 ### Running Delphes
+
 ```bash
 # Full stack (backend + frontend)
 ./deploy/compose/docker-manage.sh start delphes
@@ -59,7 +66,9 @@ deploy/compose/
 ```
 
 ### Documentation
+
 See [apps/delphes/README.md](apps/delphes/README.md) for detailed Delphes documentation including:
+
 - User interface guide
 - Configuration details
 - Deployment instructions
@@ -70,24 +79,29 @@ See [apps/delphes/README.md](apps/delphes/README.md) for detailed Delphes docume
 ## 🇫🇮 AISA - Helsinki City Services
 
 ### Description
+
 **AISA** (currently in development) provides intelligent assistance for Helsinki city government services. It helps citizens navigate city services and processes requests efficiently.
 
 ### Status
+
 🚧 **In Development** - Configuration and testing phase
 
 ### Key Features
+
 - Multi-language support (Finnish, English)
 - Intent detection for various city services
 - Automated case handling and routing
 - Integration with Helsinki city systems (planned)
 
 ### Technical Stack
+
 - **Backend**: Trusted Services framework
 - **Frontend**: Generic Streamlit test client (custom frontend planned)
 - **Decision Engine**: Python-based rules
 - **Languages**: Finnish (fi), English (en)
 
 ### Configuration Location
+
 ```
 runtime/apps/AISA/
 ├── AISA.xlsx              # Intent definitions (Finnish/English)
@@ -95,6 +109,7 @@ runtime/apps/AISA/
 ```
 
 ### Running AISA
+
 ```bash
 # Using generic test client
 ./deploy/compose/docker-manage.sh start aisa
@@ -105,11 +120,13 @@ runtime/apps/AISA/
 ```
 
 ### Current Limitations
+
 - Uses generic test client (custom UI in planning)
 - Still in configuration phase
 - Limited integration with Helsinki backend systems
 
 ### Roadmap
+
 - [ ] Complete intent and field configuration
 - [ ] Develop custom React frontend
 - [ ] Integrate with Helsinki city backend APIs
@@ -120,24 +137,29 @@ runtime/apps/AISA/
 ## 🧪 conneXion - Telecom Test Application
 
 ### Description
+
 **conneXion** is a test application simulating a telecom operator's customer service system. It's used to validate framework capabilities and serve as a reference implementation.
 
 ### Status
+
 🧪 **Test/Demo** - Used for framework validation
 
 ### Key Features
+
 - Fictional telecom customer service scenarios
 - Intent detection for common telecom requests (billing, technical support, etc.)
 - Demonstrates framework flexibility
 - Useful for testing and demonstrations
 
 ### Technical Stack
+
 - **Backend**: Trusted Services framework
 - **Frontend**: Generic Streamlit test client
 - **Decision Engine**: Python rules
 - **Purpose**: Testing and validation
 
 ### Configuration Location
+
 ```
 runtime/apps/conneXion/
 ├── conneXion.xlsx         # Intent definitions for telecom scenarios
@@ -145,6 +167,7 @@ runtime/apps/conneXion/
 ```
 
 ### Running conneXion
+
 ```bash
 # Using generic test client
 ./deploy/compose/docker-manage.sh start connexion
@@ -155,6 +178,7 @@ runtime/apps/conneXion/
 ```
 
 ### Use Cases
+
 - Framework capability demonstrations
 - New developer onboarding
 - Testing new features before deploying to production apps
@@ -165,6 +189,7 @@ runtime/apps/conneXion/
 ## 🆕 Building Your Own Application
 
 ### Prerequisites
+
 - Understanding of the Trusted Services architecture
 - Python 3.11+ for backend configuration
 - Excel or JSON for intent/field definitions
@@ -175,6 +200,7 @@ runtime/apps/conneXion/
 #### 1. Create Application Configuration
 
 Create your application directory:
+
 ```bash
 mkdir -p runtime/apps/your_app_name
 ```
@@ -182,41 +208,44 @@ mkdir -p runtime/apps/your_app_name
 #### 2. Define Intents and Fields
 
 Create `your_app_name.xlsx` with sheets:
+
 - **intentions**: Define user intents your app should recognize
 - **intentions_examples**: Provide training examples for each intent
 - **champs** (fields): Define data fields to extract from user requests
 - **definitions**: Term definitions for LLM context
 
 Example intent structure:
-| intention_id | intention_label | intention_scoring |
-|--------------|-----------------|-------------------|
-| request_info | Information Request | 0 |
-| submit_claim | Submit Claim | 0 |
+
+| intention_id | intention_label     | intention_scoring |
+| ------------ | ------------------- | ----------------- |
+| request_info | Information Request | 0                 |
+| submit_claim | Submit Claim        | 0                 |
 
 #### 3. Implement Business Rules
 
 Create `decision_engine.py`:
+
 ```python
 from backend.decision.decision import Decision
 
 class YourAppDecision(Decision):
     """Business rules for your application"""
-    
+  
     def __init__(self, app_id: str, locale: str):
         super().__init__(app_id, locale)
-    
+  
     def execute_decision(self, case_request: dict) -> dict:
         """Process the case and return decision"""
         intention_id = case_request.get('intention_id')
         field_values = case_request.get('field_values', {})
-        
+      
         # Your business logic here
         if intention_id == 'request_info':
             return {
                 'decision': 'provide_information',
                 'message': 'Here is the information you requested...'
             }
-        
+      
         return {'decision': 'unknown', 'message': 'Unable to process'}
 ```
 
@@ -234,6 +263,7 @@ class YourAppDecision(Decision):
 #### 5. (Optional) Build Custom Frontend
 
 If you need a custom UI:
+
 ```bash
 mkdir -p apps/your_app_name/frontend
 cd apps/your_app_name/frontend
@@ -247,7 +277,7 @@ See Delphes frontend as reference: `apps/delphes/frontend/`
 #### 6. Configure Docker Compose
 
 Create `deploy/compose/docker-compose.your_app_name.yml`:
-```yaml
+
 services:
   backend:
     extends:
@@ -262,11 +292,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:8002
+      - BACKEND_INTERNAL_URL=http://backend:8002
     depends_on:
       backend:
         condition: service_healthy
-```
 
 #### 7. Update docker-manage.sh
 
@@ -282,16 +311,16 @@ Add your application to the script's application list.
 
 ## 📊 Application Comparison
 
-| Feature | Delphes | AISA | conneXion |
-|---------|---------|------|-----------|
-| **Status** | Production | In Dev | Test/Demo |
-| **Frontend** | Custom Next.js | Generic (custom planned) | Generic |
-| **Languages** | FR, EN | FI, EN | EN |
-| **Decision Engine** | Python | Python | Python |
-| **LLM Provider** | Configurable | Configurable | Configurable |
-| **Custom Deployment** | Yes | Planned | No |
-| **Email Distribution** | Yes | Planned | No |
-| **Design System** | DSFR (French gov) | TBD | Generic |
+| Feature                      | Delphes           | AISA                     | conneXion    |
+| ---------------------------- | ----------------- | ------------------------ | ------------ |
+| **Status**             | Production        | In Dev                   | Test/Demo    |
+| **Frontend**           | Custom Next.js    | Generic (custom planned) | Generic      |
+| **Languages**          | FR, EN            | FI, EN                   | EN           |
+| **Decision Engine**    | Python            | Python                   | Python       |
+| **LLM Provider**       | Configurable      | Configurable             | Configurable |
+| **Custom Deployment**  | Yes               | Planned                  | No           |
+| **Email Distribution** | Yes               | Planned                  | No           |
+| **Design System**      | DSFR (French gov) | TBD                      | Generic      |
 
 ---
 
@@ -318,6 +347,7 @@ POST /trusted_services/v2/apps/{app_id}/{locale}/handle_case
 ### Custom Frontend Integration
 
 Your custom frontend should:
+
 1. Call `/analyze` with user's request text and field values
 2. Present detected intents to user (or auto-select)
 3. Collect additional required fields
@@ -331,29 +361,37 @@ See `apps/delphes/frontend/` for complete React/Next.js example.
 ## 🚀 Deployment Patterns
 
 ### Pattern 1: Framework with Generic Client
+
 **Use case**: Development, testing, simple applications
+
 ```bash
 ./deploy/compose/docker-manage.sh start framework prod
 ```
 
 ### Pattern 2: Application with Custom Frontend
+
 **Use case**: Production applications (like Delphes)
+
 ```bash
 ./deploy/compose/docker-manage.sh start delphes prod
 ```
 
 ### Pattern 3: Shared Backend, Multiple Frontends
+
 **Use case**: Multiple applications sharing backend
+
 ```bash
 # Backend runs once, serves multiple apps
 ./deploy/compose/docker-manage.sh start framework prod
 
 # Multiple custom frontends connect to same backend
-# Each frontend configured with NEXT_PUBLIC_API_URL
+# Each frontend configured with BACKEND_INTERNAL_URL
 ```
 
 ### Pattern 4: Fully Separated
+
 **Use case**: Future - each app in its own repository
+
 ```bash
 # Backend as library/service
 # Each app deployed independently
@@ -367,32 +405,36 @@ See `apps/delphes/frontend/` for complete React/Next.js example.
 ### Intent Definition (Excel)
 
 **Sheet: intentions**
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| intention_id | string | Yes | Unique identifier |
-| intention_label | string | Yes | Human-readable name |
-| intention_scoring | number | No | Default score (usually 0) |
+
+| Column            | Type   | Required | Description               |
+| ----------------- | ------ | -------- | ------------------------- |
+| intention_id      | string | Yes      | Unique identifier         |
+| intention_label   | string | Yes      | Human-readable name       |
+| intention_scoring | number | No       | Default score (usually 0) |
 
 **Sheet: intentions_examples**
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| intention_id | string | Yes | Links to intentions sheet |
-| example_text | string | Yes | Example user input |
+
+| Column       | Type   | Required | Description               |
+| ------------ | ------ | -------- | ------------------------- |
+| intention_id | string | Yes      | Links to intentions sheet |
+| example_text | string | Yes      | Example user input        |
 
 **Sheet: champs (fields)**
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| field_id | string | Yes | Field identifier |
-| field_label | string | Yes | Display label |
-| field_type | string | Yes | text, date, boolean, etc. |
-| required | boolean | No | Is field required? |
-| intentions | string | No | Comma-separated list of applicable intents |
+
+| Column      | Type    | Required | Description                                |
+| ----------- | ------- | -------- | ------------------------------------------ |
+| field_id    | string  | Yes      | Field identifier                           |
+| field_label | string  | Yes      | Display label                              |
+| field_type  | string  | Yes      | text, date, boolean, etc.                  |
+| required    | boolean | No       | Is field required?                         |
+| intentions  | string  | No       | Comma-separated list of applicable intents |
 
 ---
 
 ## 🤝 Contributing
 
 ### Adding a New Application
+
 1. Create configuration in `runtime/apps/{app_name}/`
 2. Test with generic client
 3. (Optional) Build custom frontend
@@ -401,6 +443,7 @@ See `apps/delphes/frontend/` for complete React/Next.js example.
 6. Submit PR
 
 ### Improving Existing Applications
+
 - See application-specific README files
 - Test changes with generic client first
 - Ensure backward compatibility
@@ -421,6 +464,7 @@ See `apps/delphes/frontend/` for complete React/Next.js example.
 ## 🔮 Future Roadmap
 
 See [TODO.md](TODO.md) for complete roadmap including:
+
 - React-based generic test client (replacing Streamlit)
 - JSON-based configuration (replacing Excel)
 - Application repository separation

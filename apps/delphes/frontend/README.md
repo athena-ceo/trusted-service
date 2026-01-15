@@ -68,7 +68,7 @@ src/
 ### Variables d'environnement
 Créer un fichier `.env.local` :
 ```
-NEXT_PUBLIC_API_URL=http://localhost:8002
+BACKEND_INTERNAL_URL=http://localhost:8002
 NODE_ENV=development
 ```
 
@@ -202,7 +202,7 @@ http://localhost:3000/api/v1/* → http://localhost:8002/api/v1/*
 #### Variables d'environnement
 ```env
 # .env.local (optionnel)
-NEXT_PUBLIC_API_URL=http://localhost:8002
+BACKEND_INTERNAL_URL=http://localhost:8002
 ```
 
 ## 🧪 Tests

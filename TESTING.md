@@ -951,7 +951,7 @@ docker stop $(docker ps -q --filter ancestor=test-backend)
 # Test Delphes frontend image
 cd apps/delphes/frontend
 docker build -t test-delphes-frontend -f Dockerfile.delphes-frontend .
-docker run --rm -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8002 test-delphes-frontend &
+docker run --rm -p 3000:3000 -e BACKEND_INTERNAL_URL=http://localhost:8002 test-delphes-frontend &
 sleep 15
 curl http://localhost:3000/
 docker stop $(docker ps -q --filter ancestor=test-delphes-frontend)

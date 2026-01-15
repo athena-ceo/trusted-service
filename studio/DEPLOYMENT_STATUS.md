@@ -164,7 +164,7 @@ open http://localhost:3001
 
 ```bash
 # Create .env.local
-echo "NEXT_PUBLIC_API_URL=http://localhost:8002" > .env.local
+echo "BACKEND_INTERNAL_URL=http://localhost:8002" > .env.local
 ```
 
 ---

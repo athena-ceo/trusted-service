@@ -292,6 +292,82 @@ npm run dev
 | Framework backend only | `./deploy/compose/docker-manage.sh start framework prod` | Just backend (for remote frontends) |
 | Build new application | See [APPLICATIONS.md](APPLICATIONS.md) | Development guide |
 
+### Application Validation Modes
+
+The framework validates all loaded applications at startup and during dynamic reloads. Two validation modes are available:
+
+#### **Strict Mode (Default)** ✅
+```bash
+python launcher_api.py ./runtime
+# or explicitly:
+python launcher_api.py ./runtime --strict
+```
+
+**Behavior:**
+- ❌ Server **stops immediately** if any application has validation errors
+- Useful for production deployments where configuration must be correct
+- Errors printed in red with actionable remediation steps
+
+**Validation checks:**
+- Email configuration (password_key environment variable, SMTP connectivity)
+- Required dependencies for each application
+- Configuration consistency
+
+**Example Error:**
+```
+❌ CRITICAL ERROR: Environment variable 'EMAIL_PASSWORD_DELPHES' is not defined.
+   Email sending is enabled (send_email=True) but SMTP password is missing.
+   
+   REQUIRED ACTIONS:
+   1. Set environment variable: export EMAIL_PASSWORD_DELPHES='your_password'
+   2. Restart the server
+   
+   Server will now stop.
+```
+
+#### **Lenient Mode** ⚠️
+```bash
+python launcher_api.py ./runtime --lenient
+```
+
+**Behavior:**
+- ⚠️ Server **continues** even if some applications have validation errors
+- Errors logged as warnings in order of appearance
+- Useful for development/troubleshooting when not all apps are fully configured
+- Affected applications are clearly marked
+
+**Example Warning:**
+```
+⚠️  WARNING: Validation issues found in 1 application(s).
+   Running in LENIENT mode - server will continue.
+   
+   • delphes: Email configuration validation error: (error details)
+```
+
+**When to use lenient mode:**
+- Development environment with incomplete configurations
+- Testing specific applications while others are misconfigured
+- Gradual rollout where not all apps are ready
+- Debugging configuration issues
+
+#### Configuration Requirements
+
+Each application can define email distribution. If enabled (`send_email: true`), the framework requires:
+
+1. **In workbook configuration (email_config tab):**
+   - `password_key`: Name of the environment variable containing the SMTP password
+     - Example: `EMAIL_PASSWORD_AISA`, `EMAIL_PASSWORD_DELPHES`
+
+2. **In environment variables (.env or shell):**
+   - The environment variable named in `password_key` must be defined
+   - Example: `export EMAIL_PASSWORD_DELPHES='secure_password'`
+
+```env
+# .env file
+EMAIL_PASSWORD_AISA=aisa_smtp_password
+EMAIL_PASSWORD_DELPHES=delphes_smtp_password
+```
+
 ---
 
 ## 🏗️ Architecture

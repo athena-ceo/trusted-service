@@ -37,6 +37,7 @@ interface HandleCaseContentProps {
 
 function HandleCaseContent({ message, fieldValues, selectedIntention, intentionLabel, analyzeResult }: HandleCaseContentProps) {
     const { t, currentLang } = useLanguage();
+    const isProd = process.env.NODE_ENV === "production";
     const [isLoading, setIsLoading] = useState(true);
     const [vueAgent, setVueAgent] = useState(false);
     const [vueAgentReponse, setVueAgentReponse] = useState(false);
@@ -68,21 +69,17 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
             delete fieldValues.message;
 
-            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
-            if (!apiBaseUrl || apiBaseUrl.startsWith('__NEXT_PUBLIC_')) {
-                console.warn('NEXT_PUBLIC_API_URL is not configured - API calls may not work');
-                return;
+            if (!isProd) {
+                console.log("Sending process request with payload", {
+                    case_request: {
+                        intention_id: selectedIntention,
+                        field_values: fieldValues,
+                        highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
+                        lang: currentLang || "fr",
+                    },
+                });
             }
-
-            console.log('Sending process request with payload', {
-                case_request: {
-                    intention_id: selectedIntention,
-                    field_values: fieldValues,
-                    highlighted_text_and_features: analyzeResult.highlighted_text_and_features,
-                    lang: currentLang || 'fr'
-                }
-            });
-            const handleCaseResponse = await fetch(`${apiBaseUrl}/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
+            const handleCaseResponse = await fetch(`/api/v2/apps/delphes${fieldValues.departement}${fieldValues.mode}/${currentLang.toLowerCase() || 'fr'}/handle_case`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,19 +92,29 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
                 })
             });
 
-            // if (!handleCaseResponse.ok) {
-            //     throw new Error(`Erreur lors du traitement de la demande: ${handleCaseResponse.statusText}`);
-            // }
-            console.log('Résultat du handle case:', handleCaseResponse);
+            if (!handleCaseResponse.ok) {
+                const errorBody = await handleCaseResponse.text();
+                console.error('Erreur handle_case:', handleCaseResponse.status);
+                if (!isProd) {
+                    console.log(errorBody);
+                }
+                throw new Error(`Erreur handle_case ${handleCaseResponse.status}`);
+            }
             const handleCaseResult = await handleCaseResponse.json();
-            console.log('Résultat du handle case:', handleCaseResult);
+            if (!isProd) {
+                console.log("Resultat du handle case:", handleCaseResult);
+            }
 
             // Acknowledgement (Markdown -> sanitized HTML)
             const rawAck = handleCaseResult.case_handling_response?.acknowledgement_to_requester;
             let ackHtml: string | null = null;
             if (rawAck) {
                 // Utilisation de marked.parse (synchrone) pour garantir un retour string
-                const html: string = marked.parse(String(rawAck), { async: false }) as string;
+                const html: string = marked.parse(String(rawAck), {
+                    async: false,
+                    mangle: false,
+                    headerIds: false
+                }) as string;
                 // parse HTML and add DSFR classes to links
                 try {
                     const parser = new DOMParser();
@@ -286,49 +293,56 @@ function HandleCaseContent({ message, fieldValues, selectedIntention, intentionL
 
 export default function HandleCase() {
     const { t } = useLanguage();
-    const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(null);
-    const [selectedIntention, setSelectedIntention] = useState<string | null>(null);
-    const [intentionLabel, setIntentionLabel] = useState<string | null>(null);
-    const [fieldValues, setFieldValues] = useState<FieldValues | null>(null);
-
-    useEffect(() => {
-        // Récupération des données au chargement de la page
-        const storedData1 = localStorage.getItem('analyzeResult');
-        if (storedData1) {
-            try {
-                const parsedData = JSON.parse(storedData1);
-                setAnalyzeResult(parsedData.analyzeResult);
-
-                // Optionnel : nettoyer le localStorage après récupération
-                // localStorage.removeItem('analyzeResult');
-            } catch (error) {
-                console.error('Erreur lors de la lecture des données de la requête:', error);
-            }
+    const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(() => {
+        if (typeof window === "undefined") {
+            return null;
         }
 
-        const storedData2 = localStorage.getItem('selectedIntention');
-        if (storedData2) {
-            // selectedIntention is stored as a plain string, not JSON
-            setSelectedIntention(storedData2);
+        const storedData = localStorage.getItem("analyzeResult");
+        if (!storedData) {
+            return null;
         }
 
-        const storedData3 = localStorage.getItem('intentionLabel');
-        setIntentionLabel(storedData3)
-
-        const storedData4 = localStorage.getItem('fieldValues');
-        if (storedData4) {
-            try {
-                const parsedData = JSON.parse(storedData4);
-                setFieldValues(parsedData);
-
-                // Optionnel : nettoyer le localStorage après récupération
-                // localStorage.removeItem('fieldValues');
-            } catch (error) {
-                console.error('Erreur lors de la lecture des données de la requête:', error);
-            }
+        try {
+            const parsedData = JSON.parse(storedData);
+            return parsedData.analyzeResult ?? null;
+        } catch (error) {
+            console.error("Erreur lors de la lecture des donnees de la requete:", error);
+            return null;
+        }
+    });
+    const [selectedIntention, setSelectedIntention] = useState<string | null>(() => {
+        if (typeof window === "undefined") {
+            return null;
         }
 
-    }, []); // Se déclenche une seule fois au montage du composant
+        const storedData = localStorage.getItem("selectedIntention");
+        return storedData || null;
+    });
+    const [intentionLabel, setIntentionLabel] = useState<string | null>(() => {
+        if (typeof window === "undefined") {
+            return null;
+        }
+
+        return localStorage.getItem("intentionLabel");
+    });
+    const [fieldValues, setFieldValues] = useState<FieldValues | null>(() => {
+        if (typeof window === "undefined") {
+            return null;
+        }
+
+        const storedData = localStorage.getItem("fieldValues");
+        if (!storedData) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(storedData);
+        } catch (error) {
+            console.error("Erreur lors de la lecture des donnees de la requete:", error);
+            return null;
+        }
+    });
 
     if (!fieldValues || !selectedIntention || !analyzeResult) {
         return <Loading message={t('handleCase.loadingData')} />;

@@ -113,7 +113,7 @@ Une fois Scaleway TEM configuré, mettez à jour votre fichier Excel de configur
 | **hub_email_address** | `Athena.Delphes@gmail.com` | `hub@athenadecisions.com` ou `noreply@athenadecisions.com` |
 | **agent_email_address** | `pref-delphes-sejour@yvelines.gouv.fr,...` | (Conserver ou adapter) |
 | **smtp_server** | `smtp.gmail.com` | `smtp.tem.scw.cloud` |
-| **password** | `tubd yhuh fgiq hqrs` | Votre secret API Scaleway TEM |
+| **password** | `xxxx xxxx xxxx xxxx` | Votre secret API Scaleway TEM |
 | **smtp_port** | `587` | `587` (reste identique) |
 | **send_email** | `True` | `True` |
 

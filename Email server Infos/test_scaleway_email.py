@@ -2,15 +2,21 @@
 """
 Script minimal pour tester l'envoi d'email via Scaleway TEM
 """
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from dotenv import load_dotenv
+
+# Charger les variables depuis .env
+load_dotenv()
+
 # Configuration Scaleway TEM
 SMTP_SERVER = "smtp.tem.scaleway.com"
 SMTP_PORT = 587
-SMTP_USERNAME = "59c350ec-8be5-4b8b-8a4c-93db7f9690b3"  # Project ID
-SMTP_PASSWORD = "64bc46a2-51f2-4152-9611-ddea51ad0709"  # Secret Key de la clé API
+SMTP_USERNAME = os.getenv("TEM_PROJECT_ID")  # Project ID
+SMTP_PASSWORD = os.getenv("EMAIL_PASSWORD_DELPHES")  # Secret Key de la clé API
 
 # Adresses email
 FROM_EMAIL = "ne-pas-repondre@mail.athenadecisions.ai"
@@ -36,6 +42,11 @@ def send_email():
     print("Test d'envoi d'email via Scaleway TEM")
     print("=" * 60)
     print(f"Configuration:")
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        print("✗ Variables d'environnement manquantes")
+        print("Assurez-vous que TEM_PROJECT_ID et EMAIL_PASSWORD_DELPHES sont definies dans .env")
+        return False
+
     print(f"  Serveur SMTP: {SMTP_SERVER}:{SMTP_PORT}")
     print(f"  Username (Project ID): {SMTP_USERNAME}")
     print(f"  Password (Secret Key): {SMTP_PASSWORD[:10]}...")
@@ -126,4 +137,3 @@ def send_email():
 if __name__ == "__main__":
     success = send_email()
     exit(0 if success else 1)
-

@@ -7,7 +7,6 @@ echo "🔄 Substitution des variables d'environnement au runtime..."
 
 # Afficher les variables pour debug
 echo "📋 Variables à substituer:"
-echo "   NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-'(non définie)'}"
 echo "   NEXT_PUBLIC_WATSON_REGION: ${NEXT_PUBLIC_WATSON_REGION:-'(non définie)'}"
 echo "   NEXT_PUBLIC_WATSON_INSTANCE_ID: ${NEXT_PUBLIC_WATSON_INSTANCE_ID:-'(non définie)'}"
 echo "   NEXT_PUBLIC_WATSON_INTEGRATION_ID: ${NEXT_PUBLIC_WATSON_INTEGRATION_ID:-'(non définie)'}"
@@ -23,14 +22,12 @@ substitute_vars() {
 
   cp "$file" "$file.backup" || return 1
 
-  API_URL_ESCAPED=$(escape_sed "${NEXT_PUBLIC_API_URL:-}")
   REGION_ESCAPED=$(escape_sed "${NEXT_PUBLIC_WATSON_REGION:-}")
   INSTANCE_ESCAPED=$(escape_sed "${NEXT_PUBLIC_WATSON_INSTANCE_ID:-}")
   INTEGRATION_ESCAPED=$(escape_sed "${NEXT_PUBLIC_WATSON_INTEGRATION_ID:-}")
   AGENT_ESCAPED=$(escape_sed "${NEXT_PUBLIC_WATSON_AGENT_ID:-}")
 
   sed -i \
-    -e "s|__NEXT_PUBLIC_API_URL__|$API_URL_ESCAPED|g" \
     -e "s|__NEXT_PUBLIC_WATSON_REGION__|$REGION_ESCAPED|g" \
     -e "s|__NEXT_PUBLIC_WATSON_INSTANCE_ID__|$INSTANCE_ESCAPED|g" \
     -e "s|__NEXT_PUBLIC_WATSON_INTEGRATION_ID__|$INTEGRATION_ESCAPED|g" \

@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from pydantic import BaseModel
 
-from src.common.case_model import CaseModel
-from src.common.config import SupportedLocale
+if TYPE_CHECKING:
+    from src.common.case_model import CaseModel
+    from src.common.config import SupportedLocale
 
 
 class CaseHandlingRequest(BaseModel):
@@ -38,7 +41,10 @@ class CaseHandlingDecisionOutput(BaseModel):
 
 class CaseHandlingResponse(BaseModel):
     acknowledgement_to_requester: str
-    case_handling_report: tuple[str, str | None]  # 1rst element: Rendering of the mail to the agent. 2nd element: Rendering of the mail to the requester
+    case_handling_report: tuple[
+        str,
+        str | None,
+    ]  # 1rst element: Rendering of the mail to the agent. 2nd element: Rendering of the mail to the requester
 
 
 class CaseHandlingDetailedResponse(BaseModel):
@@ -86,13 +92,31 @@ class ServerApi(ABC):
         pass
 
     @abstractmethod
-    def analyze(self, app_id: str, locale: SupportedLocale, field_values: dict[str, Any], text: str, read_from_cache: bool, llm_config_id: str) -> dict[str, Any]:
+    def analyze(
+        self,
+        app_id: str,
+        locale: SupportedLocale,
+        field_values: dict[str, Any],
+        text: str,
+        read_from_cache: bool,
+        llm_config_id: str,
+    ) -> dict[str, Any]:
         pass
 
     @abstractmethod
-    def save_text_analysis_cache(self, app_id: str, locale: SupportedLocale, text_analysis_cache: str):
+    def save_text_analysis_cache(
+        self,
+        app_id: str,
+        locale: SupportedLocale,
+        text_analysis_cache: str,
+    ):
         pass
 
     @abstractmethod
-    def handle_case(self, app_id: str, locale: SupportedLocale, request: CaseHandlingRequest) -> CaseHandlingDetailedResponse:
+    def handle_case(
+        self,
+        app_id: str,
+        locale: SupportedLocale,
+        request: CaseHandlingRequest,
+    ) -> CaseHandlingDetailedResponse:
         pass

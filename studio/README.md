@@ -62,7 +62,7 @@ The comprehensive UI for the Trusted Services **framework**. Studio provides tes
 npm install
 
 # Set environment variables
-echo "NEXT_PUBLIC_API_URL=http://localhost:8002" > .env.local
+echo "BACKEND_INTERNAL_URL=http://localhost:8002" > .env.local
 
 # Start development server
 npm run dev
@@ -84,7 +84,7 @@ docker compose -f studio/docker-compose.dev.yml up -d
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://localhost:8002` |
+| `BACKEND_INTERNAL_URL` | Backend API URL | `http://localhost:8002` |
 | `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry | `1` |
 
 ## Project Structure
@@ -199,7 +199,7 @@ docker build -t test-client:latest .
 
 ```bash
 docker run -p 3001:3000 \
-  -e NEXT_PUBLIC_API_URL=http://backend:8002 \
+  -e BACKEND_INTERNAL_URL=http://backend:8002 \
   test-client:latest
 ```
 

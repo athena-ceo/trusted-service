@@ -57,7 +57,7 @@ case "$TARGET" in
         ;;
     delphes)
         if [ "$ENV" = "prod" ]; then
-            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.delphes-frontend-prod.yml"
+            COMPOSE_FILE="$SCRIPT_DIR/docker-compose.delphes-production.yml"
             TARGET_NAME="Delphes Application"
         else
             COMPOSE_FILE="$SCRIPT_DIR/docker-compose.delphes-integration.yml"

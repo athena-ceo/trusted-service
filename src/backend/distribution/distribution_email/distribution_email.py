@@ -1,44 +1,68 @@
-from typing import List, Optional
+from __future__ import annotations
+
 import logging
-
-from src.backend.decision.decision import CaseHandlingDecisionOutput
-from src.backend.distribution.distribution import CaseHandlingDistributionEngine
-from src.backend.distribution.distribution_email.distribution_email_config import EmailTemplate, load_email_config_from_workbook
-from src.backend.distribution.distribution_email.distribution_email_localization import distribution_engine_email_localizations
-from src.backend.rendering.html import render_email, hilite_blue, standard_table_style, standard_back_ground_color
-from src.common.server_api import CaseHandlingRequest, CaseHandlingResponse
-from src.common.case_model import CaseModel
-
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any
 
+from src.backend.distribution.distribution import CaseHandlingDistributionEngine
+from src.backend.distribution.distribution_email.distribution_email_config import (
+    DistributionEmailConfig,
+    EmailTemplate,
+    load_email_config_from_workbook,
+)
+from src.backend.distribution.distribution_email.distribution_email_localization import (
+    distribution_engine_email_localizations,
+)
 from src.backend.distribution.distribution_email.email2 import Email
-from src.backend.distribution.distribution_email.distribution_email_config import DistributionEmailConfig
-from src.common.config import SupportedLocale
+from src.backend.rendering.html import (
+    render_email,
+    standard_back_ground_color,
+    standard_table_style,
+)
+
+if TYPE_CHECKING:
+    from src.backend.decision.decision import CaseHandlingDecisionOutput
+    from src.common.case_model import CaseField, CaseModel
+    from src.common.config import SupportedLocale
+    from src.common.server_api import CaseHandlingRequest
 
 
 class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
-    def __init__(self, email_config: DistributionEmailConfig, locale: SupportedLocale):
+    def __init__(
+        self, email_config: DistributionEmailConfig, locale: SupportedLocale
+    ) -> None:
         self.email_config = email_config
         self.locale: SupportedLocale = locale
-        self.localization = distribution_engine_email_localizations[locale]  # Will fail here if language is not supported
+        self.localization = distribution_engine_email_localizations[
+            locale
+        ]  # Will fail here if language is not supported
 
-    def build_body_of_email_to_agent(self,
-                                     case_model: CaseModel,
-                                     request: CaseHandlingRequest,
-                                     intent_label: str,
-                                     case_handling_decision_output: CaseHandlingDecisionOutput) -> str:
+    def build_body_of_email_to_agent(
+        self,
+        case_model: CaseModel,
+        request: CaseHandlingRequest,
+        intent_label: str,
+        case_handling_decision_output: CaseHandlingDecisionOutput,
+    ) -> str:
 
         def markdown_to_html(markdown_text: str) -> str:
-            import markdown
-            return markdown.markdown(markdown_text)
+            try:
+                from markdown_it import MarkdownIt
+            except ImportError:
+                logging.getLogger(__name__).warning(
+                    "markdown-it-py not available; sending raw markdown in email.",
+                )
+                return markdown_text
+            return MarkdownIt("commonmark").render(markdown_text)
 
         # Build table with field values
 
-        labels_and_values: List[tuple[str, str]] = [(self.localization.label_intent, intent_label)]
+        labels_and_values: list[tuple[str, str]] = [
+            (self.localization.label_intent, intent_label),
+        ]
         for case_field_id, case_field_value in request.field_values.items():
             try:
                 case_field: CaseField = case_model.get_field_by_id(case_field_id)
@@ -49,13 +73,18 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 # field id as a fallback label so the email still contains the
                 # provided value.
                 logging.getLogger(__name__).warning(
-                    "Field id '%s' not found in case model; including raw value in email.", case_field_id
+                    "Field id '%s' not found in case model; including raw value in email.",
+                    case_field_id,
                 )
                 case_field_label = case_field_id
 
             case_field_value2 = case_field_value
             if isinstance(case_field_value, bool):
-                case_field_value2: str = self.localization.label_yes if case_field_value else self.localization.label_no
+                case_field_value2: str = (
+                    self.localization.label_yes
+                    if case_field_value
+                    else self.localization.label_no
+                )
 
             # Don't include empty values
             if not case_field_value2:
@@ -87,26 +116,34 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
 
         # Display the response displayed to the requester
 
-        table="<table cellpadding='10'>\n"
+        table = "<table cellpadding='10'>\n"
         table += f"<tr><th>{self.localization.label_response_to_requester}</th></tr>\n"
-        html_acknowledgement: str = markdown_to_html(case_handling_decision_output.acknowledgement_to_requester)
+        html_acknowledgement: str = markdown_to_html(
+            case_handling_decision_output.acknowledgement_to_requester,
+        )
         table += f"<tr><td>{html_acknowledgement}</td></tr>\n"
         table += "</table>"
         body += "<hr><br>" + table
 
         return body
 
-
-    def distribute(self,
-                   case_model: CaseModel,
-                   request: CaseHandlingRequest,
-                   intent_label: str,
-                   # case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
-                   case_handling_decision_output: CaseHandlingDecisionOutput) -> tuple[str, str]:
+    def distribute(
+        self,
+        case_model: CaseModel,
+        request: CaseHandlingRequest,
+        intent_label: str,
+        # case_handling_decision_output: CaseHandlingDecisionOutput) -> CaseHandlingResponse:
+        case_handling_decision_output: CaseHandlingDecisionOutput,
+    ) -> tuple[str, str]:
 
         # email_to_agent
 
-        body_of_email_to_agent: str = self.build_body_of_email_to_agent(case_model, request, intent_label, case_handling_decision_output, )
+        body_of_email_to_agent: str = self.build_body_of_email_to_agent(
+            case_model,
+            request,
+            intent_label,
+            case_handling_decision_output,
+        )
 
         # work_basket specifies the destination where the work item should be placed.
         #
@@ -125,27 +162,48 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             to_email_address = self.email_config.agent_email_address
             work_basket = basket_name
 
-        priority: str = self.localization.label_very_high if case_handling_decision_output.priority == "VERY_HIGH" else \
-                          self.localization.label_high if case_handling_decision_output.priority == "HIGH" else \
-                            self.localization.label_low if case_handling_decision_output.priority == "LOW" else \
-                                self.localization.label_very_low if case_handling_decision_output.priority == "VERY_LOW" else \
-                                    self.localization.label_medium
+        priority: str = (
+            self.localization.label_very_high
+            if case_handling_decision_output.priority == "VERY_HIGH"
+            else (
+                self.localization.label_high
+                if case_handling_decision_output.priority == "HIGH"
+                else (
+                    self.localization.label_low
+                    if case_handling_decision_output.priority == "LOW"
+                    else (
+                        self.localization.label_very_low
+                        if case_handling_decision_output.priority == "VERY_LOW"
+                        else self.localization.label_medium
+                    )
+                )
+            )
+        )
         email_to_agent: Email = Email(
             from_email_address=self.email_config.hub_email_address,
             to_email_address=to_email_address,
             subject=f"{work_basket} - {priority}",
-            body=body_of_email_to_agent)
+            body=body_of_email_to_agent,
+        )
 
         # email_to_requester
 
-        email_to_requester: Email = Email(from_email_address=self.email_config.agent_email_address, 
-                                                    to_email_address=request.field_values[self.email_config.case_field_email_address],
-                                                    subject=self.localization.label_response_default_subject,
-                                                    body="")
+        email_to_requester: Email = Email(
+            from_email_address=self.email_config.agent_email_address,
+            to_email_address=request.field_values[
+                self.email_config.case_field_email_address
+            ],
+            subject=self.localization.label_response_default_subject,
+            body="",
+        )
 
         template_id: str = case_handling_decision_output.response_template_id
         if template_id:  # if a template is defined
-            matching_templates = [template for template in self.email_config.email_templates if template.id == template_id]
+            matching_templates = [
+                template
+                for template in self.email_config.email_templates
+                if template.id == template_id
+            ]
             if matching_templates:
                 template: EmailTemplate = matching_templates[0]
                 body_of_email_to_requester = template.body
@@ -153,22 +211,30 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 #     body_of_email_to_requester = body_of_email_to_requester.replace("{" + k + "}", str(v))
                 # More elegant:
 
-                body_of_email_to_requester = body_of_email_to_requester.format(**request.field_values)
+                body_of_email_to_requester = body_of_email_to_requester.format(
+                    **request.field_values,
+                )
 
                 email_to_requester = Email(
                     from_email_address=self.email_config.agent_email_address,
-                    to_email_address=request.field_values[self.email_config.case_field_email_address],
+                    to_email_address=request.field_values[
+                        self.email_config.case_field_email_address
+                    ],
                     subject=template.subject,
-                    body=body_of_email_to_requester
+                    body=body_of_email_to_requester,
                 )
 
         # Send emails
 
         if self.email_config.send_email:
-            print("SENDING EMAIL")
-            self.send_mail(email_config=self.email_config, email_to_send=email_to_agent, email_mail_to=email_to_requester, priority=case_handling_decision_output.priority)
+            self.send_mail(
+                email_config=self.email_config,
+                email_to_send=email_to_agent,
+                email_mail_to=email_to_requester,
+                priority=case_handling_decision_output.priority,
+            )
         else:
-            print("NOT SENDING EMAIL")
+            pass
 
         # Return response to client
 
@@ -176,7 +242,9 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         if email_to_requester.body == "":
             rendering_email_to_requester = ""
         else:
-            rendering_email_to_requester = render_email(email_to_requester)  # is None if email_to_requester is None
+            rendering_email_to_requester = render_email(
+                email_to_requester,
+            )  # is None if email_to_requester is None
 
         return rendering_email_to_agent, rendering_email_to_requester
 
@@ -200,7 +268,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         # Return the complete mailto link as an HTML anchor
         return f'<a href="{mailto}">{email}</a>'
 
-    def build_body(self, body: str, email_mail_to: Optional[Email]) -> str:
+    def build_body(self, body: str, email_mail_to: Email | None) -> str:
         body = "<html> <blockquote>" + body
 
         if email_mail_to is not None:
@@ -213,15 +281,20 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 subject=email_mail_to.subject,
                 body=email_mail_to.body,
             )
-            body += "<br /><div style='font-size:x-large; margin-bottom:3rem'>📩 " + self.localization.label_reply + ": " + mailto_link + "</div><hr>"
+            body += (
+                "<br /><div style='font-size:x-large; margin-bottom:3rem'>📩 "
+                + self.localization.label_reply
+                + ": "
+                + mailto_link
+                + "</div><hr>"
+            )
 
         body += "</blockquote> </html>"
 
         return body
 
     def _set_email_priority(self, message: MIMEMultipart, priority: str) -> None:
-        """
-        Set email priority headers for SMTP clients.
+        """Set email priority headers for SMTP clients.
 
         Maps case priority to standard email priority headers:
         - VERY_HIGH -> Highest priority (1)
@@ -235,7 +308,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             "HIGH": ("2", "High", "High"),
             "MEDIUM": ("3", "Normal", "Normal"),
             "LOW": ("4", "Low", "Low"),
-            "VERY_LOW": ("5", "Lowest", "Low")
+            "VERY_LOW": ("5", "Lowest", "Low"),
         }
 
         if priority in priority_map:
@@ -250,13 +323,15 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
             if priority in ["VERY_HIGH", "HIGH"]:
                 message["X-MSMail-Priority"] = "High"  # Outlook specific
             elif priority in ["LOW", "VERY_LOW"]:
-                message["X-MSMail-Priority"] = "Low"   # Outlook specific
+                message["X-MSMail-Priority"] = "Low"  # Outlook specific
 
-    def send_mail(self,
-                  email_config: DistributionEmailConfig,
-                  email_to_send: Email,
-                  email_mail_to: Email,
-                  priority: str = "MEDIUM") -> None:
+    def send_mail(
+        self,
+        email_config: DistributionEmailConfig,
+        email_to_send: Email,
+        email_mail_to: Email,
+        priority: str = "MEDIUM",
+    ) -> None:
         email_password = email_config.password
         smtp_server = email_config.smtp_server
         smtp_port = email_config.smtp_port
@@ -274,7 +349,7 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         # Subject
         subject = email_to_send.subject
         if isinstance(subject, str):
-            subject = subject.encode('utf-8').decode('utf-8')
+            subject = subject.encode("utf-8").decode("utf-8")
         message["Subject"] = subject
 
         # Set email priority based on case_handling_decision_output.priority
@@ -284,11 +359,15 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
         body = self.build_body(body=email_to_send.body, email_mail_to=email_mail_to)
         # Ensure body is properly encoded
         if isinstance(body, str):
-            body = body.encode('utf-8').decode('utf-8')
+            body = body.encode("utf-8").decode("utf-8")
         message.attach(MIMEText(body, "html", "utf-8"))
 
         # Accept either `bcc` (new) or `bcc_email_address` (legacy) on Email model
-        bcc_list: List[str] | None = getattr(email_to_send, "bcc", None) or getattr(email_to_send, "bcc_email_address", None)
+        bcc_list: list[str] | None = getattr(email_to_send, "bcc", None) or getattr(
+            email_to_send,
+            "bcc_email_address",
+            None,
+        )
 
         try:
             from email.utils import getaddresses
@@ -304,25 +383,29 @@ class CaseHandlingDistributionEngineEmail(CaseHandlingDistributionEngine):
                 address_strings.extend(bcc_list)
 
             parsed = getaddresses(address_strings)
-            recipients: List[str] = [addr for name, addr in parsed if addr]
+            recipients: list[str] = [addr for name, addr in parsed if addr]
 
             with smtplib.SMTP(smtp_server, smtp_port) as server:
                 # Disable SMTP protocol debug output in production
                 server.set_debuglevel(0)
                 server.starttls()
                 # Utiliser smtp_username si disponible, sinon utiliser l'adresse email (rétrocompatibilité)
-                smtp_username = email_config.smtp_username if email_config.smtp_username else email_to_send.from_email_address
-                print(f"Attempting SMTP login with username: {smtp_username}")
+                smtp_username = (
+                    email_config.smtp_username
+                    if email_config.smtp_username
+                    else email_to_send.from_email_address
+                )
                 server.login(smtp_username, email_password)
-                print("SMTP login successful!")
 
                 # Send as bytes to preserve UTF-8
-                server.sendmail(email_to_send.from_email_address, recipients, message.as_bytes())
+                server.sendmail(
+                    email_to_send.from_email_address,
+                    recipients,
+                    message.as_bytes(),
+                )
 
-            print("Successfully sent email!")
-        except Exception as e:
-            print(f"Did not successfully send email!: {e}")
-
+        except Exception:
+            pass
 
 
 # Ajout d'une fonction main pour tests unitaires d'envoi d'email
@@ -331,48 +414,48 @@ if __name__ == "__main__":
 
     locale = "fr"
     email_config: DistributionEmailConfig = load_email_config_from_workbook(
-        os.path.join(os.path.dirname(__file__), "../../../../runtime/apps/delphes78test/delphes78test.xlsx"),
-        locale)
-    
+        os.path.join(
+            os.path.dirname(__file__),
+            "../../../../runtime/apps/delphes78test/delphes78test.xlsx",
+        ),
+        locale,
+    )
+
     # Clean any problematic characters from config
     def clean_string(s):
         if isinstance(s, str):
             # Replace non-breaking space and other problematic characters
-            return s.replace('\xa0', ' ').replace('\u00a0', ' ')
+            return s.replace("\xa0", " ").replace("\u00a0", " ")
         return s
-    
+
     # Clean all string fields in config
     email_config.hub_email_address = clean_string(email_config.hub_email_address)
-    print(f"email_config.hub_email_address: {email_config.hub_email_address}")
     email_config.agent_email_address = clean_string(email_config.agent_email_address)
-    print(f"email_config.agent_email_address: {email_config.agent_email_address}")
     email_config.password = clean_string(email_config.password)
-    print(f"email_config.password: {email_config.password}")
     email_config.smtp_server = clean_string(email_config.smtp_server)
-    print(f"email_config.smtp_server: {email_config.smtp_server}")
     if email_config.smtp_username:
         email_config.smtp_username = clean_string(email_config.smtp_username)
-        print(f"email_config.smtp_username: {email_config.smtp_username}")
     else:
-        print("email_config.smtp_username: NOT SET (will use email address)")
-    print(f"email_config.smtp_port: {email_config.smtp_port}")
-    
+        pass
+
     # Override agent email for testing
     email_config.agent_email_address = "j@milgram.fr"
     engine = CaseHandlingDistributionEngineEmail(email_config, locale)
 
-    print(f"\n=== Configuration d'envoi d'email ===")
-    print(f"From (hub_email_address): {email_config.hub_email_address}")
-    print(f"To (agent_email_address): {email_config.agent_email_address}")
-    print(f"SMTP Server: {email_config.smtp_server}:{email_config.smtp_port}")
-    print(f"SMTP Username: {email_config.smtp_username if email_config.smtp_username else 'N/A (using email address)'}")
-    print(f"=====================================\n")
-    
     email_to_agent: Email = Email(
         from_email_address=email_config.hub_email_address,
         to_email_address=email_config.agent_email_address,
-        bcc_email_address=["Joel Milgram <joel@athenadecisions.com>", "joel@milgram.fr"],
+        bcc_email_address=[
+            "Joel Milgram <joel@athenadecisions.com>",
+            "joel@milgram.fr",
+        ],
         subject="Test d'email",
-        body="Ceci est un test d'email envoye par le moteur de distribution.")
+        body="Ceci est un test d'email envoye par le moteur de distribution.",
+    )
 
-    engine.send_mail(email_config=email_config, email_to_send=email_to_agent, email_mail_to=None, priority="HIGH")
+    engine.send_mail(
+        email_config=email_config,
+        email_to_send=email_to_agent,
+        email_mail_to=None,
+        priority="HIGH",
+    )

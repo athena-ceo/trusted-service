@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Arrondissement78, { communesYvelines } from "./Arrondissement78";
 
@@ -23,6 +23,169 @@ interface ContactFormProps {
     mode?: string;
 }
 
+type ConditionToken =
+    | { type: "number"; value: number }
+    | { type: "operator"; value: string }
+    | { type: "lparen" }
+    | { type: "rparen" };
+
+const CONDITION_OPERATORS = ["===", "!==", ">=", "<=", "==", "!=", "&&", "||", ">", "<"];
+
+const tokenizeCondition = (condition: string): ConditionToken[] | null => {
+    const tokens: ConditionToken[] = [];
+    let i = 0;
+
+    while (i < condition.length) {
+        const char = condition[i];
+        if (char === " " || char === "\t" || char === "\n") {
+            i += 1;
+            continue;
+        }
+
+        if (char === "(") {
+            tokens.push({ type: "lparen" });
+            i += 1;
+            continue;
+        }
+
+        if (char === ")") {
+            tokens.push({ type: "rparen" });
+            i += 1;
+            continue;
+        }
+
+        if (/\d/.test(char)) {
+            let numberText = char;
+            i += 1;
+            while (i < condition.length && /\d/.test(condition[i])) {
+                numberText += condition[i];
+                i += 1;
+            }
+            tokens.push({ type: "number", value: Number(numberText) });
+            continue;
+        }
+
+        const operator = CONDITION_OPERATORS.find((op) => condition.startsWith(op, i));
+        if (operator) {
+            tokens.push({ type: "operator", value: operator });
+            i += operator.length;
+            continue;
+        }
+
+        return null;
+    }
+
+    return tokens;
+};
+
+const evaluateCondition = (condition: string, departementNumber: number): boolean => {
+    const normalized = condition
+        .replace(/\{departement\}/g, String(departementNumber))
+        .replace(/\bdepartement\b/g, String(departementNumber))
+        .trim();
+
+    const tokens = tokenizeCondition(normalized);
+    if (!tokens || tokens.length === 0) {
+        return false;
+    }
+
+    let index = 0;
+    const peek = () => tokens[index];
+    const consume = () => tokens[index++];
+
+    const toNumber = (value: number | boolean) => (value ? 1 : 0);
+
+    const parsePrimary = (): number | boolean => {
+        const token = consume();
+        if (!token) {
+            throw new Error("Unexpected end of condition");
+        }
+        if (token.type === "number") {
+            return token.value;
+        }
+        if (token.type === "lparen") {
+            const value = parseOr();
+            const closing = consume();
+            if (!closing || closing.type !== "rparen") {
+                throw new Error("Missing closing parenthesis");
+            }
+            return value;
+        }
+        throw new Error("Invalid token in condition");
+    };
+
+    const parseComparison = (): boolean => {
+        const leftValue = parsePrimary();
+        const nextToken = peek();
+        if (nextToken && nextToken.type === "operator" && !["&&", "||"].includes(nextToken.value)) {
+            const operatorToken = consume() as { type: "operator"; value: string };
+            const rightValue = parsePrimary();
+            const left = typeof leftValue === "number" ? leftValue : toNumber(leftValue);
+            const right = typeof rightValue === "number" ? rightValue : toNumber(rightValue);
+
+            switch (operatorToken.value) {
+                case "===":
+                    return left === right;
+                case "!==":
+                    return left !== right;
+                case "==":
+                    return left === right;
+                case "!=":
+                    return left !== right;
+                case ">":
+                    return left > right;
+                case "<":
+                    return left < right;
+                case ">=":
+                    return left >= right;
+                case "<=":
+                    return left <= right;
+                default:
+                    return false;
+            }
+        }
+
+        if (typeof leftValue === "number") {
+            return leftValue !== 0;
+        }
+        return leftValue;
+    };
+
+    const parseAnd = (): boolean => {
+        let value = parseComparison();
+        while (true) {
+            const token = peek();
+            if (token?.type !== "operator" || token.value !== "&&") {
+                break;
+            }
+            consume();
+            value = value && parseComparison();
+        }
+        return value;
+    };
+
+    const parseOr = (): boolean => {
+        let value = parseAnd();
+        while (true) {
+            const token = peek();
+            if (token?.type !== "operator" || token.value !== "||") {
+                break;
+            }
+            consume();
+            value = value || parseAnd();
+        }
+        return value;
+    };
+
+    try {
+        const result = parseOr();
+        return index === tokens.length ? result : false;
+    } catch (error) {
+        console.warn("Invalid condition expression:", condition, error);
+        return false;
+    }
+};
+
 // Données pour le préremplissage automatique (pour les tests)
 const noms = ["Smith", "Jordan", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez",
     "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White",
@@ -38,6 +201,7 @@ const messageries = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "ic
 
 export default function ContactForm({ onSubmit, isLoading, departement = '78', mode = '' }: ContactFormProps) {
     const { t, currentLang } = useLanguage();
+    const isProd = process.env.NODE_ENV === "production";
     const [formData, setFormData] = useState<FormData>({
         nom: "",
         prenom: "",
@@ -53,34 +217,29 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78', m
     const [arrondissements, setArrondissements] = useState<Array<{ id: string, label: string }>>([]);
     const [statuts, setStatuts] = useState<Array<{ id: string, label: string }>>([]);
     const [errors, setErrors] = useState<Partial<FormData>>({});
-    const [urlArrondissement, setUrlArrondissement] = useState<string>("");
+    const urlArrondissement = useMemo(() => {
+        if (departement === "78") {
+            return "https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf";
+        }
+        if (departement === "91") {
+            return "https://www.essonne.gouv.fr/contenu/telechargement/18579/158914/file/communes-arrondissements.pdf";
+        }
+        if (departement === "92") {
+            return "https://www.hauts-de-seine.gouv.fr/layout/set/print/Services-de-l-Etat/Prefecture-et-Sous-Prefectures/Arrondissements";
+        }
+        if (departement === "94") {
+            return "https://www.val-de-marne.gouv.fr/contenu/telechargement/14051/100949/file/Liste+des+communes.pdf";
+        }
+        return "";
+    }, [departement]);
     const [initialCommune, setInitialCommune] = useState<string | undefined>(undefined);
-
-    const hasFetchedRef = useRef(false);
 
     // Charger les arrondissements depuis l'API
     useEffect(() => {
-        if (departement === "78") {
-            setUrlArrondissement("https://www.yvelines.gouv.fr/contenu/telechargement/29247/169330/file/bloc%201.2%20-%20Annexe%202_Liste%20des%20communes%20et%20arrondissements%201er%20janvier%202017.pdf");
-        } else if (departement === "91") {
-            setUrlArrondissement("https://www.essonne.gouv.fr/contenu/telechargement/18579/158914/file/communes-arrondissements.pdf");
-        } else if (departement === "92") {
-            setUrlArrondissement("https://www.hauts-de-seine.gouv.fr/layout/set/print/Services-de-l-Etat/Prefecture-et-Sous-Prefectures/Arrondissements");
-        } else if (departement === "94") {
-            setUrlArrondissement("https://www.val-de-marne.gouv.fr/contenu/telechargement/14051/100949/file/Liste+des+communes.pdf");
+        if (!isProd) {
+            console.log("Fetching arrondissements and statuts from API");
         }
-
-        if (hasFetchedRef.current) return;
-        hasFetchedRef.current = true;
-
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '__NEXT_PUBLIC_API_URL__';
-        if (!apiBaseUrl || apiBaseUrl.startsWith('__NEXT_PUBLIC_')) {
-            console.warn('NEXT_PUBLIC_API_URL is not configured - API calls may not work');
-            return;
-        }
-
-        console.log('Fetching arrondissements and statuts from API');
-        fetch(`${apiBaseUrl}/api/v2/apps/delphes${departement}${mode}/${currentLang.toLowerCase() || "fr"}/case_model`)
+        fetch(`/api/v2/apps/delphes${departement}${mode}/${currentLang.toLowerCase() || "fr"}/case_model`)
             .then(response => {
                 if (!response.ok) throw new Error("Erreur lors de la récupération des statuts et des arrondissements");
                 return response.json();
@@ -100,8 +259,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78', m
                 const filtered = allowed.filter((item: any) => {
                     try {
                         if (!item.condition_javascript) return true;
-                        const cond = item.condition_javascript.replace(/\{departement\}/g, departementNumber.toString());
-                        return eval(cond);
+                        return evaluateCondition(item.condition_javascript, departementNumber);
                     } catch (e) {
                         return false;
                     }
@@ -145,7 +303,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78', m
                 console.error('Erreur lors du chargement des statuts et des arrondissements:', error);
                 setArrondissements([{ id: "", label: "Impossible de charger les statuts et les arrondissements" }]);
             });
-    }, []);
+    }, [currentLang, departement, mode]);
 
     // Fonction de préremplissage pour les tests
     const preremplirFormulaire = () => {
@@ -231,6 +389,18 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78', m
         }
     };
 
+    const handleArrondissementChange = useCallback((value: string) => {
+        setFormData(prev => ({ ...prev, arrondissement: value }));
+        setErrors(prev => {
+            if (prev.arrondissement) {
+                return { ...prev, arrondissement: undefined };
+            }
+            return prev;
+        });
+        // Reinitialiser initialCommune apres le changement manuel
+        setInitialCommune(undefined);
+    }, []);
+
     return (
         <form onSubmit={handleSubmit} className="fr-mb-6w">
             <div className="fr-grid-row fr-grid-row--gutters fr-mb-3w">
@@ -287,17 +457,7 @@ export default function ContactForm({ onSubmit, isLoading, departement = '78', m
             {departement === "78" ? (
                 <Arrondissement78
                     value={formData.arrondissement}
-                    onChange={useCallback((value: string) => {
-                        setFormData(prev => ({ ...prev, arrondissement: value }));
-                        setErrors(prev => {
-                            if (prev.arrondissement) {
-                                return { ...prev, arrondissement: undefined };
-                            }
-                            return prev;
-                        });
-                        // Réinitialiser initialCommune après le changement manuel
-                        setInitialCommune(undefined);
-                    }, [])}
+                    onChange={handleArrondissementChange}
                     error={errors.arrondissement}
                     initialCommune={initialCommune}
                 />

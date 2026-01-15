@@ -1,5 +1,11 @@
-from src.common.config import SupportedLocale
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from src.common.localization import Localization
+
+if TYPE_CHECKING:
+    from src.common.config import SupportedLocale
 
 
 class TextAnalysisLocalization(Localization):
@@ -38,7 +44,6 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         docstring_scoring_for_one_intention_score="0 = absent, 10 = fully present",
         docstring_scoring_for_one_intention_justification="Why the model chose this score",
         docstring_scoring_for_multiple_intentions="List of the scorings for individual intentions",
-
         promptstring_prompt_is_markdown="This prompt is written in Markdown format.",
         promptstring_intent_id="Intent id",
         promptstring_intent_description="Intent description",
@@ -52,18 +57,16 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_term="Term",
         promptstring_definition="Definition",
         promptstring_return_only_json="Return ONLY valid JSON that matches this JSON Schema (no extra keys, no prose)",
-
         label_intention_other="OTHER",
         error_analysis_failed="Analysis failed after multiple retry attempts",
-        error_justification_prefix="Analysis error: "),
-
+        error_justification_prefix="Analysis error: ",
+    ),
     "fr": TextAnalysisLocalization(
         docstring_scoring_for_one_intention="Résultat pour une intention unique.",
         docstring_scoring_for_one_intention_intention_id="Correspond à Intention.id",
         docstring_scoring_for_one_intention_score="0 = absence, 10 = forte présence",
         docstring_scoring_for_one_intention_justification="La raison pour laquelle le modèle a déterminé ce score",
         docstring_scoring_for_multiple_intentions="Liste des scorings pour chacune des intentions",
-
         promptstring_prompt_is_markdown="Ce prompt est au format Markdown.",
         promptstring_intent_id="Identifiant de l'intention",
         promptstring_intent_description="Description de l'intention",
@@ -77,11 +80,10 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_term="Terme",
         promptstring_definition="Définition",
         promptstring_return_only_json="Retourner obligatoirement une structure JSON valide qui matche le schéma JSON suivant (n'ajouter aucun texte parasite)",
-
         label_intention_other="AUTRE",
         error_analysis_failed="Échec de l'analyse après plusieurs tentatives",
-        error_justification_prefix="Erreur lors de l'analyse : "),
-
+        error_justification_prefix="Erreur lors de l'analyse : ",
+    ),
     "fi": TextAnalysisLocalization(
         docstring_scoring_for_one_intention="Mallin tuloste yhdestä aikomuksesta.",
         docstring_scoring_for_one_intention_intention_id="vastaa Intention.id",
@@ -103,6 +105,6 @@ text_analysis_localizations: dict[SupportedLocale, TextAnalysisLocalization] = {
         promptstring_return_only_json="Palauta VAIN validi JSON, joka vastaa kyseistä JSON-mallia (ei ylimääräisiä avaimia, ei proosaa)",
         label_intention_other="MUU",
         error_analysis_failed="Analyysi epäonnistui useiden uudelleenyritysten jälkeen",
-        error_justification_prefix="Analyysivirhe: "),
-
+        error_justification_prefix="Analyysivirhe: ",
+    ),
 }

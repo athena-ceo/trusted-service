@@ -17,7 +17,7 @@ Ce document décrit tous les changements nécessaires pour migrer de Google (Gma
 | ----------------------- | -------------------------------------------- | --------------------------------------------------------------------------- |
 | `smtp_server`         | `smtp.gmail.com`                           | `smtp.tem.scaleway.com`                                                   |
 | `smtp_port`           | `587`                                      | `587` (inchangé)                                                         |
-| `password`            | Mot de passe Gmail (`tubd yhuh fgiq hqrs`) | `64bc46a2-51f2-4152-9611-ddea51ad0709` (votre `SCW_SECRET_KEY`)         |
+| `password`            | Mot de passe Gmail (`xxxx xxxx xxxx xxxx`) | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (votre `SCW_SECRET_KEY`)         |
 | `hub_email_address`   | `Athena.Delphes@gmail.com`                 | `ne-pas-repondre@athenadecisions.ai` (adresse "From" configurable)        |
 | `agent_email_address` | `pocagent78@gmail.com`                     | `pocagent78@gmail.com` (ou l'adresse email configurée dans Scaleway TEM) |
 
@@ -27,7 +27,7 @@ Ce document décrit tous les changements nécessaires pour migrer de Google (Gma
 
 | Paramètre        | Valeur                                                                      |
 | ----------------- | --------------------------------------------------------------------------- |
-| `smtp_username` | `59c350ec-8be5-4b8b-8a4c-93db7f9690b3` (votre `SCW_DEFAULT_PROJECT_ID`) |
+| `smtp_username` | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (votre `SCW_DEFAULT_PROJECT_ID`) |
 
 ## Changements dans le code Python
 
@@ -44,7 +44,7 @@ class DistributionEmailConfig(Config):
     case_field_email_address: str
     smtp_server: str
     smtp_username: str  # NOUVEAU : Username pour l'authentification SMTP
-    password: str
+    password_key: str
     smtp_port: int
     send_email: bool
     email_templates: list[EmailTemplate]
@@ -85,8 +85,8 @@ email_config.smtp_username = clean_string(email_config.smtp_username)  # NOUVEAU
 
 - **Serveur SMTP** : `smtp.tem.scaleway.com`
 - **Port** : `587` (TLS/STARTTLS)
-- **Username** : `59c350ec-8be5-4b8b-8a4c-93db7f9690b3` (Project ID = `SCW_DEFAULT_PROJECT_ID`)
-- **Password** : `64bc46a2-51f2-4152-9611-ddea51ad0709` (Secret Key = `SCW_SECRET_KEY`)
+- **Username** : `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (Project ID = `SCW_DEFAULT_PROJECT_ID`)
+- **Password** : `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (Secret Key = `SCW_SECRET_KEY`)
 
 ### Notes importantes
 
@@ -95,9 +95,9 @@ email_config.smtp_username = clean_string(email_config.smtp_username)  # NOUVEAU
 3. **Domaine vérifié** : Assurez-vous que le domaine utilisé pour les adresses email est vérifié dans Scaleway TEM
 4. **Mot de passe SMTP** :
    - **OUI, c'est bien `SCW_SECRET_KEY`** ! Pour Scaleway TEM, vous utilisez votre `SCW_SECRET_KEY` comme mot de passe SMTP
-   - **Username SMTP** : Votre `SCW_DEFAULT_PROJECT_ID` (`59c350ec-8be5-4b8b-8a4c-93db7f9690b3`)
-   - **Password SMTP** : Votre `SCW_SECRET_KEY` (`64bc46a2-51f2-4152-9611-ddea51ad0709`)
-   - **Note** : Le mot de passe `tubd yhuh fgiq hqrs` était pour Gmail, pas pour Scaleway
+   - **Username SMTP** : Votre `SCW_DEFAULT_PROJECT_ID` (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
+   - **Password SMTP** : Votre `SCW_SECRET_KEY` (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
+   - **Note** : Le mot de passe `xxxx xxxx xxxx xxxx` était pour Gmail, pas pour Scaleway
 
 ## Variables d'environnement (optionnel)
 
@@ -107,8 +107,8 @@ Les variables d'environnement `.env` que vous avez mentionnées (`SCW_ACCESS_KEY
 
 **Pour SMTP** (ce que nous utilisons ici) :
 
-- `smtp_username` : Project ID = `SCW_DEFAULT_PROJECT_ID` (`59c350ec-8be5-4b8b-8a4c-93db7f9690b3`)
-- `password` : Secret Key = `SCW_SECRET_KEY` (`64bc46a2-51f2-4152-9611-ddea51ad0709`)
+- `smtp_username` : Project ID = `SCW_DEFAULT_PROJECT_ID` (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
+- `password` : Secret Key = `SCW_SECRET_KEY` (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
 
 **Pour l'API REST** (alternative, non utilisée ici) :
 
@@ -120,8 +120,8 @@ Les variables d'environnement `.env` que vous avez mentionnées (`SCW_ACCESS_KEY
 
 - [ ] 
   - [ ] Mettre à jour `smtp_server` → `smtp.tem.scaleway.com`
-  - [ ] Ajouter `smtp_username` → `59c350ec-8be5-4b8b-8a4c-93db7f9690b3` (votre `SCW_DEFAULT_PROJECT_ID`)
-  - [ ] Mettre à jour `password` → `64bc46a2-51f2-4152-9611-ddea51ad0709` (votre `SCW_SECRET_KEY`)
+  - [ ] Ajouter `smtp_username` → `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (votre `SCW_DEFAULT_PROJECT_ID`)
+  - [ ] Mettre à jour `password` → `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (votre `SCW_SECRET_KEY`)
   - [ ] Vérifier que `smtp_port` = `587`
 - [ ] 
 - [ ] 
@@ -172,8 +172,8 @@ import smtplib
 
 smtp_server = "smtp.tem.scaleway.com"
 smtp_port = 587
-username = "59c350ec-8be5-4b8b-8a4c-93db7f9690b3"  # Project ID
-password = "64bc46a2-51f2-4152-9611-ddea51ad0709"  # Secret Key
+username = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"  # Project ID
+password = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"  # Secret Key
 
 try:
     server = smtplib.SMTP(smtp_server, smtp_port)

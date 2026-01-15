@@ -6,12 +6,14 @@ PREFIX_FRAGMENTS = "fragments_"
 
 class Definition(BaseModel):
     """A definition to give context to the LLM."""
+
     term: str = Field(..., description="Term to score")
     definition: str = Field(..., description="Natural-language definition")
 
 
 class Intention(BaseModel):
     """One intention you want to score in the text."""
+
     id: str = Field(..., description="Unique ID of the intention")
     label: str = Field(..., description="Label of the intention")
     description: str = Field(..., description="Natural-language description")
@@ -25,7 +27,7 @@ class Feature(BaseModel):
     highlight_fragments: bool
 
     # REMOVE
-    @field_validator('type', mode='before')
+    @field_validator("type", mode="before")
     @classmethod
     def convert_type(cls, v):
         # print("cls", cls)
@@ -37,9 +39,10 @@ class Feature(BaseModel):
             return float
         if v == "bool":
             return bool
-        if v == "str" or v == "date":
+        if v in ("str", "date"):
             return str
-        raise TypeError(f"Invalid type value: {v}")
+        msg = f"Invalid type value: {v}"
+        raise TypeError(msg)
 
 
 # class Test(BaseModel):
