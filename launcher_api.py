@@ -24,10 +24,16 @@ def main() -> None:
         help="Start uvicorn with auto-reload (useful for development).",
     )
     parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Validation mode: if set, server stops if any app validation fails. "
+             "Default (lenient mode): server starts even if some apps have validation errors (warnings logged).",
+    )
+    parser.add_argument(
         "--lenient",
         action="store_true",
         help="Validation mode: if set, server starts even if some apps have validation errors (warnings logged). "
-             "Default (strict mode): server stops if any app validation fails.",
+             "Default (lenient mode).",
     )
 
     args = parser.parse_args()
@@ -38,7 +44,9 @@ def main() -> None:
     connection_config = ConnectionConfig.load_from_yaml_file(config_connection_filename)
     
     # Determine validation mode
-    validation_mode = "lenient" if args.lenient else "strict"
+    if args.strict and args.lenient:
+        raise SystemExit("Choose either --strict or --lenient, not both.")
+    validation_mode = "strict" if args.strict else "lenient"
     os.environ["APP_VALIDATION_MODE"] = validation_mode
 
     # When using reload, uvicorn must import the application from an import string.
